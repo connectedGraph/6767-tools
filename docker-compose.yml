@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  tools:
+    build: .
+    container_name: 6767-tools
+    restart: unless-stopped
+    ports:
+      - "8093:8093"
+    environment:
+      - PORT=8093
+      - DATA_DIR=/app/_server_data
+    volumes:
+      - ./_server_data:/app/_server_data
+      - ./up/uploads:/app/up/uploads

@@ -1,0 +1,5 @@
+.git
+_server_data
+*.zip
+*.tar.gz
+*.log

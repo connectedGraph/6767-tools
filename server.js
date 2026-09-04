@@ -5,9 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const PORT = Number(process.argv[2] || 8093);
-const ROOT = __dirname;                      // deploy/
-const DATA_DIR = path.join(ROOT, '..', '_server_data');
+const PORT = Number(process.env.PORT || process.argv[2] || 8093);
+const ROOT = __dirname;
+const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, '_server_data');
 const STORE_FILE = path.join(DATA_DIR, 'store.json');
 const UPLOAD_DIR = path.join(ROOT, 'up', 'uploads');
 const MIME = {

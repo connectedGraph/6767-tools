@@ -4,7 +4,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = Number(process.argv[2] || 8080);
+const PORT = Number(process.env.PORT || process.argv[2] || 8080);
 const ROOT = path.resolve(process.argv[3] || __dirname);
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',

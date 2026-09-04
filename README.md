@@ -18,11 +18,40 @@
 
 ---
 
-## 快速开始
+## 独立部署包 (Standalone)
+
+为了方便不想配置 Git 环境或希望快速容器化自托管的用户，本项目提供了开箱即用的 **Standalone 独立部署方案**：
+
+### 1. GitHub Releases 独立离线便携包
+
+前往 [GitHub Releases 页面](https://github.com/connectedGraph/6767-tools/releases) 下载最新的 `6767-tools-v1.0.0-standalone.zip`：
+- **免 Git / 零 npm 依赖**：下载解压即可直接运行，无需克隆仓库，无需执行 `npm install`。
+- **双击一键运行**：
+  - **Windows 用户**：双击根目录下的 `start.bat`（自动检查运行环境、启动服务并自动打开浏览器）。
+  - **Linux / macOS 用户**：终端赋予执行权限后运行：`chmod +x start.sh && ./start.sh`。
+
+### 2. Docker / Docker Compose 容器化一键部署
+
+无需在宿主机配置 Node.js 环境，直接通过容器启动完整服务：
+
+```bash
+# 方式一：使用 Docker Compose 一键启动（推荐）
+docker compose up -d
+
+# 方式二：使用原生 Docker 命令构建与运行
+docker build -t 6767-tools .
+docker run -d -p 8093:8093 -v $(pwd)/_server_data:/app/_server_data --name 6767-tools 6767-tools
+```
+
+启动完成后访问 `http://localhost:8093/`，用户数据与文件上传将自动持久化至本地挂载卷。
+
+---
+
+## 快速开始（源码克隆方式）
 
 ### 环境依赖
 
-- Node.js 18.x 或更高版本（无需安装任何外部 npm 依赖，开箱即跑）
+- Node.js 18.x 或更高版本（纯原生模块，零 npm 依赖）
 
 ### 运行方式
 
