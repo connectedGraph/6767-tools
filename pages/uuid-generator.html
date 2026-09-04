@@ -1,0 +1,752 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>UUID / ULID / NanoID 批量生成器 - 在线工具</title>
+    <meta name="description" content="专业在线 UUID / ULID / NanoID 批量生成器：支持批量生成 v4/v7 UUID（大写/小写/连字符/无连字符）、ULID 时间有序标识符、NanoID 及随机 Token，支持 1~1000 个批量导出与一键复制。" />
+    <meta name="keywords" content="UUID生成器,ULID生成器,NanoID生成器,批量UUID,UUID v4,UUID v7,唯一标识符,在线生成器" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .uuid-terminal-box {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+        .uuid-terminal-header {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+        }
+        .uuid-type-radio .el-radio-button__inner {
+            background: rgba(15, 23, 42, 0.7);
+            border-color: rgba(51, 65, 85, 0.8);
+            color: #94a3b8;
+        }
+        .uuid-type-radio .el-radio-button__original-radio:checked + .el-radio-button__inner {
+            background-color: rgba(34, 211, 238, 0.2);
+            border-color: #22d3ee;
+            color: #22d3ee;
+            box-shadow: -1px 0 0 0 #22d3ee;
+        }
+        .uuid-output-area {
+            background: #090e17;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #38bdf8;
+            max-height: 380px;
+            overflow-y: auto;
+            padding: 14px 16px;
+            white-space: pre;
+            word-break: break-all;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 8px;
+            position: relative;
+        }
+        .uuid-output-area::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .uuid-output-area::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 3px;
+        }
+        .uuid-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+        .uuid-item-row:hover {
+            background: rgba(34, 211, 238, 0.12);
+        }
+        .uuid-item-index {
+            color: #64748b;
+            user-select: none;
+            width: 48px;
+            font-size: 0.78rem;
+        }
+        .uuid-item-text {
+            flex: 1;
+            color: #e2e8f0;
+            margin-right: 12px;
+        }
+        .uuid-item-copy {
+            opacity: 0;
+            color: #22d3ee;
+            font-size: 0.75rem;
+            transition: opacity 0.15s;
+        }
+        .uuid-item-row:hover .uuid-item-copy {
+            opacity: 1;
+        }
+        .badge-cyan {
+            background: rgba(34, 211, 238, 0.15);
+            border: 1px solid rgba(34, 211, 238, 0.35);
+            color: #22d3ee;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .badge-purple {
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            color: #c084fc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .badge-amber {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            color: #fbbf24;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .preset-btn {
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            background: rgba(15, 23, 42, 0.6);
+            color: #94a3b8;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preset-btn:hover, .preset-btn.active {
+            border-color: #22d3ee;
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.1);
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="UUID / ULID / NanoID 批量生成器 - 在线工具" />
+    <meta property="og:description" content="专业在线 UUID / ULID / NanoID 批量生成器：支持批量生成 v4/v7 UUID、ULID、NanoID，支持 1~1000 个批量导出与一键复制。" />
+    <meta property="og:url" content="https://tool.6767.chat/uuid-generator" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="UUID / ULID / NanoID 批量生成器 - 在线工具" />
+    <meta name="twitter:description" content="专业在线 UUID / ULID / NanoID 批量生成器：支持批量生成 v4/v7 UUID、ULID、NanoID，支持 1~1000 个批量导出与一键复制。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/uuid-generator" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">UUID / ULID / NanoID 批量生成器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h1 class="title text-xl md:text-2xl font-bold text-slate-100 mb-1">UUID / ULID / NanoID 批量生成器</h1>
+                        <p class="description text-slate-400 text-sm mb-0">
+                            纯前端离线生成安全唯一的随机标识符，支持 UUID v4/v7、ULID（按时间排序）、NanoID 与随机 Token，支持自定义格式与批量导出。
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="badge-cyan">离线加密级随机</span>
+                        <span class="badge-purple">RFC 4122 / 9562</span>
+                    </div>
+                </div>
+
+                <!-- 生成配置表单 -->
+                <el-form label-position="top" class="mb-6">
+                    <!-- 标识符类型选择 -->
+                    <el-form-item label="标识符类型">
+                        <el-radio-group v-model="config.type" class="uuid-type-radio" @change="handleTypeChange">
+                            <el-radio-button label="uuid_v4">UUID v4 (随机)</el-radio-button>
+                            <el-radio-button label="uuid_v7">UUID v7 (时间有序)</el-radio-button>
+                            <el-radio-button label="ulid">ULID (26位排序)</el-radio-button>
+                            <el-radio-button label="nanoid">NanoID (短紧凑)</el-radio-button>
+                            <el-radio-button label="random_token">自定义随机 Token</el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+
+                    <!-- 生成数量与快捷预设 -->
+                    <el-form-item label="生成数量 (1 ~ 1000 个)">
+                        <div class="flex flex-wrap items-center gap-3 w-full">
+                            <el-input-number v-model="config.count" :min="1" :max="1000" :step="1" class="!w-40" />
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button type="button" v-for="num in [1, 5, 10, 20, 50, 100, 500, 1000]" :key="num"
+                                    class="preset-btn" :class="{ active: config.count === num }"
+                                    @click="setCount(num)">
+                                    {{ num }}个
+                                </button>
+                            </div>
+                        </div>
+                    </el-form-item>
+
+                    <!-- 动态配置选项网格 -->
+                    <div class="options-grid p-4 rounded-lg bg-slate-900/60 border border-slate-800 mb-5">
+                        <!-- 大小写 -->
+                        <div>
+                            <div class="text-xs text-slate-400 font-mono mb-2">// 字符大小写</div>
+                            <el-radio-group v-model="config.caseMode" size="small">
+                                <el-radio label="lower">小写 (abcdef)</el-radio>
+                                <el-radio label="upper">大写 (ABCDEF)</el-radio>
+                            </el-radio-group>
+                        </div>
+
+                        <!-- 连字符格式 (UUID 专属) -->
+                        <div v-if="config.type.startsWith('uuid')">
+                            <div class="text-xs text-slate-400 font-mono mb-2">// 连字符 (Hyphen)</div>
+                            <el-switch v-model="config.hasHyphens" active-text="保留连字符 (-)" inactive-text="移除连字符" />
+                        </div>
+
+                        <!-- 包裹符号 -->
+                        <div>
+                            <div class="text-xs text-slate-400 font-mono mb-2">// 字符串包裹格式</div>
+                            <el-select v-model="config.wrapper" size="small" class="w-full">
+                                <el-option label="无包裹 (原始值)" value="none" />
+                                <el-option label='双引号 "..."' value="quotes" />
+                                <el-option label="单引号 '...'" value="single_quotes" />
+                                <el-option label="大括号 {...}" value="braces" />
+                                <el-option label="反引号 `...`" value="backticks" />
+                            </el-select>
+                        </div>
+
+                        <!-- 输出换行/分隔符 -->
+                        <div>
+                            <div class="text-xs text-slate-400 font-mono mb-2">// 输出分隔模式</div>
+                            <el-select v-model="config.outputFormat" size="small" class="w-full">
+                                <el-option label="换行分隔 (每行一个)" value="newline" />
+                                <el-option label="逗号分隔 (, )" value="comma" />
+                                <el-option label="JSON 数组格式" value="json" />
+                                <el-option label="SQL INSERT 语法" value="sql" />
+                            </el-select>
+                        </div>
+
+                        <!-- NanoID 长度与字符集专属设置 -->
+                        <div v-if="config.type === 'nanoid'" class="col-span-full border-t border-slate-800 pt-3">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <div class="text-xs text-slate-400 font-mono mb-2">// NanoID 长度 (4 ~ 64 位)</div>
+                                    <el-slider v-model="config.nanoLength" :min="4" :max="64" show-input />
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-400 font-mono mb-2">// NanoID 字符集</div>
+                                    <el-select v-model="config.nanoAlphabet" size="small" class="w-full">
+                                        <el-option label="标准 URL-Safe (A-Za-z0-9_-) [默认]" value="url-safe" />
+                                        <el-option label="字母数字 (A-Za-z0-9)" value="alphanumeric" />
+                                        <el-option label="纯数字 (0-9)" value="numbers" />
+                                        <el-option label="纯小写字母数字 (a-z0-9)" value="lowercase" />
+                                        <el-option label="十六进制 Hex (0-9a-f)" value="hex" />
+                                    </el-select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 随机 Token 专属设置 -->
+                        <div v-if="config.type === 'random_token'" class="col-span-full border-t border-slate-800 pt-3">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <div class="text-xs text-slate-400 font-mono mb-2">// Token 长度 (4 ~ 128 位)</div>
+                                    <el-slider v-model="config.tokenLength" :min="4" :max="128" show-input />
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-400 font-mono mb-2">// 自定义字符集</div>
+                                    <el-input v-model="config.customCharset" placeholder="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" size="small" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮组 -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <el-button type="primary" size="large" @click="generateIdentifiers" class="!px-6">
+                            ⚡ 重新生成 (Generate)
+                        </el-button>
+                        <el-button type="success" size="large" @click="copyAll">
+                            📋 复制全部 ({{ idList.length }})
+                        </el-button>
+                        <el-button size="large" @click="downloadTxt">
+                            💾 导出 .txt 文本
+                        </el-button>
+                        <el-button size="large" @click="downloadJson">
+                            📦 导出 .json 数组
+                        </el-button>
+                        <el-button size="large" @click="downloadCsv">
+                            📊 导出 .csv
+                        </el-button>
+                    </div>
+                </el-form>
+
+                <!-- 输出结果终端面板 -->
+                <div class="uuid-terminal-box mb-6">
+                    <div class="uuid-terminal-header">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                            <span class="text-slate-300">生成结果清单</span>
+                            <span class="badge-cyan">{{ idList.length }} items</span>
+                            <span class="text-slate-500 text-xs font-normal">耗时: {{ executionTime }}ms</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-slate-400">
+                            <span>点击任意单行可单独复制</span>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-slate-950">
+                        <div v-if="config.outputFormat === 'newline'" class="uuid-output-area">
+                            <div v-for="(item, index) in formattedList" :key="index" class="uuid-item-row" @click="copySingle(item)">
+                                <span class="uuid-item-index">{{ String(index + 1).padStart(3, '0') }}.</span>
+                                <span class="uuid-item-text">{{ item }}</span>
+                                <span class="uuid-item-copy">复制 ↵</span>
+                            </div>
+                        </div>
+                        <div v-else class="uuid-output-area">
+                            <code>{{ rawOutputText }}</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ULID / UUID 实时解析器 (附加工具) -->
+                <div class="p-4 rounded-lg bg-slate-900/40 border border-slate-800 mb-8">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                            <span>🔍 标识符时间戳解析器 (ULID / UUID v7 Inspector)</span>
+                        </h3>
+                        <span class="text-xs text-slate-500">粘贴任意 ULID 或 UUID v7 查看其编码的时间信息</span>
+                    </div>
+                    <div class="flex gap-2 mb-2">
+                        <el-input v-model="inspectInput" placeholder="粘贴 ULID (如 01ARZ3NDEKTSV4RRFFQ69G5FAV) 或 UUID v7..." @input="handleInspect" />
+                        <el-button @click="inspectFirstGenerated">解析首个</el-button>
+                    </div>
+                    <div v-if="inspectResult" class="p-3 bg-slate-950 rounded text-xs font-mono text-cyan-300 grid grid-cols-1 md:grid-cols-3 gap-2">
+                        <div>类型: <span class="text-slate-200">{{ inspectResult.type }}</span></div>
+                        <div>Unix 毫秒: <span class="text-slate-200">{{ inspectResult.timestamp }}</span></div>
+                        <div>北京时间: <span class="text-emerald-400">{{ inspectResult.timeStr }}</span></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 技术科普与文档 -->
+                <div class="content space-y-4">
+                    <h3 class="text-lg font-bold text-slate-200">📚 标识符技术对比与选型指南</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs md:text-sm text-slate-300">
+                            <thead>
+                                <tr>
+                                    <th>标识符规范</th>
+                                    <th>长度与字符集</th>
+                                    <th>时间有序性</th>
+                                    <th>数据库索引友好度</th>
+                                    <th>典型应用场景</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>UUID v4</strong></td>
+                                    <td>36字符 (十六进制 + 连字符)</td>
+                                    <td>❌ 完全随机</td>
+                                    <td>⚠️ 中等 (随机插入易导致 B-Tree 页分裂)</td>
+                                    <td>跨服务防碰撞 ID、短期 Session ID、追踪 Trace ID</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>UUID v7 (RFC 9562)</strong></td>
+                                    <td>36字符 (前 48 位 Unix 毫秒时间戳)</td>
+                                    <td>✅ 时间单调递增</td>
+                                    <td>⭐ 极佳 (按时间聚簇索引，写入性能高)</td>
+                                    <td>MySQL / PostgreSQL / SQLite 数据库主键</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ULID</strong></td>
+                                    <td>26字符 (Crockford's Base32 编码)</td>
+                                    <td>✅ 时间单调递增</td>
+                                    <td>⭐ 极佳 (体积小、URL 友好、支持按时间范围查询)</td>
+                                    <td>分布式日志 ID、订单号、消息队列唯一消息 ID</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>NanoID</strong></td>
+                                    <td>默认 21字符 (URL-Safe A-Za-z0-9_-)</td>
+                                    <td>❌ 密码学随机</td>
+                                    <td>✨ 良好 (比 UUID 节省 36% 存储空间)</td>
+                                    <td>前端组件 Key、短链接 Key、对外暴露的无序实体 ID</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h4 class="text-base font-semibold text-slate-200 mt-4">🔐 密码学安全性说明</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        本生成器完全采用 Web 标准的 <code class="text-cyan-400">crypto.getRandomValues()</code> CSPRNG（加密安全伪随机数生成器）在浏览器沙箱本地运行，不依赖 Math.random()，杜绝伪随机序列可预测性，保障唯一性与抗碰撞安全性。所有生成数据完全离线，绝不产生任何网络上传请求。
+                    </p>
+                    <div class="text-xs text-slate-500 font-mono mt-2">拓展时间: 2026-08-31</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+<script>
+    const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+    const CROCKFORD_BASE32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+
+    const app = createApp({
+        setup() {
+            const config = reactive({
+                type: 'uuid_v4',
+                count: 10,
+                caseMode: 'lower',
+                hasHyphens: true,
+                wrapper: 'none',
+                outputFormat: 'newline',
+                nanoLength: 21,
+                nanoAlphabet: 'url-safe',
+                tokenLength: 16,
+                customCharset: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+            });
+
+            const idList = ref([]);
+            const executionTime = ref(0);
+            const inspectInput = ref('');
+            const inspectResult = ref(null);
+
+            // ULID 编码函数
+            const generateULID = (timeMs = Date.now(), upper = true) => {
+                let timeStr = "";
+                let now = timeMs;
+                for (let i = 9; i >= 0; i--) {
+                    const mod = now % 32;
+                    timeStr = CROCKFORD_BASE32[mod] + timeStr;
+                    now = Math.floor(now / 32);
+                }
+                const randBytes = new Uint8Array(10);
+                crypto.getRandomValues(randBytes);
+                let randStr = "";
+                for (let i = 0; i < 16; i++) {
+                    const randVal = randBytes[i % 10] % 32;
+                    randStr += CROCKFORD_BASE32[randVal];
+                }
+                const res = timeStr + randStr;
+                return upper ? res.toUpperCase() : res.toLowerCase();
+            };
+
+            // UUID v4
+            const generateUUIDv4 = (upper, hyphens) => {
+                const rnd = new Uint8Array(16);
+                crypto.getRandomValues(rnd);
+                rnd[6] = (rnd[6] & 0x0f) | 0x40; // version 4
+                rnd[8] = (rnd[8] & 0x3f) | 0x80; // variant RFC 4122
+                const hex = Array.from(rnd, b => b.toString(16).padStart(2, '0')).join('');
+                let u = `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20,32)}`;
+                if (!hyphens) u = u.replace(/-/g, '');
+                return upper ? u.toUpperCase() : u.toLowerCase();
+            };
+
+            // UUID v7 (RFC 9562)
+            const generateUUIDv7 = (upper, hyphens) => {
+                const bytes = new Uint8Array(16);
+                crypto.getRandomValues(bytes);
+                const now = Date.now();
+                // 48-bit timestamp
+                bytes[0] = (now / 0x10000000000) & 0xff;
+                bytes[1] = (now / 0x100000000) & 0xff;
+                bytes[2] = (now / 0x1000000) & 0xff;
+                bytes[3] = (now / 0x10000) & 0xff;
+                bytes[4] = (now / 0x100) & 0xff;
+                bytes[5] = now & 0xff;
+                bytes[6] = (bytes[6] & 0x0f) | 0x70; // version 7
+                bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant RFC 4122
+                const hex = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+                let u = `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20,32)}`;
+                if (!hyphens) u = u.replace(/-/g, '');
+                return upper ? u.toUpperCase() : u.toLowerCase();
+            };
+
+            // NanoID
+            const generateNanoID = (size = 21, alphabetType = 'url-safe', upper = false) => {
+                let alphabet = "use-default";
+                if (alphabetType === 'url-safe') alphabet = "_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                else if (alphabetType === 'alphanumeric') alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                else if (alphabetType === 'numbers') alphabet = "0123456789";
+                else if (alphabetType === 'lowercase') alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
+                else if (alphabetType === 'hex') alphabet = "0123456789abcdef";
+                else alphabet = "_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+                const bytes = new Uint8Array(size);
+                crypto.getRandomValues(bytes);
+                let id = "";
+                for (let i = 0; i < size; i++) {
+                    id += alphabet[bytes[i] % alphabet.length];
+                }
+                return upper ? id.toUpperCase() : id;
+            };
+
+            // Random Token
+            const generateRandomToken = (size = 16, charset = '', upper = false) => {
+                const chars = charset || '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+                const bytes = new Uint8Array(size);
+                crypto.getRandomValues(bytes);
+                let token = '';
+                for (let i = 0; i < size; i++) {
+                    token += chars[bytes[i] % chars.length];
+                }
+                return upper ? token.toUpperCase() : token;
+            };
+
+            // 批量生成主方法
+            const generateIdentifiers = () => {
+                const startTime = performance.now();
+                const list = [];
+                const isUpper = config.caseMode === 'upper';
+
+                for (let i = 0; i < config.count; i++) {
+                    let val = '';
+                    switch (config.type) {
+                        case 'uuid_v4':
+                            val = generateUUIDv4(isUpper, config.hasHyphens);
+                            break;
+                        case 'uuid_v7':
+                            val = generateUUIDv7(isUpper, config.hasHyphens);
+                            break;
+                        case 'ulid':
+                            val = generateULID(Date.now(), isUpper);
+                            break;
+                        case 'nanoid':
+                            val = generateNanoID(config.nanoLength, config.nanoAlphabet, isUpper);
+                            break;
+                        case 'random_token':
+                            val = generateRandomToken(config.tokenLength, config.customCharset, isUpper);
+                            break;
+                        default:
+                            val = generateUUIDv4(isUpper, config.hasHyphens);
+                    }
+                    list.push(val);
+                }
+
+                idList.value = list;
+                executionTime.value = (performance.now() - startTime).toFixed(2);
+            };
+
+            // 格式化输出列表
+            const formattedList = computed(() => {
+                return idList.value.map(item => {
+                    if (config.wrapper === 'quotes') return `"${item}"`;
+                    if (config.wrapper === 'single_quotes') return `'${item}'`;
+                    if (config.wrapper === 'braces') return `{${item}}`;
+                    if (config.wrapper === 'backticks') return `\`${item}\``;
+                    return item;
+                });
+            });
+
+            // 原始文本格式输出
+            const rawOutputText = computed(() => {
+                const items = formattedList.value;
+                if (config.outputFormat === 'newline') {
+                    return items.join('\n');
+                }
+                if (config.outputFormat === 'comma') {
+                    return items.join(', ');
+                }
+                if (config.outputFormat === 'json') {
+                    return JSON.stringify(idList.value, null, 2);
+                }
+                if (config.outputFormat === 'sql') {
+                    const values = idList.value.map(id => `('${id}')`).join(',\n  ');
+                    return `INSERT INTO table_name (id) VALUES\n  ${values};`;
+                }
+                return items.join('\n');
+            });
+
+            const setCount = (num) => {
+                config.count = num;
+                generateIdentifiers();
+            };
+
+            const handleTypeChange = () => {
+                generateIdentifiers();
+            };
+
+            // 复制单条
+            const copySingle = (text) => {
+                navigator.clipboard.writeText(text).then(() => {
+                    ElementPlus.ElMessage.success({ message: `已复制: ${text}`, duration: 1500, grouping: true });
+                }).catch(() => {
+                    prompt('请手动复制:', text);
+                });
+            };
+
+            // 复制全部
+            const copyAll = () => {
+                if (!idList.value.length) return;
+                navigator.clipboard.writeText(rawOutputText.value).then(() => {
+                    ElementPlus.ElMessage.success({ message: `成功复制全部 ${idList.value.length} 个标识符`, duration: 2000 });
+                }).catch(() => {
+                    ElementPlus.ElMessage.warning('复制失败，请尝试导出文本');
+                });
+            };
+
+            // 导出文本文件
+            const downloadFile = (content, filename, mimeType) => {
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                ElementPlus.ElMessage.success(`文件 ${filename} 正在下载...`);
+            };
+
+            const downloadTxt = () => {
+                if (!idList.value.length) return;
+                const timestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
+                downloadFile(rawOutputText.value, `${config.type}_list_${timestamp}.txt`, 'text/plain;charset=utf-8');
+            };
+
+            const downloadJson = () => {
+                if (!idList.value.length) return;
+                const timestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
+                downloadFile(JSON.stringify(idList.value, null, 2), `${config.type}_list_${timestamp}.json`, 'application/json;charset=utf-8');
+            };
+
+            const downloadCsv = () => {
+                if (!idList.value.length) return;
+                const timestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
+                const csvHeader = 'Index,Identifier\n';
+                const csvRows = idList.value.map((id, idx) => `${idx + 1},"${id}"`).join('\n');
+                downloadFile(csvHeader + csvRows, `${config.type}_list_${timestamp}.csv`, 'text/csv;charset=utf-8');
+            };
+
+            // 解析时间戳 (ULID 或 UUID v7)
+            const handleInspect = () => {
+                const raw = (inspectInput.value || '').trim();
+                if (!raw) {
+                    inspectResult.value = null;
+                    return;
+                }
+
+                // 尝试解析 UUID v7
+                const uuidMatch = raw.replace(/-/g, '');
+                if (uuidMatch.length === 32 && /^[0-9a-fA-F]{32}$/.test(uuidMatch)) {
+                    // check version
+                    const version = uuidMatch[12];
+                    const timeHex = uuidMatch.slice(0, 12);
+                    const timeMs = parseInt(timeHex, 16);
+                    if (!isNaN(timeMs) && timeMs > 0 && timeMs < 4102444800000) {
+                        const date = new Date(timeMs);
+                        inspectResult.value = {
+                            type: `UUID (版本: ${version === '7' ? 'v7 时间戳' : 'v' + version})`,
+                            timestamp: `${timeMs} ms`,
+                            timeStr: date.toLocaleString('zh-CN', { timeZoneName: 'short' })
+                        };
+                        return;
+                    }
+                }
+
+                // 尝试解析 ULID
+                if (raw.length === 26) {
+                    const upper = raw.toUpperCase();
+                    let timeMs = 0;
+                    for (let i = 0; i < 10; i++) {
+                        const char = upper[i];
+                        const val = CROCKFORD_BASE32.indexOf(char);
+                        if (val === -1) break;
+                        timeMs = timeMs * 32 + val;
+                    }
+                    if (timeMs > 0 && timeMs < 4102444800000) {
+                        const date = new Date(timeMs);
+                        inspectResult.value = {
+                            type: 'ULID (26字符 Base32)',
+                            timestamp: `${timeMs} ms`,
+                            timeStr: date.toLocaleString('zh-CN', { timeZoneName: 'short' })
+                        };
+                        return;
+                    }
+                }
+
+                inspectResult.value = {
+                    type: '未知或随机格式',
+                    timestamp: '—',
+                    timeStr: '未检测到标准毫秒时间戳前缀'
+                };
+            };
+
+            const inspectFirstGenerated = () => {
+                if (idList.value.length > 0) {
+                    inspectInput.value = idList.value[0];
+                    handleInspect();
+                }
+            };
+
+            onMounted(() => {
+                generateIdentifiers();
+            });
+
+            return {
+                config,
+                idList,
+                executionTime,
+                formattedList,
+                rawOutputText,
+                inspectInput,
+                inspectResult,
+                generateIdentifiers,
+                setCount,
+                handleTypeChange,
+                copySingle,
+                copyAll,
+                downloadTxt,
+                downloadJson,
+                downloadCsv,
+                handleInspect,
+                inspectFirstGenerated
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('.main-body');
+</script>
+</body>
+</html>

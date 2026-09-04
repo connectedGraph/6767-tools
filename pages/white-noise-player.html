@@ -1,0 +1,1197 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>白噪音与专注助眠多轨混音器 - 在线工具</title>
+    <meta name="description" content="纯前端基于 Web Audio API 动态合成的高品质白噪音与环境音混音器，内置雨声、雷鸣、海浪、森林鸟鸣、篝火、咖啡馆、微风、溪流、时钟与粉红噪音等12轨音效。支持独立音量调节、情境预设切换、自定义混音保存与定时平滑淡出休眠。" />
+    <meta name="keywords" content="白噪音,助眠音乐,专注混音器,雨声白噪音,海浪声,粉红噪音,Web Audio,环境音效,番茄钟助眠,冥想背景音" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        /* 核心母带控制面板 (Master Deck) */
+        .master-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(16px);
+        }
+        .master-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .master-play-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .btn-master-play {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-master-play.playing {
+            background: linear-gradient(135deg, #ef4444, #f43f5e);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+        .btn-master-play.paused {
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.45);
+        }
+        .btn-master-play:hover {
+            transform: scale(1.08);
+        }
+
+        .master-vol-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 220px;
+        }
+        .timer-select-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 频谱动效条 */
+        .visualizer-box {
+            width: 100%;
+            height: 48px;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(51, 65, 85, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .visualizer-canvas {
+            width: 100%;
+            height: 36px;
+            border-radius: 6px;
+            background: rgba(2, 6, 23, 0.6);
+        }
+
+        /* 预设情境栏 */
+        .presets-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 4px 2px 14px;
+            margin-bottom: 20px;
+            scrollbar-width: thin;
+        }
+        .preset-chip {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 999px;
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .preset-chip:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.08);
+            transform: translateY(-1px);
+        }
+        .preset-chip.active {
+            background: rgba(56, 189, 248, 0.18);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+            font-weight: 600;
+        }
+
+        /* 多轨网格 (Sound Track Grid) */
+        .tracks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .track-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .track-card:hover {
+            border-color: rgba(56, 189, 248, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        .track-card.active {
+            background: rgba(8, 47, 73, 0.4);
+            border-color: #38bdf8;
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.18);
+        }
+        .track-card.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #10b981, #38bdf8);
+        }
+
+        .track-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .track-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .track-icon {
+            font-size: 24px;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            background: rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .track-card.active .track-icon {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: #38bdf8;
+            transform: scale(1.05);
+        }
+        .track-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+        .track-sub {
+            font-size: 11px;
+            color: #64748b;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 动效均衡器小柱 */
+        .eq-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+            width: 16px;
+        }
+        .eq-bar {
+            flex: 1;
+            background: #38bdf8;
+            border-radius: 1px;
+            height: 3px;
+        }
+        .track-card.active .eq-bar:nth-child(1) { animation: eqBounce 0.8s infinite ease-in-out alternate; }
+        .track-card.active .eq-bar:nth-child(2) { animation: eqBounce 1.1s infinite 0.2s ease-in-out alternate; }
+        .track-card.active .eq-bar:nth-child(3) { animation: eqBounce 0.6s infinite 0.4s ease-in-out alternate; }
+
+        @keyframes eqBounce {
+            0% { height: 3px; }
+            100% { height: 14px; }
+        }
+
+        .track-slider-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .vol-val-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            width: 32px;
+            text-align: right;
+        }
+
+        /* 自定义预设管理卡片 */
+        .custom-presets-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+        }
+
+        /* 终端说明文档 */
+        .doc-section {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.7;
+        }
+        .doc-section h3 {
+            color: #e2e8f0;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .doc-tag {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./audio-and-video" class="text-slate-400 hover:text-cyan-400 text-sm">音视频</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">白噪音与专注助眠多轨混音器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">白噪音与专注助眠多轨混音器</h1>
+                </div>
+                <div class="description">纯前端基于 Web Audio API 动态合成的高品质白噪音与环境音混音器，内置雨声、雷鸣、海浪、森林鸟鸣、篝火、咖啡馆、微风、溪流、时钟与粉红噪音等12轨音效。支持独立音量调节、情境预设切换、自定义混音保存与定时平滑淡出休眠。</div>
+
+    <!-- Master Controller Card -->
+    <div class="master-card">
+        <div class="master-controls">
+            <!-- Master Switch -->
+            <div class="master-play-group">
+                <button class="btn-master-play" :class="isPlaying ? 'playing' : 'paused'" @click="toggleMasterPlay" :title="isPlaying ? '暂停所有声音' : '播放混音'">
+                    <span>{{ isPlaying ? '⏸' : '▶' }}</span>
+                </button>
+                <div>
+                    <div class="text-sm font-bold text-slate-200">
+                        {{ isPlaying ? '正在沉浸播放中' : '混音器已暂停' }}
+                    </div>
+                    <div class="text-xs text-slate-400 font-mono mt-0.5">
+                        活跃音轨: <span class="text-cyan-400 font-bold">{{ activeTracksCount }}</span> / {{ tracks.length }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Master Volume -->
+            <div class="master-vol-box">
+                <span class="text-xs font-mono text-slate-400">总音量:</span>
+                <el-slider v-model="masterVolume" :min="0" :max="100" :show-tooltip="true" @input="updateMasterGain" style="flex: 1;"></el-slider>
+                <span class="font-mono text-xs text-cyan-400 w-8">{{ masterVolume }}%</span>
+            </div>
+
+            <!-- Timer & Actions -->
+            <div class="timer-select-box">
+                <span class="text-xs font-mono text-slate-400">休眠定时:</span>
+                <select v-model="sleepTimerMinutes" @change="setSleepTimer" class="bg-slate-900 text-slate-200 border border-slate-700 text-xs rounded-lg px-2.5 py-1.5 outline-none font-mono">
+                    <option :value="0">关闭定时器</option>
+                    <option :value="15">15 分钟后平滑淡出</option>
+                    <option :value="30">30 分钟后平滑淡出</option>
+                    <option :value="45">45 分钟后平滑淡出</option>
+                    <option :value="60">60 分钟后平滑淡出</option>
+                    <option :value="90">90 分钟后平滑淡出</option>
+                </select>
+                <span v-if="countdownSeconds > 0" class="text-xs font-mono text-amber-400 font-bold ml-1">
+                    ⏳ {{ formattedCountdown }}
+                </span>
+            </div>
+
+            <!-- Utility Buttons -->
+            <div class="flex items-center gap-2">
+                <el-button size="small" @click="randomizeMix" title="随机生成混音灵感">
+                    🎲 随机混音
+                </el-button>
+                <el-button size="small" @click="resetAllTracks" title="重置所有音轨音量与状态">
+                    🔄 一键重置
+                </el-button>
+            </div>
+        </div>
+
+        <!-- Master Visualizer Wave Canvas -->
+        <div class="visualizer-box">
+            <canvas ref="visCanvas" class="visualizer-canvas" height="36"></canvas>
+        </div>
+    </div>
+
+    <!-- Preset Scenarios Row -->
+    <div class="mb-2 text-xs font-mono text-slate-400 flex items-center justify-between">
+        <span>// 精选预设情境 (点击一键载入配方):</span>
+        <button class="text-xs text-cyan-400 hover:underline" @click="saveCustomPresetDialog = true">+ 存储当前混音方案</button>
+    </div>
+    <div class="presets-row">
+        <button v-for="p in presetList" :key="p.name" class="preset-chip" :class="{'active': currentPresetName === p.name}" @click="applyPreset(p)">
+            <span>{{ p.emoji }}</span>
+            <span>{{ p.name }}</span>
+        </button>
+    </div>
+
+    <!-- Multi-Track Audio Matrix -->
+    <div class="tracks-grid">
+        <div v-for="track in tracks" :key="track.id" class="track-card" :class="{'active': track.enabled}">
+            <div class="track-header">
+                <div class="track-info">
+                    <div class="track-icon">{{ track.emoji }}</div>
+                    <div>
+                        <div class="track-title">{{ track.name }}</div>
+                        <div class="track-sub">{{ track.desc }}</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="eq-bars" v-if="track.enabled && isPlaying">
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                    </div>
+                    <el-switch v-model="track.enabled" @change="onTrackToggle(track)"></el-switch>
+                </div>
+            </div>
+
+            <div class="track-slider-box">
+                <span class="text-xs text-slate-500 font-mono">🔊</span>
+                <el-slider v-model="track.volume" :min="0" :max="100" :disabled="!track.enabled" @input="onTrackVolumeChange(track)" style="flex: 1;"></el-slider>
+                <span class="vol-val-text">{{ track.enabled ? track.volume + '%' : 'OFF' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Presets Section (LocalStorage) -->
+    <div v-if="customPresets.length > 0" class="custom-presets-card">
+        <div class="text-xs font-mono font-bold text-slate-300 mb-3 uppercase tracking-wider">
+            📁 我的自定义混音配方 (共 {{ customPresets.length }} 组)
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <div v-for="(cp, idx) in customPresets" :key="idx" class="flex items-center gap-2 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-xs">
+                <button class="text-cyan-400 hover:text-cyan-300 font-medium" @click="applyCustomPreset(cp)">
+                    ✨ {{ cp.name }}
+                </button>
+                <button class="text-slate-500 hover:text-red-400 font-bold ml-1" @click="deleteCustomPreset(idx)" title="删除此方案">×</button>
+            </div>
+        </div>
+    </div>
+
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>传统的在线白噪音通常下载长音频循环文件，容易出现周期循环缝隙与网络卡顿。本工具所有声音均由 Web Audio API 基于数学噪声发生器、多阶谐振带通滤波器、低频震荡器 (LFO) 及泊松随机爆裂脉冲算法纯本地动态合成，0 外部网络请求、声音永不重复，支持定时渐变淡出休眠机制。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="315" :comment-class="2"></comment>
+
+    <!-- Custom Preset Dialog -->
+    <el-dialog v-model="saveCustomPresetDialog" title="保存自定义混音配方" width="380px">
+        <div class="mb-4 text-xs text-slate-400">为当前的音效与音量配比命名：</div>
+        <el-input v-model="newPresetName" placeholder="例如：深夜咖啡馆自习、海边暴风雨..." maxlength="20"></el-input>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="saveCustomPresetDialog = false">取消</el-button>
+                <el-button type="primary" @click="saveCustomPreset">确认保存</el-button>
+            </span>
+        </template>
+    </el-dialog>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script>
+    const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
+
+    // ───────────────────────────────────────────────
+    // PROCEDURAL AUDIO SYNTHESIS ENGINE
+    // ───────────────────────────────────────────────
+    class ProceduralNoiseEngine {
+        constructor() {
+            this.ctx = null;
+            this.masterGain = null;
+            this.analyser = null;
+            this.sources = {};
+            this.initialized = false;
+        }
+
+        init() {
+            if (this.initialized) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioContext();
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.gain.setValueAtTime(0.7, this.ctx.currentTime);
+
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 64;
+            this.analyser.smoothingTimeConstant = 0.8;
+
+            this.masterGain.connect(this.analyser);
+            this.analyser.connect(this.ctx.destination);
+            this.initialized = true;
+        }
+
+        resume() {
+            if (this.ctx && this.ctx.state === 'suspended') {
+                this.ctx.resume();
+            }
+        }
+
+        createNoiseBuffer(type = 'pink', duration = 5) {
+            const bufferSize = this.ctx.sampleRate * duration;
+            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            if (type === 'white') {
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+            } else if (type === 'pink') {
+                // Paul Kellet's filtered pink noise algorithm
+                let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+                for (let i = 0; i < bufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    b0 = 0.99886 * b0 + white * 0.0555179;
+                    b1 = 0.99332 * b1 + white * 0.0750759;
+                    b2 = 0.96900 * b2 + white * 0.1538520;
+                    b3 = 0.86650 * b3 + white * 0.3104856;
+                    b4 = 0.55000 * b4 + white * 0.5329522;
+                    b5 = -0.7616 * b5 - white * 0.0168980;
+                    data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+                    b6 = white * 0.115926;
+                }
+            } else if (type === 'brown') {
+                let lastOut = 0.0;
+                for (let i = 0; i < bufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    data[i] = (lastOut + (0.02 * white)) / 1.02;
+                    lastOut = data[i];
+                    data[i] *= 3.5; // Gain compensation
+                }
+            }
+            return buffer;
+        }
+
+        startTrack(trackId, initialGain = 0.5) {
+            this.init();
+            this.resume();
+            if (this.sources[trackId]) return;
+
+            const tGain = this.ctx.createGain();
+            tGain.gain.setValueAtTime(initialGain, this.ctx.currentTime);
+            tGain.connect(this.masterGain);
+
+            let nodes = { gain: tGain, cleanup: [] };
+
+            switch (trackId) {
+                case 'white': {
+                    const src = this.ctx.createBufferSource();
+                    src.buffer = this.createNoiseBuffer('white', 6);
+                    src.loop = true;
+                    src.connect(tGain);
+                    src.start();
+                    nodes.cleanup.push(() => src.stop());
+                    break;
+                }
+                case 'pink': {
+                    const src = this.ctx.createBufferSource();
+                    src.buffer = this.createNoiseBuffer('pink', 6);
+                    src.loop = true;
+                    src.connect(tGain);
+                    src.start();
+                    nodes.cleanup.push(() => src.stop());
+                    break;
+                }
+                case 'rain': {
+                    // Filtered Pink Noise + Droplet Simulation
+                    const src = this.ctx.createBufferSource();
+                    src.buffer = this.createNoiseBuffer('pink', 5);
+                    src.loop = true;
+                    const lp = this.ctx.createBiquadFilter();
+                    lp.type = 'lowpass';
+                    lp.frequency.setValueAtTime(1400, this.ctx.currentTime);
+                    const hp = this.ctx.createBiquadFilter();
+                    hp.type = 'highpass';
+                    hp.frequency.setValueAtTime(400, this.ctx.currentTime);
+
+                    src.connect(lp);
+                    lp.connect(hp);
+                    hp.connect(tGain);
+                    src.start();
+                    nodes.cleanup.push(() => src.stop());
+                    break;
+                }
+                case 'thunder': {
+                    // Periodic low rumble surges
+                    let isAlive = true;
+                    const triggerThunder = () => {
+                        if (!isAlive) return;
+                        const dur = 3 + Math.random() * 4;
+                        const src = this.ctx.createBufferSource();
+                        src.buffer = this.createNoiseBuffer('brown', dur);
+                        const flt = this.ctx.createBiquadFilter();
+                        flt.type = 'lowpass';
+                        flt.frequency.setValueAtTime(120, this.ctx.currentTime);
+
+                        const g = this.ctx.createGain();
+                        const now = this.ctx.currentTime;
+                        g.gain.setValueAtTime(0.01, now);
+                        g.gain.exponentialRampToValueAtTime(0.9, now + 0.6);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+                        src.connect(flt);
+                        flt.connect(g);
+                        g.connect(tGain);
+                        src.start(now);
+                        src.stop(now + dur);
+
+                        const nextInterval = (5 + Math.random() * 10) * 1000;
+                        setTimeout(triggerThunder, nextInterval);
+                    };
+                    triggerThunder();
+                    nodes.cleanup.push(() => { isAlive = false; });
+                    break;
+                }
+                case 'waves': {
+                    // Pink noise modulated by slow LFO
+                    const src = this.ctx.createBufferSource();
+                    src.buffer = this.createNoiseBuffer('pink', 8);
+                    src.loop = true;
+
+                    const flt = this.ctx.createBiquadFilter();
+                    flt.type = 'lowpass';
+                    flt.frequency.setValueAtTime(400, this.ctx.currentTime);
+
+                    const lfo = this.ctx.createOscillator();
+                    lfo.frequency.setValueAtTime(0.12, this.ctx.currentTime); // ~8 sec wave cycle
+                    const lfoGain = this.ctx.createGain();
+                    lfoGain.gain.setValueAtTime(300, this.ctx.currentTime);
+                    lfo.connect(flt.frequency);
+
+                    const ampLfoGain = this.ctx.createGain();
+                    ampLfoGain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+                    const waveAmp = this.ctx.createGain();
+                    waveAmp.gain.setValueAtTime(0.5, this.ctx.currentTime);
+
+                    src.connect(flt);
+                    flt.connect(waveAmp);
+                    waveAmp.connect(tGain);
+
+                    src.start();
+                    lfo.start();
+                    nodes.cleanup.push(() => { src.stop(); lfo.stop(); });
+                    break;
+                }
+                case 'forest': {
+                    // Soft breeze background + procedural bird chirps
+                    const src = this.ctx.createBufferSource();
+                    src.buffer = this.createNoiseBuffer('pink', 6);
+                    src.loop = true;
+                    const flt = this.ctx.createBiquadFilter();
+                    flt.type = 'bandpass';
+                    flt.frequency.setValueAtTime(600, this.ctx.currentTime);
+                    flt.Q.setValueAtTime(1.5, this.ctx.currentTime);
+
+                    const bgGain = this.ctx.createGain();
+                    bgGain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                    src.connect(flt);
+                    flt.connect(bgGain);
+                    bgGain.connect(tGain);
+                    src.start();
+
+                    let isAlive = true;
+                    const chirp = () => {
+                        if (!isAlive) return;
+                        const osc = this.ctx.createOscillator();
+                        const g = this.ctx.createGain();
+                        const now = this.ctx.currentTime;
+                        const baseFreq = 2600 + Math.random() * 1200;
+                        osc.frequency.setValueAtTime(baseFreq, now);
+                        osc.frequency.exponentialRampToValueAtTime(baseFreq + 800, now + 0.08);
+                        osc.frequency.exponentialRampToValueAtTime(baseFreq - 300, now + 0.18);
+
+                        g.gain.setValueAtTime(0.001, now);
+                        g.gain.linearRampToValueAtTime(0.18, now + 0.04);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+                        osc.connect(g);
+                        g.connect(tGain);
+                        osc.start(now);
+                        osc.stop(now + 0.2);
+
+                        const delay = (1.5 + Math.random() * 4) * 1000;
+                        setTimeout(chirp, delay);
+                    };
+                    setTimeout(chirp, 800);
+
+                    nodes.cleanup.push(() => { isAlive = false; src.stop(); });
+                    break;
+                }
+                case 'campfire': {
+                    // Low rumble + Poisson crackles
+                    const src = this.ctx.createBufferSource();
+                    src.buffer = this.createNoiseBuffer('brown', 6);
+                    src.loop = true;
+                    const flt = this.ctx.createBiquadFilter();
+                    flt.type = 'lowpass';
+                    flt.frequency.setValueAtTime(250, this.ctx.currentTime);
+                    const bgG = this.ctx.createGain();
+                    bgG.gain.setValueAtTime(0.35, this.ctx.currentTime);
+                    src.connect(flt);
+                    flt.connect(bgG);
+                    bgG.connect(tGain);
+                    src.start();
+
+                    let isAlive = true;
+                    const crackle = () => {
+                        if (!isAlive) return;
+                        const osc = this.ctx.createOscillator();
+                        osc.type = 'triangle';
+                        const g = this.ctx.createGain();
+                        const now = this.ctx.currentTime;
+                        osc.frequency.setValueAtTime(300 + Math.random() * 2000, now);
+                        g.gain.setValueAtTime(0.25 + Math.random() * 0.4, now);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
+
+                        osc.connect(g);
+                        g.connect(tGain);
+                        osc.start(now);
+                        osc.stop(now + 0.02);
+
+                        const next = (0.05 + Math.random() * 0.35) * 1000;
+                        setTimeout(crackle, next);
+                    };
+                    crackle();
+
+                    nodes.cleanup.push(() => { isAlive = false; src.stop(); });
+                    break;
+                }
+                case 'cafe': {
+                    // Dual resonant bandpass filters wandering frequencies (speech murmur)
+                    const src = this.ctx.createBufferSource();
+                    src.buffer = this.createNoiseBuffer('pink', 6);
+                    src.loop = true;
+                    const bp1 = this.ctx.createBiquadFilter();
+                    bp1.type = 'bandpass';
+                    bp1.frequency.setValueAtTime(500, this.ctx.currentTime);
+                    bp1.Q.setValueAtTime(4.0, this.ctx.currentTime);
+
+                    const bp2 = this.ctx.createBiquadFilter();
+                    bp2.type = 'bandpass';
+                    bp2.frequency.setValueAtTime(950, this.ctx.currentTime);
+                    bp2.Q.setValueAtTime(5.0, this.ctx.currentTime);
+
+                    src.connect(bp1);
+                    src.connect(bp2);
+                    bp1.connect(tGain);
+                    bp2.connect(tGain);
+                    src.start();
+                    nodes.cleanup.push(() => src.stop());
+                    break;
+                }
+                case 'wind': {
+                    // Resonant bandpass filter with sweeping center frequency
+                    const src = this.ctx.createBufferSource();
+                    src.buffer = this.createNoiseBuffer('pink', 8);
+                    src.loop = true;
+
+                    const flt = this.ctx.createBiquadFilter();
+                    flt.type = 'bandpass';
+                    flt.frequency.setValueAtTime(400, this.ctx.currentTime);
+                    flt.Q.setValueAtTime(3.5, this.ctx.currentTime);
+
+                    const lfo = this.ctx.createOscillator();
+                    lfo.frequency.setValueAtTime(0.18, this.ctx.currentTime);
+                    const lfoG = this.ctx.createGain();
+                    lfoG.gain.setValueAtTime(250, this.ctx.currentTime);
+                    lfo.connect(flt.frequency);
+
+                    src.connect(flt);
+                    flt.connect(tGain);
+                    src.start();
+                    lfo.start();
+                    nodes.cleanup.push(() => { src.stop(); lfo.stop(); });
+                    break;
+                }
+                case 'stream': {
+                    // White + Pink noise through bubbling bandpass
+                    const src = this.ctx.createBufferSource();
+                    src.buffer = this.createNoiseBuffer('white', 6);
+                    src.loop = true;
+
+                    const flt = this.ctx.createBiquadFilter();
+                    flt.type = 'bandpass';
+                    flt.frequency.setValueAtTime(1100, this.ctx.currentTime);
+                    flt.Q.setValueAtTime(2.0, this.ctx.currentTime);
+
+                    src.connect(flt);
+                    flt.connect(tGain);
+                    src.start();
+                    nodes.cleanup.push(() => src.stop());
+                    break;
+                }
+                case 'cicadas': {
+                    // Summer Night Cicadas: high resonant carrier + amplitude buzz
+                    const carrier = this.ctx.createOscillator();
+                    carrier.type = 'sine';
+                    carrier.frequency.setValueAtTime(4600, this.ctx.currentTime);
+
+                    const mod = this.ctx.createOscillator();
+                    mod.frequency.setValueAtTime(18, this.ctx.currentTime); // 18Hz flutter
+                    const modG = this.ctx.createGain();
+                    modG.gain.setValueAtTime(0.5, this.ctx.currentTime);
+
+                    const amGain = this.ctx.createGain();
+                    amGain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+
+                    mod.connect(amGain.gain);
+                    carrier.connect(amGain);
+                    amGain.connect(tGain);
+
+                    carrier.start();
+                    mod.start();
+                    nodes.cleanup.push(() => { carrier.stop(); mod.stop(); });
+                    break;
+                }
+                case 'clock': {
+                    // Rhythmic tick-tock impulses
+                    let isAlive = true;
+                    let tick = true;
+                    const doTick = () => {
+                        if (!isAlive) return;
+                        const osc = this.ctx.createOscillator();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(tick ? 1200 : 900, this.ctx.currentTime);
+                        const g = this.ctx.createGain();
+                        const now = this.ctx.currentTime;
+                        g.gain.setValueAtTime(0.3, now);
+                        g.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+
+                        osc.connect(g);
+                        g.connect(tGain);
+                        osc.start(now);
+                        osc.stop(now + 0.04);
+
+                        tick = !tick;
+                        setTimeout(doTick, 1000);
+                    };
+                    doTick();
+                    nodes.cleanup.push(() => { isAlive = false; });
+                    break;
+                }
+            }
+
+            this.sources[trackId] = nodes;
+        }
+
+        setTrackVolume(trackId, volumeFactor) {
+            if (this.sources[trackId] && this.sources[trackId].gain) {
+                this.sources[trackId].gain.gain.setValueAtTime(Math.max(0, Math.min(1, volumeFactor)), this.ctx.currentTime);
+            }
+        }
+
+        stopTrack(trackId) {
+            if (this.sources[trackId]) {
+                this.sources[trackId].cleanup.forEach(fn => fn());
+                delete this.sources[trackId];
+            }
+        }
+
+        setMasterVolume(val) {
+            if (this.masterGain && this.ctx) {
+                this.masterGain.gain.setValueAtTime(val, this.ctx.currentTime);
+            }
+        }
+
+        fadeMasterOut(durationSeconds = 60) {
+            if (this.masterGain && this.ctx) {
+                const now = this.ctx.currentTime;
+                this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+                this.masterGain.gain.exponentialRampToValueAtTime(0.0001, now + durationSeconds);
+            }
+        }
+    }
+
+    // ───────────────────────────────────────────────
+    // VUE 3 APPLICATION
+    // ───────────────────────────────────────────────
+    createApp({
+        setup() {
+            const engine = new ProceduralNoiseEngine();
+            const visCanvas = ref(null);
+            let animFrameId = null;
+
+            const isPlaying = ref(false);
+            const masterVolume = ref(70);
+            const sleepTimerMinutes = ref(0);
+            const countdownSeconds = ref(0);
+            let timerInterval = null;
+
+            const currentPresetName = ref('雨中木屋');
+            const saveCustomPresetDialog = ref(false);
+            const newPresetName = ref('');
+            const customPresets = ref([]);
+
+            const tracks = ref([
+                { id: 'rain', name: '淅沥雨声', desc: 'Rain', emoji: '🌧️', enabled: true, volume: 75 },
+                { id: 'thunder', name: '阵阵雷鸣', desc: 'Thunder', emoji: '⚡', enabled: true, volume: 45 },
+                { id: 'campfire', name: '林中篝火', desc: 'Campfire', emoji: '🔥', enabled: true, volume: 60 },
+                { id: 'wind', name: '山涧微风', desc: 'Wind', emoji: '🍃', enabled: false, volume: 40 },
+                { id: 'waves', name: '海浪拍岸', desc: 'Waves', emoji: '🌊', enabled: false, volume: 50 },
+                { id: 'forest', name: '森林鸟鸣', desc: 'Forest Birds', emoji: '🌲', enabled: false, volume: 65 },
+                { id: 'stream', name: '潺潺溪流', desc: 'Stream', emoji: '💧', enabled: false, volume: 55 },
+                { id: 'cafe', name: '咖啡馆漫语', desc: 'Cafe', emoji: '☕', enabled: false, volume: 50 },
+                { id: 'cicadas', name: '夏夜蝉鸣', desc: 'Summer Cicadas', emoji: '🌙', enabled: false, volume: 45 },
+                { id: 'clock', name: '复古时钟', desc: 'Clock Ticking', emoji: '⏱️', enabled: false, volume: 30 },
+                { id: 'pink', name: '柔和粉红噪音', desc: 'Pink Noise', emoji: '🌸', enabled: false, volume: 45 },
+                { id: 'white', name: '专注白噪音', desc: 'White Noise', emoji: '📻', enabled: false, volume: 35 },
+            ]);
+
+            const presetList = [
+                {
+                    name: '雨中木屋', emoji: '🌧️',
+                    levels: { rain: 80, thunder: 45, campfire: 65, wind: 30 }
+                },
+                {
+                    name: '深夜自习室', emoji: '📚',
+                    levels: { pink: 55, cafe: 40, clock: 35, rain: 20 }
+                },
+                {
+                    name: '森林漫步', emoji: '🌲',
+                    levels: { forest: 80, stream: 60, wind: 45 }
+                },
+                {
+                    name: '海岛度假之夜', emoji: '🏖️',
+                    levels: { waves: 85, wind: 35, cicadas: 40 }
+                },
+                {
+                    name: '午后街角咖啡厅', emoji: '☕',
+                    levels: { cafe: 80, rain: 30, white: 20 }
+                },
+                {
+                    name: '旷野星空露营', emoji: '⛺',
+                    levels: { campfire: 85, wind: 50, cicadas: 45, thunder: 15 }
+                },
+                {
+                    name: '深度助眠极简', emoji: '💤',
+                    levels: { pink: 70, waves: 45, stream: 30 }
+                }
+            ];
+
+            const activeTracksCount = computed(() => {
+                return tracks.value.filter(t => t.enabled).length;
+            });
+
+            const formattedCountdown = computed(() => {
+                const mins = Math.floor(countdownSeconds.value / 60);
+                const secs = countdownSeconds.value % 60;
+                return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            });
+
+            // Master volume & switches
+            function toggleMasterPlay() {
+                if (!isPlaying.value) {
+                    isPlaying.value = true;
+                    syncAllTracksWithEngine();
+                    startVisualizer();
+                } else {
+                    isPlaying.value = false;
+                    Object.keys(engine.sources).forEach(id => engine.stopTrack(id));
+                }
+            }
+
+            function updateMasterGain() {
+                engine.setMasterVolume(masterVolume.value / 100);
+            }
+
+            function onTrackToggle(track) {
+                if (!isPlaying.value) {
+                    isPlaying.value = true;
+                    syncAllTracksWithEngine();
+                    startVisualizer();
+                    return;
+                }
+                if (track.enabled) {
+                    engine.startTrack(track.id, (track.volume / 100) * (masterVolume.value / 100));
+                } else {
+                    engine.stopTrack(track.id);
+                }
+            }
+
+            function onTrackVolumeChange(track) {
+                if (track.enabled && isPlaying.value) {
+                    engine.setTrackVolume(track.id, track.volume / 100);
+                }
+            }
+
+            function syncAllTracksWithEngine() {
+                tracks.value.forEach(t => {
+                    if (t.enabled) {
+                        engine.startTrack(t.id, t.volume / 100);
+                    } else {
+                        engine.stopTrack(t.id);
+                    }
+                });
+                engine.setMasterVolume(masterVolume.value / 100);
+            }
+
+            function applyPreset(preset) {
+                currentPresetName.value = preset.name;
+                tracks.value.forEach(t => {
+                    if (preset.levels[t.id] !== undefined) {
+                        t.enabled = true;
+                        t.volume = preset.levels[t.id];
+                    } else {
+                        t.enabled = false;
+                    }
+                });
+                if (!isPlaying.value) {
+                    isPlaying.value = true;
+                    startVisualizer();
+                }
+                syncAllTracksWithEngine();
+                ElementPlus.ElMessage({ message: `已载入预设「${preset.name}」`, type: 'success' });
+            }
+
+            function randomizeMix() {
+                currentPresetName.value = '随机灵感';
+                const shuffled = [...tracks.value].sort(() => 0.5 - Math.random());
+                const pickCount = 2 + Math.floor(Math.random() * 3); // Pick 2~4 tracks
+                const pickedIds = new Set(shuffled.slice(0, pickCount).map(t => t.id));
+
+                tracks.value.forEach(t => {
+                    if (pickedIds.has(t.id)) {
+                        t.enabled = true;
+                        t.volume = 35 + Math.floor(Math.random() * 55);
+                    } else {
+                        t.enabled = false;
+                    }
+                });
+                if (!isPlaying.value) {
+                    isPlaying.value = true;
+                    startVisualizer();
+                }
+                syncAllTracksWithEngine();
+                ElementPlus.ElMessage({ message: `🎲 已随机生成舒适混音组合`, type: 'success' });
+            }
+
+            function resetAllTracks() {
+                currentPresetName.value = '';
+                tracks.value.forEach(t => {
+                    t.enabled = false;
+                    t.volume = 50;
+                });
+                if (isPlaying.value) {
+                    Object.keys(engine.sources).forEach(id => engine.stopTrack(id));
+                }
+                ElementPlus.ElMessage({ message: '已重置所有音轨', type: 'info' });
+            }
+
+            // Sleep Timer Logic
+            function setSleepTimer() {
+                if (timerInterval) clearInterval(timerInterval);
+                if (sleepTimerMinutes.value <= 0) {
+                    countdownSeconds.value = 0;
+                    return;
+                }
+                countdownSeconds.value = sleepTimerMinutes.value * 60;
+                timerInterval = setInterval(() => {
+                    countdownSeconds.value--;
+                    // Start fading out in last 60s
+                    if (countdownSeconds.value === 60) {
+                        engine.fadeMasterOut(60);
+                    }
+                    if (countdownSeconds.value <= 0) {
+                        clearInterval(timerInterval);
+                        isPlaying.value = false;
+                        Object.keys(engine.sources).forEach(id => engine.stopTrack(id));
+                        sleepTimerMinutes.value = 0;
+                        ElementPlus.ElMessage({ message: '💤 倒计时已结束，已为您平滑休眠停播', type: 'info' });
+                    }
+                }, 1000);
+            }
+
+            // Custom Presets LocalStorage
+            function loadCustomPresets() {
+                try {
+                    const data = localStorage.getItem('6767_white_noise_presets');
+                    if (data) customPresets.value = JSON.parse(data);
+                } catch (e) {}
+            }
+
+            function saveCustomPreset() {
+                if (!newPresetName.value.trim()) {
+                    ElementPlus.ElMessage.warning('请输入混音名称');
+                    return;
+                }
+                const currentLevels = {};
+                tracks.value.forEach(t => {
+                    if (t.enabled) currentLevels[t.id] = t.volume;
+                });
+                customPresets.value.push({
+                    name: newPresetName.value.trim(),
+                    levels: currentLevels
+                });
+                localStorage.setItem('6767_white_noise_presets', JSON.stringify(customPresets.value));
+                saveCustomPresetDialog.value = false;
+                newPresetName.value = '';
+                ElementPlus.ElMessage.success('自定义混音方案已保存到本地！');
+            }
+
+            function applyCustomPreset(preset) {
+                currentPresetName.value = preset.name;
+                tracks.value.forEach(t => {
+                    if (preset.levels[t.id] !== undefined) {
+                        t.enabled = true;
+                        t.volume = preset.levels[t.id];
+                    } else {
+                        t.enabled = false;
+                    }
+                });
+                if (!isPlaying.value) {
+                    isPlaying.value = true;
+                    startVisualizer();
+                }
+                syncAllTracksWithEngine();
+                ElementPlus.ElMessage.success(`已载入自定义方案「${preset.name}」`);
+            }
+
+            function deleteCustomPreset(index) {
+                customPresets.value.splice(index, 1);
+                localStorage.setItem('6767_white_noise_presets', JSON.stringify(customPresets.value));
+            }
+
+            // Real-time Canvas Spectrum Visualizer
+            function startVisualizer() {
+                if (!visCanvas.value) return;
+                const canvas = visCanvas.value;
+                const ctx = canvas.getContext('2d');
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = canvas.clientWidth * dpr;
+                canvas.height = canvas.clientHeight * dpr;
+
+                const bufferLength = engine.analyser ? engine.analyser.frequencyBinCount : 32;
+                const dataArray = new Uint8Array(bufferLength);
+
+                const render = () => {
+                    if (!isPlaying.value) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        return;
+                    }
+                    animFrameId = requestAnimationFrame(render);
+                    if (engine.analyser) {
+                        engine.analyser.getByteFrequencyData(dataArray);
+                    }
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    const barWidth = (canvas.width / bufferLength) * 1.5;
+                    let x = 0;
+
+                    for (let i = 0; i < bufferLength; i++) {
+                        const barHeight = (dataArray[i] / 255) * canvas.height;
+                        const grad = ctx.createLinearGradient(0, canvas.height, 0, 0);
+                        grad.addColorStop(0, '#06b6d4');
+                        grad.addColorStop(1, '#34d399');
+
+                        ctx.fillStyle = grad;
+                        ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+                        x += barWidth;
+                    }
+                };
+                render();
+            }
+
+            onMounted(() => {
+                loadCustomPresets();
+                // Set initial default preset (Rain in Cabin)
+                const defaultPreset = presetList[0];
+                tracks.value.forEach(t => {
+                    if (defaultPreset.levels[t.id] !== undefined) {
+                        t.enabled = true;
+                        t.volume = defaultPreset.levels[t.id];
+                    } else {
+                        t.enabled = false;
+                    }
+                });
+            });
+
+            onUnmounted(() => {
+                if (animFrameId) cancelAnimationFrame(animFrameId);
+                if (timerInterval) clearInterval(timerInterval);
+                if (engine.ctx) engine.ctx.close();
+            });
+
+            return {
+                visCanvas,
+                isPlaying,
+                masterVolume,
+                sleepTimerMinutes,
+                countdownSeconds,
+                formattedCountdown,
+                tracks,
+                activeTracksCount,
+                currentPresetName,
+                presetList,
+                customPresets,
+                saveCustomPresetDialog,
+                newPresetName,
+                toggleMasterPlay,
+                updateMasterGain,
+                onTrackToggle,
+                onTrackVolumeChange,
+                applyPreset,
+                randomizeMix,
+                resetAllTracks,
+                setSleepTimer,
+                saveCustomPreset,
+                applyCustomPreset,
+                deleteCustomPreset
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

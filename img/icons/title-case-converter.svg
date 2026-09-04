@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-titlecase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#4a044e"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-titlecase)" stroke="#a855f7" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <!-- Capital 'T' (Left) -->
+  <path d="M9 20 L24 20 M16.5 20 L16.5 36" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Lowercase 't' (Right) -->
+  <path d="M31 18 L31 33.5 C31 35.5 32.5 36.5 34.5 36" fill="none" stroke="#38bdf8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M27.5 23.5 L34.5 23.5" stroke="#38bdf8" stroke-width="2.6" stroke-linecap="round"/>
+
+  <!-- Royal Crown atop Capital 'T' -->
+  <path d="M10.5 17 L12.5 10 L16.5 13 L20.5 10 L22.5 17 Z" fill="#fbbf24" stroke="#f59e0b" stroke-width="1.2" stroke-linejoin="round"/>
+  <circle cx="12.5" cy="9.8" r="0.9" fill="#ffffff"/>
+  <circle cx="16.5" cy="12.8" r="0.9" fill="#ffffff"/>
+  <circle cx="20.5" cy="9.8" r="0.9" fill="#ffffff"/>
+
+  <!-- Baseline Title Bar -->
+  <path d="M9 39 L38 39" stroke="#a855f7" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+</svg>

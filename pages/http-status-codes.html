@@ -1,0 +1,995 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>HTTP 状态码速查与排错全书 - 在线工具</title>
+    <meta name="description" content="全量收录 1xx~5xx 60+ 个 RFC 官方及主流拓展 HTTP 状态码，提供中文权威释义、底层原理、高频触发场景与运维开发排错 Checklist 检查清单。" />
+    <meta name="keywords" content="HTTP状态码大全,HTTP 404,HTTP 502,HTTP 504,HTTP 403,HTTP 401,HTTP 301,HTTP 302,HTTP状态码速查,网络排错指南,RFC 7231" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .status-category-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .code-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 14px;
+            margin-top: 14px;
+        }
+        .status-card {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .status-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(56, 189, 248, 0.6);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            background: #0f1c33;
+        }
+        .status-card.is-favorite {
+            border-left: 4px solid #f59e0b;
+        }
+
+        /* Color-coded Status Badges */
+        .badge-1xx { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
+        .badge-2xx { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.35); }
+        .badge-3xx { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); }
+        .badge-4xx { background: rgba(251, 113, 133, 0.15); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.35); }
+        .badge-5xx { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .code-number {
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .code-name-en {
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+        }
+        .code-name-zh {
+            font-size: 0.82rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+        .code-desc {
+            font-size: 0.76rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(51, 65, 85, 0.5);
+            padding-top: 8px;
+            font-size: 0.72rem;
+            color: #64748b;
+            font-family: ui-monospace, monospace;
+        }
+
+        /* Detail Drawer & Modal */
+        .drawer-detail {
+            font-family: system-ui, -apple-system, sans-serif;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        .detail-section {
+            background: #090f1d;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+        .detail-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+        .check-icon {
+            color: #34d399;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="HTTP 状态码速查与排错全书 - 在线工具" />
+    <meta property="og:description" content="全量收录 1xx~5xx 60+ 个 HTTP 状态码，提供中文权威释义、底层原理与运维排错 Checklist。" />
+    <meta property="og:url" content="https://tool.6767.chat/http-status-codes" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HTTP 状态码速查与排错全书 - 在线工具" />
+    <meta name="twitter:description" content="全量收录 1xx~5xx 60+ 个 HTTP 状态码，提供中文权威释义、底层原理与运维排错 Checklist。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/http-status-codes" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 标准顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">HTTP 状态码速查与排错全书</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">HTTP 状态码速查与排错全书 (HTTP Status Encyclopedia)</h1>
+                </div>
+                <div class="description">
+                    现代 Web 架构与网络排错必备参考：全量收录 60+ 个 RFC 官方标准与常见非标准 HTTP 状态响应码。提供底层通信机制、高频故障触发场景（如 Nginx 502/504、CORS 403、Token 401 等）、开发者与 DevOps 运维排查 CheckList 及一键收藏检索。
+                </div>
+
+                <!-- 顶层搜索与分类过滤器 -->
+                <div class="status-category-bar">
+                    <el-input
+                        v-model="searchKeyword"
+                        placeholder="搜索状态码 / 英文 / 中文 / 场景 (如: 502, nginx, token, 跨域, 重定向)..."
+                        prefix-icon="el-icon-search"
+                        clearable
+                        style="max-width: 420px;"
+                    ></el-input>
+
+                    <el-radio-group v-model="selectedCategory" size="small">
+                        <el-radio-button label="all">全部 ({{ allCodes.length }})</el-radio-button>
+                        <el-radio-button label="1xx">1xx 信息响应</el-radio-button>
+                        <el-radio-button label="2xx">2xx 成功响应</el-radio-button>
+                        <el-radio-button label="3xx">3xx 重定向</el-radio-button>
+                        <el-radio-button label="4xx">4xx 客户端错误</el-radio-button>
+                        <el-radio-button label="5xx">5xx 服务端错误</el-radio-button>
+                        <el-radio-button label="fav">我的收藏 ({{ favoriteCodes.length }})</el-radio-button>
+                    </el-radio-group>
+
+                    <div style="margin-left: auto; display: flex; gap: 8px;">
+                        <el-button size="small" type="info" plain @click="openDecisionHelper">状态码决策选型助手</el-button>
+                        <el-button size="small" type="success" plain @click="exportAllCheatsheet">导出速查清单</el-button>
+                    </div>
+                </div>
+
+                <!-- 状态码卡片列表 -->
+                <div class="code-grid">
+                    <div
+                        v-for="item in filteredCodes"
+                        :key="item.code"
+                        class="status-card"
+                        :class="{'is-favorite': isFavorite(item.code)}"
+                        @click="openDetail(item)"
+                    >
+                        <div>
+                            <div class="card-top">
+                                <span :class="['code-number', getCategoryBadgeClass(item.code)]">{{ item.code }}</span>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="type-badge" style="background: rgba(148, 163, 184, 0.15); color: #94a3b8; font-size: 0.68rem;">{{ item.rfc }}</span>
+                                    <el-button
+                                        size="small"
+                                        type="text"
+                                        :style="{color: isFavorite(item.code) ? '#f59e0b' : '#64748b'}"
+                                        @click.stop="toggleFavorite(item.code)"
+                                    >
+                                        {{ isFavorite(item.code) ? '★' : '☆' }}
+                                    </el-button>
+                                </div>
+                            </div>
+
+                            <div class="code-name-en">{{ item.nameEn }}</div>
+                            <div class="code-name-zh">{{ item.nameZh }}</div>
+                            <div class="code-desc">{{ item.summary }}</div>
+                        </div>
+
+                        <div class="card-footer">
+                            <span>场景: {{ item.tags[0] || 'Web API' }}</span>
+                            <span style="color: #38bdf8;">查看排错详情 ➔</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="filteredCodes.length === 0" style="text-align: center; padding: 40px; color: #64748b;">
+                    未匹配到符合条件的状态码，换个关键词搜搜看吧。
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 状态码详细排错与诊断抽屉 (Drawer) -->
+    <el-drawer
+        v-model="drawerVisible"
+        size="640px"
+        :title="currentDetail ? (currentDetail.code + ' ' + currentDetail.nameEn + ' (' + currentDetail.nameZh + ')') : ''"
+        direction="rtl"
+        custom-class="dark-drawer"
+    >
+        <div v-if="currentDetail" class="drawer-detail">
+            <!-- 头部基本属性 -->
+            <div class="detail-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span :class="['code-number', getCategoryBadgeClass(currentDetail.code)]">{{ currentDetail.code }}</span>
+                    <div style="display: flex; gap: 6px;">
+                        <el-button size="small" type="primary" plain @click="copyCodeSummary(currentDetail)">复制规范说明</el-button>
+                        <el-button size="small" :type="isFavorite(currentDetail.code) ? 'warning' : 'info'" plain @click="toggleFavorite(currentDetail.code)">
+                            {{ isFavorite(currentDetail.code) ? '已收藏 ★' : '收藏 ☆' }}
+                        </el-button>
+                    </div>
+                </div>
+                <div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 6px;"><strong>中文释义：</strong>{{ currentDetail.nameZh }}</div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 6px;"><strong>标准规范：</strong>{{ currentDetail.rfc }}</div>
+                <div style="font-size: 0.85rem; color: #94a3b8;"><strong>缓存语义：</strong>{{ currentDetail.cacheable ? '默认支持/可协商缓存 (Cacheable)' : '默认不缓存 (Non-cacheable)' }}</div>
+            </div>
+
+            <!-- 深度原理解析 -->
+            <div class="detail-section">
+                <div class="detail-title">📘 协议机制与原理解析</div>
+                <div style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.6;">{{ currentDetail.detail }}</div>
+            </div>
+
+            <!-- 高频触发场景 -->
+            <div class="detail-section">
+                <div class="detail-title">⚡ 常见触发场景</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;">
+                    <span v-for="tag in currentDetail.tags" :key="tag" class="type-badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">{{ tag }}</span>
+                </div>
+                <div style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.6;">{{ currentDetail.scenarios }}</div>
+            </div>
+
+            <!-- DevOps / 开发者排错 CheckList -->
+            <div class="detail-section" style="border-color: rgba(52, 211, 153, 0.4);">
+                <div class="detail-title" style="color: #34d399;">🛠️ 排错检查清单与解决建议 (CheckList)</div>
+                <div class="checklist-item" v-for="(tip, tIdx) in currentDetail.troubleshooting" :key="'tip-'+tIdx">
+                    <span class="check-icon">✓</span>
+                    <span>{{ tip }}</span>
+                </div>
+            </div>
+
+            <!-- 典型响应头示例 -->
+            <div class="detail-section" v-if="currentDetail.headersExample">
+                <div class="detail-title" style="color: #fbbf24;">📋 推荐返回响应头示例</div>
+                <pre style="background: #060b14; border: 1px solid rgba(51, 65, 85, 0.5); padding: 10px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #38bdf8; overflow-x: auto;">{{ currentDetail.headersExample }}</pre>
+            </div>
+        </div>
+    </el-drawer>
+
+    <!-- 状态码决策选型对话框 -->
+    <el-dialog
+        v-model="decisionModalVisible"
+        title="HTTP 状态码快速决策与选型助手"
+        width="600px"
+        custom-class="dark-dialog"
+    >
+        <div style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;">
+            <div style="margin-bottom: 12px; font-weight: 600; color: #38bdf8;">回答以下问题，快速确定你该返回什么 HTTP 状态码：</div>
+            <div style="background: #090f1d; padding: 14px; border-radius: 6px; border: 1px solid rgba(51, 65, 85, 0.6); margin-bottom: 12px;">
+                <label style="display: block; margin-bottom: 6px; color: #94a3b8;">1. 请求是否成功执行并返回了资源？</label>
+                <el-radio-group v-model="decisionState.success" size="small">
+                    <el-radio label="yes">是 (成功)</el-radio>
+                    <el-radio label="redirect">需要重定向</el-radio>
+                    <el-radio label="client_err">客户端错误 (4xx)</el-radio>
+                    <el-radio label="server_err">服务端故障 (5xx)</el-radio>
+                </el-radio-group>
+            </div>
+
+            <div v-if="decisionState.success === 'yes'" style="background: #090f1d; padding: 14px; border-radius: 6px; border: 1px solid rgba(51, 65, 85, 0.6); margin-bottom: 12px;">
+                <label style="display: block; margin-bottom: 6px; color: #94a3b8;">2. 成功的具体动作是？</label>
+                <el-radio-group v-model="decisionState.successDetail" size="small">
+                    <el-radio label="200">常规查询/更新成功 (200 OK)</el-radio>
+                    <el-radio label="201">成功新建了资源 (201 Created)</el-radio>
+                    <el-radio label="204">成功但无需返回内容 (204 No Content)</el-radio>
+                    <el-radio label="202">已接受任务进入异步队列 (202 Accepted)</el-radio>
+                </el-radio-group>
+            </div>
+
+            <div v-if="decisionState.success === 'client_err'" style="background: #090f1d; padding: 14px; border-radius: 6px; border: 1px solid rgba(51, 65, 85, 0.6); margin-bottom: 12px;">
+                <label style="display: block; margin-bottom: 6px; color: #94a3b8;">2. 客户端错误的原因是？</label>
+                <el-radio-group v-model="decisionState.clientDetail" size="small">
+                    <el-radio label="401">未登录 / 缺少 Token / Token 过期 (401 Unauthorized)</el-radio>
+                    <el-radio label="403">已登录但无此权限 / CORS 拦截 (403 Forbidden)</el-radio>
+                    <el-radio label="404">找不到该 URL 或资源 (404 Not Found)</el-radio>
+                    <el-radio label="400">参数校验不合法 / JSON 语法错 (400 Bad Request)</el-radio>
+                    <el-radio label="429">触发限流 / 请求频次过高 (429 Too Many Requests)</el-radio>
+                </el-radio-group>
+            </div>
+
+            <div v-if="recommendedCode" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 6px; padding: 12px;">
+                <div style="font-weight: 700; color: #34d399; margin-bottom: 4px;">推荐使用的状态码：HTTP {{ recommendedCode.code }} {{ recommendedCode.nameEn }}</div>
+                <div style="font-size: 0.78rem; color: #e2e8f0;">{{ recommendedCode.summary }}</div>
+            </div>
+        </div>
+    </el-dialog>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+    const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+    const HTTP_STATUS_DATABASE = [
+        // 1xx
+        {
+            code: 100, nameEn: "Continue", nameZh: "继续发送请求",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "客户端应继续发送其请求的其余部分，或在请求已经完成时忽略此响应。",
+            detail: "通常用于客户端在发送包含大量 Body 数据的 POST/PUT 请求之前，先在请求头中附带 Expect: 100-continue，服务端校验 Header 合格后回复 100，客户端再开始上传实际 Body，从而避免无意义的大文件传输浪费。",
+            tags: ["大文件上传", "Expect 请求头", "握手探测"],
+            scenarios: "HTTP 客户端分段上传文件时的大包前置探测。",
+            troubleshooting: [
+                "检查客户端是否正确发送了 'Expect: 100-continue' 请求头。",
+                "确认反向代理服务器 (如 Nginx) 是否支持并透传了 Expect 标头。",
+                "服务端若不接受该请求，应直接回复 417 Expectation Failed 或 413 Payload Too Large 而非 100。"
+            ],
+            headersExample: "HTTP/1.1 100 Continue"
+        },
+        {
+            code: 101, nameEn: "Switching Protocols", nameZh: "切换协议",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "服务端已同意按照客户端的 Upgrade 请求头切换通信协议（如 WebSocket 升级）。",
+            detail: "客户端在 HTTP 请求中发送 'Upgrade: websocket' 及 'Connection: Upgrade'，服务端如果支持该协议，返回 101 状态码，随后原本的 HTTP TCP 连接将切换为 WebSocket 双向二进制全双工通道。",
+            tags: ["WebSocket", "协议升级", "长连接"],
+            scenarios: "WebSocket 握手连接升级，或 HTTP/1.1 升级为 HTTP/2 清晰明文 (h2c)。",
+            troubleshooting: [
+                "检查 Nginx 配置中是否配置了 proxy_set_header Upgrade $http_upgrade 与 proxy_set_header Connection 'upgrade'。",
+                "确认客户端握手包中包含了有效的 Sec-WebSocket-Key 与 Sec-WebSocket-Version。"
+            ],
+            headersExample: "HTTP/1.1 101 Switching Protocols\nUpgrade: websocket\nConnection: Upgrade\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo="
+        },
+        {
+            code: 102, nameEn: "Processing", nameZh: "正在处理中",
+            rfc: "RFC 2518 (WebDAV)", cacheable: false,
+            summary: "WebDAV 状态码：服务器已收到并正在处理请求，但目前尚无可用响应，用于防止客户端超时。",
+            detail: "当服务器执行某些非常耗时的后端批量操作（如深度 WebDAV 树复制）时，先发送 102 响应通知客户端重置其超时计时器。",
+            tags: ["WebDAV", "异步长任务", "防超时"],
+            scenarios: "复杂的 WebDAV 资源目录批量移动或深度文件树分析。",
+            troubleshooting: [
+                "现代 RESTful 异步 API 通常更推荐使用 202 Accepted 配合轮询任务 ID 状态接口，而非 102。"
+            ]
+        },
+        {
+            code: 103, nameEn: "Early Hints", nameZh: "尽早提示",
+            rfc: "RFC 8297", cacheable: false,
+            summary: "在最终的 HTTP 响应头生成之前返回关键的 Link preload 标头，让浏览器提前加载核心 CSS/JS 资源。",
+            detail: "服务端在查询数据库或渲染模板时，可以先发出 103 响应，附带 Link: </style.css>; rel=preload，浏览器收到后立即并发下载样式和脚本，显著降低 FCP 与 LCP 时间。",
+            tags: ["首屏加速", "Link Preload", "性能优化"],
+            scenarios: "大型 SSR 前端渲染服务、CDN 边缘预加载加速。",
+            troubleshooting: [
+                "检查 CDN 供应商（如 Cloudflare, 阿里云 DCDN）是否开启了 103 Early Hints 支持。",
+                "确保浏览器端支持 103 响应并在收到后正常发起预加载。"
+            ],
+            headersExample: "HTTP/1.1 103 Early Hints\nLink: </app.css>; rel=preload; as=style\nLink: </main.js>; rel=preload; as=script"
+        },
+
+        // 2xx
+        {
+            code: 200, nameEn: "OK", nameZh: "请求成功",
+            rfc: "RFC 7231", cacheable: true,
+            summary: "请求已成功处理，返回的数据取决于请求所使用的方法（GET 返回实体，POST 返回处理结果）。",
+            detail: "Web 世界中最普遍的状态码。GET 请求返回所请求的资源实体；POST 请求返回动作的描述或结果；HEAD 请求返回与 GET 相同的标头但不返回 Body。",
+            tags: ["标准成功", "RESTful", "通用响应"],
+            scenarios: "常规页面渲染、数据查询 API、成功更新并返回新对象等。",
+            troubleshooting: [
+                "确保响应头中的 Content-Type（如 application/json; charset=utf-8）与实际返回数据完全一致。",
+                "如果用于增删改操作但无任何 Body 返回，建议规范使用 204 No Content 而非空 200。"
+            ],
+            headersExample: "HTTP/1.1 200 OK\nContent-Type: application/json; charset=utf-8\nContent-Length: 42"
+        },
+        {
+            code: 201, nameEn: "Created", nameZh: "资源创建成功",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "请求已成功且在服务端创建了一个或多个全新资源，响应头通常应包含 Location 指向新资源 URI。",
+            detail: "严格的 RESTful 接口规范：POST /api/users 创建用户成功后，应返回 201 Created，并在 Location 响应头中附带新用户的完整路径 /api/users/12345。",
+            tags: ["RESTful", "资源创建", "Location 头"],
+            scenarios: "用户注册、文件上传新建、订单创建、新建文章等。",
+            troubleshooting: [
+                "建议在响应头中提供 Location: /resource/id 指向新建资源的唯一定位符。",
+                "响应体中可返回新建实体的完整 JSON 表示或其唯一主键 ID。"
+            ],
+            headersExample: "HTTP/1.1 201 Created\nLocation: /api/v1/orders/ORD-2026-9812\nContent-Type: application/json"
+        },
+        {
+            code: 202, nameEn: "Accepted", nameZh: "已接受处理 (异步)",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "服务器已接收请求并加入处理队列，但处理尚未完成，甚至可能最终处理失败。",
+            detail: "用于异步长任务（如视频转码、报表生成、大数据批处理、发送群发邮件）。请求并非立刻得到最终结果，通常返回任务 ID，客户端后续通过 GET /tasks/{id} 轮询进度。",
+            tags: ["异步任务", "消息队列", "长耗时操作"],
+            scenarios: "视频格式转码、AI 模型异步推理、数据库批量导入导出。",
+            troubleshooting: [
+                "返回体中应明确提供 taskId、taskStatus 及用于查询任务状态的 pollingUrl。",
+                "可结合 Retry-After 响应头告知客户端建议的下次轮询间隔时间（秒）。"
+            ],
+            headersExample: "HTTP/1.1 202 Accepted\nLocation: /api/v1/tasks/task-998877\nRetry-After: 10"
+        },
+        {
+            code: 204, nameEn: "No Content", nameZh: "无内容 (成功)",
+            rfc: "RFC 7231", cacheable: true,
+            summary: "服务器成功处理了请求，但不需要返回任何实体内容 Body，浏览器无需刷新或离开当前页面。",
+            detail: "常用于 DELETE 操作（删除成功后无需返回数据）、或某些仅需要发送心跳/统计日志的 POST 请求（如 navigator.sendBeacon）。必须不能包含 Message Body！",
+            tags: ["DELETE 操作", "无响应体", "埋点统计"],
+            scenarios: "删除用户 DELETE /users/12、保存草稿、心跳 Ping-Pong 响应、CORS 预检响应。",
+            troubleshooting: [
+                "绝对不能在 204 响应中发送 Content-Length > 0 或传输 Body，否则部分严格客户端或代理会报错挂起。",
+                "常用于 OPTIONS 预检请求的成功返回。"
+            ],
+            headersExample: "HTTP/1.1 204 No Content\nDate: Mon, 31 Aug 2026 00:00:00 GMT"
+        },
+        {
+            code: 206, nameEn: "Partial Content", nameZh: "部分内容 (分段/断点续传)",
+            rfc: "RFC 7233", cacheable: true,
+            summary: "服务器成功处理了客户端带有 Range 标头的范围请求，仅返回资源的部分字节。",
+            detail: "广泛用于音视频在线播放流（流式边播边缓冲）以及大文件分片下载/断点续传。响应必须包含 Content-Range 标头指明当前分片在总资源中的字节区间（如 bytes 0-1023/5000000）。",
+            tags: ["视频播放", "断点续传", "Range 范围请求"],
+            scenarios: "HTML5 <video> 标签播放 mp4 视频、多线程分块加速下载、断点续传工具。",
+            troubleshooting: [
+                "检查服务端响应是否包含了正确的 'Content-Range: bytes 0-1023/204800' 与 'Accept-Ranges: bytes'。",
+                "如果客户端请求的 Range 范围无效，应返回 416 Range Not Satisfiable。"
+            ],
+            headersExample: "HTTP/1.1 206 Partial Content\nContent-Range: bytes 0-1048575/10485760\nContent-Length: 1048576\nContent-Type: video/mp4"
+        },
+
+        // 3xx
+        {
+            code: 301, nameEn: "Moved Permanently", nameZh: "永久重定向",
+            rfc: "RFC 7231", cacheable: true,
+            summary: "请求的资源已被永久移动到 Location 标头指定的新 URI，搜索引擎会同步转移 SEO 权重。",
+            detail: "永久重定向会被浏览器强缓存，后续请求甚至不经过服务器直接重定向。历史上许多浏览器会错误地将 POST 请求自动变更为 GET 请求跳转新地址。",
+            tags: ["永久重定向", "SEO 权重传递", "HTTPS 强制跳转"],
+            scenarios: "网站更换主域名、HTTP 强制永久跳转 HTTPS、URL 目录永久迁移。",
+            troubleshooting: [
+                "必须在响应头中提供 'Location: https://new-domain.com/path'。",
+                "如果需要强制客户端在重定向后保持原有的 POST/PUT 方法和请求体不变，请改用 308 Permanent Redirect！",
+                "注意浏览器对 301 的强缓存特性，测试时若配置错误可能需要清理浏览器缓存。"
+            ],
+            headersExample: "HTTP/1.1 301 Moved Permanently\nLocation: https://example.com/new-path\nCache-Control: max-age=31536000"
+        },
+        {
+            code: 302, nameEn: "Found (Moved Temporarily)", nameZh: "临时重定向",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "请求的资源临时位于新的 URI，但未来仍可能恢复，搜索引擎不会迁移权重。",
+            detail: "临时跳转，默认不会被浏览器缓存。与 301 类似，历史上很多客户端在重定向时会将 POST 误改为 GET。若需严格保持 Method，推荐使用 307 Temporary Redirect。",
+            tags: ["临时重定向", "登录拦截跳转", "活动临时页"],
+            scenarios: "未登录拦截重定向至 /login 页面、维护期临时跳转到维护页、短链分发。",
+            troubleshooting: [
+                "确保 Location 响应头指向正确的完整 URL 或相对路径。",
+                "若要求重定向后必须用 GET 加载新页面（如 POST 提交表单后跳转结果页），推荐使用 303 See Other。"
+            ],
+            headersExample: "HTTP/1.1 302 Found\nLocation: https://example.com/login?redirect=/dashboard"
+        },
+        {
+            code: 303, nameEn: "See Other", nameZh: "查看其他位置 (强制 GET)",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "指示客户端必须使用 GET 方法访问 Location 中指定的另一个 URI 来获取响应。",
+            detail: "经典用于 Post/Redirect/Get (PRG) 模式：防止用户在提交 POST 表单后误按 F5 刷新页面导致重复提交订单或扣款，服务端处理完 POST 后返回 303 让浏览器以 GET 方式跳转至订单详情页。",
+            tags: ["PRG 模式", "防表单重复提交", "强制 GET"],
+            scenarios: "电商支付表单提交后跳转支付成功页面、文件上传成功后重定向查看结果。",
+            troubleshooting: [
+                "确保响应头包含 Location 字段。",
+                "明确此状态码会强制客户端将后续请求转换为 GET 请求。"
+            ]
+        },
+        {
+            code: 304, nameEn: "Not Modified", nameZh: "资源未修改 (协商缓存命中)",
+            rfc: "RFC 7232", cacheable: true,
+            summary: "协商缓存有效：目标资源自客户端上次请求后未发生任何改变，客户端可直接使用其本地缓存副本。",
+            detail: "客户端发送带有 If-None-Match (ETag) 或 If-Modified-Since 的条件请求，服务器校验后发现资源未变更，返回 304 且不包含 Message Body，极大节约网络带宽并缩短加载耗时。",
+            tags: ["协商缓存", "ETag", "If-Modified-Since", "性能优化"],
+            scenarios: "静态资源 (CSS/JS/图片) 缓存校验、API 结果缓存加速。",
+            troubleshooting: [
+                "304 响应必须包含 ETag、Cache-Control 等关键元数据标头，但绝不能传输 Body。",
+                "排查若未命中 304，检查服务端 ETag 算法是否发生漂移，或反向代理是否过滤了 If-None-Match 标头。"
+            ],
+            headersExample: "HTTP/1.1 304 Not Modified\nETag: \"68b329da9893e34099c7d8ad5cb9c940\"\nCache-Control: public, max-age=3600"
+        },
+        {
+            code: 307, nameEn: "Temporary Redirect", nameZh: "临时重定向 (保持 Method)",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "临时重定向，且严格要求客户端在重定向请求中必须保留原有的 HTTP 方法 (Method) 和请求体 (Body)。",
+            detail: "解决 302 历史遗留问题（302 会被浏览器将 POST 自动变成 GET）。如果发起的是 POST /api/v1/data，收到 307 后，客户端必须依然以 POST 方法和相同的 Body 重新请求新地址。",
+            tags: ["保持 POST", "严格重定向", "API 转发"],
+            scenarios: "微服务网关路由转发、RESTful API 临时重定向维护。",
+            troubleshooting: [
+                "确保客户端在收到 307 后未丢失 POST Body 数据或授权 Header。"
+            ]
+        },
+        {
+            code: 308, nameEn: "Permanent Redirect", nameZh: "永久重定向 (保持 Method)",
+            rfc: "RFC 7538", cacheable: true,
+            summary: "永久重定向，且严格要求客户端在后续所有重定向请求中保持原有的 HTTP 方法和 Body 不变。",
+            detail: "301 的现代标准升级版。用于永久变更 API 端点时，确保跨域或表单 POST/PUT/DELETE 请求不会因重定向而降级为 GET 请求。",
+            tags: ["永久重定向", "保持 POST", "现代化 API 迁移"],
+            scenarios: "REST API 端点规范化升级、域名全量 HTTPS 永久重定向并保障 API POST 请求不损坏。",
+            troubleshooting: [
+                "注意 308 具有永久强缓存特性，若后续路径变更可能需要客户端彻底刷新。"
+            ]
+        },
+
+        // 4xx
+        {
+            code: 400, nameEn: "Bad Request", nameZh: "错误请求 (语法/参数无效)",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "由于客户端发送的请求语法有误、格式非法或参数缺失，导致服务器无法解析或拒绝处理。",
+            detail: "最常见的客户端错误之一。通常由于 JSON 解析失败、必填参数未传递、数据类型不匹配（如字符串传给了整数字段）、或请求头格式损坏引起。",
+            tags: ["参数校验失败", "JSON 语法错误", "DTO 验证"],
+            scenarios: "Spring Boot @Valid 校验不通过、FastAPI Pydantic 数据验证失败、JSON 格式少逗号或括号。",
+            troubleshooting: [
+                "检查前端传递的 Content-Type 是否为 application/json，且 JSON.stringify 是否完好。",
+                "比对后端接口文档，核对必填参数字段名拼写（如 userId 误写为 userid）及数据类型。",
+                "服务端应在响应 Body 中返回具体的字段错误原因明细（如 {\"field\": \"age\", \"error\": \"must be > 0\"}）。"
+            ]
+        },
+        {
+            code: 401, nameEn: "Unauthorized", nameZh: "未授权 (需要身份凭证)",
+            rfc: "RFC 7235", cacheable: false,
+            summary: "请求要求进行身份验证，客户端未提供有效凭证、凭证已过期 (Token Expired) 或签名无效。",
+            detail: "虽然名字叫 Unauthorized，但其实质含义是 'Unauthenticated'（未认证）。服务端回复 401 时规范上应在响应头中包含 WWW-Authenticate 标头指明支持的认证方案（如 Bearer 或 Basic）。",
+            tags: ["JWT 过期", "未登录", "Bearer Token", "身份鉴权"],
+            scenarios: "JWT Access Token 过期、请求未带 Authorization 请求头、API Key 填写错误。",
+            troubleshooting: [
+                "检查请求头中是否正确附带了 'Authorization: Bearer <your-token>'。",
+                "前端 Axios 拦截器应捕获 401 并尝试通过 Refresh Token 换取新令牌或跳转登录页。",
+                "确认服务端密钥配置是否正确，排查 Token 是否因时钟不同步 (Clock Skew) 被判定已过期。"
+            ],
+            headersExample: "HTTP/1.1 401 Unauthorized\nWWW-Authenticate: Bearer realm=\"api\", error=\"invalid_token\", error_description=\"The access token expired\""
+        },
+        {
+            code: 403, nameEn: "Forbidden", nameZh: "禁止访问 (权限不足/被拒绝)",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "服务器已理解请求且身份已识别，但明确拒绝授权该用户访问当前资源，登录也不会改变这一结果。",
+            detail: "与 401 的核心区别：401 代表未登录或凭证无效；403 代表已经登录（知道你是谁），但你没有操作该资源的权限（如普通员工尝试访问管理后台、跨租户越权），或者由于 CORS、IP 黑名单被 WAF/Nginx 拒绝。",
+            tags: ["RBAC 权限不足", "CORS 跨域拦截", "Nginx deny", "WAF 拦截"],
+            scenarios: "无管理员权限访问 /admin、CORS 预检 Origin 不在白名单、IP 命中防火墙黑名单、防盗链拦截。",
+            troubleshooting: [
+                "检查用户的角色与权限列表 (RBAC/ABAC)，确认是否缺少对应操作权限。",
+                "若由跨域引起，排查后端 CORS 配置是否允许了当前的 Origin 与 Headers。",
+                "检查 Nginx 配置是否存在 'deny all' 或防火墙 WAF 规则误杀。"
+            ]
+        },
+        {
+            code: 404, nameEn: "Not Found", nameZh: "资源未找到",
+            rfc: "RFC 7231", cacheable: true,
+            summary: "服务器无法找到请求的资源 URI，或者服务器不愿透露资源是否存在（出于安全考量）。",
+            detail: "Web 世界中最广为人知的错误码。前端单页面应用 (SPA) 刷新页面报 404 通常是因为 Nginx 未配置 try_files $uri $uri/ /index.html 导致的路由回退丢失。",
+            tags: ["URL 拼错", "SPA 刷新 404", "资源已下线", "Nginx try_files"],
+            scenarios: "接口路径拼错、SPA 路由刷新未命中静态资源、请求已被删除的数据库 ID、静态资源未打包进部署目录。",
+            troubleshooting: [
+                "核对接口 URL 路径前缀（如 /api/v1 误写为 /api）。",
+                "如果是 Vue/React SPA 路由刷新 404，在 Nginx 中配置: try_files $uri $uri/ /index.html;",
+                "确认静态文件（如图片/JS/CSS）是否已正确打包上传至部署根路径。"
+            ]
+        },
+        {
+            code: 405, nameEn: "Method Not Allowed", nameZh: "请求方法不允许",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "请求中使用的 HTTP 方法（如 POST）不被目标资源支持，服务端必须在 Allow 响应头中列出支持的方法。",
+            detail: "例如某个接口仅定义了 POST 接收数据，客户端却使用了 GET 或 PUT 发起请求。或者 Nginx 对静态 HTML 页面发送 POST 请求时默认会抛出 405 Method Not Allowed。",
+            tags: ["HTTP Method 错用", "GET/POST 混淆", "Allow 响应头"],
+            scenarios: "用 GET 访问只能 POST 的接口、向 Nginx 静态文件目录直接发起 POST 请求。",
+            troubleshooting: [
+                "检查代码中请求方法是否匹配（GET / POST / PUT / DELETE / PATCH）。",
+                "查看响应的 Allow 头（如 Allow: GET, HEAD）以获取支持的方法列表。",
+                "若 Nginx 静态目录需支持 POST，可配置 error_page 405 =200 $uri; 临时规避。"
+            ],
+            headersExample: "HTTP/1.1 405 Method Not Allowed\nAllow: GET, POST, HEAD"
+        },
+        {
+            code: 408, nameEn: "Request Timeout", nameZh: "请求超时 (客户端)",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "服务器在设定的超时等待时间内未接收到客户端完整的请求，服务器决定断开连接。",
+            detail: "客户端在建立 TCP 连接后，发送 HTTP 报文速度过慢，超出了服务端的 client_header_timeout 或 client_body_timeout 限制。",
+            tags: ["网络丢包", "客户端网络差", "超时断开"],
+            scenarios: "移动端在弱网/隧道中上传文件极其缓慢、客户端建立连接后迟迟未发送请求头。",
+            troubleshooting: [
+                "排查客户端网络连接质量，检查是否存在严重丢包或上行带宽受限。",
+                "适度调大反向代理（如 Nginx client_header_timeout / client_body_timeout）的超时阈值。"
+            ]
+        },
+        {
+            code: 409, nameEn: "Conflict", nameZh: "资源状态冲突",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "请求与服务器资源的当前状态发生冲突，常见于并发乐观锁更新失败或数据库唯一索引重复插入。",
+            detail: "例如多用户并发编辑同一篇文档时版本号不一致（CAS / 乐观锁版本冲突）、尝试注册已存在的用户名或邮箱（唯一键冲突）。",
+            tags: ["并发冲突", "乐观锁", "唯一键重复", "版本冲突"],
+            scenarios: "用户名已被注册、Git 提交冲突、电商库存并发扣减版本冲突。",
+            troubleshooting: [
+                "提示用户刷新最新数据后重试（重新拉取最新版本进行合并）。",
+                "业务层应返回结构化的冲突原因明细（如 {\"conflictField\": \"username\", \"message\": \"用户名已存在\"}）。"
+            ]
+        },
+        {
+            code: 410, nameEn: "Gone", nameZh: "资源已永久下线 (不可用)",
+            rfc: "RFC 7231", cacheable: true,
+            summary: "目标资源在源服务器上已被永久删除，且没有转发地址，客户端应永久移除此 URI 缓存及链接。",
+            detail: "410 与 404 的区别在于：404 表示'当前找不到，不确定未来是否有'；410 则是服务端非常明确地告知'该资源曾存在但现在已永久废弃并删除'，搜索引擎爬虫收到 410 后会立即从索引库中彻底抹除该链接。",
+            tags: ["永久删除", "下线接口", "SEO 彻底清理"],
+            scenarios: "限时促销活动结束后永久关闭页面、已注销的用户主页、废弃的旧版本 API 端点。",
+            troubleshooting: [
+                "确认该资源是否确系永久下线。如仅是临时迁移，应使用 301 或 302 重定向。"
+            ]
+        },
+        {
+            code: 413, nameEn: "Payload Too Large", nameZh: "请求体过大 (超过限制)",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "请求提交的数据量或文件体积超出了服务器愿意或能够处理的最大容量限制。",
+            detail: "经典表现为 Nginx 返回 '413 Request Entity Too Large'。原因是请求上传的文件大小超过了 Nginx 的 client_max_body_size 配置，或超过了后端框架（如 Spring multipart.max-file-size）的上限。",
+            tags: ["文件上传过大", "Nginx client_max_body_size", "大包限制"],
+            scenarios: "用户上传 50MB 视频时被限制 10MB 的 Nginx 立即拦截返回 413。",
+            troubleshooting: [
+                "修改 Nginx 配置文件中的 client_max_body_size 50M; 并执行 nginx -s reload。",
+                "检查后端框架配置文件（如 Spring Boot: spring.servlet.multipart.max-file-size=50MB）。",
+                "对于超大文件，推荐改用前端分片上传 (Chunk Upload) 或直传至 OSS/S3 对象存储。"
+            ]
+        },
+        {
+            code: 415, nameEn: "Unsupported Media Type", nameZh: "不支持的媒体类型",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "请求提交的载荷数据格式（由 Content-Type 标头或编码指定）不被服务器所支持。",
+            detail: "例如服务端接口使用了 @RequestBody 期望接收 application/json，前端却使用默认表单提交了 application/x-www-form-urlencoded，或者上传图片时 Content-Type 为 image/webp 而服务端只支持 image/jpeg/png。",
+            tags: ["Content-Type 错误", "媒体格式不支持", "JSON 反序列化"],
+            scenarios: "POST 请求未加 Content-Type: application/json 头、文件格式与扩展名不匹配。",
+            troubleshooting: [
+                "确保请求头中设置了与 Body 完全匹配的 Content-Type（如 Content-Type: application/json）。",
+                "检查上传文件的 MIME 类型是否在服务端的允许列表内。"
+            ]
+        },
+        {
+            code: 422, nameEn: "Unprocessable Entity", nameZh: "不可处理的实体 (语义错误)",
+            rfc: "RFC 4918 (WebDAV)", cacheable: false,
+            summary: "请求格式正确（如合法的 JSON 语法），但包含语义错误，导致服务器无法对其中的业务数据进行处理。",
+            detail: "广泛用于现代化 RESTful API（如 Python FastAPI, Ruby on Rails, Laravel）。JSON 能够被正确解析，但字段值违反了业务规则（例如 password 长度小于 6 位，或 email 格式无效）。",
+            tags: ["数据验证失败", "FastAPI / Pydantic", "业务校验错误"],
+            scenarios: "注册表单邮箱格式校验失败、数值范围超出业务边界。",
+            troubleshooting: [
+                "检查返回的错误字段校验详情，根据提示修正表单输入参数。"
+            ]
+        },
+        {
+            code: 429, nameEn: "Too Many Requests", nameZh: "请求过多 (触发限流)",
+            rfc: "RFC 6585", cacheable: false,
+            summary: "客户端在给定的时间段内发送了过多的请求，触发了速率限制 (Rate Limiting) 策略。",
+            detail: "API 防刷和高可用保护机制。服务端应在响应头中包含 Retry-After（告知多少秒后可重试）以及 X-RateLimit-Limit / X-RateLimit-Remaining / X-RateLimit-Reset 统计标头。",
+            tags: ["API 限流", "防刷防爬", "Retry-After", "网关 Sentinel/Redis"],
+            scenarios: "爬虫高频抓取、暴力破解登录密码触发安全防护、第三方 API 调用超出 QPS 配额。",
+            troubleshooting: [
+                "读取并遵守响应头中的 'Retry-After: 60'，在客户端进行指数退避重试 (Exponential Backoff)。",
+                "优化前端逻辑，增加防抖 (Debounce) 和节流 (Throttle)，避免短时间内触发大量重复请求。",
+                "如为合法业务洪峰，可联系 API 提供商提高接口 QPS 授权配额。"
+            ],
+            headersExample: "HTTP/1.1 429 Too Many Requests\nRetry-After: 30\nX-RateLimit-Limit: 100\nX-RateLimit-Remaining: 0\nX-RateLimit-Reset: 1756598400"
+        },
+        {
+            code: 431, nameEn: "Request Header Fields Too Large", nameZh: "请求头字段过大",
+            rfc: "RFC 6585", cacheable: false,
+            summary: "由于单个请求头字段或所有请求头字段的总和过大，服务器拒绝处理该请求。",
+            detail: "最常见的原因是客户端 Cookie 累积过多且未清理，导致 Cookie 标头超过了 Web 服务器（如 Nginx large_client_header_buffers 默认 4k/8k）的允许上限。",
+            tags: ["Cookie 过大", "请求头超长", "Nginx large_client_header_buffers"],
+            scenarios: "前端在同一域名下写入了过多的 LocalStorage/Cookie 数据未清理、URL 参数过长转为 Header 传递。",
+            troubleshooting: [
+                "清理当前域名下冗余无效的 Cookie（特别是由多个子系统长期累积的 Cookie）。",
+                "在 Nginx 配置中增大请求头缓冲区大小：large_client_header_buffers 4 16k;"
+            ]
+        },
+        {
+            code: 499, nameEn: "Client Closed Request (Nginx)", nameZh: "客户端主动断开连接 (Nginx)",
+            rfc: "Nginx Non-Standard", cacheable: false,
+            summary: "Nginx 扩展状态码：客户端在服务器生成并返回响应之前主动关闭了 HTTP 连接。",
+            detail: "常见于后端上游接口处理极慢，前端用户等不及点击了浏览器'停止'按钮、直接关闭了网页 Tab，或者客户端前端代码设置了较短的超时时间主动 abort 了请求。",
+            tags: ["Nginx 499", "前端 Abort", "后端处理慢", "连接中断"],
+            scenarios: "用户关闭页面、Axios 超时主动取消请求、移动端网络切换导致 TCP RST。",
+            troubleshooting: [
+                "排查后端接口慢 SQL 或死锁，提升后端接口响应性能。",
+                "检查前端 Axios timeout 配置是否过短，导致在后端处理完之前前端就触发了 abort。"
+            ]
+        },
+
+        // 5xx
+        {
+            code: 500, nameEn: "Internal Server Error", nameZh: "服务器内部错误",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "服务器遇到了未曾预料的状况，导致其无法完成对请求的处理，通常是后端程序未捕获的异常崩溃。",
+            detail: "后端最普遍的严重故障码。通常由于代码中发生 NullPointerException（空指针）、数组越界、数据库连接池耗尽、第三方依赖崩盘导致未被全局异常处理器捕获。",
+            tags: ["后端未捕获异常", "空指针 NPE", "数据库连接崩溃", "500 严重错误"],
+            scenarios: "Java/Node.js 代码抛出未捕获异常、数据库宕机无法执行 SQL、服务器磁盘满写日志失败。",
+            troubleshooting: [
+                "登录服务器查看后端业务日志（如 error.log / catalina.out / pm2 logs），排查具体异常调用栈堆栈信息。",
+                "排查数据库连接池是否耗尽，检查 Redis/MySQL 服务是否健康存活。",
+                "配置完善的全局统一异常捕获中间件，避免直接将敏感的底层堆栈暴露给前端。"
+            ]
+        },
+        {
+            code: 502, nameEn: "Bad Gateway", nameZh: "网关错误 (上游服务无响应/崩溃)",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "作为网关或反向代理（如 Nginx）的服务器在尝试执行请求时，从上游服务器收到了无效响应或无法连接到上游服务。",
+            detail: "DevOps 运维最高频出现的错误之一。Nginx 代理给后端的 Node.js / PHP-FPM / Java SpringBoot 时，如果后端进程崩溃挂掉、端口未监听或由于 OOM 被操作系统杀死，Nginx 无法建立 TCP 连接，立即返回 502 Bad Gateway。",
+            tags: ["Nginx 502", "上游服务挂掉", "Node/PHP 崩溃", "端口未启动"],
+            scenarios: "Node.js 内存泄漏崩溃导致 PM2 重启中、PHP-FPM 进程池被打满、后端服务端口配错、Docker 容器已停止运行。",
+            troubleshooting: [
+                "检查后端服务进程是否存活（如 systemctl status / pm2 list / docker ps）。",
+                "检查 Nginx 配置中的 proxy_pass 上游地址与端口是否正确（如 proxy_pass http://127.0.0.1:8080）。",
+                "查看 Nginx error.log，确认是 'Connection refused' 还是 'upstream prematurely closed connection'。"
+            ]
+        },
+        {
+            code: 503, nameEn: "Service Unavailable", nameZh: "服务不可用 (过载/停机维护)",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "服务器目前无法处理请求，通常是由于服务器瞬时超载或正在进行停机维护，此状态属于临时状态。",
+            detail: "服务器应在响应中包含 Retry-After 标头告知客户端预计何时恢复。常用于服务优雅升级、熔断降级（Sentinel / Hystrix 熔断触发）、或限流网关在并发超载时主动拒绝流量。",
+            tags: ["停机维护", "熔断降级", "系统过载", "Retry-After"],
+            scenarios: "系统升级维护中、微服务熔断器打开、服务器 CPU/内存超载触发保护。",
+            troubleshooting: [
+                "提供友好的维护公告页面并附带 Retry-After 标头。",
+                "排查服务是否遭遇突发流量洪峰，考虑水平扩展增加服务器实例集群节点。",
+                "检查是否触发了微服务网关的熔断保护策略。"
+            ],
+            headersExample: "HTTP/1.1 503 Service Unavailable\nRetry-After: 300\nContent-Type: text/html; charset=utf-8"
+        },
+        {
+            code: 504, nameEn: "Gateway Timeout", nameZh: "网关超时 (上游处理超时)",
+            rfc: "RFC 7231", cacheable: false,
+            summary: "作为网关或代理的服务器在等待上游服务器（如后端应用程序或数据库）的响应时发生了超时。",
+            detail: "与 502 的区别：502 是上游服务直接连接拒绝或挂了；504 是连接成功了，但后端业务执行太慢（如慢查询跑了 60 秒），超出了 Nginx 配置的 proxy_read_timeout 阈值，Nginx 不耐烦主动断开了等待。",
+            tags: ["Nginx 504", "慢 SQL 超时", "proxy_read_timeout", "接口耗时过长"],
+            scenarios: "慢 SQL 查询导致接口耗时超过 60 秒、复杂报表导出未采用异步处理、第三方外部 API 挂起无响应。",
+            troubleshooting: [
+                "优化慢查询 SQL，给相关表添加索引，排查死锁或慢事务。",
+                "如果业务确实需要较长耗时（如大文件处理），可在 Nginx 中适度增加 proxy_read_timeout 300s; 与 proxy_send_timeout 300s;。",
+                "将长耗时同步阻塞接口重构成 202 Accepted 异步任务处理模式。"
+            ]
+        },
+        {
+            code: 520, nameEn: "Unknown Error (Cloudflare)", nameZh: "未知源站错误 (Cloudflare)",
+            rfc: "Cloudflare Non-Standard", cacheable: false,
+            summary: "Cloudflare 特有状态码：源服务器向 Cloudflare 返回了空、无效或未知的 HTTP 响应。",
+            detail: "源站 Web 服务器崩溃或由于协议解析冲突（如 HTTP 标头过长、TCP 重置）导致 Cloudflare 无法理解源站回复。",
+            tags: ["Cloudflare 520", "CDN 代理异常", "源站响应异常"],
+            scenarios: "源站 Nginx 在发送完部分 Header 后崩溃、TCP 连接在握手期间被源站防火墙强行重置。",
+            troubleshooting: [
+                "直接绕过 Cloudflare 访问源站 IP 测试是否能稳定返回正常响应。",
+                "查看源站 Nginx error.log 排查是否发生进程段错误 (Segmentation Fault)。"
+            ]
+        },
+        {
+            code: 521, nameEn: "Web Server Is Down (Cloudflare)", nameZh: "源站服务器已宕机 (Cloudflare)",
+            rfc: "Cloudflare Non-Standard", cacheable: false,
+            summary: "Cloudflare 特有状态码：Cloudflare 成功解析了源站 IP，但源站服务器拒绝了 80/443 端口的 TCP 连接。",
+            detail: "源站 Web 服务器（Nginx / Apache）未启动，或者源站安全组/防火墙拦截了 Cloudflare 的回源 IP 段。",
+            tags: ["Cloudflare 521", "源站宕机", "安全组拦截", "端口未监听"],
+            scenarios: "源站 Nginx 进程挂掉、服务器重启未设置开机自启、云厂商防火墙未放行 Cloudflare IP 段。",
+            troubleshooting: [
+                "登录源站服务器启动 Nginx/Web 服务 (systemctl start nginx)。",
+                "在云服务器安全组中将 Cloudflare 的官方 IP 段加入白名单。"
+            ]
+        },
+        {
+            code: 522, nameEn: "Connection Timed Out (Cloudflare)", nameZh: "连接源站超时 (Cloudflare)",
+            rfc: "Cloudflare Non-Standard", cacheable: false,
+            summary: "Cloudflare 无法在规定时间内与源服务器完成 TCP 三次握手。",
+            detail: "源站服务器路由不可达、源站过载丢弃 SYN 包、或者源站防火墙对 Cloudflare 回源流量限速丢包。",
+            tags: ["Cloudflare 522", "TCP 握手超时", "网络丢包", "防火墙拦截"],
+            scenarios: "源站网络拥堵丢包严重、源站 iptables 封禁了回源 IP、云主机安全组规则配错。",
+            troubleshooting: [
+                "检查源站服务器 CPU/网络带宽占用率。",
+                "检查 iptables 或 fail2ban 是否误封了 Cloudflare IP。"
+            ]
+        },
+        {
+            code: 524, nameEn: "A Timeout Occurred (Cloudflare)", nameZh: "源站响应超时 (Cloudflare)",
+            rfc: "Cloudflare Non-Standard", cacheable: false,
+            summary: "Cloudflare 成功建立了与源站的 TCP 连接，但源站未在 100 秒（免费版默认超时）内返回 HTTP 响应。",
+            detail: "相当于 Cloudflare 级别的 504 Gateway Timeout。源站执行大查询或耗时运算超过 100 秒未返回任何数据包。",
+            tags: ["Cloudflare 524", "100秒超时", "长任务超时"],
+            scenarios: "后端数据库慢查询耗时超过 100 秒、批量导入任务超时。",
+            troubleshooting: [
+                "优化后端处理耗时至 100 秒以内，或改用异步任务模式。",
+                "在后端定期输出 HTTP 空格或心跳流保持连接活跃。"
+            ]
+        }
+    ];
+
+    const app = createApp({
+        setup() {
+            const searchKeyword = ref('');
+            const selectedCategory = ref('all');
+            const drawerVisible = ref(false);
+            const currentDetail = ref(null);
+            const decisionModalVisible = ref(false);
+
+            // Favorite list stored in localStorage
+            const favoriteCodes = ref([]);
+            try {
+                const stored = localStorage.getItem('http_fav_status_codes');
+                if (stored) favoriteCodes.value = JSON.parse(stored);
+            } catch (e) {}
+
+            const isFavorite = (code) => favoriteCodes.value.includes(code);
+
+            const toggleFavorite = (code) => {
+                const idx = favoriteCodes.value.indexOf(code);
+                if (idx > -1) {
+                    favoriteCodes.value.splice(idx, 1);
+                    ElementPlus.ElMessage.info(`已取消收藏 ${code}`);
+                } else {
+                    favoriteCodes.value.push(code);
+                    ElementPlus.ElMessage.success(`已收藏 HTTP ${code}`);
+                }
+                try {
+                    localStorage.setItem('http_fav_status_codes', JSON.stringify(favoriteCodes.value));
+                } catch (e) {}
+            };
+
+            const allCodes = ref(HTTP_STATUS_DATABASE);
+
+            const getCategoryBadgeClass = (code) => {
+                const prefix = Math.floor(code / 100);
+                return `badge-${prefix}xx`;
+            };
+
+            const filteredCodes = computed(() => {
+                let list = allCodes.value;
+
+                // Category filter
+                if (selectedCategory.value === 'fav') {
+                    list = list.filter(item => isFavorite(item.code));
+                } else if (selectedCategory.value !== 'all') {
+                    const prefix = parseInt(selectedCategory.value[0], 10);
+                    list = list.filter(item => Math.floor(item.code / 100) === prefix);
+                }
+
+                // Keyword search
+                const kw = searchKeyword.value.trim().toLowerCase();
+                if (!kw) return list;
+
+                return list.filter(item => {
+                    const matchCode = String(item.code).includes(kw);
+                    const matchEn = item.nameEn.toLowerCase().includes(kw);
+                    const matchZh = item.nameZh.toLowerCase().includes(kw);
+                    const matchSummary = item.summary.toLowerCase().includes(kw);
+                    const matchTags = item.tags && item.tags.some(t => t.toLowerCase().includes(kw));
+                    const matchScenarios = item.scenarios && item.scenarios.toLowerCase().includes(kw);
+                    return matchCode || matchEn || matchZh || matchSummary || matchTags || matchScenarios;
+                });
+            });
+
+            const openDetail = (item) => {
+                currentDetail.value = item;
+                drawerVisible.value = true;
+            };
+
+            const copyCodeSummary = (item) => {
+                const text = `[HTTP ${item.code} ${item.nameEn} (${item.nameZh})]\n标准: ${item.rfc}\n释义: ${item.summary}\n排错指引:\n${item.troubleshooting.map(t => '• ' + t).join('\n')}`;
+                navigator.clipboard.writeText(text).then(() => {
+                    ElementPlus.ElMessage.success('已复制状态码详细指引');
+                });
+            };
+
+            const exportAllCheatsheet = () => {
+                const lines = [
+                    '# HTTP 状态码速查与排错全书\n',
+                    '| 状态码 | 英文名 | 中文释义 | 标准规范 | 核心场景与说明 |',
+                    '| :---: | :--- | :--- | :--- | :--- |'
+                ];
+                allCodes.value.forEach(item => {
+                    lines.push(`| **${item.code}** | \`${item.nameEn}\` | ${item.nameZh} | ${item.rfc} | ${item.summary.replace(/\|/g, '\\|')} |`);
+                });
+                lines.push(`\n*导出时间: ${new Date().toLocaleString()} · 在线工具集*`);
+
+                const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `http-status-codes-cheatsheet.md`;
+                a.click();
+                URL.revokeObjectURL(url);
+                ElementPlus.ElMessage.success('速查 Markdown 已导出');
+            };
+
+            // Decision Helper State
+            const decisionState = reactive({
+                success: 'yes',
+                successDetail: '200',
+                clientDetail: '400'
+            });
+
+            const openDecisionHelper = () => {
+                decisionModalVisible.value = true;
+            };
+
+            const recommendedCode = computed(() => {
+                let codeNum = 200;
+                if (decisionState.success === 'yes') {
+                    codeNum = parseInt(decisionState.successDetail, 10) || 200;
+                } else if (decisionState.success === 'redirect') {
+                    codeNum = 302;
+                } else if (decisionState.success === 'client_err') {
+                    codeNum = parseInt(decisionState.clientDetail, 10) || 400;
+                } else if (decisionState.success === 'server_err') {
+                    codeNum = 500;
+                }
+                return allCodes.value.find(c => c.code === codeNum) || null;
+            });
+
+            return {
+                searchKeyword,
+                selectedCategory,
+                allCodes,
+                filteredCodes,
+                favoriteCodes,
+                drawerVisible,
+                currentDetail,
+                decisionModalVisible,
+                decisionState,
+                recommendedCode,
+                isFavorite,
+                toggleFavorite,
+                getCategoryBadgeClass,
+                openDetail,
+                copyCodeSummary,
+                exportAllCheatsheet,
+                openDecisionHelper
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('.main-body');
+</script>
+</body>
+</html>

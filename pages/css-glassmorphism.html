@@ -1,0 +1,526 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>CSS 玻璃拟态与毛玻璃生成器 - 在线工具</title>
+    <meta name="description" content="专业可视化 CSS 玻璃拟态 (Glassmorphism) 与毛玻璃效果生成器：实时调节 backdrop-filter 模糊度、背景半透明度、饱和度、高光边框、弥散阴影与圆角；支持可拖拽卡片、多种炫酷渐变与几何图层背景，一键复制标准 CSS 与 Tailwind 样式代码。" />
+    <meta name="keywords" content="CSS毛玻璃生成器,玻璃拟态,Glassmorphism,backdrop-filter,CSS模糊效果,Tailwind毛玻璃,前端UI设计,CSS代码生成" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .glass-stage {
+            position: relative;
+            min-height: 480px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            cursor: grab;
+        }
+        .glass-stage:active {
+            cursor: grabbing;
+        }
+
+        /* 舞台背景 1: 网格流光 (Mesh Gradient) */
+        .bg-mesh {
+            background: linear-gradient(135deg, #1e1b4b 0%, #311042 50%, #030712 100%);
+        }
+        /* 舞台背景 2: 赛博霓虹 (Cyber Neon) */
+        .bg-cyber {
+            background: linear-gradient(45deg, #020617 0%, #1e1b4b 40%, #4c0519 100%);
+        }
+        /* 舞台背景 3: 黄金落霞 (Sunset Gold) */
+        .bg-sunset {
+            background: linear-gradient(135deg, #451a03 0%, #701a75 50%, #0f172a 100%);
+        }
+        /* 舞台背景 4: 深蓝极光 (Deep Aurora) */
+        .bg-aurora {
+            background: linear-gradient(135deg, #064e3b 0%, #0c4a6e 50%, #1e1b4b 100%);
+        }
+
+        /* 舞台底部的多彩装饰球体 (用于展示透光与模糊) */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(10px);
+            opacity: 0.85;
+            animation: floatOrb 8s ease-in-out infinite alternate;
+        }
+        .orb-1 {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #f43f5e, #fb923c);
+            top: 15%;
+            left: 18%;
+        }
+        .orb-2 {
+            width: 220px;
+            height: 220px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            bottom: 12%;
+            right: 18%;
+            animation-duration: 11s;
+        }
+        .orb-3 {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #34d399, #a3e635);
+            top: 55%;
+            left: 45%;
+            animation-duration: 9s;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-25px) scale(1.08); }
+        }
+
+        /* 可拖拽的毛玻璃卡片 */
+        .draggable-glass-card {
+            position: relative;
+            z-index: 10;
+            cursor: move;
+            transition: box-shadow 0.2s, transform 0.05s;
+        }
+        .draggable-glass-card:active {
+            transform: scale(1.01);
+        }
+
+        /* 预设卡片 */
+        .preset-pill {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .preset-pill:hover, .preset-pill.active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+        }
+
+        .code-output {
+            background: #090e17;
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.82rem;
+            color: #38bdf8;
+            padding: 12px 16px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.6;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="CSS 玻璃拟态与毛玻璃生成器 - 在线工具" />
+    <meta property="og:description" content="可视化调节 backdrop-filter 模糊度、透明度、高光边框与弥散阴影，支持多款背景与拖拽测试，一键复制 CSS 与 Tailwind 代码。" />
+    <meta property="og:url" content="https://tool.6767.chat/css-glassmorphism" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CSS 玻璃拟态与毛玻璃生成器 - 在线工具" />
+    <meta name="twitter:description" content="可视化调节 backdrop-filter 模糊度、透明度、高光边框与弥散阴影，支持多款背景与拖拽测试，一键复制 CSS 与 Tailwind 代码。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/css-glassmorphism" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">CSS 玻璃拟态生成器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <!-- 头部 -->
+                <div class="tool-head flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h1 class="title text-xl md:text-2xl font-bold text-slate-100 mb-1">CSS 玻璃拟态与毛玻璃生成器 (Glassmorphism Studio)</h1>
+                        <p class="description text-slate-400 text-sm mb-0">
+                            可视化调配现代毛玻璃视觉特效：精准控制背景模糊、半透明度、饱和度增强、高光边缘与环境漫反射阴影，支持卡片拖拽与一键导出 CSS / Tailwind 代码。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    <!-- 左侧: 属性控制滑块 (5 栅格) -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-700/70 space-y-4">
+                            <div class="text-xs font-mono text-cyan-400 font-semibold">// 1. 核心毛玻璃参数 (Glass Controls)</div>
+
+                            <!-- 模糊度 -->
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300">背景模糊度 (Blur):</span>
+                                    <span class="font-mono text-cyan-400">{{ params.blur }}px</span>
+                                </div>
+                                <el-slider v-model="params.blur" :min="0" :max="40" :step="1" />
+                            </div>
+
+                            <!-- 不透明度 -->
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300">背景不透明度 (Opacity):</span>
+                                    <span class="font-mono text-cyan-400">{{ params.opacity.toFixed(2) }}</span>
+                                </div>
+                                <el-slider v-model="params.opacity" :min="0" :max="1" :step="0.02" />
+                            </div>
+
+                            <!-- 饱和度 -->
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300">色彩饱和度 (Saturate):</span>
+                                    <span class="font-mono text-cyan-400">{{ params.saturate }}%</span>
+                                </div>
+                                <el-slider v-model="params.saturate" :min="50" :max="250" :step="5" />
+                            </div>
+
+                            <!-- 背景底色选择 -->
+                            <div class="flex items-center justify-between pt-1">
+                                <span class="text-xs text-slate-300">玻璃材质基色:</span>
+                                <div class="flex items-center gap-2">
+                                    <el-color-picker v-model="params.baseColor" size="small" />
+                                    <span class="text-xs font-mono text-slate-400">{{ params.baseColor }}</span>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-800 pt-3 space-y-3">
+                                <div class="text-xs font-mono text-cyan-400 font-semibold">// 2. 边框与阴影光效 (Edge & Shadow)</div>
+
+                                <!-- 边框厚度 -->
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-300">高光边框厚度 (Border):</span>
+                                        <span class="font-mono text-cyan-400">{{ params.borderWidth }}px</span>
+                                    </div>
+                                    <el-slider v-model="params.borderWidth" :min="0" :max="6" :step="0.5" />
+                                </div>
+
+                                <!-- 边框不透明度 -->
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-300">边框透光度 (Border Opacity):</span>
+                                        <span class="font-mono text-cyan-400">{{ params.borderOpacity.toFixed(2) }}</span>
+                                    </div>
+                                    <el-slider v-model="params.borderOpacity" :min="0" :max="1" :step="0.02" />
+                                </div>
+
+                                <!-- 圆角 -->
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-300">圆角半径 (Border Radius):</span>
+                                        <span class="font-mono text-cyan-400">{{ params.radius }}px</span>
+                                    </div>
+                                    <el-slider v-model="params.radius" :min="0" :max="40" :step="2" />
+                                </div>
+
+                                <!-- 弥散阴影 -->
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-300">阴影模糊扩散 (Shadow Blur):</span>
+                                        <span class="font-mono text-cyan-400">{{ params.shadowBlur }}px</span>
+                                    </div>
+                                    <el-slider v-model="params.shadowBlur" :min="0" :max="60" :step="2" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 常用精美预设方案 -->
+                        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-700/70">
+                            <div class="text-xs font-mono text-cyan-400 font-semibold mb-2.5">// 经典玻璃拟态预设 (Presets)</div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div v-for="preset in presets" :key="preset.name"
+                                     @click="applyPreset(preset)"
+                                     class="preset-pill text-xs flex items-center justify-between">
+                                    <span class="text-slate-200 font-medium">{{ preset.name }}</span>
+                                    <span class="text-[11px] text-cyan-400 font-mono">{{ preset.tag }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧: 舞台交互画布与代码输出 (7 栅格) -->
+                    <div class="lg:col-span-7 space-y-4">
+                        
+                        <!-- 画布控制顶栏 -->
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-slate-400 font-mono">// 舞台背景:</span>
+                                <el-radio-group v-model="currentBg" size="small">
+                                    <el-radio-button label="mesh">网格流光</el-radio-button>
+                                    <el-radio-button label="cyber">赛博霓虹</el-radio-button>
+                                    <el-radio-button label="sunset">落日晚霞</el-radio-button>
+                                    <el-radio-button label="aurora">极地冰光</el-radio-button>
+                                </el-radio-group>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-slate-400 font-mono">// 卡片组件:</span>
+                                <el-radio-group v-model="cardComponent" size="small">
+                                    <el-radio-button label="card">银行卡</el-radio-button>
+                                    <el-radio-button label="player">音乐播放器</el-radio-button>
+                                    <el-radio-button label="profile">个人名片</el-radio-button>
+                                </el-radio-group>
+                            </div>
+                        </div>
+
+                        <!-- 交互舞台 (支持拖拽卡片) -->
+                        <div class="glass-stage" :class="'bg-' + currentBg" ref="stageRef">
+                            
+                            <!-- 悬浮多彩背景球体 (证明毛玻璃真实折射) -->
+                            <div class="orb orb-1"></div>
+                            <div class="orb orb-2"></div>
+                            <div class="orb orb-3"></div>
+
+                            <!-- 拟态毛玻璃卡片 (可自由拖拽) -->
+                            <div class="draggable-glass-card p-6" 
+                                 :style="computedCardStyle"
+                                 :class="cardComponent === 'card' ? 'w-[320px] h-[190px]' : cardComponent === 'player' ? 'w-[300px]' : 'w-[290px]'">
+                                
+                                <!-- 组件 1: 拟态银行信用卡 -->
+                                <div v-if="cardComponent === 'card'" class="h-full flex flex-col justify-between text-white">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-mono font-bold tracking-widest uppercase opacity-80">ANTIGRAVITY VIP</span>
+                                        <span class="text-sm font-bold text-amber-300 font-mono">VISA Platinum</span>
+                                    </div>
+                                    <div class="my-auto">
+                                        <div class="w-8 h-6 rounded bg-amber-400/80 mb-2 border border-white/40"></div>
+                                        <div class="font-mono text-sm tracking-wider font-semibold opacity-95">4288 •••• •••• 8866</div>
+                                    </div>
+                                    <div class="flex items-center justify-between text-[11px] font-mono opacity-75">
+                                        <span>CARDHOLDER: ALEX SHEN</span>
+                                        <span>EXP: 08/29</span>
+                                    </div>
+                                </div>
+
+                                <!-- 组件 2: 拟态音乐播放器 -->
+                                <div v-else-if="cardComponent === 'player'" class="space-y-4 text-white">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-pink-500 to-indigo-500 flex items-center justify-center text-xl shadow">
+                                            🎵
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="text-sm font-bold truncate">Midnight Cyber City</div>
+                                            <div class="text-xs text-white/70 truncate">Synthwave Collective</div>
+                                        </div>
+                                    </div>
+                                    <!-- 进度条 -->
+                                    <div class="space-y-1">
+                                        <div class="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
+                                            <div class="h-full bg-cyan-400 rounded-full" style="width: 65%;"></div>
+                                        </div>
+                                        <div class="flex justify-between text-[10px] text-white/60 font-mono">
+                                            <span>02:18</span>
+                                            <span>03:45</span>
+                                        </div>
+                                    </div>
+                                    <!-- 播放控制 -->
+                                    <div class="flex items-center justify-center gap-4 text-sm">
+                                        <button class="opacity-70 hover:opacity-100">⏮</button>
+                                        <button class="w-9 h-9 rounded-full bg-white text-slate-900 flex items-center justify-center font-bold shadow-lg">▶</button>
+                                        <button class="opacity-70 hover:opacity-100">⏭</button>
+                                    </div>
+                                </div>
+
+                                <!-- 组件 3: 个人资料名片 -->
+                                <div v-else class="text-center space-y-3 text-white">
+                                    <div class="w-14 h-14 rounded-full mx-auto bg-gradient-to-tr from-cyan-400 to-emerald-400 p-0.5 shadow-lg">
+                                        <div class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center text-2xl">
+                                            👨‍💻
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-sm">Alex Chen</div>
+                                        <div class="text-xs text-white/75">Senior Frontend Architect</div>
+                                    </div>
+                                    <div class="flex justify-center gap-2 pt-1">
+                                        <button class="px-3 py-1 text-xs rounded-full bg-white/20 hover:bg-white/30 border border-white/30 transition">Follow</button>
+                                        <button class="px-3 py-1 text-xs rounded-full bg-white text-slate-900 font-medium shadow">Message</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- 代码导出面板 (CSS 与 Tailwind) -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <el-radio-group v-model="codeTab" size="small">
+                                    <el-radio-button label="css">原生 CSS (Standard)</el-radio-button>
+                                    <el-radio-button label="tailwind">Tailwind CSS</el-radio-button>
+                                </el-radio-group>
+                                <el-button size="small" type="primary" @click="copyActiveCode">
+                                    <span>📋</span> 复制代码
+                                </el-button>
+                            </div>
+
+                            <div v-if="codeTab === 'css'" class="code-output">{{ pureCssCode }}</div>
+                            <div v-else class="code-output">{{ tailwindCode }}</div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 技术细节与浏览器兼容性 -->
+                <div class="mt-8 pt-6 border-t border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-400">
+                    <div class="p-3 rounded bg-slate-900/40 border border-slate-800">
+                        <div class="text-slate-200 font-semibold mb-1">🔍 什么是 Backdrop-filter？</div>
+                        <div>CSS `backdrop-filter` 能够直接对元素背后的图层应用高斯模糊与饱和度调整，无需像传统方案那样克隆背景图，渲染性能极高且支持动态内容。</div>
+                    </div>
+                    <div class="p-3 rounded bg-slate-900/40 border border-slate-800">
+                        <div class="text-slate-200 font-semibold mb-1">🍎 Safari 浏览器兼容性前缀</div>
+                        <div>在 WebKit 内核 (Safari / iOS 浏览器) 中，必须声明 `-webkit-backdrop-filter: blur(...)` 才能生效，本工具生成的 CSS 已自动内置该前缀。</div>
+                    </div>
+                    <div class="p-3 rounded bg-slate-900/40 border border-slate-800">
+                        <div class="text-slate-200 font-semibold mb-1">✨ 打造通透毛玻璃三要素</div>
+                        <div>1. 足够的背景模糊 (12~24px)；2. 低透明度背景 (rgba 0.1~0.3)；3. 细高光半透明边框 (1px border-white/20) 强化立体边缘感。</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+
+<script>
+    const { createApp, ref, computed } = Vue;
+
+    createApp({
+        setup() {
+            const currentBg = ref('mesh');
+            const cardComponent = ref('card');
+            const codeTab = ref('css');
+
+            const params = ref({
+                blur: 16,
+                opacity: 0.18,
+                saturate: 180,
+                baseColor: '#FFFFFF',
+                borderWidth: 1.5,
+                borderOpacity: 0.35,
+                radius: 16,
+                shadowBlur: 32
+            });
+
+            // 预设方案
+            const presets = ref([
+                { name: '通透冰晶 (Frost Ice)', tag: '经典', blur: 16, opacity: 0.18, saturate: 180, baseColor: '#FFFFFF', borderWidth: 1.5, borderOpacity: 0.35, radius: 16, shadowBlur: 32 },
+                { name: '深邃黑曜 (Obsidian)', tag: '深色', blur: 24, opacity: 0.45, saturate: 150, baseColor: '#090E17', borderWidth: 1, borderOpacity: 0.25, radius: 18, shadowBlur: 40 },
+                { name: '赛博极光 (Cyber Aura)', tag: '霓虹', blur: 20, opacity: 0.22, saturate: 220, baseColor: '#38BDF8', borderWidth: 1.5, borderOpacity: 0.5, radius: 20, shadowBlur: 36 },
+                { name: '玫瑰石英 (Rose Quartz)', tag: '暖调', blur: 18, opacity: 0.25, saturate: 190, baseColor: '#F43F5E', borderWidth: 1.5, borderOpacity: 0.4, radius: 16, shadowBlur: 30 },
+                { name: '钛金哑光 (Titanium)', tag: '质感', blur: 30, opacity: 0.35, saturate: 110, baseColor: '#64748B', borderWidth: 1, borderOpacity: 0.3, radius: 14, shadowBlur: 24 },
+                { name: '微风轻透 (Subtle Mist)', tag: '极简', blur: 8, opacity: 0.08, saturate: 130, baseColor: '#FFFFFF', borderWidth: 1, borderOpacity: 0.2, radius: 12, shadowBlur: 16 }
+            ]);
+
+            const hexToRgb = (hex) => {
+                let c = hex.replace('#', '').trim();
+                if (c.length === 3) c = c.split('').map(x => x + x).join('');
+                if (c.length !== 6) return { r: 255, g: 255, b: 255 };
+                const num = parseInt(c, 16);
+                return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+            };
+
+            const computedCardStyle = computed(() => {
+                const rgb = hexToRgb(params.value.baseColor);
+                const bg = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${params.value.opacity})`;
+                const border = `${params.value.borderWidth}px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${params.value.borderOpacity})`;
+                const shadow = `0 8px ${params.value.shadowBlur}px 0 rgba(0, 0, 0, 0.37)`;
+                const backdrop = `blur(${params.value.blur}px) saturate(${params.value.saturate}%)`;
+
+                return {
+                    background: bg,
+                    backdropFilter: backdrop,
+                    WebkitBackdropFilter: backdrop,
+                    border: border,
+                    borderRadius: `${params.value.radius}px`,
+                    boxShadow: shadow
+                };
+            });
+
+            const pureCssCode = computed(() => {
+                const rgb = hexToRgb(params.value.baseColor);
+                return `/* Glassmorphism Effect */\n` +
+                       `background: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${params.value.opacity});\n` +
+                       `-webkit-backdrop-filter: blur(${params.value.blur}px) saturate(${params.value.saturate}%);\n` +
+                       `backdrop-filter: blur(${params.value.blur}px) saturate(${params.value.saturate}%);\n` +
+                       `border: ${params.value.borderWidth}px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${params.value.borderOpacity});\n` +
+                       `border-radius: ${params.value.radius}px;\n` +
+                       `box-shadow: 0 8px ${params.value.shadowBlur}px 0 rgba(0, 0, 0, 0.37);`;
+            });
+
+            const tailwindCode = computed(() => {
+                const blurClass = params.value.blur >= 24 ? 'backdrop-blur-xl' : params.value.blur >= 16 ? 'backdrop-blur-lg' : params.value.blur >= 8 ? 'backdrop-blur-md' : 'backdrop-blur-sm';
+                const opacityPercent = Math.round(params.value.opacity * 100);
+                const borderOpacityPercent = Math.round(params.value.borderOpacity * 100);
+                return `<div class="${blurClass} bg-white/[0.${opacityPercent < 10 ? '0' + opacityPercent : opacityPercent}] border border-white/[0.${borderOpacityPercent < 10 ? '0' + borderOpacityPercent : borderOpacityPercent}] shadow-2xl rounded-2xl p-6">\n` +
+                       `  <!-- Glass Content -->\n` +
+                       `</div>`;
+            });
+
+            const applyPreset = (p) => {
+                params.value.blur = p.blur;
+                params.value.opacity = p.opacity;
+                params.value.saturate = p.saturate;
+                params.value.baseColor = p.baseColor;
+                params.value.borderWidth = p.borderWidth;
+                params.value.borderOpacity = p.borderOpacity;
+                params.value.radius = p.radius;
+                params.value.shadowBlur = p.shadowBlur;
+                ElementPlus.ElMessage.success(`已切换至预设: ${p.name}`);
+            };
+
+            const copyActiveCode = () => {
+                const code = codeTab.value === 'css' ? pureCssCode.value : tailwindCode.value;
+                navigator.clipboard.writeText(code).then(() => {
+                    ElementPlus.ElMessage.success('样式代码已复制到剪贴板！');
+                });
+            };
+
+            return {
+                currentBg,
+                cardComponent,
+                codeTab,
+                params,
+                presets,
+                computedCardStyle,
+                pureCssCode,
+                tailwindCode,
+                applyPreset,
+                copyActiveCode
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

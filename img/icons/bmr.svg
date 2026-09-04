@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-bmr" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a0d06"/>
+      <stop offset="50%" stop-color="#4e1609"/>
+      <stop offset="100%" stop-color="#1f0904"/>
+    </linearGradient>
+    <linearGradient id="bmr-fire" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="50%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="bmr-inner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <filter id="glow-bmr" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#ef4444" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-bmr)"/>
+  <rect width="46" height="46" x="1" y="1" rx="11" fill="none" stroke="rgba(251, 146, 60, 0.25)" stroke-width="1"/>
+  
+  <!-- Outer Metabolic Fire -->
+  <path d="M24 7 C21 12 14 18 14 27 C14 34.5 18.5 40 24 40 C29.5 40 34 34.5 34 27 C34 18 27 12 24 7 Z" fill="url(#bmr-fire)" filter="url(#glow-bmr)"/>
+  
+  <!-- Inner Energetic Core Flame -->
+  <path d="M24 18 C22 22 18 26 18 31 C18 35 20.8 38 24 38 C27.2 38 30 35 30 31 C30 26 26 22 24 18 Z" fill="url(#bmr-inner)"/>
+  
+  <!-- Silhouette of vitality inside core -->
+  <circle cx="24" cy="24" r="2" fill="#ffffff"/>
+  <path d="M21 34 L24 28 L27 34 M24 28 L24 32" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Floating metabolic energy sparks -->
+  <circle cx="12" cy="18" r="1" fill="#fde047"/>
+  <circle cx="36" cy="16" r="1.2" fill="#fb923c"/>
+  <circle cx="34" cy="28" r="0.8" fill="#fde047"/>
+</svg>

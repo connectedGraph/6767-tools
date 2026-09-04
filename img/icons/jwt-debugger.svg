@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-jwt" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#180f28"/>
+      <stop offset="100%" stop-color="#090514"/>
+    </linearGradient>
+    <linearGradient id="jwt-hdr" x1="14" y1="12" x2="34" y2="18" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fb7185"/>
+      <stop offset="100%" stop-color="#f43f5e"/>
+    </linearGradient>
+    <linearGradient id="jwt-pay" x1="14" y1="20" x2="34" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="jwt-sig" x1="14" y1="30" x2="34" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-jwt)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#c084fc" stroke-opacity="0.2" stroke-width="1"/>
+  
+  <!-- Outer Shield Badge Contour -->
+  <path d="M24 9.5c6.5 2.5 11.5 3.5 11.5 3.5v10c0 8.5-5.5 14-11.5 15.5-6-1.5-11.5-7-11.5-15.5v-10s5-1 11.5-3.5z" stroke="#64748b" stroke-width="1.5" stroke-opacity="0.4" fill="none"/>
+  
+  <!-- 3 Segmented Pills inside Shield -->
+  <!-- Top: Header (Pink) -->
+  <rect x="17" y="15" width="14" height="4.5" rx="2.25" fill="url(#jwt-hdr)"/>
+  <circle cx="24" cy="21" r="1" fill="#cbd5e1"/>
+  
+  <!-- Middle: Payload (Purple) -->
+  <rect x="15" y="23" width="18" height="5" rx="2.5" fill="url(#jwt-pay)"/>
+  <circle cx="24" cy="30" r="1" fill="#cbd5e1"/>
+  
+  <!-- Bottom: Signature (Cyan) -->
+  <rect x="18" y="32" width="12" height="4.5" rx="2.25" fill="url(#jwt-sig)"/>
+</svg>

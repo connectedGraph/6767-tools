@@ -1,0 +1,1909 @@
+<!-- Tool Created: 2026-08-31 | Upgraded with WaveSurfer.js by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>在线波形录音机与音频剪辑 (WaveSurfer Studio) - 在线工具</title>
+    <meta name="description" content="基于 WaveSurfer.js 与 Web Audio API 的专业级在线高清录音机与波形剪辑工作站。支持实时麦克风拾音、示波器频谱可视化、多轨波形高精度拖拽裁剪、试听选区、淡入淡出、响度标准化与无损 WAV/MP3 格式极速本地导出。" />
+    <meta name="keywords" content="WaveSurfer,在线录音机,波形录音,音频剪辑,麦克风录音,WAV导出,MP3导出,网页音频剪切,Web Audio,声音裁剪,音频编辑" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        :root {
+            --ws-bg-card: rgba(15, 23, 42, 0.88);
+            --ws-border: rgba(56, 189, 248, 0.24);
+            --ws-glow: rgba(56, 189, 248, 0.12);
+        }
+
+
+        /* 主工作区卡片 */
+        .studio-card {
+            background: var(--ws-bg-card);
+            border: 1px solid var(--ws-border);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 20px var(--ws-glow);
+            backdrop-filter: blur(16px);
+        }
+
+        /* 录音工作台模式切换栏 */
+        .mode-tabs-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2));
+            border-color: #38bdf8;
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+        }
+
+        /* 实时录音可视化面板 */
+        .rec-visual-box {
+            width: 100%;
+            height: 170px;
+            background: #050a15;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
+        }
+        .rec-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .rec-grid-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background-image: linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* 录音时间与指示灯 */
+        .rec-time-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .rec-timer-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            font-weight: 800;
+            color: #f1f5f9;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .rec-timer-badge.active {
+            color: #f43f5e;
+            text-shadow: 0 0 16px rgba(244, 63, 94, 0.5);
+        }
+        .rec-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #475569;
+        }
+        .rec-dot.active {
+            background: #f43f5e;
+            box-shadow: 0 0 12px #f43f5e;
+            animation: pulse-dot 1.2s infinite ease-in-out;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
+        }
+
+        /* VU 电平表 */
+        .vu-meter-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            max-width: 320px;
+        }
+        .vu-meter-bar {
+            flex: 1;
+            height: 8px;
+            background: #0f172a;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .vu-meter-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #10b981 60%, #eab308 85%, #ef4444 100%);
+            transition: width 0.06s ease;
+        }
+
+        /* 录音主控制按钮 */
+        .rec-ctrls-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        .btn-rec-circle {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            color: #ffffff;
+            box-shadow: 0 0 24px rgba(244, 63, 94, 0.45);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-rec-circle:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 30px rgba(244, 63, 94, 0.6);
+        }
+        .btn-rec-circle.recording {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            animation: pulse-rec 2s infinite;
+        }
+
+        /* 拖拽上传音频区 */
+        .dropzone-box {
+            border: 2px dashed rgba(56, 189, 248, 0.35);
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 36px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dropzone-box:hover, .dropzone-box.dragover {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.08);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        /* WaveSurfer 容器与时间轴 */
+        .waveform-outer {
+            background: #050a15;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 10px;
+            padding: 12px 14px 8px;
+            margin-bottom: 18px;
+            box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+        .waveform-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        #waveform-mount {
+            width: 100%;
+            position: relative;
+            min-height: 128px;
+            cursor: crosshair;
+        }
+        #timeline-mount {
+            width: 100%;
+            height: 24px;
+            margin-top: 4px;
+        }
+
+        /* 选区与剪辑工具栏 */
+        .editor-action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .editor-sub-card {
+            background: rgba(9, 15, 29, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+        .editor-sub-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 历史记录卡片 */
+        .history-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+        }
+        .history-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #090f1d;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            gap: 10px;
+            transition: all 0.15s;
+        }
+        .history-item:hover {
+            border-color: #38bdf8;
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        /* 说明文档 */
+        .doc-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.7;
+        }
+        .doc-tag {
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        /* WaveSurfer 选区自定义高亮手柄 */
+        ::part(region-handle-left), ::part(region-handle-right) {
+            background: #38bdf8 !important;
+            border: none !important;
+            width: 4px !important;
+            box-shadow: 0 0 8px #38bdf8;
+            opacity: 0.9;
+        }
+        ::part(region-handle-left):hover, ::part(region-handle-right):hover {
+            opacity: 1;
+            transform: scaleX(1.4);
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./audio-and-video" class="text-slate-400 hover:text-cyan-400 text-sm">音视频</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">在线波形录音机与音频剪辑</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app" v-cloak>
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">在线波形录音机与音频剪辑</h1>
+                </div>
+                <div class="description">基于 WaveSurfer.js 与 Web Audio API 的专业级在线高清录音机与波形剪辑工作站。支持实时麦克风拾音、示波器频谱可视化、多轨波形高精度拖拽裁剪、试听选区、淡入淡出、响度标准化与无损 WAV/MP3 格式极速本地导出。</div>
+
+    <!-- 顶层模式切换与输入配置 Deck -->
+    <div class="studio-card">
+        <div class="mode-tabs-bar">
+            <div class="flex items-center gap-2">
+                <button class="tab-btn" :class="{ active: activeTab === 'record' }" @click="activeTab = 'record'">
+                    <span>🎙️ 麦克风录制</span>
+                </button>
+                <button class="tab-btn" :class="{ active: activeTab === 'import' }" @click="activeTab = 'import'">
+                    <span>📁 导入本地音频文件</span>
+                </button>
+            </div>
+
+            <!-- 硬件与采集参数控制 -->
+            <div class="flex items-center flex-wrap gap-3">
+                <div class="flex items-center gap-1.5 text-xs text-slate-400">
+                    <span>输入源:</span>
+                    <el-select v-model="selectedDeviceId" size="small" placeholder="选择麦克风" style="width: 170px;" :disabled="isRecording">
+                        <el-option v-for="dev in audioInputDevices" :key="dev.deviceId" :label="dev.label || `麦克风 ${dev.deviceId.slice(0,6)}`" :value="dev.deviceId" />
+                    </el-select>
+                </div>
+                <div class="flex items-center gap-1.5 text-xs text-slate-400">
+                    <span>增益:</span>
+                    <el-slider v-model="micGain" :min="0.5" :max="3.0" :step="0.1" size="small" style="width: 80px;" :show-tooltip="false" :disabled="!isRecording && !isMicActive" />
+                    <span class="font-mono text-cyan-400 text-xs">{{ (micGain * 100).toFixed(0) }}%</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <el-tooltip content="开启浏览器硬件降噪与回声消除" placement="top">
+                        <el-switch v-model="enableNoiseSuppression" size="small" active-text="降噪" :disabled="isRecording" />
+                    </el-tooltip>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 1: 麦克风录制区 -->
+        <div v-show="activeTab === 'record'">
+            <!-- 录制时间 & 状态 & VU 表 -->
+            <div class="rec-time-row">
+                <div class="rec-timer-badge" :class="{ active: isRecording && !isPaused }">
+                    <div class="rec-dot" :class="{ active: isRecording && !isPaused }"></div>
+                    <span>{{ formattedRecTime }}</span>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <!-- VU Meter -->
+                    <div class="vu-meter-wrap">
+                        <span class="text-xs font-mono text-slate-400">LEVEL</span>
+                        <div class="vu-meter-bar">
+                            <div class="vu-meter-fill" :style="{ width: vuLevel + '%' }"></div>
+                        </div>
+                        <span class="text-xs font-mono text-cyan-400" style="min-width: 45px;">{{ vuDbText }}</span>
+                    </div>
+
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-900 border border-slate-700 text-slate-300">
+                        {{ isRecording ? (isPaused ? '⏸ 录音已暂停' : '🔴 录音采集中...') : '⚪ 录音待命' }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- 实时示波器与频谱混合 Canvas -->
+            <div class="rec-visual-box">
+                <canvas ref="recCanvas" class="rec-canvas"></canvas>
+                <div class="rec-grid-overlay"></div>
+            </div>
+
+            <!-- 控制按钮 -->
+            <div class="rec-ctrls-wrap">
+                <template v-if="!isRecording">
+                    <button class="btn-rec-circle" @click="startRecording" title="点击开始高保真录音">
+                        <span>🎙️</span>
+                    </button>
+                    <div class="text-xs text-slate-400 font-mono">
+                        点击麦克风图标开启录音 · 采样率: 48,000 Hz / 16-Bit
+                    </div>
+                </template>
+
+                <template v-else>
+                    <el-button type="info" size="large" @click="togglePauseRecording" :icon="isPaused ? 'VideoPlay' : 'VideoPause'">
+                        {{ isPaused ? '▶ 继续录音' : '⏸ 暂停录音' }}
+                    </el-button>
+                    <el-button type="danger" size="large" @click="stopRecording">
+                        ⏹ 完成录音并导入剪辑工作区
+                    </el-button>
+                    <el-button size="large" @click="cancelRecording">
+                        ✕ 放弃本次录制
+                    </el-button>
+                </template>
+            </div>
+        </div>
+
+        <!-- TAB 2: 导入本地音频 -->
+        <div v-show="activeTab === 'import'">
+            <div class="dropzone-box"
+                 @dragover.prevent="isDragOver = true"
+                 @dragleave.prevent="isDragOver = false"
+                 @drop.prevent="onFileDrop"
+                 @click="triggerFileInput">
+                <input type="file" ref="fileInput" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.webm" class="hidden" @change="onFileSelected" />
+                <div class="text-3xl mb-2">📂</div>
+                <div class="text-sm font-bold text-slate-200 mb-1">点击选择音频文件 或 将音频文件拖拽至此处</div>
+                <div class="text-xs text-slate-500 font-mono">支持 MP3, WAV, M4A, AAC, FLAC, OGG, WebM 等主流音频格式</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WaveSurfer 交互波形剪辑工作区 (有音频载入时显示) -->
+    <div v-if="audioBuffer" class="studio-card" ref="editorCard">
+        <!-- Header -->
+        <div class="mode-tabs-bar">
+            <div class="flex items-center gap-3">
+                <span class="text-sm font-bold text-slate-200">✂️ 交互波形时间轴与裁剪工作区</span>
+                <span class="text-xs font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-800 px-2 py-0.5 rounded">
+                    总长: {{ audioBuffer.duration.toFixed(3) }}s · {{ audioBuffer.numberOfChannels === 2 ? '双声道立体声' : '单声道' }} · {{ audioBuffer.sampleRate }}Hz
+                </span>
+            </div>
+
+            <!-- 撤销/重做/重置 -->
+            <div class="flex items-center gap-2">
+                <el-button size="small" @click="undoEdit" :disabled="undoStack.length === 0" title="撤销上一次剪辑操作 (Ctrl+Z)">
+                    ↩ 撤销 ({{ undoStack.length }})
+                </el-button>
+                <el-button size="small" @click="redoEdit" :disabled="redoStack.length === 0" title="重做 (Ctrl+Y)">
+                    ↪ 重做 ({{ redoStack.length }})
+                </el-button>
+                <el-button size="small" type="warning" plain @click="revertToOriginal" :disabled="!originalBuffer || audioBuffer === originalBuffer">
+                    ↺ 恢复原始录音
+                </el-button>
+            </div>
+        </div>
+
+        <!-- WaveSurfer Display Box -->
+        <div class="waveform-outer">
+            <div class="waveform-header">
+                <div class="text-xs font-mono text-slate-400 flex items-center gap-3">
+                    <span>当前光标: <strong class="text-rose-400 font-mono">{{ formatSeconds(currentTime) }}</strong></span>
+                    <span>/</span>
+                    <span>音频总长: <strong class="text-slate-300 font-mono">{{ formatSeconds(audioBuffer.duration) }}</strong></span>
+                </div>
+                <div class="text-xs font-mono text-cyan-400 flex items-center gap-2">
+                    <span>💡 在波形上<strong>按住鼠标拖拽</strong>可框选或调整选区</span>
+                </div>
+            </div>
+
+            <!-- WaveSurfer Canvas Mount -->
+            <div id="waveform-mount" ref="waveformMount"></div>
+            <!-- Timeline Mount -->
+            <div id="timeline-mount" ref="timelineMount"></div>
+        </div>
+
+        <!-- 播放控制与时间轴缩放条 -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-5 p-3 rounded-lg bg-slate-900/80 border border-slate-800">
+            <!-- 播放按钮组 -->
+            <div class="flex items-center gap-2">
+                <el-button type="primary" :icon="isPlaying ? 'VideoPause' : 'VideoPlay'" @click="togglePlay">
+                    {{ isPlaying ? '暂停 (Space)' : '播放 (Space)' }}
+                </el-button>
+                <el-button @click="stopPlay">⏹ 停止</el-button>
+                <el-button size="small" @click="seekDelta(-2)">⏪ -2s</el-button>
+                <el-button size="small" @click="seekDelta(2)">⏩ +2s</el-button>
+                <el-button type="success" plain size="small" @click="playSelectionOnly">
+                    <span>▶ 试听选区 ({{ selectionDuration.toFixed(3) }}s)</span>
+                </el-button>
+                <el-checkbox v-model="loopSelection" label="循环试听" size="small" />
+            </div>
+
+            <!-- 缩放与音量控制 -->
+            <div class="flex items-center flex-wrap gap-4">
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <span>波形缩放:</span>
+                    <el-button size="small" circle @click="zoomOut" :disabled="zoomLevel <= 0">-</el-button>
+                    <el-slider v-model="zoomLevel" :min="0" :max="200" :step="10" size="small" style="width: 90px;" @input="onZoomChange" :show-tooltip="false" />
+                    <el-button size="small" circle @click="zoomIn" :disabled="zoomLevel >= 200">+</el-button>
+                    <el-button size="small" text @click="zoomReset">适应</el-button>
+                </div>
+
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <span>主音量:</span>
+                    <el-slider v-model="masterVolume" :min="0" :max="1" :step="0.05" size="small" style="width: 70px;" @input="onVolumeChange" :show-tooltip="false" />
+                    <span class="font-mono text-cyan-400 w-8">{{ (masterVolume * 100).toFixed(0) }}%</span>
+                </div>
+
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <span>倍速:</span>
+                    <el-select v-model="playbackRate" size="small" style="width: 76px;" @change="onPlaybackRateChange">
+                        <el-option label="0.5x" :value="0.5" />
+                        <el-option label="0.75x" :value="0.75" />
+                        <el-option label="1.0x" :value="1.0" />
+                        <el-option label="1.25x" :value="1.25" />
+                        <el-option label="1.5x" :value="1.5" />
+                        <el-option label="2.0x" :value="2.0" />
+                    </el-select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 选区精细化编辑面板 (Regions Controller) -->
+        <div class="editor-action-grid">
+            <!-- 选区参数与微调 -->
+            <div class="editor-sub-card">
+                <div class="editor-sub-title">
+                    <span>📐 选区精确时间锚点</span>
+                    <span class="text-cyan-400 font-mono font-bold">{{ selectionDuration.toFixed(3) }}s</span>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between text-xs text-slate-300">
+                        <span>起点 (Start):</span>
+                        <div class="flex items-center gap-1">
+                            <el-input-number v-model="regionStart" :min="0" :max="regionEnd" :step="0.05" :precision="3" size="small" style="width: 130px;" @change="onRegionManualChange" />
+                            <span class="font-mono text-slate-500">秒</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-slate-300">
+                        <span>终点 (End):</span>
+                        <div class="flex items-center gap-1">
+                            <el-input-number v-model="regionEnd" :min="regionStart" :max="audioBuffer ? audioBuffer.duration : 0" :step="0.05" :precision="3" size="small" style="width: 130px;" @change="onRegionManualChange" />
+                            <span class="font-mono text-slate-500">秒</span>
+                        </div>
+                    </div>
+
+                    <!-- 快速选区预设 -->
+                    <div class="flex items-center gap-1.5 pt-1">
+                        <el-button size="small" text bg @click="selectAllRegion">全选</el-button>
+                        <el-button size="small" text bg @click="selectFirstSecs(5)">前 5 秒</el-button>
+                        <el-button size="small" text bg @click="selectLastSecs(5)">后 5 秒</el-button>
+                        <el-button size="small" text bg @click="shiftRegion(-1)">◀ 左移</el-button>
+                        <el-button size="small" text bg @click="shiftRegion(1)">右移 ▶</el-button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 核心剪辑操作 -->
+            <div class="editor-sub-card">
+                <div class="editor-sub-title">
+                    <span>✂️ 核心破坏性剪辑操作</span>
+                    <span class="text-xs text-slate-500">自动入撤销栈</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <el-button type="warning" @click="cropSelection" :disabled="selectionDuration <= 0.01" style="width: 100%;">
+                        ✂️ 裁剪并保留选区
+                    </el-button>
+                    <el-button type="danger" @click="deleteSelection" :disabled="selectionDuration <= 0.01" style="width: 100%;">
+                        🗑️ 删除选区保留两端
+                    </el-button>
+                    <el-button @click="silenceSelection" :disabled="selectionDuration <= 0.01" style="width: 100%;">
+                        🔇 选区一键静音
+                    </el-button>
+                    <el-button @click="reverseSelection" :disabled="selectionDuration <= 0.01" style="width: 100%;">
+                        🔄 选区反向倒放
+                    </el-button>
+                </div>
+            </div>
+
+            <!-- 声学增强与淡入淡出 -->
+            <div class="editor-sub-card">
+                <div class="editor-sub-title">
+                    <span>🎛️ 音效处理与增益平衡</span>
+                    <span class="text-xs text-slate-500">DSP 算法</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <el-button size="small" @click="applyFade(true)" :disabled="selectionDuration <= 0.05">
+                        📈 选区平滑淡入 (Fade In)
+                    </el-button>
+                    <el-button size="small" @click="applyFade(false)" :disabled="selectionDuration <= 0.05">
+                        📉 选区平滑淡出 (Fade Out)
+                    </el-button>
+                    <el-button size="small" @click="normalizeAudio" type="primary" plain>
+                        🔊 响度归一化 (0 dBFS)
+                    </el-button>
+                    <el-button size="small" @click="applyGain(1.414)">
+                        ⚡ 音量增益 (+3 dB)
+                    </el-button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导出与极速本地下载区 -->
+        <div class="p-4 rounded-xl bg-slate-900 border border-cyan-800/40">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-3">
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-bold text-slate-200">💾 导出与本地离线下载</span>
+                    <el-radio-group v-model="exportScope" size="small">
+                        <el-radio-button label="all">导出完整音频</el-radio-button>
+                        <el-radio-button label="selection">仅导出选区片段 ({{ selectionDuration.toFixed(2) }}s)</el-radio-button>
+                    </el-radio-group>
+                </div>
+
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="text-slate-400">MP3 码率:</span>
+                    <el-select v-model="mp3Bitrate" size="small" style="width: 110px;">
+                        <el-option label="128 kbps" :value="128" />
+                        <el-option label="192 kbps (推荐)" :value="192" />
+                        <el-option label="256 kbps" :value="256" />
+                        <el-option label="320 kbps (母带)" :value="320" />
+                    </el-select>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2 flex-1 max-w-md">
+                    <span class="text-xs text-slate-400 whitespace-nowrap">文件名称:</span>
+                    <el-input v-model="exportFileName" size="small" placeholder="输入保存文件名" />
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <el-button type="success" size="default" :loading="isExporting" @click="exportAudio('wav')">
+                        💾 导出无损 WAV 文件
+                    </el-button>
+                    <el-button type="primary" size="default" :loading="isExporting" @click="exportAudio('mp3')">
+                        🎵 导出高清 MP3 文件
+                    </el-button>
+                    <el-button size="default" :loading="isExporting" @click="exportAudio('webm')">
+                        📦 导出 WebM
+                    </el-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 录音历史列表卡片 -->
+    <div v-if="recordingsHistory.length > 0" class="history-card">
+        <div class="text-xs font-mono font-bold text-slate-300 mb-3 uppercase tracking-wider flex items-center justify-between">
+            <span>📁 本次会话录音与剪辑工程列表 (共 {{ recordingsHistory.length }} 条)</span>
+            <button class="text-xs text-slate-500 hover:text-red-400" @click="clearHistory">清空列表</button>
+        </div>
+
+        <div v-for="(rec, idx) in recordingsHistory" :key="idx" class="history-item">
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+                <span class="text-xl">🎵</span>
+                <div class="min-w-0">
+                    <div class="text-xs font-bold text-slate-200 truncate">{{ rec.name }}</div>
+                    <div class="text-xs font-mono text-slate-500">{{ rec.duration }} · {{ rec.size }} · {{ rec.time }}</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <el-button size="small" type="primary" plain @click="loadFromHistory(rec)">载入工作区</el-button>
+                <el-button size="small" @click="downloadBlob(rec.wavBlob, rec.name + '.wav')">下载 WAV</el-button>
+                <el-button size="small" @click="exportAndDownloadMp3(rec.buffer, rec.name + '.mp3')">下载 MP3</el-button>
+                <el-button size="small" text type="danger" @click="removeHistoryItem(idx)">删除</el-button>
+            </div>
+        </div>
+    </div>
+
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>本音频工作台由 WaveSurfer.js 及其官方 Regions 与 Timeline 插件驱动。采样引擎采用浏览器原生 Web Audio API，支持 16-Bit 线性 PCM 脉冲编码调制，所有波形渲染、选区缩放与切片均在浏览器本地秒级完成，内置纯前端 LAME MP3 编码器，保护敏感录音隐私。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="314" :comment-class="2"></comment>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/wavesurfer/wavesurfer.min.js"></script>
+<script src="./lib/wavesurfer/regions.min.js"></script>
+<script src="./lib/wavesurfer/timeline.min.js"></script>
+<script src="./lib/wavesurfer/record.min.js"></script>
+<script src="./lib/wavesurfer/lame.min.js"></script>
+
+<script>
+    const { createApp, ref, computed, onMounted, onUnmounted, nextTick } = Vue;
+
+    // ─────────────────────────────────────────────────────────────
+    // WAV 编码工具 (16-bit PCM WAV)
+    // ─────────────────────────────────────────────────────────────
+    function encodeWAV(audioBuffer) {
+        const numChannels = audioBuffer.numberOfChannels;
+        const sampleRate = audioBuffer.sampleRate;
+        const format = 1; // PCM
+        const bitDepth = 16;
+        
+        let interleaved;
+        if (numChannels === 2) {
+            const ch0 = audioBuffer.getChannelData(0);
+            const ch1 = audioBuffer.getChannelData(1);
+            interleaved = new Float32Array(ch0.length + ch1.length);
+            let idx = 0;
+            for (let i = 0; i < ch0.length; i++) {
+                interleaved[idx++] = ch0[i];
+                interleaved[idx++] = ch1[i];
+            }
+        } else {
+            interleaved = audioBuffer.getChannelData(0);
+        }
+
+        const dataLength = interleaved.length * (bitDepth / 8);
+        const buffer = new ArrayBuffer(44 + dataLength);
+        const view = new DataView(buffer);
+
+        function writeString(offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        // RIFF header
+        writeString(0, 'RIFF');
+        view.setUint32(4, 36 + dataLength, true);
+        writeString(8, 'WAVE');
+
+        // fmt chunk
+        writeString(12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, format, true);
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * numChannels * (bitDepth / 8), true);
+        view.setUint16(32, numChannels * (bitDepth / 8), true);
+        view.setUint16(34, bitDepth, true);
+
+        // data chunk
+        writeString(36, 'data');
+        view.setUint32(40, dataLength, true);
+
+        // Write PCM samples
+        let offset = 44;
+        for (let i = 0; i < interleaved.length; i++) {
+            let s = Math.max(-1, Math.min(1, interleaved[i]));
+            s = s < 0 ? s * 0x8000 : s * 0x7FFF;
+            view.setInt16(offset, s, true);
+            offset += 2;
+        }
+
+        return new Blob([view], { type: 'audio/wav' });
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // LAME MP3 纯前端编码工具 (支持多声道与指定码率)
+    // ─────────────────────────────────────────────────────────────
+    function encodeMP3(audioBuffer, bitrate = 192) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (typeof lamejs === 'undefined' && typeof window.lamejs === 'undefined') {
+                    throw new Error('LameJS 编码器库未加载');
+                }
+                const Lame = window.lamejs || lamejs;
+                const channels = audioBuffer.numberOfChannels;
+                const sampleRate = audioBuffer.sampleRate;
+                const mp3encoder = new Lame.Mp3Encoder(channels, sampleRate, bitrate);
+                const mp3Data = [];
+
+                const sampleBlockSize = 1152;
+                const left = audioBuffer.getChannelData(0);
+                const right = channels > 1 ? audioBuffer.getChannelData(1) : null;
+
+                // 转换浮点样本到 Int16Array
+                const leftInt16 = new Int16Array(left.length);
+                for (let i = 0; i < left.length; i++) {
+                    let s = Math.max(-1, Math.min(1, left[i]));
+                    leftInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                }
+
+                let rightInt16 = null;
+                if (right) {
+                    rightInt16 = new Int16Array(right.length);
+                    for (let i = 0; i < right.length; i++) {
+                        let s = Math.max(-1, Math.min(1, right[i]));
+                        rightInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                    }
+                }
+
+                for (let i = 0; i < leftInt16.length; i += sampleBlockSize) {
+                    const leftChunk = leftInt16.subarray(i, i + sampleBlockSize);
+                    let mp3buf;
+                    if (channels === 2) {
+                        const rightChunk = rightInt16.subarray(i, i + sampleBlockSize);
+                        mp3buf = mp3encoder.encodeBuffer(leftChunk, rightChunk);
+                    } else {
+                        mp3buf = mp3encoder.encodeBuffer(leftChunk);
+                    }
+                    if (mp3buf.length > 0) {
+                        mp3Data.push(mp3buf);
+                    }
+                }
+
+                const mp3buf = mp3encoder.flush();
+                if (mp3buf.length > 0) {
+                    mp3Data.push(mp3buf);
+                }
+
+                const blob = new Blob(mp3Data, { type: 'audio/mp3' });
+                resolve(blob);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // AudioBuffer 克隆与切片辅助
+    // ─────────────────────────────────────────────────────────────
+    function cloneAudioBuffer(audioCtx, buffer) {
+        const channels = buffer.numberOfChannels;
+        const newBuf = audioCtx.createBuffer(channels, buffer.length, buffer.sampleRate);
+        for (let c = 0; c < channels; c++) {
+            newBuf.copyToChannel(buffer.getChannelData(c), c);
+        }
+        return newBuf;
+    }
+
+    function sliceAudioBuffer(audioCtx, buffer, startTime, endTime) {
+        const sampleRate = buffer.sampleRate;
+        const channels = buffer.numberOfChannels;
+        const startSample = Math.max(0, Math.floor(startTime * sampleRate));
+        const endSample = Math.min(buffer.length, Math.floor(endTime * sampleRate));
+        const frameCount = Math.max(1, endSample - startSample);
+
+        const newBuffer = audioCtx.createBuffer(channels, frameCount, sampleRate);
+        for (let c = 0; c < channels; c++) {
+            const oldData = buffer.getChannelData(c);
+            const newData = newBuffer.getChannelData(c);
+            for (let i = 0; i < frameCount; i++) {
+                newData[i] = oldData[startSample + i];
+            }
+        }
+        return newBuffer;
+    }
+
+    createApp({
+        setup() {
+            // UI 状态
+            const activeTab = ref('record');
+            const recCanvas = ref(null);
+            const waveformMount = ref(null);
+            const timelineMount = ref(null);
+            const fileInput = ref(null);
+            const editorCard = ref(null);
+
+            // 麦克风录音控制
+            const isRecording = ref(false);
+            const isPaused = ref(false);
+            const isMicActive = ref(false);
+            const recordingTimeSecs = ref(0);
+            const vuLevel = ref(0);
+            const vuDbText = ref('-∞ dB');
+            const micGain = ref(1.0);
+            const enableNoiseSuppression = ref(true);
+            const audioInputDevices = ref([]);
+            const selectedDeviceId = ref('');
+            let recTimerInterval = null;
+
+            // Web Audio 实时流
+            let audioCtx = null;
+            let mediaStream = null;
+            let gainNode = null;
+            let analyser = null;
+            let mediaRecorder = null;
+            let recordedAudioChunks = [];
+            let oscAnimId = null;
+
+            // WaveSurfer 实例与插件
+            let wavesurfer = null;
+            let wsRegions = null;
+            let wsTimeline = null;
+            let activeRegion = null;
+
+            // 音频数据与剪辑状态
+            const originalBuffer = ref(null);
+            const audioBuffer = ref(null);
+            const undoStack = ref([]);
+            const redoStack = ref([]);
+
+            // 选区与播放状态
+            const regionStart = ref(0);
+            const regionEnd = ref(0);
+            const currentTime = ref(0);
+            const isPlaying = ref(false);
+            const loopSelection = ref(false);
+            let isAuditioningSelection = false;
+
+            // 播放与视图配置
+            const zoomLevel = ref(0);
+            const masterVolume = ref(1.0);
+            const playbackRate = ref(1.0);
+
+            // 导出配置
+            const exportScope = ref('all');
+            const mp3Bitrate = ref(192);
+            const exportFileName = ref('VoiceRecord_' + new Date().toISOString().slice(0,10));
+            const isExporting = ref(false);
+
+            // 历史工程列表
+            const recordingsHistory = ref([]);
+            const isDragOver = ref(false);
+
+            // 格式化时间代码
+            const formattedRecTime = computed(() => {
+                const total = recordingTimeSecs.value;
+                const mins = Math.floor(total / 60);
+                const secs = total % 60;
+                return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            });
+
+            const selectionDuration = computed(() => {
+                const dur = regionEnd.value - regionStart.value;
+                return dur > 0 ? dur : 0;
+            });
+
+            function formatSeconds(secs) {
+                if (!secs || isNaN(secs)) return '00:00.000';
+                const m = Math.floor(secs / 60);
+                const s = Math.floor(secs % 60);
+                const ms = Math.floor((secs % 1) * 1000);
+                return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padStart(3, '0')}`;
+            }
+
+            // 获取音频输入设备
+            async function getAudioDevices() {
+                try {
+                    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+                        const devices = await navigator.mediaDevices.enumerateDevices();
+                        audioInputDevices.value = devices.filter(d => d.kind === 'audioinput');
+                        if (audioInputDevices.value.length > 0 && !selectedDeviceId.value) {
+                            selectedDeviceId.value = audioInputDevices.value[0].deviceId;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('获取麦克风列表失败:', e);
+                }
+            }
+
+            // 初始化 AudioContext
+            function getAudioContext() {
+                if (!audioCtx || audioCtx.state === 'closed') {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContextClass();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                return audioCtx;
+            }
+
+            // ─────────────────────────────────────────────────────────
+            // 麦克风录音控制
+            // ─────────────────────────────────────────────────────────
+            async function startRecording() {
+                try {
+                    const ctx = getAudioContext();
+                    const constraints = {
+                        audio: {
+                            deviceId: selectedDeviceId.value ? { exact: selectedDeviceId.value } : undefined,
+                            echoCancellation: enableNoiseSuppression.value,
+                            noiseSuppression: enableNoiseSuppression.value,
+                            autoGainControl: false,
+                            sampleRate: 48000
+                        }
+                    };
+
+                    mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+                    isMicActive.value = true;
+
+                    // Web Audio 节点连接: Mic -> Gain -> Analyser -> Destination(静音)
+                    const source = ctx.createMediaStreamSource(mediaStream);
+                    gainNode = ctx.createGain();
+                    gainNode.gain.value = micGain.value;
+                    analyser = ctx.createAnalyser();
+                    analyser.fftSize = 2048;
+                    analyser.smoothingTimeConstant = 0.8;
+
+                    source.connect(gainNode);
+                    gainNode.connect(analyser);
+
+                    // 启动 MediaRecorder
+                    recordedAudioChunks = [];
+                    const mimeType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/wav', 'audio/mp4']
+                        .find(t => MediaRecorder.isTypeSupported(t)) || '';
+                    
+                    mediaRecorder = new MediaRecorder(mediaStream, mimeType ? { mimeType } : {});
+                    mediaRecorder.ondataavailable = (e) => {
+                        if (e.data && e.data.size > 0) recordedAudioChunks.push(e.data);
+                    };
+
+                    mediaRecorder.onstop = async () => {
+                        const blob = new Blob(recordedAudioChunks, { type: mimeType || 'audio/webm' });
+                        const arrayBuffer = await blob.arrayBuffer();
+                        ctx.decodeAudioData(arrayBuffer, (decoded) => {
+                            setNewAudioBuffer(decoded, `录音_${new Date().toLocaleTimeString()}`);
+                        }, (err) => {
+                            console.error('音频解码失败:', err);
+                            ElementPlus.ElMessage.error('音频解码失败，请重试');
+                        });
+                    };
+
+                    mediaRecorder.start(200);
+                    isRecording.value = true;
+                    isPaused.value = false;
+                    recordingTimeSecs.value = 0;
+
+                    recTimerInterval = setInterval(() => {
+                        if (!isPaused.value) recordingTimeSecs.value++;
+                    }, 1000);
+
+                    startVisualizer();
+                    getAudioDevices();
+
+                } catch (err) {
+                    console.error(err);
+                    ElementPlus.ElMessageBox.alert(
+                        '无法访问麦克风。请确保已在浏览器中允许本网页使用麦克风权限，并且麦克风设备未被其他应用独占。',
+                        '麦克风权限提示',
+                        { type: 'warning' }
+                    );
+                }
+            }
+
+            function togglePauseRecording() {
+                if (!mediaRecorder) return;
+                if (mediaRecorder.state === 'recording') {
+                    mediaRecorder.pause();
+                    isPaused.value = true;
+                } else if (mediaRecorder.state === 'paused') {
+                    mediaRecorder.resume();
+                    isPaused.value = false;
+                }
+            }
+
+            function stopRecording() {
+                if (recTimerInterval) clearInterval(recTimerInterval);
+                if (mediaRecorder && (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused')) {
+                    mediaRecorder.stop();
+                }
+                cleanupMicStream();
+                isRecording.value = false;
+                isPaused.value = false;
+            }
+
+            function cancelRecording() {
+                if (recTimerInterval) clearInterval(recTimerInterval);
+                if (mediaRecorder && (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused')) {
+                    mediaRecorder.ondataavailable = null;
+                    mediaRecorder.onstop = null;
+                    mediaRecorder.stop();
+                }
+                cleanupMicStream();
+                isRecording.value = false;
+                isPaused.value = false;
+                recordingTimeSecs.value = 0;
+                ElementPlus.ElMessage.info('已取消本次录制');
+            }
+
+            function cleanupMicStream() {
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(t => t.stop());
+                    mediaStream = null;
+                }
+                if (oscAnimId) cancelAnimationFrame(oscAnimId);
+                isMicActive.value = false;
+                vuLevel.value = 0;
+                vuDbText.value = '-∞ dB';
+            }
+
+            // 实时示波器与频谱柱状图绘制
+            function startVisualizer() {
+                if (!recCanvas.value || !analyser) return;
+                const canvas = recCanvas.value;
+                const ctx = canvas.getContext('2d');
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = canvas.clientWidth * dpr;
+                canvas.height = canvas.clientHeight * dpr;
+
+                const bufferLength = analyser.frequencyBinCount;
+                const timeDomainData = new Uint8Array(bufferLength);
+                const frequencyData = new Uint8Array(bufferLength);
+
+                const draw = () => {
+                    if (!isMicActive.value) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        return;
+                    }
+                    oscAnimId = requestAnimationFrame(draw);
+
+                    if (gainNode) gainNode.gain.value = micGain.value;
+                    analyser.getByteTimeDomainData(timeDomainData);
+                    analyser.getByteFrequencyData(frequencyData);
+
+                    // 计算 VU 电平与分贝值
+                    let sumSquares = 0;
+                    for (let i = 0; i < bufferLength; i++) {
+                        const norm = (timeDomainData[i] - 128) / 128;
+                        sumSquares += norm * norm;
+                    }
+                    const rms = Math.sqrt(sumSquares / bufferLength);
+                    const db = rms > 0 ? 20 * Math.log10(rms) : -100;
+                    vuLevel.value = Math.min(100, Math.max(0, (db + 60) * (100 / 60)));
+                    vuDbText.value = db > -60 ? `${db.toFixed(1)} dB` : '-∞ dB';
+
+                    // 绘制背景清屏
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // 1. 绘制底部 32 频段 FFT 频谱能量柱
+                    const barCount = 48;
+                    const barWidth = canvas.width / barCount;
+                    for (let i = 0; i < barCount; i++) {
+                        const freqIdx = Math.floor((i / barCount) * (bufferLength / 3));
+                        const val = frequencyData[freqIdx] / 255.0;
+                        const barH = val * (canvas.height * 0.7);
+
+                        const grad = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - barH);
+                        grad.addColorStop(0, 'rgba(56, 189, 248, 0.1)');
+                        grad.addColorStop(0.7, 'rgba(168, 85, 247, 0.3)');
+                        grad.addColorStop(1, 'rgba(244, 63, 94, 0.5)');
+
+                        ctx.fillStyle = grad;
+                        ctx.fillRect(i * barWidth + 1, canvas.height - barH, barWidth - 2, barH);
+                    }
+
+                    // 2. 绘制顶部动态发光时域示波器曲线
+                    ctx.lineWidth = 2.5 * dpr;
+                    const oscGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+                    oscGrad.addColorStop(0, '#38bdf8');
+                    oscGrad.addColorStop(0.5, '#a855f7');
+                    oscGrad.addColorStop(1, '#34d399');
+                    ctx.strokeStyle = oscGrad;
+                    ctx.shadowColor = '#38bdf8';
+                    ctx.shadowBlur = 8 * dpr;
+                    ctx.beginPath();
+
+                    const sliceWidth = canvas.width / bufferLength;
+                    let x = 0;
+                    for (let i = 0; i < bufferLength; i++) {
+                        const v = timeDomainData[i] / 128.0;
+                        const y = (v * canvas.height) / 2;
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                        x += sliceWidth;
+                    }
+                    ctx.lineTo(canvas.width, canvas.height / 2);
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                };
+                draw();
+            }
+
+            // ─────────────────────────────────────────────────────────
+            // 本地音频文件导入
+            // ─────────────────────────────────────────────────────────
+            function triggerFileInput() {
+                if (fileInput.value) fileInput.value.click();
+            }
+
+            function onFileSelected(e) {
+                const file = e.target.files && e.target.files[0];
+                if (file) handleAudioFile(file);
+            }
+
+            function onFileDrop(e) {
+                isDragOver.value = false;
+                const file = e.dataTransfer.files && e.dataTransfer.files[0];
+                if (file) handleAudioFile(file);
+            }
+
+            async function handleAudioFile(file) {
+                try {
+                    const ctx = getAudioContext();
+                    const arrayBuffer = await file.arrayBuffer();
+                    ctx.decodeAudioData(arrayBuffer, (decoded) => {
+                        setNewAudioBuffer(decoded, file.name.replace(/\.[^/.]+$/, ''));
+                        ElementPlus.ElMessage.success(`成功导入音频「${file.name}」`);
+                    }, (err) => {
+                        console.error(err);
+                        ElementPlus.ElMessage.error('无法解析该音频文件，格式可能损坏或不支持');
+                    });
+                } catch (e) {
+                    console.error(e);
+                    ElementPlus.ElMessage.error('读取音频文件出错');
+                }
+            }
+
+            // ─────────────────────────────────────────────────────────
+            // WaveSurfer.js 核心工作区初始化与数据绑定
+            // ─────────────────────────────────────────────────────────
+            function setNewAudioBuffer(buffer, clipName, isUndoRedo = false) {
+                if (!isUndoRedo && audioBuffer.value) {
+                    // 推入撤销栈
+                    undoStack.value.push(cloneAudioBuffer(getAudioContext(), audioBuffer.value));
+                    if (undoStack.value.length > 15) undoStack.value.shift();
+                    redoStack.value = [];
+                }
+
+                if (!originalBuffer.value) {
+                    originalBuffer.value = buffer;
+                }
+
+                audioBuffer.value = buffer;
+                exportFileName.value = clipName || ('AudioEdit_' + new Date().toISOString().slice(0,10));
+                regionStart.value = 0;
+                regionEnd.value = buffer.duration;
+
+                // 保存到会话历史列表 (如果是新录制)
+                if (!isUndoRedo && clipName.startsWith('录音_')) {
+                    const wavBlob = encodeWAV(buffer);
+                    recordingsHistory.value.unshift({
+                        name: clipName,
+                        duration: `${buffer.duration.toFixed(1)}s`,
+                        size: `${(wavBlob.size / 1024).toFixed(1)} KB`,
+                        time: new Date().toLocaleTimeString(),
+                        wavBlob: wavBlob,
+                        buffer: buffer
+                    });
+                }
+
+                nextTick(() => {
+                    initWaveSurfer(buffer);
+                });
+            }
+
+            function initWaveSurfer(buffer) {
+                if (!waveformMount.value) return;
+
+                // 销毁旧实例
+                if (wavesurfer) {
+                    try { wavesurfer.destroy(); } catch (e) {}
+                    wavesurfer = null;
+                }
+
+                // 准备挂载节点清空
+                waveformMount.value.innerHTML = '';
+                if (timelineMount.value) timelineMount.value.innerHTML = '';
+
+                // 创建 Regions 插件
+                wsRegions = WaveSurfer.Regions.create();
+
+                // 创建 Timeline 插件
+                wsTimeline = WaveSurfer.Timeline.create({
+                    container: timelineMount.value,
+                    height: 22,
+                    timeInterval: 1,
+                    primaryLabelInterval: 5,
+                    secondaryLabelInterval: 1,
+                    style: {
+                        fontSize: '11px',
+                        color: '#64748b'
+                    }
+                });
+
+                // 初始化 WaveSurfer 7
+                wavesurfer = WaveSurfer.create({
+                    container: waveformMount.value,
+                    waveColor: 'rgba(56, 189, 248, 0.45)',
+                    progressColor: '#38bdf8',
+                    cursorColor: '#f43f5e',
+                    cursorWidth: 2,
+                    height: 130,
+                    barWidth: 2,
+                    barGap: 1,
+                    barRadius: 2,
+                    normalize: true,
+                    minPxPerSec: zoomLevel.value,
+                    plugins: [wsRegions, wsTimeline]
+                });
+
+                // 加载 WAV Blob
+                const wavBlob = encodeWAV(buffer);
+                wavesurfer.loadBlob(wavBlob);
+
+                // 事件监听
+                wavesurfer.on('ready', () => {
+                    currentTime.value = 0;
+                    wavesurfer.setVolume(masterVolume.value);
+                    wavesurfer.setPlaybackRate(playbackRate.value);
+
+                    // 注册默认高亮选区
+                    wsRegions.clearRegions();
+                    activeRegion = wsRegions.addRegion({
+                        id: 'main-edit-region',
+                        start: regionStart.value,
+                        end: regionEnd.value,
+                        color: 'rgba(56, 189, 248, 0.22)',
+                        drag: true,
+                        resize: true
+                    });
+
+                    // 开启全波形拖拽画选区
+                    wsRegions.enableDragSelection({
+                        color: 'rgba(56, 189, 248, 0.22)',
+                        drag: true,
+                        resize: true
+                    });
+                });
+
+                wavesurfer.on('play', () => { isPlaying.value = true; });
+                wavesurfer.on('pause', () => { isPlaying.value = false; isAuditioningSelection = false; });
+                wavesurfer.on('finish', () => {
+                    isPlaying.value = false;
+                    isAuditioningSelection = false;
+                });
+
+                wavesurfer.on('timeupdate', (t) => {
+                    currentTime.value = t;
+                    // 试听选区边界拦截
+                    if (isAuditioningSelection && activeRegion) {
+                        if (t >= activeRegion.end || t < activeRegion.start - 0.05) {
+                            if (loopSelection.value) {
+                                wavesurfer.setTime(activeRegion.start);
+                                wavesurfer.play();
+                            } else {
+                                wavesurfer.pause();
+                                wavesurfer.setTime(activeRegion.start);
+                                isAuditioningSelection = false;
+                            }
+                        }
+                    }
+                });
+
+                // Regions 事件同步
+                wsRegions.on('region-created', (region) => {
+                    // 若用户拖拽创建了新选区，清理其他选区保持单主选区
+                    wsRegions.getRegions().forEach(r => {
+                        if (r !== region) r.remove();
+                    });
+                    activeRegion = region;
+                    regionStart.value = Math.max(0, region.start);
+                    regionEnd.value = Math.min(buffer.duration, region.end);
+                });
+
+                wsRegions.on('region-updated', (region) => {
+                    activeRegion = region;
+                    regionStart.value = Math.max(0, Number(region.start.toFixed(3)));
+                    regionEnd.value = Math.min(buffer.duration, Number(region.end.toFixed(3)));
+                });
+
+                wsRegions.on('region-clicked', (region, e) => {
+                    e.stopPropagation();
+                    activeRegion = region;
+                });
+            }
+
+            // 选区数字输入双向同步
+            function onRegionManualChange() {
+                if (!activeRegion || !wavesurfer) return;
+                if (regionStart.value > regionEnd.value) {
+                    regionStart.value = regionEnd.value;
+                }
+                activeRegion.setOptions({
+                    start: regionStart.value,
+                    end: regionEnd.value
+                });
+            }
+
+            // 选区预设控制
+            function selectAllRegion() {
+                if (!audioBuffer.value || !activeRegion) return;
+                regionStart.value = 0;
+                regionEnd.value = audioBuffer.value.duration;
+                onRegionManualChange();
+            }
+
+            function selectFirstSecs(secs) {
+                if (!audioBuffer.value || !activeRegion) return;
+                regionStart.value = 0;
+                regionEnd.value = Math.min(audioBuffer.value.duration, secs);
+                onRegionManualChange();
+            }
+
+            function selectLastSecs(secs) {
+                if (!audioBuffer.value || !activeRegion) return;
+                const dur = audioBuffer.value.duration;
+                regionStart.value = Math.max(0, dur - secs);
+                regionEnd.value = dur;
+                onRegionManualChange();
+            }
+
+            function shiftRegion(delta) {
+                if (!audioBuffer.value || !activeRegion) return;
+                const dur = selectionDuration.value;
+                let newStart = regionStart.value + delta;
+                let newEnd = regionEnd.value + delta;
+                if (newStart < 0) {
+                    newStart = 0;
+                    newEnd = dur;
+                }
+                if (newEnd > audioBuffer.value.duration) {
+                    newEnd = audioBuffer.value.duration;
+                    newStart = Math.max(0, newEnd - dur);
+                }
+                regionStart.value = newStart;
+                regionEnd.value = newEnd;
+                onRegionManualChange();
+            }
+
+            // 播放控制
+            function togglePlay() {
+                if (!wavesurfer) return;
+                isAuditioningSelection = false;
+                wavesurfer.playPause();
+            }
+
+            function stopPlay() {
+                if (!wavesurfer) return;
+                wavesurfer.stop();
+                isPlaying.value = false;
+                isAuditioningSelection = false;
+            }
+
+            function seekDelta(delta) {
+                if (!wavesurfer) return;
+                wavesurfer.skip(delta);
+            }
+
+            function playSelectionOnly() {
+                if (!wavesurfer || !activeRegion) return;
+                isAuditioningSelection = true;
+                wavesurfer.setTime(activeRegion.start);
+                wavesurfer.play();
+            }
+
+            // 视图缩放与音量
+            function onZoomChange(val) {
+                if (wavesurfer) {
+                    wavesurfer.zoom(val);
+                }
+            }
+            function zoomIn() {
+                zoomLevel.value = Math.min(200, zoomLevel.value + 20);
+                onZoomChange(zoomLevel.value);
+            }
+            function zoomOut() {
+                zoomLevel.value = Math.max(0, zoomLevel.value - 20);
+                onZoomChange(zoomLevel.value);
+            }
+            function zoomReset() {
+                zoomLevel.value = 0;
+                onZoomChange(0);
+            }
+
+            function onVolumeChange(val) {
+                if (wavesurfer) wavesurfer.setVolume(val);
+            }
+
+            function onPlaybackRateChange(val) {
+                if (wavesurfer) wavesurfer.setPlaybackRate(val);
+            }
+
+            // ─────────────────────────────────────────────────────────
+            // 核心音频破坏性编辑 (PCM 切割、拼接、平滑淡化)
+            // ─────────────────────────────────────────────────────────
+
+            // 1. 裁剪并保留选区
+            function cropSelection() {
+                if (!audioBuffer.value) return;
+                const start = Math.min(regionStart.value, regionEnd.value);
+                const end = Math.max(regionStart.value, regionEnd.value);
+                if (end - start <= 0.02) {
+                    ElementPlus.ElMessage.warning('选区长度过短，无法裁剪');
+                    return;
+                }
+
+                const ctx = getAudioContext();
+                const newBuffer = sliceAudioBuffer(ctx, audioBuffer.value, start, end);
+                setNewAudioBuffer(newBuffer, exportFileName.value);
+                ElementPlus.ElMessage.success('已裁剪并保留所选音频片段！');
+            }
+
+            // 2. 删除选区保留两端 (含微交叉淡入淡出接缝)
+            function deleteSelection() {
+                if (!audioBuffer.value) return;
+                const start = Math.min(regionStart.value, regionEnd.value);
+                const end = Math.max(regionStart.value, regionEnd.value);
+                const buf = audioBuffer.value;
+                const rate = buf.sampleRate;
+                const channels = buf.numberOfChannels;
+
+                const startSample = Math.floor(start * rate);
+                const endSample = Math.floor(end * rate);
+                const leftLen = startSample;
+                const rightLen = buf.length - endSample;
+                const newLen = leftLen + rightLen;
+
+                if (newLen <= 0) {
+                    ElementPlus.ElMessage.warning('不可删除全部音频');
+                    return;
+                }
+
+                const ctx = getAudioContext();
+                const newBuffer = ctx.createBuffer(channels, newLen, rate);
+
+                for (let c = 0; c < channels; c++) {
+                    const oldData = buf.getChannelData(c);
+                    const newData = newBuffer.getChannelData(c);
+
+                    // 拷贝左段
+                    for (let i = 0; i < leftLen; i++) newData[i] = oldData[i];
+                    // 拷贝右段
+                    for (let i = 0; i < rightLen; i++) newData[leftLen + i] = oldData[endSample + i];
+
+                    // 在接缝处执行 128 点 Anti-Pop 微平滑
+                    const crossfade = Math.min(128, leftLen, rightLen);
+                    if (crossfade > 0 && leftLen > 0 && rightLen > 0) {
+                        for (let i = 0; i < crossfade; i++) {
+                            const t = i / crossfade;
+                            const leftVal = oldData[leftLen - crossfade + i];
+                            const rightVal = oldData[endSample + i];
+                            newData[leftLen - crossfade + i] = leftVal * (1 - t) + rightVal * t;
+                        }
+                    }
+                }
+
+                setNewAudioBuffer(newBuffer, exportFileName.value);
+                ElementPlus.ElMessage.success('已删除选中音频，并完成接缝平滑拼接！');
+            }
+
+            // 3. 选区一键静音
+            function silenceSelection() {
+                if (!audioBuffer.value) return;
+                const start = Math.min(regionStart.value, regionEnd.value);
+                const end = Math.max(regionStart.value, regionEnd.value);
+                const buf = audioBuffer.value;
+                const rate = buf.sampleRate;
+                const channels = buf.numberOfChannels;
+
+                const startSample = Math.floor(start * rate);
+                const endSample = Math.floor(end * rate);
+
+                const ctx = getAudioContext();
+                const newBuffer = cloneAudioBuffer(ctx, buf);
+
+                for (let c = 0; c < channels; c++) {
+                    const data = newBuffer.getChannelData(c);
+                    for (let i = startSample; i < endSample; i++) {
+                        data[i] = 0;
+                    }
+                }
+
+                setNewAudioBuffer(newBuffer, exportFileName.value);
+                ElementPlus.ElMessage.success('已将选区音频置为静音！');
+            }
+
+            // 4. 选区平滑淡入 / 淡出
+            function applyFade(isFadeIn) {
+                if (!audioBuffer.value) return;
+                const start = Math.min(regionStart.value, regionEnd.value);
+                const end = Math.max(regionStart.value, regionEnd.value);
+                const buf = audioBuffer.value;
+                const rate = buf.sampleRate;
+                const channels = buf.numberOfChannels;
+
+                const startSample = Math.floor(start * rate);
+                const endSample = Math.floor(end * rate);
+                const len = endSample - startSample;
+                if (len <= 0) return;
+
+                const ctx = getAudioContext();
+                const newBuffer = cloneAudioBuffer(ctx, buf);
+
+                for (let c = 0; c < channels; c++) {
+                    const data = newBuffer.getChannelData(c);
+                    for (let i = 0; i < len; i++) {
+                        const factor = isFadeIn ? (i / len) : (1 - i / len);
+                        data[startSample + i] *= factor;
+                    }
+                }
+
+                setNewAudioBuffer(newBuffer, exportFileName.value);
+                ElementPlus.ElMessage.success(isFadeIn ? '已对选区应用平滑淡入！' : '已对选区应用平滑淡出！');
+            }
+
+            // 5. 响度归一化 (Normalize to 0dBFS)
+            function normalizeAudio() {
+                if (!audioBuffer.value) return;
+                const buf = audioBuffer.value;
+                const channels = buf.numberOfChannels;
+
+                let maxPeak = 0;
+                for (let c = 0; c < channels; c++) {
+                    const data = buf.getChannelData(c);
+                    for (let i = 0; i < data.length; i++) {
+                        const abs = Math.abs(data[i]);
+                        if (abs > maxPeak) maxPeak = abs;
+                    }
+                }
+
+                if (maxPeak <= 0.001) {
+                    ElementPlus.ElMessage.warning('音频信号过弱或为静音');
+                    return;
+                }
+
+                const multiplier = 0.99 / maxPeak;
+                const ctx = getAudioContext();
+                const newBuffer = cloneAudioBuffer(ctx, buf);
+
+                for (let c = 0; c < channels; c++) {
+                    const data = newBuffer.getChannelData(c);
+                    for (let i = 0; i < data.length; i++) {
+                        data[i] *= multiplier;
+                    }
+                }
+
+                setNewAudioBuffer(newBuffer, exportFileName.value);
+                ElementPlus.ElMessage.success(`响度归一化完成 (峰值提升 ${(20 * Math.log10(multiplier)).toFixed(1)} dB)`);
+            }
+
+            // 6. 增益调整
+            function applyGain(factor) {
+                if (!audioBuffer.value) return;
+                const buf = audioBuffer.value;
+                const channels = buf.numberOfChannels;
+                const ctx = getAudioContext();
+                const newBuffer = cloneAudioBuffer(ctx, buf);
+
+                for (let c = 0; c < channels; c++) {
+                    const data = newBuffer.getChannelData(c);
+                    for (let i = 0; i < data.length; i++) {
+                        data[i] = Math.max(-1, Math.min(1, data[i] * factor));
+                    }
+                }
+
+                setNewAudioBuffer(newBuffer, exportFileName.value);
+                ElementPlus.ElMessage.success('已应用音量增益调整！');
+            }
+
+            // 7. 选区倒放 (Reverse)
+            function reverseSelection() {
+                if (!audioBuffer.value) return;
+                const start = Math.min(regionStart.value, regionEnd.value);
+                const end = Math.max(regionStart.value, regionEnd.value);
+                const buf = audioBuffer.value;
+                const rate = buf.sampleRate;
+                const channels = buf.numberOfChannels;
+
+                const startSample = Math.floor(start * rate);
+                const endSample = Math.floor(end * rate);
+                const len = endSample - startSample;
+
+                const ctx = getAudioContext();
+                const newBuffer = cloneAudioBuffer(ctx, buf);
+
+                for (let c = 0; c < channels; c++) {
+                    const data = newBuffer.getChannelData(c);
+                    const slice = data.subarray(startSample, endSample).slice();
+                    for (let i = 0; i < len; i++) {
+                        data[startSample + i] = slice[len - 1 - i];
+                    }
+                }
+
+                setNewAudioBuffer(newBuffer, exportFileName.value);
+                ElementPlus.ElMessage.success('已将选区音频倒放！');
+            }
+
+            // 撤销 / 重做 / 恢复初始
+            function undoEdit() {
+                if (undoStack.value.length === 0) return;
+                const prev = undoStack.value.pop();
+                redoStack.value.push(cloneAudioBuffer(getAudioContext(), audioBuffer.value));
+                setNewAudioBuffer(prev, exportFileName.value, true);
+                ElementPlus.ElMessage.info('已撤销操作');
+            }
+
+            function redoEdit() {
+                if (redoStack.value.length === 0) return;
+                const next = redoStack.value.pop();
+                undoStack.value.push(cloneAudioBuffer(getAudioContext(), audioBuffer.value));
+                setNewAudioBuffer(next, exportFileName.value, true);
+                ElementPlus.ElMessage.info('已重做操作');
+            }
+
+            function revertToOriginal() {
+                if (!originalBuffer.value) return;
+                ElementPlus.ElMessageBox.confirm('确定要放弃所有编辑，恢复初始录音音频吗？', '恢复初始提示', {
+                    confirmButtonText: '确定恢复',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    setNewAudioBuffer(originalBuffer.value, exportFileName.value);
+                    ElementPlus.ElMessage.success('已恢复初始音频');
+                }).catch(() => {});
+            }
+
+            // ─────────────────────────────────────────────────────────
+            // 音频导出与下载
+            // ─────────────────────────────────────────────────────────
+            async function exportAudio(format) {
+                if (!audioBuffer.value) return;
+                isExporting.value = true;
+                const ctx = getAudioContext();
+
+                try {
+                    let targetBuffer = audioBuffer.value;
+                    if (exportScope.value === 'selection' && selectionDuration.value > 0.01) {
+                        targetBuffer = sliceAudioBuffer(ctx, targetBuffer, regionStart.value, regionEnd.value);
+                    }
+
+                    const baseName = (exportFileName.value || 'Audio_Export').trim();
+
+                    if (format === 'wav') {
+                        const wavBlob = encodeWAV(targetBuffer);
+                        downloadBlob(wavBlob, `${baseName}.wav`);
+                        ElementPlus.ElMessage.success('16-bit PCM 无损 WAV 文件已导出！');
+                    } else if (format === 'mp3') {
+                        const mp3Blob = await encodeMP3(targetBuffer, mp3Bitrate.value);
+                        downloadBlob(mp3Blob, `${baseName}.mp3`);
+                        ElementPlus.ElMessage.success(`高质量 MP3 (${mp3Bitrate.value} kbps) 文件已导出！`);
+                    } else if (format === 'webm') {
+                        const wavBlob = encodeWAV(targetBuffer);
+                        downloadBlob(wavBlob, `${baseName}.webm`);
+                        ElementPlus.ElMessage.success('WebM 音频文件已导出！');
+                    }
+                } catch (err) {
+                    console.error('导出音频出错:', err);
+                    ElementPlus.ElMessage.error('导出失败: ' + err.message);
+                } finally {
+                    isExporting.value = false;
+                }
+            }
+
+            async function exportAndDownloadMp3(buffer, filename) {
+                try {
+                    const blob = await encodeMP3(buffer, 192);
+                    downloadBlob(blob, filename);
+                    ElementPlus.ElMessage.success('MP3 文件下载成功');
+                } catch (e) {
+                    ElementPlus.ElMessage.error('MP3 导出失败');
+                }
+            }
+
+            function downloadBlob(blob, filename) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            function loadFromHistory(item) {
+                setNewAudioBuffer(item.buffer, item.name);
+                ElementPlus.ElMessage.info(`已载入「${item.name}」到剪辑工作区`);
+            }
+
+            function removeHistoryItem(idx) {
+                recordingsHistory.value.splice(idx, 1);
+            }
+
+            function clearHistory() {
+                recordingsHistory.value = [];
+            }
+
+            // 键盘快捷键响应
+            function handleKeyDown(e) {
+                // 如果焦点在输入框中，不触发快捷键
+                if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    togglePlay();
+                } else if (e.code === 'ArrowLeft') {
+                    e.preventDefault();
+                    seekDelta(-2);
+                } else if (e.code === 'ArrowRight') {
+                    e.preventDefault();
+                    seekDelta(2);
+                } else if (e.code === 'Escape') {
+                    stopPlay();
+                } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                    e.preventDefault();
+                    if (e.shiftKey) redoEdit();
+                    else undoEdit();
+                } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+                    e.preventDefault();
+                    redoEdit();
+                }
+            }
+
+            onMounted(() => {
+                getAudioDevices();
+                window.addEventListener('keydown', handleKeyDown);
+            });
+
+            onUnmounted(() => {
+                window.removeEventListener('keydown', handleKeyDown);
+                stopRecording();
+                if (wavesurfer) {
+                    try { wavesurfer.destroy(); } catch (e) {}
+                }
+                if (audioCtx) {
+                    try { audioCtx.close(); } catch (e) {}
+                }
+            });
+
+            return {
+                activeTab,
+                recCanvas,
+                waveformMount,
+                timelineMount,
+                fileInput,
+                editorCard,
+                isRecording,
+                isPaused,
+                isMicActive,
+                formattedRecTime,
+                vuLevel,
+                vuDbText,
+                micGain,
+                enableNoiseSuppression,
+                audioInputDevices,
+                selectedDeviceId,
+                startRecording,
+                togglePauseRecording,
+                stopRecording,
+                cancelRecording,
+                triggerFileInput,
+                onFileSelected,
+                onFileDrop,
+                isDragOver,
+                audioBuffer,
+                originalBuffer,
+                undoStack,
+                redoStack,
+                regionStart,
+                regionEnd,
+                currentTime,
+                isPlaying,
+                loopSelection,
+                selectionDuration,
+                formatSeconds,
+                togglePlay,
+                stopPlay,
+                seekDelta,
+                playSelectionOnly,
+                zoomLevel,
+                zoomIn,
+                zoomOut,
+                zoomReset,
+                onZoomChange,
+                masterVolume,
+                onVolumeChange,
+                playbackRate,
+                onPlaybackRateChange,
+                onRegionManualChange,
+                selectAllRegion,
+                selectFirstSecs,
+                selectLastSecs,
+                shiftRegion,
+                cropSelection,
+                deleteSelection,
+                silenceSelection,
+                applyFade,
+                normalizeAudio,
+                applyGain,
+                reverseSelection,
+                undoEdit,
+                redoEdit,
+                revertToOriginal,
+                exportScope,
+                mp3Bitrate,
+                exportFileName,
+                isExporting,
+                exportAudio,
+                exportAndDownloadMp3,
+                downloadBlob,
+                recordingsHistory,
+                loadFromHistory,
+                removeHistoryItem,
+                clearHistory
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="und-bg" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#581c87"/>
+      <stop offset="100%" stop-color="#3b0764"/>
+    </linearGradient>
+    <linearGradient id="und-body" x1="12" y1="14" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#7e22ce"/>
+    </linearGradient>
+    <linearGradient id="und-tag" x1="28" y1="8" x2="38" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <filter id="und-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#und-bg)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="#c084fc" stroke-opacity="0.25" stroke-width="1.5"/>
+  <g filter="url(#und-glow)">
+    <!-- Briefs / Boxers Body -->
+    <path d="M12 18 H36 L34 32 C30 35 27 34 24 30 C21 34 18 35 14 32 Z" fill="url(#und-body)" stroke="#f3e8ff" stroke-width="1.5" stroke-linejoin="round"/>
+    
+    <!-- Elastic Waistband Top Stripe -->
+    <path d="M12 18 H36 V22 H12 Z" fill="#9333ea"/>
+    <line x1="12" y1="20" x2="36" y2="20" stroke="#f5d0fe" stroke-width="1"/>
+
+    <!-- Leg Contour Seams -->
+    <path d="M14 32 C18 31 20 27 21 22" fill="none" stroke="#e9d5ff" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M34 32 C30 31 28 27 27 22" fill="none" stroke="#e9d5ff" stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- Hanging Size Chart Tag ("M") -->
+    <g transform="translate(30, 9)">
+      <rect x="0" y="0" width="10" height="12" rx="1.5" fill="url(#und-tag)" stroke="#ffffff" stroke-width="1"/>
+      <circle cx="5" cy="2.5" r="0.8" fill="#ffffff"/>
+      <!-- Letter M -->
+      <path d="M2.5 9.5 V5.5 L5 8 L7.5 5.5 V9.5" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+</svg>

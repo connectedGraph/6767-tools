@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>综合文本字数与阅读时长统计器 (字数/词数/阅读语速精算) - 在线工具</title>
+    <meta name="description" content="专业的多维度文本字数统计与阅读时长估算工具。精准统计总字数、汉字数、英文词数、数字、标点、空白符、段落与行数，提供朗读、默读、速读等多语速时长测算与高频词频分析。" />
+    <meta name="keywords" content="在线字数统计,阅读时长计算器,文章字数统计,中英文字数统计,段落行数统计,WPM语速估算,词频统计,演说时长" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        @media (min-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+        .stat-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 8px;
+            padding: 14px 12px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .stat-card:hover {
+            border-color: rgba(34, 211, 238, 0.6);
+            background: rgba(8, 47, 73, 0.4);
+            transform: translateY(-1px);
+        }
+        .stat-card.primary {
+            border-color: rgba(34, 211, 238, 0.8);
+            background: rgba(8, 47, 73, 0.7);
+        }
+        .stat-val {
+            font-size: 22px;
+            font-weight: 700;
+            color: #22d3ee;
+            font-family: ui-monospace, monospace;
+            line-height: 1.2;
+        }
+        .stat-card.primary .stat-val {
+            font-size: 26px;
+            color: #38bdf8;
+        }
+        .stat-lbl {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .editor-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .main-textarea {
+            width: 100%;
+            height: 280px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 16px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 8px;
+            color: #e2e8f0;
+            resize: vertical;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .main-textarea:focus {
+            border-color: rgba(34, 211, 238, 0.8);
+            box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.15);
+        }
+
+        /* 阅读时长卡片栅格 */
+        .duration-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        @media (min-width: 768px) {
+            .duration-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        .duration-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+        }
+        .duration-card.active {
+            border-color: rgba(34, 211, 238, 0.6);
+            background: rgba(8, 47, 73, 0.4);
+        }
+        .duration-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .duration-speed-badge {
+            font-size: 11px;
+            color: #38bdf8;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .duration-time {
+            font-size: 20px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin: 8px 0 4px;
+            font-family: ui-monospace, monospace;
+        }
+        .duration-desc {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        /* 文本构成比例条 */
+        .composition-bar-wrapper {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .multi-progress-bar {
+            display: flex;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #1e293b;
+            margin: 10px 0 12px;
+        }
+        .progress-segment {
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .legend-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+        }
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* 高频词与排版指标 */
+        .bottom-sections-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .bottom-sections-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .section-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .section-box-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .word-freq-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+            font-size: 13px;
+        }
+        .word-freq-row:last-child {
+            border-bottom: none;
+        }
+        .word-badge {
+            display: inline-block;
+            background: rgba(30, 41, 59, 0.8);
+            color: #38bdf8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .metric-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(51, 65, 85, 0.4);
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+        .metric-row strong {
+            color: #e2e8f0;
+            font-family: ui-monospace, monospace;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">综合文本字数与阅读时长统计器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" style="max-width: 1200px;">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">综合文本字数与阅读时长统计器 (Word Counter & Reading Time)</h1>
+                </div>
+                <div class="description">
+                    高精度全维度文本分析工具。实时统计文章字符数、中文字词数、英文字词数、数字、标点符号、空格行数与段落数，基于演讲播音、常规阅读与极速扫读等多场景标准估算耗时，并提供词频分析与排版密度检测。
+                </div>
+
+                <div id="app" v-cloak>
+                    <!-- 核心统计指标卡片栅格 -->
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <div class="stat-val">{{ stats.totalCharsWithSpaces.toLocaleString() }}</div>
+                            <div class="stat-lbl">总字符数 (含空格)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-val">{{ stats.totalCharsWithoutSpaces.toLocaleString() }}</div>
+                            <div class="stat-lbl">字符数 (不含空格)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-val">{{ stats.chineseChars.toLocaleString() }}</div>
+                            <div class="stat-lbl">中文字数 (汉字)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-val">{{ stats.englishWords.toLocaleString() }}</div>
+                            <div class="stat-lbl">英文字词数 (Words)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-val">{{ stats.digitsCount.toLocaleString() }}</div>
+                            <div class="stat-lbl">数字字符数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-val">{{ stats.paragraphsCount.toLocaleString() }}</div>
+                            <div class="stat-lbl">自然段落数</div>
+                        </div>
+                    </div>
+
+                    <!-- 操作快捷栏 -->
+                    <div class="action-bar" style="margin-bottom: 8px;">
+                        <div class="btn-group">
+                            <el-button-group>
+                                <el-button size="small" type="primary" plain @click="loadSample('speech')">示例: 科技发布演讲稿</el-button>
+                                <el-button size="small" type="primary" plain @click="loadSample('academic')">示例: 学术论文摘要</el-button>
+                                <el-button size="small" type="primary" plain @click="loadSample('official')">示例: 商务行政公文</el-button>
+                            </el-button-group>
+                            <el-button size="small" @click="triggerUpload">导入文本文件</el-button>
+                            <input type="file" ref="fileInput" accept=".txt,.md,.doc,.json,.log" style="display:none" @change="handleFileUpload" />
+                            <el-button size="small" type="danger" plain @click="handleClear">清空</el-button>
+                        </div>
+                        <div class="btn-group">
+                            <el-button size="small" @click="formatCleanWhitespace">清理多余空行/空格</el-button>
+                            <el-button size="small" type="primary" @click="copyStatsReport">复制统计分析报告</el-button>
+                        </div>
+                    </div>
+
+                    <!-- 主文本编辑输入框 -->
+                    <div class="editor-container">
+                        <textarea
+                            v-model="rawText"
+                            class="main-textarea"
+                            placeholder="请在此处直接键入或粘贴您需要统计与分析的文章、演讲稿、公文、代码或论文内容..."
+                            spellcheck="false"
+                        ></textarea>
+                    </div>
+
+                    <!-- 阅读与朗读时长估算 -->
+                    <div class="duration-grid">
+                        <div class="duration-card">
+                            <div class="duration-title">
+                                <span>🎙 朗读 / 演说播报</span>
+                                <span class="duration-speed-badge">220 字/分钟</span>
+                            </div>
+                            <div class="duration-time">{{ speechDuration }}</div>
+                            <div class="duration-desc">适合播音主持、脱口秀、短视频口播与公开演讲</div>
+                        </div>
+
+                        <div class="duration-card active">
+                            <div class="duration-title">
+                                <span>📖 常规默读 / 阅读</span>
+                                <span class="duration-speed-badge">400 字/分钟</span>
+                            </div>
+                            <div class="duration-time">{{ readDuration }}</div>
+                            <div class="duration-desc">适合大众正常阅读、小说通读与公众号文章浏览</div>
+                        </div>
+
+                        <div class="duration-card">
+                            <div class="duration-title">
+                                <span>⚡ 极速扫读 / 略读</span>
+                                <span class="duration-speed-badge">800 字/分钟</span>
+                            </div>
+                            <div class="duration-time">{{ skimDuration }}</div>
+                            <div class="duration-desc">适合信息检索、快速审阅与文献初筛</div>
+                        </div>
+                    </div>
+
+                    <!-- 自定义阅读语速滑块调节 -->
+                    <div class="section-box" style="margin-bottom: 20px;">
+                        <div class="section-box-title">
+                            <span>自定义语速微调测算</span>
+                            <span style="font-family:monospace; color:#22d3ee; font-size:13px;">
+                                当前语速: {{ customWPM }} 字/分钟 ({{ customDuration }})
+                            </span>
+                        </div>
+                        <el-slider v-model="customWPM" :min="50" :max="1200" :step="10" show-stops></el-slider>
+                    </div>
+
+                    <!-- 文本成分比例分析条 -->
+                    <div class="composition-bar-wrapper">
+                        <div class="section-box-title" style="margin-bottom: 6px;">
+                            <span>文本成分构成分布</span>
+                            <span style="font-size:12px; color:#64748b;">按非空白字符占比计算</span>
+                        </div>
+                        <div class="multi-progress-bar">
+                            <div class="progress-segment" :style="{ width: compPercents.chinese + '%', background: '#38bdf8' }" title="中文字符"></div>
+                            <div class="progress-segment" :style="{ width: compPercents.english + '%', background: '#10b981' }" title="英文字符"></div>
+                            <div class="progress-segment" :style="{ width: compPercents.digits + '%', background: '#f59e0b' }" title="数字字符"></div>
+                            <div class="progress-segment" :style="{ width: compPercents.punct + '%', background: '#a855f7' }" title="标点符号"></div>
+                            <div class="progress-segment" :style="{ width: compPercents.other + '%', background: '#64748b' }" title="其他字符"></div>
+                        </div>
+                        <div class="legend-row">
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background:#38bdf8;"></span>
+                                <span>汉字: {{ stats.chineseChars }} ({{ compPercents.chinese }}%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background:#10b981;"></span>
+                                <span>英文字母: {{ stats.englishLetters }} ({{ compPercents.english }}%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background:#f59e0b;"></span>
+                                <span>数字: {{ stats.digitsCount }} ({{ compPercents.digits }}%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background:#a855f7;"></span>
+                                <span>标点: {{ stats.punctuationCount }} ({{ compPercents.punct }}%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background:#64748b;"></span>
+                                <span>空格/制表符: {{ stats.spacesCount + stats.tabsCount }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部两栏：高频词排行 与 排版指标详情 -->
+                    <div class="bottom-sections-grid">
+                        <!-- 左栏：高频词分析 -->
+                        <div class="section-box">
+                            <div class="section-box-title">
+                                <span>高频词词频统计 (Top 10)</span>
+                                <span class="text-xs text-slate-500">已滤除单字停用词</span>
+                            </div>
+                            <div v-if="topWords.length === 0" class="text-xs text-slate-500 py-6 text-center">
+                                暂无足够词频数据，请输入更多文本。
+                            </div>
+                            <div v-else>
+                                <div v-for="(item, idx) in topWords" :key="item.word" class="word-freq-row">
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="color:#64748b; font-family:monospace; font-size:11px; width:16px;">#{{ idx + 1 }}</span>
+                                        <span class="word-badge">{{ item.word }}</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:12px;">
+                                        <span style="font-size:12px; color:#cbd5e1; font-family:monospace;">{{ item.count }} 次</span>
+                                        <div style="width:60px; height:6px; background:#1e293b; border-radius:3px; overflow:hidden;">
+                                            <div :style="{ width: Math.min((item.count / topWords[0].count) * 100, 100) + '%', height:'100%', background:'#22d3ee' }"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右栏：排版与工程指标 -->
+                        <div class="section-box">
+                            <div class="section-box-title">
+                                <span>排版密度与编码指标</span>
+                            </div>
+                            <div class="metric-row">
+                                <span>总行数 / 非空行数:</span>
+                                <strong>{{ stats.totalLines }} 行 / {{ stats.nonEmptyLines }} 行</strong>
+                            </div>
+                            <div class="metric-row">
+                                <span>平均每段长度:</span>
+                                <strong>{{ metrics.avgParagraphLen }} 字符/段</strong>
+                            </div>
+                            <div class="metric-row">
+                                <span>平均每句长度:</span>
+                                <strong>{{ metrics.avgSentenceLen }} 字符/句</strong>
+                            </div>
+                            <div class="metric-row">
+                                <span>句子总数 (以。！？!?. 分隔):</span>
+                                <strong>{{ stats.sentencesCount }} 句</strong>
+                            </div>
+                            <div class="metric-row">
+                                <span>中文标点 / 英文标点:</span>
+                                <strong>{{ stats.chinesePunctCount }} 个 / {{ stats.englishPunctCount }} 个</strong>
+                            </div>
+                            <div class="metric-row">
+                                <span>UTF-8 存储字节大小:</span>
+                                <strong>{{ stats.utf8Bytes.toLocaleString() }} Bytes ({{ (stats.utf8Bytes / 1024).toFixed(2) }} KB)</strong>
+                            </div>
+                            <div class="metric-row">
+                                <span>GBK/GB2312 估算大小:</span>
+                                <strong>{{ stats.gbkBytes.toLocaleString() }} Bytes</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>字数与阅读时长统计规范说明</h3>
+                    <p><strong>综合文本字数与阅读时长统计器</strong>采用精准的 NLP 分词与正则表达式引擎，提供符合现代出版、演讲与文案规范的多维数据：</p>
+                    <ul>
+                        <li><strong>中英文混合字数计算：</strong>汉字按单个表意字符计为 1 字；英文单词按词边界（`Word`）统计为 1 词，满足中英文混合出版与稿酬计算标准。</li>
+                        <li><strong>专业语速基准：</strong>
+                            <ul>
+                                <li><strong>朗读/演说（200~240 字/分）：</strong>基于新闻联播、专业播音员与 TED 演讲的平均语速，适合演说排练、短视频录制与会议发言。</li>
+                                <li><strong>常规默读（350~500 字/分）：</strong>成年人日常阅读微信公众号、新闻专栏、小说的平均速度。</li>
+                                <li><strong>极速扫读（700~1000 字/分）：</strong>泛读、快速定位关键信息与浏览报表的扫视速度。</li>
+                            </ul>
+                        </li>
+                        <li><strong>纯离线安全：</strong>全部统计与词频提取均在浏览器端实时运算，不保存、不上传任何输入内容。</li>
+                    </ul>
+                    <p style="margin-top: 10px; font-size: 12px; color: #64748b;">
+                        版本: 2.0.0 | 拓展时间: 2026-08-31 | 纯前端离线分析
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+const app = createApp({
+    setup() {
+        const rawText = ref('');
+        const customWPM = ref(300);
+        const fileInput = ref(null);
+
+        // 核心统计指标计算
+        const stats = computed(() => {
+            const text = rawText.value || '';
+            const totalCharsWithSpaces = text.length;
+            const totalCharsWithoutSpaces = text.replace(/\s/g, '').length;
+
+            // 1. 中文字符 (汉字)
+            const chineseMatch = text.match(/[\u4e00-\u9fa5]/g) || [];
+            const chineseChars = chineseMatch.length;
+
+            // 2. 英文单词与字母
+            const englishWordsMatch = text.match(/\b[a-zA-Z0-9]+(?:[-'][a-zA-Z0-9]+)*\b/g) || [];
+            const englishWords = englishWordsMatch.length;
+            const englishLettersMatch = text.match(/[a-zA-Z]/g) || [];
+            const englishLetters = englishLettersMatch.length;
+
+            // 3. 数字
+            const digitsMatch = text.match(/[0-9]/g) || [];
+            const digitsCount = digitsMatch.length;
+            const digitGroupsMatch = text.match(/\d+/g) || [];
+            const digitGroups = digitGroupsMatch.length;
+
+            // 4. 标点符号 (全角与半角)
+            const chPunctRegex = /[\u3002\uff0c\uff01\uff1f\uff1b\uff1a\u201c\u201d\u2018\u2019\u300a\u300b\u3008\u3009\u3010\u3011\u300e\u300f\u300c\u300d\ufe4f\u2026\u2014\uff5e\uff08\uff09\u3001]/g;
+            const enPunctRegex = /[.,!?:;"'()\[\]{}<>\/\\~`@#$%^&*+=|_\-]/g;
+            const chPunctMatch = text.match(chPunctRegex) || [];
+            const enPunctMatch = text.match(enPunctRegex) || [];
+            const chinesePunctCount = chPunctMatch.length;
+            const englishPunctCount = enPunctMatch.length;
+            const punctuationCount = chinesePunctCount + englishPunctCount;
+
+            // 5. 空白与换行
+            const spacesMatch = text.match(/ /g) || [];
+            const tabsMatch = text.match(/\t/g) || [];
+            const spacesCount = spacesMatch.length;
+            const tabsCount = tabsMatch.length;
+
+            // 6. 行数与段落
+            const lines = text.split(/\r?\n/);
+            const totalLines = text ? lines.length : 0;
+            const nonEmptyLines = text ? lines.filter(l => l.trim().length > 0).length : 0;
+            const paragraphs = text ? text.split(/\n\s*\n/).filter(p => p.trim().length > 0) : [];
+            const paragraphsCount = paragraphs.length > 0 ? paragraphs.length : (nonEmptyLines > 0 ? 1 : 0);
+
+            // 7. 句子数 (以。！？!?. \n 作为句尾)
+            const sentenceMatch = text.split(/[。！？!?;\n]+/).filter(s => s.trim().length > 0) || [];
+            const sentencesCount = sentenceMatch.length;
+
+            // 8. 字节大小估算
+            let utf8Bytes = 0;
+            try {
+                utf8Bytes = new TextEncoder().encode(text).length;
+            } catch (e) {
+                utf8Bytes = totalCharsWithSpaces;
+            }
+            const gbkBytes = chineseChars * 2 + chinesePunctCount * 2 + (totalCharsWithSpaces - chineseChars - chinesePunctCount);
+
+            return {
+                totalCharsWithSpaces,
+                totalCharsWithoutSpaces,
+                chineseChars,
+                englishWords,
+                englishLetters,
+                digitsCount,
+                digitGroups,
+                punctuationCount,
+                chinesePunctCount,
+                englishPunctCount,
+                spacesCount,
+                tabsCount,
+                totalLines,
+                nonEmptyLines,
+                paragraphsCount,
+                sentencesCount,
+                utf8Bytes,
+                gbkBytes
+            };
+        });
+
+        // 格式化时长为分秒字符串
+        const formatDuration = (seconds) => {
+            if (seconds <= 0 || isNaN(seconds)) return '0 秒';
+            const s = Math.round(seconds);
+            if (s < 60) return `${s} 秒`;
+            const m = Math.floor(s / 60);
+            const remS = s % 60;
+            if (m < 60) return remS > 0 ? `${m} 分 ${remS} 秒` : `${m} 分钟`;
+            const h = Math.floor(m / 60);
+            const remM = m % 60;
+            return remM > 0 ? `${h} 小时 ${remM} 分钟` : `${h} 小时`;
+        };
+
+        // 阅读等效字数：汉字数 + 英文单词数 + 独立数字数
+        const effectiveWordCount = computed(() => {
+            const st = stats.value;
+            return st.chineseChars + st.englishWords + st.digitGroups;
+        });
+
+        const speechDuration = computed(() => {
+            const count = effectiveWordCount.value;
+            const sec = (count / 220) * 60;
+            return formatDuration(sec);
+        });
+
+        const readDuration = computed(() => {
+            const count = effectiveWordCount.value;
+            const sec = (count / 400) * 60;
+            return formatDuration(sec);
+        });
+
+        const skimDuration = computed(() => {
+            const count = effectiveWordCount.value;
+            const sec = (count / 800) * 60;
+            return formatDuration(sec);
+        });
+
+        const customDuration = computed(() => {
+            const count = effectiveWordCount.value;
+            const sec = (count / customWPM.value) * 60;
+            return formatDuration(sec);
+        });
+
+        // 文本成分占比计算
+        const compPercents = computed(() => {
+            const st = stats.value;
+            const total = st.totalCharsWithoutSpaces || 1;
+            const pChinese = ((st.chineseChars / total) * 100).toFixed(1);
+            const pEnglish = ((st.englishLetters / total) * 100).toFixed(1);
+            const pDigits = ((st.digitsCount / total) * 100).toFixed(1);
+            const pPunct = ((st.punctuationCount / total) * 100).toFixed(1);
+            const pOther = Math.max(0, (100 - parseFloat(pChinese) - parseFloat(pEnglish) - parseFloat(pDigits) - parseFloat(pPunct))).toFixed(1);
+
+            return {
+                chinese: parseFloat(pChinese),
+                english: parseFloat(pEnglish),
+                digits: parseFloat(pDigits),
+                punct: parseFloat(pPunct),
+                other: parseFloat(pOther)
+            };
+        });
+
+        // 排版密度指标
+        const metrics = computed(() => {
+            const st = stats.value;
+            const avgParagraphLen = st.paragraphsCount > 0 ? Math.round(st.totalCharsWithoutSpaces / st.paragraphsCount) : 0;
+            const avgSentenceLen = st.sentencesCount > 0 ? Math.round(st.totalCharsWithoutSpaces / st.sentencesCount) : 0;
+            return {
+                avgParagraphLen,
+                avgSentenceLen
+            };
+        });
+
+        // 词频排行榜 Top 10
+        const topWords = computed(() => {
+            const text = rawText.value || '';
+            if (text.length < 5) return [];
+
+            const stopWords = new Set([
+                '的', '了', '和', '是', '就', '都', '而', '及', '与', '着', '或', '一个', '没有',
+                '我们', '你们', '他们', '这个', '那个', '因为', '所以', '如果', '以及', '在', '对',
+                'the', 'and', 'to', 'of', 'a', 'in', 'is', 'that', 'for', 'it', 'as', 'was', 'with', 'be', 'by', 'on', 'not', 'he', 'i', 'this', 'are', 'or', 'at'
+            ]);
+
+            const counts = {};
+
+            // 1. 英文单词统计 (>=3 字符)
+            const enWords = text.toLowerCase().match(/\b[a-z]{3,}\b/g) || [];
+            for (const w of enWords) {
+                if (!stopWords.has(w)) {
+                    counts[w] = (counts[w] || 0) + 1;
+                }
+            }
+
+            // 2. 中文 2~4 字滑动窗口统计
+            const cleanChinese = text.replace(/[^\u4e00-\u9fa5]/g, ' ');
+            const segments = cleanChinese.split(/\s+/).filter(s => s.length >= 2);
+
+            for (const seg of segments) {
+                // 2 字词
+                for (let i = 0; i <= seg.length - 2; i++) {
+                    const w2 = seg.slice(i, i + 2);
+                    if (!stopWords.has(w2)) {
+                        counts[w2] = (counts[w2] || 0) + 1;
+                    }
+                }
+                // 3 字词
+                for (let i = 0; i <= seg.length - 3; i++) {
+                    const w3 = seg.slice(i, i + 3);
+                    counts[w3] = (counts[w3] || 0) + 1;
+                }
+            }
+
+            const sorted = Object.entries(counts)
+                .map(([word, count]) => ({ word, count }))
+                .filter(item => item.count >= 2)
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 10);
+
+            return sorted;
+        });
+
+        // 加载示例
+        const loadSample = (type) => {
+            if (type === 'speech') {
+                rawText.value = `尊敬的各位来宾、全球开发者与媒体朋友们：\n\n大家好！欢迎来到 2026 年度前沿技术峰会（Tech Horizons Summit）。在过去的一年里，分布式计算与人工智能基础设施经历了前所未有的范式转移。我们的工程团队成功将大模型推理端到端延迟降低了 64.8%，使得实时多模态交互在普通终端上的响应时间压缩至 120ms 以内。\n\n今天，我们将正式开源新一代边缘计算引擎——Project Antigravity。该引擎采用纯 Rust 与 WebAssembly 构建，具备全离线零外部网络依赖的自托管能力。在接下来的 45 分钟里，我们将为大家现场演示高并发实时数据管道与金融级防篡改校验系统的深度整合。\n\n感谢所有开源社区贡献者的卓越付出，让我们共同见证智能技术在全场景中的无限可能！`;
+            } else if (type === 'academic') {
+                rawText.value = `【摘要】针对大规模分布式微服务在异构云环境下的资源调度瓶颈问题，本文提出了一种基于深度强化学习（Deep Reinforcement Learning, DRL）与图注意力网络（GAT）的自适应动态负载均衡算法。实验数据集采集自 1,200 个物理节点、共计 45,000 个容器实例的运行轨迹。实验结果表明，该机制能够将集群平均 CPU 吞吐利用率提升 28.4%，同时将 99 分位长尾请求延迟从 480ms 降低至 85ms，显著改善了高并发场景下的系统鲁棒性与服务质量（QoS）。\n\n【关键词】分布式调度；强化学习；图神经网络；服务网格；微服务弹性伸缩`;
+            } else if (type === 'official') {
+                rawText.value = `关于做好 2026 年度办公信息化系统升级与安全自查工作的通知\n\n各部门、各分公司及项目组：\n\n为进一步提高集团日常协同效率，确保核心财务与业务数据的安全性，现将系统离线化升级与安全自查有关事项通知如下：\n一、升级时间：2026 年 9 月 1 日 00:00 至 06:00 进行例行维护。\n二、各单位应全面落实本地数据备份方案，严禁在外部未授权平台上传涉及财务、客户隐私及商业机密之报表。\n三、请各部门指定安全联络员，于 9 月 3 日 18:00 前完成第一阶段安全评估回执提交。\n\n特此通知。\n\n信息安全管理委员会\n2026 年 8 月 31 日`;
+            }
+            ElementPlus.ElMessage.success('已加载示例文本');
+        };
+
+        const handleClear = () => {
+            rawText.value = '';
+            ElementPlus.ElMessage.info('文本已清空');
+        };
+
+        const triggerUpload = () => {
+            if (fileInput.value) {
+                fileInput.value.value = '';
+                fileInput.value.click();
+            }
+        };
+
+        const handleFileUpload = (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                rawText.value = event.target.result;
+                ElementPlus.ElMessage.success(`成功载入文件: ${file.name}`);
+            };
+            reader.readAsText(file, 'UTF-8');
+        };
+
+        const formatCleanWhitespace = () => {
+            if (!rawText.value) return;
+            // 压缩连续多个空行为单个换行，去除每行首尾空格
+            const cleaned = rawText.value
+                .split(/\r?\n/)
+                .map(line => line.trim())
+                .filter((line, idx, arr) => line.length > 0 || (idx > 0 && arr[idx - 1].length > 0))
+                .join('\n');
+            rawText.value = cleaned;
+            ElementPlus.ElMessage.success('已优化段落空行排版');
+        };
+
+        const copyStatsReport = () => {
+            const st = stats.value;
+            const report = [
+                `【文本综合字数与阅读时长分析报告】`,
+                `----------------------------------------`,
+                `总字符数 (含空格): ${st.totalCharsWithSpaces} 字`,
+                `字符数 (不含空格): ${st.totalCharsWithoutSpaces} 字`,
+                `中文字数 (汉字数): ${st.chineseChars} 字`,
+                `英文字词数 (Words): ${st.englishWords} 词 (${st.englishLetters} 字母)`,
+                `数字字符数: ${st.digitsCount} 个`,
+                `标点符号总数: ${st.punctuationCount} 个 (中文 ${st.chinesePunctCount} / 英文 ${st.englishPunctCount})`,
+                `自然段落数: ${st.paragraphsCount} 段`,
+                `总行数: ${st.totalLines} 行 (非空行 ${st.nonEmptyLines} 行)`,
+                `----------------------------------------`,
+                `【阅读与演说时长估算】`,
+                `🎙 朗读播报 (220字/分): 约 ${speechDuration.value}`,
+                `📖 常规阅读 (400字/分): 约 ${readDuration.value}`,
+                `⚡ 极速扫读 (800字/分): 约 ${skimDuration.value}`,
+                `----------------------------------------`,
+                `统计时间: 2026-08-31 | 在线工具集`
+            ].join('\n');
+
+            navigator.clipboard.writeText(report).then(() => {
+                ElementPlus.ElMessage.success('已复制完整统计分析报告');
+            }).catch(() => {
+                ElementPlus.ElMessage.error('复制失败，请手动选择');
+            });
+        };
+
+        onMounted(() => {
+            loadSample('speech');
+        });
+
+        return {
+            rawText,
+            customWPM,
+            fileInput,
+            stats,
+            effectiveWordCount,
+            speechDuration,
+            readDuration,
+            skimDuration,
+            customDuration,
+            compPercents,
+            metrics,
+            topWords,
+            loadSample,
+            handleClear,
+            triggerUpload,
+            handleFileUpload,
+            formatCleanWhitespace,
+            copyStatsReport
+        };
+    }
+});
+
+app.use(ElementPlus);
+app.mount('.main-body');
+</script>
+</body>
+</html>

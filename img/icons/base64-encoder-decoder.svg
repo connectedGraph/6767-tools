@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-b64" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0c1e3d"/>
+      <stop offset="100%" stop-color="#030b17"/>
+    </linearGradient>
+    <linearGradient id="b64-a" x1="10" y1="10" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="b64-64" x1="26" y1="26" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="loop-arrows" x1="12" y1="12" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-b64)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#38bdf8" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Top-left: Plaintext 'A' Tile -->
+  <rect x="10" y="11" width="12" height="11" rx="3" fill="url(#b64-a)"/>
+  <text x="16" y="19" font-family="sans-serif" font-weight="900" font-size="8" fill="#ffffff" text-anchor="middle">A</text>
+
+  <!-- Bottom-right: Encoded '64' Tile -->
+  <rect x="26" y="26" width="12" height="11" rx="3" fill="url(#b64-64)"/>
+  <text x="32" y="34" font-family="sans-serif" font-weight="900" font-size="7" fill="#ffffff" text-anchor="middle">64</text>
+
+  <!-- Bidirectional Conversion Looping Arrows -->
+  <path d="M24 14h5a4 4 0 0 1 4 4v5" stroke="url(#loop-arrows)" stroke-width="2.2" stroke-linecap="round"/>
+  <polyline points="30 20 33 23 36 20" stroke="url(#loop-arrows)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M24 34h-5a4 4 0 0 1-4-4v-5" stroke="url(#loop-arrows)" stroke-width="2.2" stroke-linecap="round"/>
+  <polyline points="18 28 15 25 12 28" stroke="url(#loop-arrows)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

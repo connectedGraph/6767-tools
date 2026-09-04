@@ -1,0 +1,816 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>世界时钟与跨时区会议规划器 - 在线工具</title>
+    <meta name="description" content="全功能世界时钟与跨时区多人会议规划器：内置全球数十个主要时区城市，支持24小时交互式水平刻度轴联动拖拽；智能计算多方重叠黄金工作窗口，一键生成跨国会议多时区邀请文案。" />
+    <meta name="keywords" content="世界时钟,时区转换器,跨时区会议规划,夏令时转换,跨国会议时间计算,24小时时间轴,在线工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+
+        /* 黄金窗口推荐卡片 */
+        .golden-banner {
+            background: linear-gradient(135deg, rgba(8, 47, 73, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .golden-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .golden-time-badge {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            padding: 4px 12px;
+            border-radius: 6px;
+        }
+
+        /* 控制栏 */
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 12px 16px;
+        }
+
+        /* 城市时间轴行卡片 */
+        .city-timeline-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        .city-timeline-card:hover {
+            border-color: rgba(56, 189, 248, 0.6);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .city-timeline-card.is-base {
+            border-color: rgba(56, 189, 248, 0.8);
+            background: rgba(8, 47, 73, 0.35);
+        }
+
+        .city-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .city-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .city-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        .city-tz {
+            font-size: 0.76rem;
+            color: #94a3b8;
+            font-family: ui-monospace, monospace;
+            background: rgba(30, 41, 59, 0.7);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .city-live-time {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: -0.5px;
+        }
+        .city-date-diff {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-left: 6px;
+        }
+
+        /* 24 小时水平时间轴条 */
+        .timeline-strip-wrap {
+            position: relative;
+            width: 100%;
+            overflow-x: auto;
+            user-select: none;
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+        .timeline-strip {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            gap: 2px;
+            min-width: 680px;
+            height: 42px;
+            background: #090d16;
+            border-radius: 6px;
+            padding: 2px;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .hour-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            font-size: 0.74rem;
+            font-family: ui-monospace, monospace;
+            font-weight: 600;
+        }
+        .hour-cell:hover {
+            transform: scale(1.08);
+            z-index: 5;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        /* 时段色彩状态 */
+        .hour-cell.work {
+            background: rgba(16, 185, 129, 0.22);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+        .hour-cell.shoulder {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+        .hour-cell.sleep {
+            background: rgba(30, 41, 59, 0.45);
+            color: #64748b;
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        .hour-cell.selected {
+            background: #38bdf8 !important;
+            color: #02132b !important;
+            font-weight: 800 !important;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+            border-color: #ffffff !important;
+            transform: scale(1.06);
+            z-index: 10;
+        }
+
+        /* 推荐时段列表 */
+        .slot-card {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+        .slot-card:hover {
+            border-color: #38bdf8;
+            background: rgba(8, 47, 73, 0.4);
+        }
+        .slot-card.active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .badge-cyan {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+        .badge-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+        .badge-amber {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+        .badge-purple {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+
+        .legend-indicator {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            font-size: 0.76rem;
+            color: #94a3b8;
+        }
+        .legend-chip {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./life" class="tool-topbar-cat">生活实用</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">世界时钟与跨时区会议规划器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+  <div class="tool-body planner-container">
+    <div class="card-model">
+      <div class="card-body">
+        
+        <!-- 头部说明 -->
+        <div class="tool-head">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h1 class="title" style="margin-bottom: 0;">世界时钟与跨时区会议规划器</h1>
+            <span class="badge-cyan">高精度时区演算 · 离线运行</span>
+          </div>
+        </div>
+        <div class="description" style="margin-top: 8px;">
+          全球主要时区联动与跨国会议黄金时间窗口智能推算。点击或滑动任意城市 24 小时时间轴，多时区时间即时同步联动，一键导出格式化跨时区会议邀请。
+        </div>
+
+        <!-- 智能黄金重叠工作窗口 Banner -->
+        <div class="golden-banner" style="margin-top: 18px;">
+          <div>
+            <div class="golden-title">
+              <span>跨时区重叠黄金工作窗口</span>
+              <span v-if="goldenWindow.found" class="badge-green">完美重叠 (全部处于 9:00~18:00)</span>
+              <span v-else class="badge-amber">协商建议窗口 (处于舒适/延伸时段)</span>
+            </div>
+            <div style="font-size: 0.82rem; color: #cbd5e1; margin-top: 4px;">
+              {{ goldenWindow.description }}
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div class="golden-time-badge">
+              {{ goldenWindow.timeRangeText }}
+            </div>
+            <el-button type="primary" size="small" @click="copyMeetingInvite">
+              一键复制会议邀请文案
+            </el-button>
+          </div>
+        </div>
+
+        <!-- 控制工具条 -->
+        <div class="controls-bar">
+          <!-- 基准时间设置 -->
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">基准规划日期与时刻：</div>
+            <el-date-picker v-model="selectedDate" type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="选择基准日期" size="small" style="width: 140px;" @change="onDateChange" />
+            <el-time-select v-model="selectedTimeStr" start="00:00" step="01:00" end="23:00" placeholder="选择时刻" size="small" style="width: 110px;" @change="onTimeSelectChange" />
+            <el-button size="small" plain @click="resetToCurrentTime">
+              同步为当前时间
+            </el-button>
+          </div>
+
+          <!-- 添加城市 & 图例 -->
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <!-- 图例说明 -->
+            <div class="legend-indicator">
+              <div class="legend-chip">
+                <div class="legend-box" style="background: rgba(16, 185, 129, 0.4); border: 1px solid #10b981;"></div>
+                <span>正常工作 (09-18)</span>
+              </div>
+              <div class="legend-chip">
+                <div class="legend-box" style="background: rgba(245, 158, 11, 0.4); border: 1px solid #f59e0b;"></div>
+                <span>延伸/早晚 (08/18-21)</span>
+              </div>
+              <div class="legend-chip">
+                <div class="legend-box" style="background: rgba(30, 41, 59, 0.6); border: 1px solid #475569;"></div>
+                <span>休息/夜间 (22-07)</span>
+              </div>
+            </div>
+
+            <!-- 添加城市下拉 -->
+            <el-dropdown trigger="click" @command="addCity">
+              <el-button size="small" type="primary">
+                + 添加城市/时区
+              </el-button>
+              <template #dropdown>
+                <el-dropdown-menu style="max-height: 320px; overflow-y: auto;">
+                  <el-dropdown-item v-for="c in availableCityList" :key="c.id" :command="c" :disabled="isCitySelected(c.id)">
+                    <span>{{ c.flag }} {{ c.name }} ({{ c.country }}) - UTC{{ c.offset >= 0 ? '+' + c.offset : c.offset }}</span>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+        </div>
+
+        <!-- 选中的城市 24 小时联动时间轴列表 -->
+        <div style="margin-top: 10px;">
+          <div v-for="(city, index) in selectedCities" :key="city.id" class="city-timeline-card" :class="{ 'is-base': city.id === baseCityId }">
+            <div class="city-header-row">
+              <div class="city-info">
+                <span style="font-size: 1.3rem;">{{ city.flag }}</span>
+                <div>
+                  <span class="city-name">{{ city.name }}</span>
+                  <span style="font-size: 0.8rem; color: #64748b; margin-left: 6px;">{{ city.country }}</span>
+                </div>
+                <span class="city-tz">UTC{{ getCityCurrentOffsetStr(city) }}</span>
+                <span v-if="city.id === baseCityId" class="badge-cyan" style="font-size: 0.7rem;">基准参考时区</span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="text-align: right;">
+                  <div class="city-live-time">
+                    {{ getCityTimeStr(city) }}
+                  </div>
+                  <div class="city-date-diff">
+                    {{ getCityDateStr(city) }}
+                  </div>
+                </div>
+
+                <!-- 设为基准 / 移除 -->
+                <div style="display: flex; gap: 6px;">
+                  <el-tooltip content="设为基准城市" placement="top">
+                    <el-button size="small" circle :type="city.id === baseCityId ? 'primary' : 'info'" plain @click="setAsBaseCity(city.id)">
+                      ★
+                    </el-button>
+                  </el-tooltip>
+                  <el-tooltip content="移除该城市" placement="top">
+                    <el-button size="small" circle type="danger" plain :disabled="selectedCities.length <= 2" @click="removeCity(index)">
+                      ×
+                    </el-button>
+                  </el-tooltip>
+                </div>
+              </div>
+            </div>
+
+            <!-- 24 小时交互式水平刻度轴 -->
+            <div class="timeline-strip-wrap">
+              <div class="timeline-strip">
+                <div v-for="h in 24" :key="h - 1" class="hour-cell" :class="[getHourStatus(city, h - 1), { selected: isHourSelected(city, h - 1) }]" @click="selectCityHour(city, h - 1)">
+                  <span>{{ String(h - 1).padStart(2, '0') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 智能会议时段推荐榜单 & 邀请函预览 -->
+        <el-row :gutter="18" style="margin-top: 24px;">
+          <!-- 推荐时段列表 -->
+          <el-col :xs="24" :lg="12">
+            <div style="font-weight: 700; color: #f1f5f9; font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <span>智能会议推荐时刻排名 (按全体舒适度)</span>
+              <span class="badge-cyan">24小时扫描</span>
+            </div>
+
+            <div style="max-height: 380px; overflow-y: auto; padding-right: 4px;">
+              <div v-for="slot in recommendedSlots" :key="slot.hour" class="slot-card" :class="{ active: currentUtcHour === slot.utcHour }" @click="setUtcHour(slot.utcHour)">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-weight: 700; font-family: monospace; font-size: 1.05rem; color: #f8fafc;">
+                      {{ slot.baseTimeText }}
+                    </span>
+                    <span :class="slot.scoreTagClass">{{ slot.scoreTagText }} (得分: {{ slot.score }})</span>
+                  </div>
+                  <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 4px;">
+                    {{ slot.detailSummary }}
+                  </div>
+                </div>
+                <div>
+                  <el-button size="small" type="primary" plain>
+                    选择此时间
+                  </el-button>
+                </div>
+              </div>
+            </div>
+          </el-col>
+
+          <!-- 会议邀请文案卡片 -->
+          <el-col :xs="24" :lg="12">
+            <div style="font-weight: 700; color: #f1f5f9; font-size: 1rem; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+              <span>会议邀请文案即时预览</span>
+              <el-button size="small" type="success" @click="copyMeetingInvite">
+                复制文本邀请
+              </el-button>
+            </div>
+
+            <el-input v-model="meetingInviteText" type="textarea" :rows="12" class="tool-textarea" style="font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.82rem;" />
+          </el-col>
+        </el-row>
+
+        <div class="divider"></div>
+
+        <!-- 国际时区与跨时区会议常识 -->
+        <div class="content">
+          <h3>全球时区与跨国会议规划常识说明</h3>
+          <p>
+            <strong>1. UTC 与 GMT 关系：</strong><br />
+            协调世界时 (UTC) 是当今国际通用的标准时间基准。格林尼治标准时间 (GMT) 为天文基准，两者在民用上基本等同。中国全境统一采用北京时间 (UTC+8 / 东八区)。
+          </p>
+          <p>
+            <strong>2. 跨时区黄金工作窗口法则 (Golden Overlap Window)：</strong><br />
+            - <strong>中欧/中英跨时区：</strong>由于相差 6~8 小时，中国下午 15:00~18:00 正好重叠欧洲上午 08:00/09:00~11:00/12:00，是欧亚协作的最佳黄金窗口。<br />
+            - <strong>中美/中加跨时区：</strong>相差 12~16 小时，通常需要一方在早晨 08:00~09:00，另一方在前一日晚上 20:00~21:00 连线协作。
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script>
+  const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+  // 全球 40+ 核心城市时区数据库
+  const GLOBAL_CITIES_DB = [
+    { id: 'beijing', name: '北京 / 上海', country: '中国', flag: '🇨🇳', offset: 8, dst: false },
+    { id: 'hongkong', name: '香港 / 台北', country: '中国', flag: '🇭🇰', offset: 8, dst: false },
+    { id: 'tokyo', name: '东京', country: '日本', flag: '🇯🇵', offset: 9, dst: false },
+    { id: 'seoul', name: '首尔', country: '韩国', flag: '🇰🇷', offset: 9, dst: false },
+    { id: 'singapore', name: '新加坡', country: '新加坡', flag: '🇸🇬', offset: 8, dst: false },
+    { id: 'bangkok', name: '曼谷', country: '泰国', flag: '🇹🇭', offset: 7, dst: false },
+    { id: 'dubai', name: '迪拜', country: '阿联酋', flag: '🇦🇪', offset: 4, dst: false },
+    { id: 'mumbai', name: '孟买 / 新德里', country: '印度', flag: '🇮🇳', offset: 5.5, dst: false },
+    { id: 'sydney', name: '悉尼 / 墨尔本', country: '澳大利亚', flag: '🇦🇺', offset: 10, dst: true },
+    { id: 'auckland', name: '奥克兰 / 惠灵顿', country: '新西兰', flag: '🇳🇿', offset: 12, dst: true },
+    { id: 'london', name: '伦敦', country: '英国', flag: '🇬🇧', offset: 0, dst: true },
+    { id: 'paris', name: '巴黎', country: '法国', flag: '🇫🇷', offset: 1, dst: true },
+    { id: 'berlin', name: '柏林 / 法兰克福', country: '德国', flag: '🇩🇪', offset: 1, dst: true },
+    { id: 'madrid', name: '马德里', country: '西班牙', flag: '🇪🇸', offset: 1, dst: true },
+    { id: 'rome', name: '罗马', country: '意大利', flag: '🇮🇹', offset: 1, dst: true },
+    { id: 'cairo', name: '开罗', country: '埃及', flag: '🇪🇬', offset: 2, dst: false },
+    { id: 'newyork', name: '纽约 / 波士顿', country: '美国 (东部)', flag: '🇺🇸', offset: -5, dst: true },
+    { id: 'toronto', name: '多伦多', country: '加拿大 (东部)', flag: '🇨🇦', offset: -5, dst: true },
+    { id: 'chicago', name: '芝加哥 / 休斯顿', country: '美国 (中部)', flag: '🇺🇸', offset: -6, dst: true },
+    { id: 'denver', name: '丹佛 / 盐湖城', country: '美国 (山地)', flag: '🇺🇸', offset: -7, dst: true },
+    { id: 'losangeles', name: '旧金山 / 洛杉矶', country: '美国 (太平洋)', flag: '🇺🇸', offset: -8, dst: true },
+    { id: 'vancouver', name: '温哥华 / 西雅图', country: '加拿大 (西部)', flag: '🇨🇦', offset: -8, dst: true },
+    { id: 'honolulu', name: '火奴鲁鲁 (夏威夷)', country: '美国', flag: '🇺🇸', offset: -10, dst: false },
+    { id: 'saopaulo', name: '圣保罗', country: '巴西', flag: '🇧🇷', offset: -3, dst: false },
+    { id: 'johannesburg', name: '约翰内斯堡', country: '南非', flag: '🇿🇦', offset: 2, dst: false }
+  ];
+
+  createApp({
+    setup() {
+      const selectedDate = ref('');
+      const selectedTimeStr = ref('15:00');
+      const baseCityId = ref('beijing');
+      const currentUtcTimestamp = ref(Date.now());
+
+      const selectedCities = ref([
+        GLOBAL_CITIES_DB.find(c => c.id === 'beijing'),
+        GLOBAL_CITIES_DB.find(c => c.id === 'tokyo'),
+        GLOBAL_CITIES_DB.find(c => c.id === 'london'),
+        GLOBAL_CITIES_DB.find(c => c.id === 'newyork'),
+        GLOBAL_CITIES_DB.find(c => c.id === 'losangeles')
+      ]);
+
+      const availableCityList = computed(() => GLOBAL_CITIES_DB);
+
+      const isCitySelected = (id) => selectedCities.value.some(c => c.id === id);
+
+      const addCity = (cityObj) => {
+        if (!isCitySelected(cityObj.id)) {
+          selectedCities.value.push(cityObj);
+        }
+      };
+
+      const removeCity = (index) => {
+        if (selectedCities.value.length > 2) {
+          const removed = selectedCities.value[index];
+          selectedCities.value.splice(index, 1);
+          if (removed.id === baseCityId.value) {
+            baseCityId.value = selectedCities.value[0].id;
+          }
+        }
+      };
+
+      const setAsBaseCity = (id) => {
+        baseCityId.value = id;
+      };
+
+      const getBaseCity = () => {
+        return selectedCities.value.find(c => c.id === baseCityId.value) || selectedCities.value[0];
+      };
+
+      // 当前 UTC 小时
+      const currentUtcHour = computed(() => {
+        const d = new Date(currentUtcTimestamp.value);
+        return d.getUTCHours();
+      });
+
+      // 获取城市当前有效偏移
+      const getCityCurrentOffsetStr = (city) => {
+        const off = city.offset;
+        return off >= 0 ? `+${off}` : `${off}`;
+      };
+
+      // 根据当前 UTC 时间计算城市当地时间
+      const getCityDateObj = (city) => {
+        const utcMs = currentUtcTimestamp.value;
+        const offsetMs = city.offset * 3600 * 1000;
+        return new Date(utcMs + offsetMs);
+      };
+
+      const getCityTimeStr = (city) => {
+        const d = getCityDateObj(city);
+        const h = String(d.getUTCHours()).padStart(2, '0');
+        const m = String(d.getUTCMinutes()).padStart(2, '0');
+        return `${h}:${m}`;
+      };
+
+      const getCityDateStr = (city) => {
+        const d = getCityDateObj(city);
+        const baseD = getCityDateObj(getBaseCity());
+        
+        const year = d.getUTCFullYear();
+        const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(d.getUTCDate()).padStart(2, '0');
+        const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        const week = weekDays[d.getUTCDay()];
+
+        const diffDays = d.getUTCDate() - baseD.getUTCDate();
+        let diffLabel = '';
+        if (diffDays === 1 || (diffDays < -20 && d > baseD)) diffLabel = ' (次日 +1天)';
+        else if (diffDays === -1 || (diffDays > 20 && d < baseD)) diffLabel = ' (前一日 -1天)';
+
+        return `${month}月${day}日 ${week}${diffLabel}`;
+      };
+
+      // 判断时段状态 (09~18工作, 08/18~21延伸, 其余休息)
+      const getHourStatus = (city, hour) => {
+        if (hour >= 9 && hour < 18) return 'work';
+        if (hour === 8 || (hour >= 18 && hour < 21)) return 'shoulder';
+        return 'sleep';
+      };
+
+      // 判断时间轴某小时是否被选中
+      const isHourSelected = (city, hour) => {
+        const d = getCityDateObj(city);
+        return d.getUTCHours() === hour;
+      };
+
+      // 点击时间轴格子更新时刻
+      const selectCityHour = (city, hour) => {
+        const cityOffset = city.offset;
+        // 计算对应的 UTC 小时
+        let targetUtcHour = (hour - cityOffset) % 24;
+        if (targetUtcHour < 0) targetUtcHour += 24;
+
+        setUtcHour(targetUtcHour);
+      };
+
+      const setUtcHour = (utcH) => {
+        const cur = new Date(currentUtcTimestamp.value);
+        cur.setUTCHours(utcH, 0, 0, 0);
+        currentUtcTimestamp.value = cur.getTime();
+        updateTimeSelectDisplay();
+      };
+
+      const updateTimeSelectDisplay = () => {
+        const base = getBaseCity();
+        const d = getCityDateObj(base);
+        const h = String(d.getUTCHours()).padStart(2, '0');
+        selectedTimeStr.value = `${h}:00`;
+        const y = d.getUTCFullYear();
+        const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(d.getUTCDate()).padStart(2, '0');
+        selectedDate.value = `${y}-${m}-${day}`;
+      };
+
+      const onTimeSelectChange = (val) => {
+        if (!val) return;
+        const [h, m] = val.split(':').map(Number);
+        const base = getBaseCity();
+        let targetUtcHour = (h - base.offset) % 24;
+        if (targetUtcHour < 0) targetUtcHour += 24;
+        setUtcHour(targetUtcHour);
+      };
+
+      const onDateChange = (val) => {
+        if (!val) return;
+        const [y, m, d] = val.split('-').map(Number);
+        const cur = new Date(currentUtcTimestamp.value);
+        cur.setUTCFullYear(y, m - 1, d);
+        currentUtcTimestamp.value = cur.getTime();
+      };
+
+      const resetToCurrentTime = () => {
+        currentUtcTimestamp.value = Date.now();
+        updateTimeSelectDisplay();
+      };
+
+      // 智能推荐会议时段 (24小时全量扫描评估)
+      const recommendedSlots = computed(() => {
+        const slots = [];
+        const base = getBaseCity();
+
+        for (let utcH = 0; utcH < 24; utcH++) {
+          let totalScore = 0;
+          let inWorkCount = 0;
+          let inShoulderCount = 0;
+          let inSleepCount = 0;
+          const detailList = [];
+
+          selectedCities.value.forEach(c => {
+            let localH = (utcH + c.offset) % 24;
+            if (localH < 0) localH += 24;
+            localH = Math.floor(localH);
+
+            if (localH >= 9 && localH < 18) {
+              totalScore += 100;
+              inWorkCount++;
+            } else if (localH === 8 || (localH >= 18 && localH < 21)) {
+              totalScore += 70;
+              inShoulderCount++;
+            } else {
+              totalScore += 20;
+              inSleepCount++;
+            }
+            detailList.push(`${c.name} ${String(localH).padStart(2, '0')}:00`);
+          });
+
+          const avgScore = Math.round(totalScore / selectedCities.value.length);
+          let baseLocalH = (utcH + base.offset) % 24;
+          if (baseLocalH < 0) baseLocalH += 24;
+          baseLocalH = Math.floor(baseLocalH);
+
+          let scoreTagText = '最佳工作窗口';
+          let scoreTagClass = 'badge-green';
+
+          if (avgScore < 70) {
+            scoreTagText = '较差/有人深夜';
+            scoreTagClass = 'badge-purple';
+          } else if (avgScore < 90) {
+            scoreTagText = '可协商时段';
+            scoreTagClass = 'badge-amber';
+          }
+
+          slots.push({
+            utcHour: utcH,
+            baseTimeText: `${base.name} ${String(baseLocalH).padStart(2, '0')}:00 (UTC ${String(utcH).padStart(2, '0')}:00)`,
+            score: avgScore,
+            scoreTagText: scoreTagText,
+            scoreTagClass: scoreTagClass,
+            detailSummary: detailList.join(' | ')
+          });
+        }
+
+        return slots.sort((a, b) => b.score - a.score);
+      });
+
+      // 黄金重叠窗口汇总描述
+      const goldenWindow = computed(() => {
+        const top = recommendedSlots.value[0];
+        const base = getBaseCity();
+        if (top && top.score >= 80) {
+          return {
+            found: true,
+            timeRangeText: top.baseTimeText,
+            description: `当前所选各主要时区城市均处于工作或高意愿在线时段，会议协调阻力最小。`
+          };
+        }
+        return {
+          found: false,
+          timeRangeText: top ? top.baseTimeText : '无重叠',
+          description: `由于跨时区跨度较大（跨越欧/美/亚），建议选在早间或晚间边缘时段进行协商连线。`
+        };
+      });
+
+      // 生成会议邀请文案
+      const meetingInviteText = computed(() => {
+        const base = getBaseCity();
+        const baseD = getCityDateObj(base);
+        const curUtc = new Date(currentUtcTimestamp.value);
+        
+        let text = `【跨时区多人会议邀请 / Meeting Invitation】
+主题: 项目跨国协作与工作同步会议
+基准时间: ${selectedDate.value} ${selectedTimeStr.value} (${base.name} 本地时间)
+UTC 基准: ${curUtc.toISOString().slice(0, 10)} ${String(curUtc.getUTCHours()).padStart(2, '0')}:00 UTC
+----------------------------------------
+【各方参会人员当地时间对照表】：\n`;
+
+        selectedCities.value.forEach(c => {
+          const cDateStr = getCityDateStr(c);
+          const cTimeStr = getCityTimeStr(c);
+          text += `  · ${c.flag} ${c.name} (${c.country}): ${cDateStr} ${cTimeStr} (UTC${getCityCurrentOffsetStr(c)})\n`;
+        });
+
+        text += `----------------------------------------
+请各位参会人员提前 5 分钟接入会议系统。
+来源: 在线工具集 · 世界时钟与跨时区会议规划器`;
+        return text;
+      });
+
+      const copyMeetingInvite = () => {
+        navigator.clipboard.writeText(meetingInviteText.value).then(() => {
+          ElementPlus.ElMessage.success('会议邀请文案已复制至剪贴板');
+        }).catch(() => {
+          ElementPlus.ElMessage.error('复制失败，请手动选择文本复制');
+        });
+      };
+
+      onMounted(() => {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        selectedDate.value = `${y}-${m}-${d}`;
+        resetToCurrentTime();
+      });
+
+      return {
+        selectedDate,
+        selectedTimeStr,
+        baseCityId,
+        selectedCities,
+        availableCityList,
+        isCitySelected,
+        addCity,
+        removeCity,
+        setAsBaseCity,
+        getCityCurrentOffsetStr,
+        getCityTimeStr,
+        getCityDateStr,
+        getHourStatus,
+        isHourSelected,
+        selectCityHour,
+        setUtcHour,
+        onTimeSelectChange,
+        onDateChange,
+        resetToCurrentTime,
+        recommendedSlots,
+        goldenWindow,
+        currentUtcHour,
+        meetingInviteText,
+        copyMeetingInvite
+      };
+    }
+  }).use(ElementPlus).mount('.main-body');
+</script>
+</body>
+</html>

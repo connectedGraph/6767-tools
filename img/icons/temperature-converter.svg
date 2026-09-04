@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-tc" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0c4a6e"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#881337"/>
+    </linearGradient>
+    <linearGradient id="therm-liquid" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="60%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-tc)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(244,63,94,0.2)" stroke-width="1"/>
+  
+  <!-- Left Scale: ℃ -->
+  <path d="M15 14 h3.5 M16 18 h2.5 M15 22 h3.5 M16 26 h2.5" stroke="#38bdf8" stroke-width="1.2" stroke-linecap="round"/>
+  <text x="13" y="32" text-anchor="end" font-family="system-ui, -apple-system, sans-serif" font-size="6.5" font-weight="900" fill="#38bdf8">℃</text>
+  
+  <!-- Right Scale: ℉ -->
+  <path d="M29.5 14 h3.5 M29.5 18 h2.5 M29.5 22 h3.5 M29.5 26 h2.5" stroke="#f87171" stroke-width="1.2" stroke-linecap="round"/>
+  <text x="35" y="32" text-anchor="start" font-family="system-ui, -apple-system, sans-serif" font-size="6.5" font-weight="900" fill="#f87171">℉</text>
+  
+  <!-- Thermometer Glass Outer Tube -->
+  <path d="M21 9 a3 3 0 0 1 6 0 v19 a5.5 5.5 0 1 1 -6 0 z" fill="#0f172a" stroke="#ffffff" stroke-width="1.4" stroke-linejoin="round"/>
+  
+  <!-- Liquid Column & Bulb -->
+  <circle cx="24" cy="33.5" r="3.8" fill="#ef4444"/>
+  <path d="M22.5 17 h3 v13.5 h-3 z" fill="url(#therm-liquid)"/>
+  <circle cx="24" cy="17" r="1.5" fill="#38bdf8"/>
+  
+  <!-- Glass Reflection -->
+  <path d="M22.2 10.5 v17" stroke="#ffffff" stroke-width="0.7" opacity="0.6" stroke-linecap="round"/>
+</svg>

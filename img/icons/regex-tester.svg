@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-regex" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#06231e"/>
+      <stop offset="100%" stop-color="#02120f"/>
+    </linearGradient>
+    <linearGradient id="glass-grad" x1="12" y1="12" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-regex)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#2dd4bf" stroke-opacity="0.2" stroke-width="1"/>
+
+  <!-- Regex Brackets [ ] -->
+  <path d="M12 17h-2.5v14h2.5" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M36 17h2.5v14h-2.5" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Magnifying Glass Ring -->
+  <circle cx="23" cy="22" r="9" stroke="url(#glass-grad)" stroke-width="2.4" fill="#042f2e" fill-opacity="0.4"/>
+  <line x1="29.5" y1="28.5" x2="37" y2="36" stroke="url(#glass-grad)" stroke-width="2.8" stroke-linecap="round"/>
+  
+  <!-- Dot . and Star * in center -->
+  <circle cx="18" cy="22" r="1.5" fill="#facc15"/>
+  <!-- Asterisk * -->
+  <path d="M26 18.5v7M23 20.2l6 3.6M29 20.2l-6 3.6" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/>
+</svg>

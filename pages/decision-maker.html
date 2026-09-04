@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>今天吃什么 / 帮我做决定 - 随机大转盘、掷骰子、抛硬币与抽签 | 选择困难症终结者 - 在线工具</title>
+    <meta name="description" content="在线帮我做决定与今天吃什么神器，内置幸运大转盘、美食盲盒抽选、3D掷骰子、抛硬币、摇签抽签等多种决策模式。支持自由增删自定义备选选项、权重调节、批量导入、音效与历史记录，纯前端离线运行。" />
+    <meta name="keywords" content="今天吃什么, 帮我做决定, 幸运大转盘, 随机抽奖, 掷骰子, 抛硬币, 抽签, 决策工具, 选择困难症" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        /* 决策器现代霓虹终端风格 */
+        .decider-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 模式切换卡片 */
+        .mode-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+        }
+
+        .mode-nav-btn {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 12px 8px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mode-nav-btn:hover {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+
+        .mode-nav-btn.active {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.15), rgba(59, 130, 246, 0.15));
+            border-color: #22d3ee;
+            color: #22d3ee;
+            box-shadow: 0 0 16px rgba(34, 211, 238, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .mode-nav-btn .icon {
+            font-size: 1.6rem;
+        }
+
+        /* 决策舞台主容器 */
+        .stage-container {
+            background: #0b1120;
+            border: 2px solid #1e293b;
+            border-radius: 16px;
+            padding: 24px;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        /* 1. 大转盘 Canvas 样式 */
+        .wheel-box {
+            position: relative;
+            width: 340px;
+            height: 340px;
+            max-width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #wheelCanvas {
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.25), inset 0 0 15px rgba(0,0,0,0.8);
+            cursor: pointer;
+            transition: transform 0.05s ease-out;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0ea5e9, #22d3ee);
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 900;
+            color: #0f172a;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6), 0 0 15px rgba(34, 211, 238, 0.6);
+            transition: transform 0.15s ease;
+        }
+
+        .wheel-pointer::before {
+            content: '';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid #ffffff;
+        }
+
+        .wheel-pointer:active {
+            transform: translate(-50%, -50%) scale(0.92);
+        }
+
+        /* 2. 今天吃什么专用快速闪烁机 */
+        .food-slot-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .food-display-card {
+            background: linear-gradient(145deg, #0f172a, #020617);
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 30px 20px;
+            min-width: 280px;
+            max-width: 90%;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.7), inset 0 0 20px rgba(34, 211, 238, 0.1);
+        }
+
+        .food-current-text {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: #38bdf8;
+            text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+            letter-spacing: 1px;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 3. 3D 骰子样式 */
+        .dice-stage {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 30px 10px;
+            perspective: 800px;
+        }
+
+        .dice-cube {
+            width: 72px;
+            height: 72px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(145deg, #ffffff, #e2e8f0);
+            border: 2px solid #cbd5e1;
+            border-radius: 14px;
+            display: grid;
+            padding: 8px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.15);
+            box-sizing: border-box;
+        }
+
+        .dice-dot {
+            width: 12px;
+            height: 12px;
+            background: #0f172a;
+            border-radius: 50%;
+            justify-self: center;
+            align-self: center;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
+        }
+
+        .dice-dot.red {
+            background: #ef4444;
+            width: 14px;
+            height: 14px;
+        }
+
+        /* 骰子 6 个面布局 */
+        .face-1 { transform: rotateY(0deg) translateZ(36px); display: flex; align-items: center; justify-content: center; }
+        .face-2 { transform: rotateY(180deg) translateZ(36px); display: flex; justify-content: space-between; }
+        .face-2 .dice-dot:nth-child(2) { align-self: flex-end; }
+        .face-3 { transform: rotateY(-90deg) translateZ(36px); display: flex; justify-content: space-between; }
+        .face-3 .dice-dot:nth-child(2) { align-self: center; }
+        .face-3 .dice-dot:nth-child(3) { align-self: flex-end; }
+        .face-4 { transform: rotateY(90deg) translateZ(36px); grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+        .face-5 { transform: rotateX(90deg) translateZ(36px); grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+        .face-5 .dice-dot:nth-child(1) { grid-area: 1 / 1; }
+        .face-5 .dice-dot:nth-child(2) { grid-area: 1 / 3; }
+        .face-5 .dice-dot:nth-child(3) { grid-area: 2 / 2; }
+        .face-5 .dice-dot:nth-child(4) { grid-area: 3 / 1; }
+        .face-5 .dice-dot:nth-child(5) { grid-area: 3 / 3; }
+        .face-6 { transform: rotateX(-90deg) translateZ(36px); grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+
+        /* 4. 3D 抛硬币样式 */
+        .coin-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            perspective: 1000px;
+        }
+
+        .coin {
+            width: 140px;
+            height: 140px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+        }
+
+        .coin-side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            border: 4px solid #fef08a;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6), inset 0 0 15px rgba(0,0,0,0.3);
+            font-weight: 900;
+        }
+
+        .coin-heads {
+            background: radial-gradient(circle, #fde047, #ca8a04, #854d0e);
+            color: #422006;
+            font-size: 2.2rem;
+            transform: rotateY(0deg);
+        }
+
+        .coin-tails {
+            background: radial-gradient(circle, #e2e8f0, #94a3b8, #475569);
+            color: #0f172a;
+            font-size: 2.2rem;
+            transform: rotateY(180deg);
+            border-color: #e2e8f0;
+        }
+
+        /* 5. 抽签签筒样式 */
+        .fortune-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .fortune-pot {
+            width: 110px;
+            height: 160px;
+            background: linear-gradient(135deg, #78350f, #451a03);
+            border: 3px solid #b45309;
+            border-radius: 12px 12px 24px 24px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+            transition: transform 0.1s ease;
+        }
+
+        .fortune-pot-band {
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            height: 28px;
+            background: #dc2626;
+            border-top: 2px solid #fef08a;
+            border-bottom: 2px solid #fef08a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fef08a;
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .fortune-pot.shaking {
+            animation: potShake 0.4s infinite ease-in-out;
+        }
+
+        @keyframes potShake {
+            0%, 100% { transform: rotate(0deg) translateY(0); }
+            25% { transform: rotate(-8deg) translateY(-8px); }
+            75% { transform: rotate(8deg) translateY(-8px); }
+        }
+
+        .fortune-stick-out {
+            position: absolute;
+            top: -45px;
+            width: 16px;
+            height: 90px;
+            background: #fde047;
+            border: 2px solid #ca8a04;
+            border-radius: 4px;
+            color: #854d0e;
+            font-size: 10px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-rl;
+            letter-spacing: 2px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            animation: stickSlideUp 0.5s ease-out;
+        }
+
+        @keyframes stickSlideUp {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* 选项列表 Tag 标签 */
+        .option-tag {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            border-radius: 6px;
+            padding: 4px 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin: 4px;
+        }
+
+        /* 礼花 Canvas */
+        #confettiCanvasDecider {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="今天吃什么 / 帮我做决定 - 随机大转盘、掷骰子、抛硬币与抽签 | 选择困难症终结者 - 在线工具" />
+    <meta property="og:description" content="在线帮我做决定与今天吃什么神器，内置幸运大转盘、美食盲盒抽选、3D掷骰子、抛硬币、摇签抽签等多种决策模式。支持自由增删自定义备选选项、权重调节、批量导入、音效与历史记录。" />
+    <meta property="og:url" content="https://tool.6767.chat/decision-maker" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://tool.6767.chat/decision-maker" />
+</head>
+<body>
+<div class="grid-bg"></div>
+<canvas id="confettiCanvasDecider"></canvas>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">帮我做决定</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+  <div class="tool-body flex">
+    <div class="left w-full">
+      <div class="card-model">
+        <div class="card-body">
+          <div class="tool-head flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h1 class="title">今天吃什么 / 帮我做决定 (Decision Maker)</h1>
+              <div class="description mt-1">
+                选择困难症终结者：大转盘、美食抽选、掷骰子、抛硬币、求签，帮你快速治愈纠结。
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <el-tag type="info" effect="dark">纯前端离线</el-tag>
+              <el-tag type="success" effect="dark">拓展时间: 2026-08-31</el-tag>
+            </div>
+          </div>
+
+          <div id="decisionApp" v-cloak class="mt-4 decider-wrapper">
+            <!-- 模式切换导航 -->
+            <div class="mode-nav">
+              <div class="mode-nav-btn" :class="{ active: currentMode === 'wheel' }" @click="switchMode('wheel')">
+                <span class="icon">🎡</span>
+                <span>幸运大转盘</span>
+              </div>
+              <div class="mode-nav-btn" :class="{ active: currentMode === 'food' }" @click="switchMode('food')">
+                <span class="icon">🍲</span>
+                <span>今天吃什么</span>
+              </div>
+              <div class="mode-nav-btn" :class="{ active: currentMode === 'dice' }" @click="switchMode('dice')">
+                <span class="icon">🎲</span>
+                <span>掷骰子</span>
+              </div>
+              <div class="mode-nav-btn" :class="{ active: currentMode === 'coin' }" @click="switchMode('coin')">
+                <span class="icon">🪙</span>
+                <span>抛硬币</span>
+              </div>
+              <div class="mode-nav-btn" :class="{ active: currentMode === 'fortune' }" @click="switchMode('fortune')">
+                <span class="icon">🎋</span>
+                <span>摇签抽签</span>
+              </div>
+            </div>
+
+            <!-- 决策主舞台 -->
+            <div class="stage-container">
+              <!-- 1. 幸运大转盘模式 -->
+              <div v-show="currentMode === 'wheel'" class="flex flex-col items-center gap-4">
+                <div class="wheel-box">
+                  <canvas id="wheelCanvas" width="680" height="680" @click="startWheelSpin"></canvas>
+                  <div class="wheel-pointer" @click="startWheelSpin">
+                    <span>{{ isSpinning ? '...' : '抽选' }}</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 mt-2">
+                  <el-button type="primary" size="large" :loading="isSpinning" @click="startWheelSpin">
+                    {{ isSpinning ? '正在旋转决定中...' : '🎯 立即开始旋转' }}
+                  </el-button>
+                  <el-tooltip :content="soundEnabled ? '音效开启' : '音效静音'" placement="top">
+                    <el-button circle :type="soundEnabled ? 'primary' : 'info'" @click="soundEnabled = !soundEnabled">
+                      <span v-if="soundEnabled">🔊</span>
+                      <span v-else>🔇</span>
+                    </el-button>
+                  </el-tooltip>
+                </div>
+              </div>
+
+              <!-- 2. 今天吃什么专用模式 -->
+              <div v-show="currentMode === 'food'" class="food-slot-box">
+                <div class="food-display-card">
+                  <div class="text-xs uppercase tracking-widest text-slate-400 mb-2">TODAY'S SPECIAL</div>
+                  <div class="food-current-text">{{ currentFoodText }}</div>
+                </div>
+                <div class="flex flex-wrap justify-center gap-3">
+                  <el-button type="primary" size="large" :loading="isFoodRolling" @click="toggleFoodRoll">
+                    {{ isFoodRolling ? '🛑 停！就选它了' : '🍳 随机挑一个' }}
+                  </el-button>
+                  <el-button size="large" plain @click="loadPreset('food')">
+                    🔄 恢复默认美食菜单
+                  </el-button>
+                </div>
+              </div>
+
+              <!-- 3. 掷骰子模式 -->
+              <div v-show="currentMode === 'dice'" class="flex flex-col items-center gap-6 w-full">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-slate-300">骰子数量：</span>
+                  <el-radio-group v-model="diceCount" size="small" @change="rollDice">
+                    <el-radio-button :label="1">1 颗</el-radio-button>
+                    <el-radio-button :label="2">2 颗</el-radio-button>
+                    <el-radio-button :label="3">3 颗</el-radio-button>
+                    <el-radio-button :label="4">4 颗</el-radio-button>
+                    <el-radio-button :label="6">6 颗</el-radio-button>
+                  </el-radio-group>
+                </div>
+
+                <div class="dice-stage">
+                  <div v-for="(val, idx) in diceValues" :key="idx" class="dice-cube" :style="getDiceTransform(val, idx)">
+                    <div class="dice-face face-1"><div class="dice-dot red"></div></div>
+                    <div class="dice-face face-2"><div class="dice-dot"></div><div class="dice-dot"></div></div>
+                    <div class="dice-face face-3"><div class="dice-dot"></div><div class="dice-dot"></div><div class="dice-dot"></div></div>
+                    <div class="dice-face face-4"><div class="dice-dot red"></div><div class="dice-dot red"></div><div class="dice-dot red"></div><div class="dice-dot red"></div></div>
+                    <div class="dice-face face-5"><div class="dice-dot"></div><div class="dice-dot"></div><div class="dice-dot"></div><div class="dice-dot"></div><div class="dice-dot"></div></div>
+                    <div class="dice-face face-6"><div class="dice-dot"></div><div class="dice-dot"></div><div class="dice-dot"></div><div class="dice-dot"></div><div class="dice-dot"></div><div class="dice-dot"></div></div>
+                  </div>
+                </div>
+
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-cyan-400 mb-1">
+                    总点数：{{ diceTotal }} 点
+                  </div>
+                  <div class="text-xs text-slate-400">各点数明细: {{ diceValues.join(' + ') }}</div>
+                </div>
+
+                <el-button type="primary" size="large" :loading="isRollingDice" @click="rollDice">
+                  🎲 摇动掷骰子
+                </el-button>
+              </div>
+
+              <!-- 4. 抛硬币模式 -->
+              <div v-show="currentMode === 'coin'" class="coin-stage">
+                <div class="coin" :style="coinTransform" @click="flipCoin">
+                  <div class="coin-side coin-heads">
+                    <span class="text-xs text-amber-900 mb-1">HEADS</span>
+                    <span>字</span>
+                  </div>
+                  <div class="coin-side coin-tails">
+                    <span class="text-xs text-slate-700 mb-1">TAILS</span>
+                    <span>花</span>
+                  </div>
+                </div>
+
+                <div class="text-center mt-2">
+                  <div class="text-2xl font-bold text-amber-400 mb-2">{{ coinResultText }}</div>
+                  <div class="flex items-center justify-center gap-4 text-xs text-slate-400">
+                    <span>正面(字): <strong>{{ coinStats.heads }}</strong> 次</span>
+                    <span>反面(花): <strong>{{ coinStats.tails }}</strong> 次</span>
+                    <span>总计: <strong>{{ coinStats.heads + coinStats.tails }}</strong> 次</span>
+                  </div>
+                </div>
+
+                <div class="flex gap-2">
+                  <el-button type="primary" size="large" :loading="isFlippingCoin" @click="flipCoin">
+                    🪙 抛掷硬币
+                  </el-button>
+                  <el-button size="large" plain @click="resetCoinStats">
+                    重置统计
+                  </el-button>
+                </div>
+              </div>
+
+              <!-- 5. 摇签抽签模式 -->
+              <div v-show="currentMode === 'fortune'" class="fortune-stage">
+                <div class="fortune-pot" :class="{ shaking: isShakingPot }" @click="drawFortune">
+                  <div class="fortune-pot-band">灵签</div>
+                  <div v-if="fortuneStickDrawn" class="fortune-stick-out">{{ currentFortune.type }}</div>
+                </div>
+
+                <div class="text-center min-h-[90px] flex flex-col items-center justify-center">
+                  <template v-if="currentFortune.text">
+                    <div class="text-2xl font-bold text-amber-400 mb-1">{{ currentFortune.type }} · {{ currentFortune.title }}</div>
+                    <div class="text-sm text-cyan-300 font-semibold mb-1">「 {{ currentFortune.text }} 」</div>
+                    <div class="text-xs text-slate-400">{{ currentFortune.advice }}</div>
+                  </template>
+                  <template v-else>
+                    <div class="text-slate-400 text-sm">心诚则灵，点击签筒摇出今日灵签</div>
+                  </template>
+                </div>
+
+                <el-button type="primary" size="large" :loading="isShakingPot" @click="drawFortune">
+                  🎋 诚心摇签
+                </el-button>
+              </div>
+            </div>
+
+            <!-- 选项自定义管理与预设面板 (主要针对大转盘与吃什么) -->
+            <div v-show="['wheel', 'food'].includes(currentMode)" class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div class="font-bold text-slate-200 flex items-center gap-2">
+                  <span>⚙️ 自定义备选清单</span>
+                  <el-tag size="small" type="info">共 {{ options.length }} 项</el-tag>
+                </div>
+
+                <!-- 预设模板加载 -->
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs text-slate-400">快速加载预设：</span>
+                  <el-button size="small" @click="loadPreset('food')">🍲 今天吃什么</el-button>
+                  <el-button size="small" @click="loadPreset('tea')">🧋 喝什么下午茶</el-button>
+                  <el-button size="small" @click="loadPreset('weekend')">⛺ 周末去哪玩</el-button>
+                  <el-button size="small" @click="loadPreset('payer')">💳 谁来买单</el-button>
+                  <el-button size="small" @click="loadPreset('truth')">🎭 真心话大冒险</el-button>
+                  <el-button size="small" type="primary" plain @click="batchDialogVisible = true">📝 批量导入</el-button>
+                </div>
+              </div>
+
+              <!-- 新增选项输入行 -->
+              <div class="flex gap-2 mb-3">
+                <el-input v-model="newOptionText" placeholder="输入新的备选项名称..." @keyup.enter="addOption" style="max-width: 320px;" />
+                <el-input-number v-model="newOptionWeight" :min="1" :max="10" placeholder="权重" style="width: 110px;" />
+                <el-button type="primary" @click="addOption">添加</el-button>
+                <el-button type="danger" plain @click="clearOptions">清空全部</el-button>
+              </div>
+
+              <!-- 现有选项标签墙 -->
+              <div class="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 bg-slate-950/60 rounded-lg border border-slate-800">
+                <span v-for="(item, index) in options" :key="index" class="option-tag">
+                  <span class="font-semibold">{{ item.text }}</span>
+                  <span v-if="item.weight > 1" class="text-xs text-cyan-400">({{ item.weight }}x)</span>
+                  <i class="cursor-pointer text-slate-400 hover:text-red-400 text-xs ml-1" @click="removeOption(index)">✕</i>
+                </span>
+                <span v-if="options.length === 0" class="text-slate-500 text-sm py-2 px-3">
+                  暂无选项，请添加或加载上方预设。
+                </span>
+              </div>
+            </div>
+
+            <!-- 历史抽选记录 -->
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+              <div class="flex items-center justify-between mb-3">
+                <div class="font-bold text-slate-200 flex items-center gap-2">
+                  <span>📜 历史决定记录</span>
+                  <el-tag size="small" type="info">{{ historyList.length }} 条</el-tag>
+                </div>
+                <el-button size="small" type="danger" plain @click="clearHistory">清空记录</el-button>
+              </div>
+
+              <el-table :data="historyList" stripe size="small" empty-text="暂无决定历史" max-height="240">
+                <el-table-column prop="time" label="时间" width="160"></el-table-column>
+                <el-table-column prop="mode" label="决策模式" width="120"></el-table-column>
+                <el-table-column prop="result" label="抽选结果">
+                  <template #default="scope">
+                    <span class="font-bold text-cyan-400">{{ scope.row.result }}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+
+            <!-- 批量导入对话框 -->
+            <el-dialog v-model="batchDialogVisible" title="📝 批量导入选项" width="460px">
+              <div class="text-xs text-slate-400 mb-2">每行输入一个选项，支持批量粘贴：</div>
+              <el-input v-model="batchText" type="textarea" :rows="8" placeholder="火锅&#10;螺蛳粉&#10;米饭便当&#10;汉堡披萨" />
+              <template #footer>
+                <el-button @click="batchDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="applyBatchImport">确认导入</el-button>
+              </template>
+            </el-dialog>
+
+            <!-- 决策结果弹窗 -->
+            <el-dialog v-model="resultDialogVisible" title="🎯 最终决定结果" width="380px" center>
+              <div class="text-center py-4">
+                <div class="text-4xl mb-3">✨</div>
+                <div class="text-xs text-slate-400 uppercase tracking-wider mb-1">THE WINNER IS</div>
+                <div class="text-3xl font-black text-cyan-400 mb-3">{{ finalResultText }}</div>
+                <div class="text-sm text-slate-300">不再纠结，现在就去执行吧！</div>
+              </div>
+              <template #footer>
+                <el-button type="primary" @click="resultDialogVisible = false">确定</el-button>
+                <el-button @click="resultDialogVisible = false; rerunCurrentMode()">再抽一次</el-button>
+              </template>
+            </el-dialog>
+
+          </div>
+
+          <div class="divider my-6"></div>
+
+          <!-- 使用场景与常见问题 -->
+          <div class="content">
+            <h3 class="text-lg font-bold text-slate-200 mb-3">什么时候适合使用「帮我做决定」？</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-400">
+              <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
+                <h4 class="font-bold text-cyan-300 mb-2">🍱 工作日午餐吃什么</h4>
+                <p>每到中午 12 点就打开外卖软件刷半小时？把公司附近的常吃餐厅录入转盘，1 秒锁定今天吃什么！</p>
+              </div>
+              <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
+                <h4 class="font-bold text-cyan-300 mb-2">🎲 聚会桌游与谁买单</h4>
+                <p>家庭聚餐、朋友轰趴谁来洗碗、谁来买单、谁去拿外卖？摇掷骰子或转盘，公平公正公开，绝不伤感情。</p>
+              </div>
+              <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
+                <h4 class="font-bold text-cyan-300 mb-2">🪙 纠结二选一与心理测试</h4>
+                <p>抛硬币最大的价值，不是看它落下来是正面还是反面，而是在硬币抛向空中的那一瞬间，你心里已经知道了答案。</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+  const { createApp, ref, reactive, computed, onMounted, nextTick } = Vue;
+
+  // Web Audio 纯前端音效生成器
+  class DecisionSounds {
+    constructor() {
+      this.ctx = null;
+    }
+    init() {
+      if (!this.ctx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) this.ctx = new AudioContext();
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    }
+    playTick() {
+      if (!this.ctx) return;
+      try {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.03);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.03);
+      } catch (e) {}
+    }
+    playCoin() {
+      if (!this.ctx) return;
+      try {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(2400, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.3);
+      } catch (e) {}
+    }
+    playDice() {
+      if (!this.ctx) return;
+      try {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.06);
+      } catch (e) {}
+    }
+    playWin() {
+      if (!this.ctx) return;
+      const notes = [440, 554.37, 659.25, 880];
+      notes.forEach((freq, idx) => {
+        setTimeout(() => {
+          try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.35);
+          } catch (e) {}
+        }, idx * 90);
+      });
+    }
+  }
+
+  const audio = new DecisionSounds();
+
+  // 礼花动画
+  function fireConfettiDecider() {
+    const canvas = document.getElementById('confettiCanvasDecider');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const colors = ['#22d3ee', '#4ade80', '#fbbf24', '#f43f5e', '#a855f7', '#38bdf8', '#fb923c'];
+    for (let i = 0; i < 140; i++) {
+      particles.push({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        vx: (Math.random() - 0.5) * 20,
+        vy: (Math.random() - 0.75) * 20,
+        size: Math.random() * 8 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        vr: (Math.random() - 0.5) * 12,
+        alpha: 1
+      });
+    }
+
+    let animId;
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35;
+        p.rotation += p.vr;
+        p.alpha -= 0.009;
+
+        if (p.alpha > 0) {
+          alive = true;
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        }
+      });
+
+      if (alive) {
+        animId = requestAnimationFrame(render);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        cancelAnimationFrame(animId);
+      }
+    }
+    render();
+  }
+
+  // 预设模板数据
+  const PRESETS = {
+    food: [
+      { text: '米饭便当 / 黄焖鸡', weight: 1 },
+      { text: '火锅 / 串串香', weight: 1 },
+      { text: '重庆小面 / 炸酱面', weight: 1 },
+      { text: '螺蛳粉 / 桂林米粉', weight: 1 },
+      { text: '汉堡薯条 / 炸鸡', weight: 1 },
+      { text: '日式料理 / 寿司拉面', weight: 1 },
+      { text: '麻辣烫 / 冒菜', weight: 1 },
+      { text: '轻食沙拉 / 减脂餐', weight: 1 },
+      { text: '烧烤烤肉', weight: 1 },
+      { text: '水饺馄饨', weight: 1 },
+      { text: '粤式茶餐厅 / 肠粉', weight: 1 },
+      { text: '披萨意面', weight: 1 }
+    ],
+    tea: [
+      { text: '生椰拿铁', weight: 1 },
+      { text: '冰美式', weight: 1 },
+      { text: '珍珠奶茶', weight: 1 },
+      { text: '鸭屎香柠檬茶', weight: 1 },
+      { text: '抹茶拿铁', weight: 1 },
+      { text: '鲜榨果汁', weight: 1 },
+      { text: '燕麦奶茶', weight: 1 },
+      { text: '芝士乌龙奶盖', weight: 1 }
+    ],
+    weekend: [
+      { text: '宅家打游戏看电影', weight: 1 },
+      { text: '公园露营 / 野餐', weight: 1 },
+      { text: '商场逛街探店', weight: 1 },
+      { text: '图书馆 / 独立书店', weight: 1 },
+      { text: '徒步登山 / 骑行', weight: 1 },
+      { text: '剧本杀 / 密室逃脱', weight: 1 },
+      { text: '美术馆 / 博物馆看展', weight: 1 }
+    ],
+    payer: [
+      { text: '我买单（豪气大方）', weight: 1 },
+      { text: '你买单（感谢老板）', weight: 1 },
+      { text: 'AA 制平摊', weight: 1 },
+      { text: '猜拳一把定胜负', weight: 1 },
+      { text: '摇骰子点数最小的买', weight: 1 }
+    ],
+    truth: [
+      { text: '真心话：说出你最近的一个秘密', weight: 1 },
+      { text: '大冒险：模仿一种动物的叫声 10 秒', weight: 1 },
+      { text: '真心话：在场你对谁的第一印象最深刻', weight: 1 },
+      { text: '大冒险：深情朗读一条搞笑广告词', weight: 1 },
+      { text: '真心话：如果能重来你想回到哪一年', weight: 1 },
+      { text: '大冒险：做一个鬼脸并保持 5 秒', weight: 1 }
+    ]
+  };
+
+  // 灵签库
+  const FORTUNE_LIST = [
+    { type: '【上上签】', title: '时来运转', text: '风云际会正当时，万里鹏程展宏图。', advice: '心想事成之兆，果断执行你的想法，切莫迟疑。' },
+    { type: '【上吉签】', title: '步步高升', text: '积善之家有余庆，金玉满堂福自来。', advice: '今日贵人相助，适合推进重要事项或与人合作。' },
+    { type: '【中吉签】', title: '稳扎稳打', text: '水到渠成无需急，静待花开自然香。', advice: '保持耐心，按部就班，好结果自然会水到渠成。' },
+    { type: '【大吉签】', title: '紫气东来', text: '日出东方照大千，万象更新福禄全。', advice: '运势高涨，适合做出关键决策或开启新计划。' },
+    { type: '【中平签】', title: '顺其自然', text: '行到水穷处，坐看云起时。', advice: '放平心态，顺其自然，凡事退一步海阔天空。' },
+    { type: '【上上签】', title: '天赐良机', text: '千淘万漉虽辛苦，吹尽狂沙始到金。', advice: '所有的付出即将迎来回报，坚持就是胜利。' }
+  ];
+
+  // 扇区预设霓虹色彩列表
+  const PALETTE = [
+    '#38bdf8', '#818cf8', '#a78bfa', '#f472b6', 
+    '#fb7185', '#fb923c', '#facc15', '#4ade80', 
+    '#2dd4bf', '#22d3ee', '#60a5fa', '#34d399'
+  ];
+
+  const app = createApp({
+    setup() {
+      const currentMode = ref('wheel');
+      const soundEnabled = ref(true);
+
+      // 备选选项数据
+      const options = ref(JSON.parse(JSON.stringify(PRESETS.food)));
+      const newOptionText = ref('');
+      const newOptionWeight = ref(1);
+      const batchDialogVisible = ref(false);
+      const batchText = ref('');
+
+      // 抽选结果弹窗
+      const resultDialogVisible = ref(false);
+      const finalResultText = ref('');
+
+      // 历史记录
+      const historyList = ref([]);
+
+      // 1. 转盘状态
+      const isSpinning = ref(false);
+      let wheelAngle = 0;
+
+      // 2. 今天吃什么状态
+      const isFoodRolling = ref(false);
+      const currentFoodText = ref('今天吃什么？');
+      let foodInterval = null;
+
+      // 3. 掷骰子状态
+      const diceCount = ref(2);
+      const diceValues = ref([6, 6]);
+      const isRollingDice = ref(false);
+      const diceTotal = computed(() => diceValues.value.reduce((a, b) => a + b, 0));
+
+      // 4. 抛硬币状态
+      const isFlippingCoin = ref(false);
+      const coinResultText = ref('点击下方按钮抛出硬币');
+      const coinStats = reactive({ heads: 0, tails: 0 });
+      const coinRotateDeg = ref(0);
+
+      const coinTransform = computed(() => {
+        return { transform: `rotateY(${coinRotateDeg.value}deg)` };
+      });
+
+      // 5. 摇签抽签状态
+      const isShakingPot = ref(false);
+      const fortuneStickDrawn = ref(false);
+      const currentFortune = reactive({ type: '', title: '', text: '', advice: '' });
+
+      // 切换模式
+      function switchMode(mode) {
+        currentMode.value = mode;
+        if (mode === 'wheel') {
+          nextTick(() => drawWheel());
+        }
+      }
+
+      // 大转盘绘制逻辑
+      function drawWheel() {
+        const canvas = document.getElementById('wheelCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = width / 2 - 20;
+
+        ctx.clearRect(0, 0, width, height);
+
+        const list = options.value;
+        if (list.length === 0) {
+          ctx.fillStyle = '#1e293b';
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = 'bold 28px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('请先添加选项', centerX, centerY);
+          return;
+        }
+
+        // 计算总权重
+        const totalWeight = list.reduce((sum, item) => sum + (item.weight || 1), 0);
+        let startAngle = wheelAngle;
+
+        list.forEach((item, idx) => {
+          const sliceAngle = (Math.PI * 2 * (item.weight || 1)) / totalWeight;
+          const endAngle = startAngle + sliceAngle;
+
+          // 扇区填充
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+          ctx.closePath();
+          ctx.fillStyle = PALETTE[idx % PALETTE.length];
+          ctx.fill();
+
+          // 边框线
+          ctx.strokeStyle = '#0f172a';
+          ctx.lineWidth = 4;
+          ctx.stroke();
+
+          // 绘制文字
+          ctx.save();
+          ctx.translate(centerX, centerY);
+          ctx.rotate(startAngle + sliceAngle / 2);
+          ctx.textAlign = 'right';
+          ctx.fillStyle = '#0f172a';
+          ctx.font = 'bold 22px system-ui, sans-serif';
+          
+          let text = item.text;
+          if (text.length > 8) text = text.slice(0, 7) + '...';
+          ctx.fillText(text, radius - 30, 8);
+          ctx.restore();
+
+          startAngle = endAngle;
+        });
+
+        // 外部霓虹圆环
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(34, 211, 238, 0.4)';
+        ctx.lineWidth = 8;
+        ctx.stroke();
+      }
+
+      // 开始转盘抽选
+      function startWheelSpin() {
+        if (isSpinning.value || options.value.length === 0) return;
+        audio.init();
+        isSpinning.value = true;
+
+        const list = options.value;
+        const totalWeight = list.reduce((sum, item) => sum + (item.weight || 1), 0);
+
+        // 随机选择目标项
+        let randWeight = Math.random() * totalWeight;
+        let chosenIdx = 0;
+        let cumulative = 0;
+        for (let i = 0; i < list.length; i++) {
+          cumulative += list[i].weight || 1;
+          if (randWeight <= cumulative) {
+            chosenIdx = i;
+            break;
+          }
+        }
+
+        // 计算扇区对应停顿角度 (指针位于顶部 270度 / -90度)
+        let angleBefore = 0;
+        for (let i = 0; i < chosenIdx; i++) {
+          angleBefore += (Math.PI * 2 * (list[i].weight || 1)) / totalWeight;
+        }
+        const sliceAngle = (Math.PI * 2 * (list[chosenIdx].weight || 1)) / totalWeight;
+        const targetSectorMid = angleBefore + sliceAngle / 2;
+
+        // 指针在 270 deg (即 1.5 * PI)
+        const targetAngle = (1.5 * Math.PI - targetSectorMid) + Math.PI * 2 * 6; // 多转 6 圈
+        const startA = wheelAngle % (Math.PI * 2);
+        const deltaA = targetAngle - startA;
+
+        const duration = 4000;
+        const startTime = performance.now();
+        let lastTickAngle = 0;
+
+        function animateWheel(now) {
+          const elapsed = now - startTime;
+          const progress = Math.min(1, elapsed / duration);
+          // Ease-out cubic
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          wheelAngle = startA + deltaA * easeOut;
+
+          // Tick 音效
+          if (soundEnabled.value && Math.abs(wheelAngle - lastTickAngle) > 0.35) {
+            audio.playTick();
+            lastTickAngle = wheelAngle;
+          }
+
+          drawWheel();
+
+          if (progress < 1) {
+            requestAnimationFrame(animateWheel);
+          } else {
+            isSpinning.value = false;
+            const chosen = list[chosenIdx].text;
+            showResult('大转盘', chosen);
+          }
+        }
+
+        requestAnimationFrame(animateWheel);
+      }
+
+      // 今天吃什么抽奖机切换
+      function toggleFoodRoll() {
+        audio.init();
+        if (options.value.length === 0) return;
+
+        if (isFoodRolling.value) {
+          // 停止
+          clearInterval(foodInterval);
+          isFoodRolling.value = false;
+          showResult('今天吃什么', currentFoodText.value);
+        } else {
+          // 开始滚动
+          isFoodRolling.value = true;
+          foodInterval = setInterval(() => {
+            const idx = Math.floor(Math.random() * options.value.length);
+            currentFoodText.value = options.value[idx].text;
+            if (soundEnabled.value) audio.playTick();
+          }, 60);
+        }
+      }
+
+      // 掷骰子
+      function rollDice() {
+        if (isRollingDice.value) return;
+        audio.init();
+        isRollingDice.value = true;
+
+        if (soundEnabled.value) audio.playDice();
+
+        // 重新生成随机数
+        const count = diceCount.value;
+        const newVals = [];
+        for (let i = 0; i < count; i++) {
+          newVals.push(Math.floor(Math.random() * 6) + 1);
+        }
+        diceValues.value = newVals;
+
+        setTimeout(() => {
+          isRollingDice.value = false;
+          const sum = newVals.reduce((a, b) => a + b, 0);
+          showResult('掷骰子', `${sum} 点 (${newVals.join(', ')})`, false);
+        }, 1000);
+      }
+
+      function getDiceTransform(val, idx) {
+        // 根据点数赋予 3D 旋转角度
+        const rotations = {
+          1: 'rotateY(0deg)',
+          2: 'rotateY(-180deg)',
+          3: 'rotateY(90deg)',
+          4: 'rotateY(-90deg)',
+          5: 'rotateX(-90deg)',
+          6: 'rotateX(90deg)'
+        };
+        const base = rotations[val] || 'rotateY(0deg)';
+        const extraTurns = isRollingDice.value ? 720 * (idx + 1) : 0;
+        return {
+          transform: `${base} rotateZ(${extraTurns}deg)`
+        };
+      }
+
+      // 抛硬币
+      function flipCoin() {
+        if (isFlippingCoin.value) return;
+        audio.init();
+        isFlippingCoin.value = true;
+
+        if (soundEnabled.value) audio.playCoin();
+
+        const isHeads = Math.random() >= 0.5;
+        // 旋转多圈
+        const extraSpins = 360 * 5;
+        coinRotateDeg.value += extraSpins + (isHeads ? 0 : 180);
+
+        setTimeout(() => {
+          isFlippingCoin.value = false;
+          if (isHeads) {
+            coinStats.heads++;
+            coinResultText.value = '🎉 结果是：正面（字）！';
+            showResult('抛硬币', '正面（字）', false);
+          } else {
+            coinStats.tails++;
+            coinResultText.value = '🎉 结果是：反面（花）！';
+            showResult('抛硬币', '反面（花）', false);
+          }
+        }, 1200);
+      }
+
+      function resetCoinStats() {
+        coinStats.heads = 0;
+        coinStats.tails = 0;
+        coinResultText.value = '已重置统计数据';
+      }
+
+      // 抽签
+      function drawFortune() {
+        if (isShakingPot.value) return;
+        audio.init();
+        isShakingPot.value = true;
+        fortuneStickDrawn.value = false;
+
+        let shakeTicks = 0;
+        const tickTimer = setInterval(() => {
+          shakeTicks++;
+          if (soundEnabled.value) audio.playTick();
+          if (shakeTicks > 6) clearInterval(tickTimer);
+        }, 120);
+
+        setTimeout(() => {
+          isShakingPot.value = false;
+          fortuneStickDrawn.value = true;
+          const picked = FORTUNE_LIST[Math.floor(Math.random() * FORTUNE_LIST.length)];
+          Object.assign(currentFortune, picked);
+          showResult('摇签抽签', `${picked.type} ${picked.title} - ${picked.text}`, true);
+        }, 1000);
+      }
+
+      // 展示结果并记录历史
+      function showResult(modeName, resultText, showModal = true) {
+        finalResultText.value = resultText;
+        if (soundEnabled.value) audio.playWin();
+        fireConfettiDecider();
+
+        const record = {
+          time: new Date().toLocaleTimeString('zh-CN', { hour12: false }),
+          mode: modeName,
+          result: resultText
+        };
+        historyList.value.unshift(record);
+        if (historyList.value.length > 50) historyList.value.pop();
+        saveStorage();
+
+        if (showModal) {
+          resultDialogVisible.value = true;
+        }
+      }
+
+      function rerunCurrentMode() {
+        if (currentMode.value === 'wheel') startWheelSpin();
+        else if (currentMode.value === 'food') toggleFoodRoll();
+        else if (currentMode.value === 'dice') rollDice();
+        else if (currentMode.value === 'coin') flipCoin();
+        else if (currentMode.value === 'fortune') drawFortune();
+      }
+
+      // 选项增删改
+      function addOption() {
+        const txt = newOptionText.value.trim();
+        if (!txt) return;
+        options.value.push({ text: txt, weight: newOptionWeight.value || 1 });
+        newOptionText.value = '';
+        newOptionWeight.value = 1;
+        saveStorage();
+        drawWheel();
+      }
+
+      function removeOption(idx) {
+        options.value.splice(idx, 1);
+        saveStorage();
+        drawWheel();
+      }
+
+      function clearOptions() {
+        options.value = [];
+        saveStorage();
+        drawWheel();
+      }
+
+      function loadPreset(key) {
+        if (PRESETS[key]) {
+          options.value = JSON.parse(JSON.stringify(PRESETS[key]));
+          saveStorage();
+          drawWheel();
+          ElementPlus.ElMessage.success('已载入预设清单');
+        }
+      }
+
+      function applyBatchImport() {
+        const lines = batchText.value.split('\n').map(s => s.trim()).filter(Boolean);
+        if (lines.length === 0) return;
+        options.value = lines.map(line => ({ text: line, weight: 1 }));
+        batchDialogVisible.value = false;
+        batchText.value = '';
+        saveStorage();
+        drawWheel();
+        ElementPlus.ElMessage.success(`成功导入 ${lines.length} 个选项`);
+      }
+
+      function clearHistory() {
+        historyList.value = [];
+        saveStorage();
+        ElementPlus.ElMessage.success('历史记录已清空');
+      }
+
+      // 本地存储
+      const STORAGE_KEY = 'online_tools_decision_maker_v1';
+      function saveStorage() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            options: options.value,
+            history: historyList.value
+          }));
+        } catch (e) {}
+      }
+
+      function loadStorage() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const data = JSON.parse(raw);
+            if (data.options && data.options.length > 0) options.value = data.options;
+            if (data.history) historyList.value = data.history;
+          }
+        } catch (e) {}
+      }
+
+      onMounted(() => {
+        loadStorage();
+        drawWheel();
+      });
+
+      return {
+        currentMode,
+        soundEnabled,
+        options,
+        newOptionText,
+        newOptionWeight,
+        batchDialogVisible,
+        batchText,
+        resultDialogVisible,
+        finalResultText,
+        historyList,
+        isSpinning,
+        isFoodRolling,
+        currentFoodText,
+        diceCount,
+        diceValues,
+        diceTotal,
+        isRollingDice,
+        isFlippingCoin,
+        coinResultText,
+        coinStats,
+        coinTransform,
+        isShakingPot,
+        fortuneStickDrawn,
+        currentFortune,
+        switchMode,
+        startWheelSpin,
+        toggleFoodRoll,
+        rollDice,
+        getDiceTransform,
+        flipCoin,
+        resetCoinStats,
+        drawFortune,
+        rerunCurrentMode,
+        addOption,
+        removeOption,
+        clearOptions,
+        loadPreset,
+        applyBatchImport,
+        clearHistory
+      };
+    }
+  });
+
+  app.use(ElementPlus);
+  app.mount('#decisionApp');
+</script>
+</body>
+</html>

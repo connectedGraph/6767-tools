@@ -1,0 +1,433 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>cURL 转换多语言代码工具 - 在线工具</title>
+    <meta name="description" content="智能解析 cURL 命令行请求并快速转换为 JavaScript (Fetch / Axios)、Python (Requests / HTTPX)、Go、PHP、Java、Rust、Node.js 原生等多种语言网络请求代码。" />
+    <meta name="keywords" content="cURL转代码,curl to python,curl to javascript,curl to fetch,curl to axios,API代码生成" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+    <style>
+        .control-bar {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(192, 132, 252, 0.25);
+            backdrop-filter: blur(16px);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .lang-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .lang-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            background: #090f1d;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .lang-btn:hover { border-color: #c084fc; color: #c084fc; transform: translateY(-1px); }
+        .lang-btn.active {
+            background: #9333ea;
+            border-color: #c084fc;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(192, 132, 252, 0.4);
+        }
+
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 860px) {
+            .workspace-grid { grid-template-columns: 1fr; }
+        }
+
+        .editor-box {
+            background: #070b14;
+            border: 1px solid rgba(192, 132, 252, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+        }
+        .editor-topbar {
+            background: #0f172a;
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .code-textarea {
+            width: 100%;
+            height: 380px;
+            background: #070b14 !important;
+            color: #f1f5f9 !important;
+            font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            padding: 16px;
+            border: none;
+            outline: none;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        .code-textarea.output {
+            color: #d8b4fe !important;
+            background: #070b14 !important;
+        }
+        .action-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid rgba(192, 132, 252, 0.4);
+            background: #7c3aed;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+        }
+        .action-btn:hover { background: #6d28d9; transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./code" class="text-slate-400 hover:text-cyan-400 text-sm">程序员工具</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">cURL 转换多语言代码工具</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">cURL 转换多语言代码工具</h1>
+                </div>
+                <div class="description">智能解析 cURL 命令行请求并快速转换为 JavaScript (Fetch / Axios)、Python (Requests / HTTPX)、Go、PHP、Java、Rust、Node.js 原生等多种语言网络请求代码。</div>
+
+    <!-- Target Language Selectors -->
+    <div class="control-bar">
+        <div class="lang-tabs">
+            <button v-for="lang in targetLangs" :key="lang.id" @click="activeLang = lang.id; convert()"
+                    class="lang-btn" :class="{'active': activeLang === lang.id}">
+                {{ lang.name }}
+            </button>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button @click="loadSample" class="lang-btn">载入 POST 示例</button>
+            <button @click="copyCode" class="action-btn">📋 复制生成代码</button>
+        </div>
+    </div>
+
+    <!-- Dual Column Grid -->
+    <div class="workspace-grid">
+        <div class="editor-box">
+            <div class="editor-topbar">
+                <span>// 粘贴 cURL 命令行 (cURL Input)</span>
+                <button @click="curlInput = ''; outputCode = ''" style="background:none;border:none;color:#f43f5e;cursor:pointer;font-size:12px;">清空</button>
+            </div>
+            <textarea v-model="curlInput" @input="convert" placeholder="在此粘贴 curl 'https://api.example.com/v1/users' ..." class="code-textarea"></textarea>
+        </div>
+
+        <div class="editor-box">
+            <div class="editor-topbar">
+                <span style="color: #c084fc;">// 生成的 {{ getLangName(activeLang) }} 代码</span>
+                <span>{{ outputCode.split('\n').length }} 行</span>
+            </div>
+            <textarea readonly :value="outputCode" class="code-textarea output"></textarea>
+        </div>
+    </div>
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>cURL 是网络调试与 API 测试中最通用的命令行工具。本工具支持纯前端快速解析 cURL 命令中的 URL、HTTP Method、Header 及 Request Body，一键转换为 JavaScript、Python、Go、Rust、Java、PHP 等多种编程语言的标准 HTTP 请求代码，方便快速集成至工程项目中。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="303" :comment-class="2"></comment>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script>
+    const { createApp, ref, onMounted } = Vue;
+
+    createApp({
+        setup() {
+            const curlInput = ref('');
+            const outputCode = ref('');
+            const activeLang = ref('fetch');
+
+            const targetLangs = [
+                { id: 'fetch', name: 'JavaScript (Fetch)' },
+                { id: 'axios', name: 'JavaScript (Axios)' },
+                { id: 'python', name: 'Python (Requests)' },
+                { id: 'python_httpx', name: 'Python (HTTPX Async)' },
+                { id: 'go', name: 'Go (net/http)' },
+                { id: 'php', name: 'PHP (cURL)' },
+                { id: 'java', name: 'Java (HttpClient)' },
+                { id: 'rust', name: 'Rust (reqwest)' },
+            ];
+
+            function getLangName(id) {
+                const f = targetLangs.find(l => l.id === id);
+                return f ? f.name : id;
+            }
+
+            function parseCurl(cmd) {
+                if (!cmd) return null;
+                let text = cmd.trim().replace(/^curl\s+/i, '');
+                
+                let method = 'GET';
+                let url = '';
+                const headers = {};
+                let body = null;
+
+                const urlMatch = text.match(/(?:https?:\/\/[^\s'"]+|'https?:\/\/[^']+'|"https?:\/\/[^"]+)/i);
+                if (urlMatch) {
+                    url = urlMatch[0].replace(/^['"]|['"]$/g, '');
+                }
+
+                const methodMatch = text.match(/(?:-X|--request)\s+([A-Z]+)/i);
+                if (methodMatch) {
+                    method = methodMatch[1].toUpperCase();
+                }
+
+                const headerRegex = /(?:-H|--header)\s+['"]([^'"]+)['"]/gi;
+                let hMatch;
+                while ((hMatch = headerRegex.exec(text)) !== null) {
+                    const colonIdx = hMatch[1].indexOf(':');
+                    if (colonIdx !== -1) {
+                        const k = hMatch[1].slice(0, colonIdx).trim();
+                        const v = hMatch[1].slice(colonIdx + 1).trim();
+                        headers[k] = v;
+                    }
+                }
+
+                const dataMatch = text.match(/(?:-d|--data|--data-raw|--data-binary)\s+['"]([\s\S]*?)['"](?=\s+-[a-zA-Z]|\s*$)/);
+                if (dataMatch) {
+                    body = dataMatch[1];
+                    if (method === 'GET') method = 'POST';
+                }
+
+                return { url: url || 'https://api.example.com/endpoint', method, headers, body };
+            }
+
+            function convert() {
+                const parsed = parseCurl(curlInput.value);
+                if (!parsed) {
+                    outputCode.value = '';
+                    return;
+                }
+
+                const { url, method, headers, body } = parsed;
+
+                if (activeLang.value === 'fetch') {
+                    const options = { method: method };
+                    if (Object.keys(headers).length) options.headers = headers;
+                    if (body) {
+                        try {
+                            JSON.parse(body);
+                            options.body = 'JSON.stringify(' + body + ')';
+                        } catch (e) {
+                            options.body = JSON.stringify(body);
+                        }
+                    }
+                    outputCode.value = `fetch("${url}", {
+  method: "${method}",
+  headers: ${JSON.stringify(headers, null, 4)},
+${body ? '  body: ' + (options.body.startsWith('JSON.stringify') ? options.body : JSON.stringify(body)) + '\n' : ''}})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error("Error:", error));`;
+                } else if (activeLang.value === 'axios') {
+                    outputCode.value = `import axios from 'axios';
+
+axios({
+  method: '${method.toLowerCase()}',
+  url: '${url}',
+  headers: ${JSON.stringify(headers, null, 4)},${body ? '\n  data: ' + body : ''}
+})
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error(error);
+  });`;
+                } else if (activeLang.value === 'python') {
+                    outputCode.value = `import requests
+
+url = "${url}"
+headers = ${JSON.stringify(headers, null, 4)}
+${body ? 'payload = ' + (body.startsWith('{') ? body : JSON.stringify(body)) + '\n' : ''}
+response = requests.${method.toLowerCase()}(url, headers=headers${body ? (body.startsWith('{') ? ', json=payload' : ', data=payload') : ''})
+
+print(response.status_code)
+print(response.json())`;
+                } else if (activeLang.value === 'python_httpx') {
+                    outputCode.value = `import httpx
+import asyncio
+
+async def main():
+    url = "${url}"
+    headers = ${JSON.stringify(headers, null, 4)}
+${body ? '    data = ' + body + '\n' : ''}
+    async with httpx.AsyncClient() as client:
+        response = await client.${method.toLowerCase()}(url, headers=headers${body ? ', json=data' : ''})
+        print(response.json())
+
+asyncio.run(main())`;
+                } else if (activeLang.value === 'go') {
+                    outputCode.value = `package main
+
+import (
+    "fmt"
+    "net/http"
+    "io"
+${body ? '    "strings"\n' : ''})
+
+func main() {
+    url := "${url}"
+${body ? '    payload := strings.NewReader(`' + body + '`)\n' : ''}
+    req, err := http.NewRequest("${method}", url, ${body ? 'payload' : 'nil'})
+    if err != nil {
+        panic(err)
+    }
+
+${Object.entries(headers).map(([k,v]) => '    req.Header.Add("' + k + '", "' + v + '")').join('\n')}
+
+    res, err := http.DefaultClient.Do(req)
+    if err != nil {
+        panic(err)
+    }
+    defer res.Body.Close()
+
+    bodyBytes, _ := io.ReadAll(res.Body)
+    fmt.Println(string(bodyBytes))
+}`;
+                } else if (activeLang.value === 'php') {
+                    outputCode.value = `<?php
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => '${url}',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_CUSTOMREQUEST => '${method}',
+${body ? "  CURLOPT_POSTFIELDS => '" + body.replace(/'/g, "\\'") + "',\n" : ''}  CURLOPT_HTTPHEADER => array(
+${Object.entries(headers).map(([k,v]) => "    '" + k + ": " + v + "',").join('\n')}
+  ),
+));
+
+$response = curl_exec($curl);
+curl_close($curl);
+echo $response;`;
+                } else if (activeLang.value === 'java') {
+                    outputCode.value = `import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("${url}"))
+${Object.entries(headers).map(([k,v]) => '            .header("' + k + '", "' + v + '")').join('\n')}
+            .method("${method}", ${body ? 'HttpRequest.BodyPublishers.ofString("' + body.replace(/"/g, '\\"') + '")' : 'HttpRequest.BodyPublishers.noBody()'})
+            .build();
+
+        HttpResponse<String> response = HttpClient.newHttpClient()
+            .send(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println(response.body());
+    }
+}`;
+                } else if (activeLang.value === 'rust') {
+                    outputCode.value = `use reqwest::Client;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::new();
+    let res = client.${method.toLowerCase()}("${url}")
+${Object.entries(headers).map(([k,v]) => '        .header("' + k + '", "' + v + '")').join('\n')}${body ? '        .body(`' + body + '`)\n' : ''}        .send()
+        .await?
+        .text()
+        .await?;
+
+    println!("{}", res);
+    Ok(())
+}`;
+                }
+            }
+
+            function loadSample() {
+                curlInput.value = `curl 'https://api.github.com/repos/octocat/hello-world/issues' \\
+  -X POST \\
+  -H 'Accept: application/vnd.github+json' \\
+  -H 'Authorization: Bearer YOUR_GITHUB_TOKEN' \\
+  -H 'Content-Type: application/json' \\
+  -d '{"title":"Found a bug in production","body":"Detailed description of the issue...","labels":["bug","urgent"]}'`;
+                convert();
+            }
+
+            function copyCode() {
+                if (!outputCode.value) return;
+                navigator.clipboard.writeText(outputCode.value).then(() => {
+                    ElementPlus.ElMessage.success('已复制 ' + getLangName(activeLang.value) + ' 代码！');
+                });
+            }
+
+            onMounted(() => {
+                loadSample();
+            });
+
+            return {
+                curlInput,
+                outputCode,
+                activeLang,
+                targetLangs,
+                getLangName,
+                convert,
+                loadSample,
+                copyCode
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

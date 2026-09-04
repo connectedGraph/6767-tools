@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-grid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C026D3"/>
+      <stop offset="50%" stop-color="#9333EA"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-grid)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- 9-Grid (3x3 Tiles) -->
+  <!-- Row 1 -->
+  <rect x="8.5" y="8.5" width="8.5" height="8.5" rx="2" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.2"/>
+  <rect x="19.75" y="8.5" width="8.5" height="8.5" rx="2" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.2"/>
+  <rect x="31" y="8.5" width="8.5" height="8.5" rx="2" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.2"/>
+  <!-- Row 2 -->
+  <rect x="8.5" y="19.75" width="8.5" height="8.5" rx="2" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.2"/>
+  <rect x="19.75" y="19.75" width="8.5" height="8.5" rx="2" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.2"/>
+  <rect x="31" y="19.75" width="8.5" height="8.5" rx="2" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.2"/>
+  <!-- Row 3 -->
+  <rect x="8.5" y="31" width="8.5" height="8.5" rx="2" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.2"/>
+  <rect x="19.75" y="31" width="8.5" height="8.5" rx="2" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.2"/>
+  <rect x="31" y="31" width="8.5" height="8.5" rx="2" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.2"/>
+  <!-- Spanning Mountain Graphic Across Grid -->
+  <circle cx="24" cy="12.7" r="2.2" fill="#FDE047"/>
+  <path d="M10 36l6-8 4 5 4-5.5 8 9h-22z" fill="#38BDF8" opacity="0.8"/>
+  <!-- Grid Split Laser Guidance Indicator -->
+  <circle cx="24" cy="24" r="3" fill="#EC4899" stroke="#FFFFFF" stroke-width="1"/>
+  <text x="24" y="25.8" fill="#FFFFFF" font-family="system-ui, sans-serif" font-weight="bold" font-size="4" text-anchor="middle">9</text>
+</svg>

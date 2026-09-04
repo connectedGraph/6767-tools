@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-acalc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4c0519"/>
+      <stop offset="50%" stop-color="#831843"/>
+      <stop offset="100%" stop-color="#9f1239"/>
+    </linearGradient>
+    <linearGradient id="tri-fill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#db2777" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-acalc)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(251,113,133,0.25)" stroke-width="1"/>
+  
+  <!-- Geometric Shaded Triangle -->
+  <polygon points="24,9 39,36 9,36" fill="url(#tri-fill)" stroke="#fb7185" stroke-width="1.8" stroke-linejoin="round"/>
+  
+  <!-- Internal Area Hatching Lines -->
+  <path d="M16 36 L24 22 M22 36 L28 26 M28 36 L32 29 M11 36 L19 22" stroke="#fecdd3" stroke-width="0.9" opacity="0.6"/>
+  
+  <!-- Altitude Height Line h -->
+  <path d="M24 9 V36" stroke="#fecdd3" stroke-width="1.2" stroke-dasharray="2 1.5"/>
+  <path d="M24 33 h3 v3" fill="none" stroke="#fecdd3" stroke-width="0.9"/>
+  <text x="26.5" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="4" font-weight="800" fill="#ffe4e6">h</text>
+  
+  <!-- Base Dimension Arrow b -->
+  <path d="M9 40 h30 m-2 -1.2 l2 1.2 l-2 1.2 m-26 -2.4 l-2 1.2 l2 1.2" stroke="#fda4af" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="24" y="44.2" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="3.5" font-weight="800" fill="#ffe4e6">b</text>
+  
+  <!-- Area Badge S -->
+  <text x="18" y="27" font-family="system-ui, -apple-system, sans-serif" font-size="6.5" font-weight="900" fill="#ffffff">S</text>
+</svg>

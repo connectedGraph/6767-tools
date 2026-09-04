@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-curl" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="arrow-curl" x1="10" y1="12" x2="38" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-curl)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#c084fc" stroke-opacity="0.25" stroke-width="1"/>
+  
+  <!-- Terminal Prompt -->
+  <path d="M11 16l5 4-5 4" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="19" y1="24" x2="26" y2="24" stroke="#ec4899" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- Conversion Flow -->
+  <path d="M12 32h14c3.3 0 6-2.7 6-6v-1" stroke="#818cf8" stroke-width="1.8" stroke-dasharray="2 2"/>
+  <rect x="25" y="27" width="15" height="12" rx="2.5" fill="#0f172a" stroke="url(#arrow-curl)" stroke-width="1.4"/>
+  <text x="32.5" y="35.5" font-family="monospace" font-weight="bold" font-size="6" fill="#38bdf8" text-anchor="middle">&lt;/&gt;</text>
+</svg>

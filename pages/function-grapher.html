@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Upgraded by Antigravity Agent with function-plot & math.js -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>2D 数学函数图像绘制器 - 交互式函数绘图与高等数学物理曲线可视化 | 在线工具集</title>
+    <meta name="description" content="纯前端离线交互式 2D 数学函数绘图器，深度集成 function-plot 与 math.js。支持显函数、隐函数方程、极坐标方程与参数方程同屏绘制，导数切线实时追踪、定积分面积高亮，支持无级缩放平移与高清 PNG/SVG 导出，内置 16+ 经典高数几何物理模板。" />
+    <meta name="keywords" content="函数图像绘制, 2D函数画板, 数学绘图, function-plot, math.js, 高等数学可视化, 隐函数, 极坐标, 参数方程, 微积分, 定积分, 在线工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+        .fg-grid-layout {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 16px;
+            align-items: start;
+        }
+
+        @media (max-width: 860px) {
+            .fg-grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 侧边控制面板 */
+        .fg-panel {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .fg-section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #38bdf8;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 函数卡片 */
+        .fn-card {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .fn-card:hover {
+            border-color: #334155;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .fn-color-badge {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .fn-input {
+            background: #030712 !important;
+            border: 1px solid #1e293b !important;
+            color: #38bdf8 !important;
+            font-family: 'JetBrains Mono', Consolas, monospace !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            border-radius: 6px;
+            padding: 5px 8px;
+            width: 100%;
+            transition: border-color 0.15s;
+        }
+        .fn-input:focus {
+            border-color: #38bdf8 !important;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+        }
+
+        .fn-type-badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-weight: 600;
+        }
+
+        /* 画布容器 */
+        .plot-container-wrapper {
+            position: relative;
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            height: 720px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 768px) {
+            .plot-container-wrapper {
+                height: 500px;
+            }
+        }
+
+        #plotTarget {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: crosshair;
+            user-select: none;
+            touch-action: none;
+        }
+
+        /* function-plot SVG 深度暗黑终端样式定制 */
+        #plotTarget svg.function-plot {
+            font-family: 'JetBrains Mono', Consolas, monospace !important;
+            background-color: #020617 !important;
+        }
+
+        #plotTarget svg.function-plot text {
+            fill: #94a3b8 !important;
+            font-size: 11px !important;
+            font-family: 'JetBrains Mono', Consolas, monospace !important;
+        }
+
+        #plotTarget svg.function-plot .x.axis-label,
+        #plotTarget svg.function-plot .y.axis-label {
+            fill: #38bdf8 !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+        }
+
+        #plotTarget svg.function-plot .domain {
+            stroke: #475569 !important;
+            stroke-width: 1.5px !important;
+        }
+
+        #plotTarget svg.function-plot .origin {
+            stroke: #334155 !important;
+            stroke-width: 1.5px !important;
+        }
+
+        #plotTarget svg.function-plot .tick line {
+            stroke: rgba(51, 65, 85, 0.45) !important;
+            stroke-dasharray: 2, 2;
+        }
+
+        #plotTarget svg.function-plot .tip-x-line,
+        #plotTarget svg.function-plot .tip-y-line {
+            stroke: rgba(56, 189, 248, 0.7) !important;
+            stroke-dasharray: 3, 3 !important;
+            stroke-width: 1.2px !important;
+        }
+
+        #plotTarget svg.function-plot .tip circle {
+            fill: #38bdf8 !important;
+            stroke: #ffffff !important;
+            stroke-width: 2px !important;
+        }
+
+        #plotTarget svg.function-plot .derivative path {
+            stroke-dasharray: 4, 4 !important;
+            stroke: #c084fc !important;
+            stroke-width: 1.5px !important;
+        }
+
+        #plotTarget svg.function-plot path.line {
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+        }
+
+        /* 画布浮动 HUD 控制条 */
+        .canvas-hud {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(11, 19, 41, 0.88);
+            backdrop-filter: blur(8px);
+            border: 1px solid #334155;
+            padding: 4px 8px;
+            border-radius: 8px;
+            z-index: 10;
+        }
+
+        .hud-btn {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.15s;
+        }
+        .hud-btn:hover {
+            background: #38bdf8;
+            color: #020617;
+            border-color: #38bdf8;
+        }
+        .hud-btn.active {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #38bdf8;
+        }
+
+        /* 坐标准星浮层 */
+        .coord-hud {
+            position: absolute;
+            bottom: 14px;
+            left: 14px;
+            background: rgba(2, 6, 23, 0.92);
+            border: 1px solid #1e293b;
+            backdrop-filter: blur(8px);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            pointer-events: none;
+            z-index: 10;
+            line-height: 1.6;
+            max-width: 80%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .preset-chip {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 5px 9px;
+            font-size: 12px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-block;
+            margin: 0 4px 6px 0;
+            user-select: none;
+        }
+        .preset-chip:hover {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .calc-badge {
+            background: #030712;
+            border: 1px dashed #334155;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            color: #a855f7;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 虚拟数学键盘按钮 */
+        .key-btn {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            color: #cbd5e1;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            border-radius: 4px;
+            padding: 3px 6px;
+            cursor: pointer;
+            transition: all 0.12s;
+        }
+        .key-btn:hover {
+            background: #1e293b;
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 顶部导航栏 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">2D 数学函数图像绘制器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">2D 数学函数图像绘制器</h1>
+                </div>
+                <div class="description">纯前端离线交互式 2D 数学函数绘图器，深度集成 function-plot 与 math.js。支持显函数、隐函数方程、极坐标方程与参数方程同屏绘制，导数切线实时追踪、定积分面积高亮，支持无级缩放平移与高清 PNG/SVG 导出，内置 16+ 经典高数几何物理模板。</div>
+
+    <!-- 主界面双列网格 -->
+    <div class="fg-grid-layout">
+        
+        <!-- 左侧参数与控制面板 -->
+        <div class="fg-panel">
+            
+            <!-- 函数表达式管理 -->
+            <div class="fg-section-title">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-3.5 bg-sky-500 rounded-sm"></span>
+                    函数方程列表 (Function Expressions)
+                </span>
+                <el-button size="small" type="primary" plain @click="addFunction" :disabled="functions.length >= 10">
+                    + 添加函数
+                </el-button>
+            </div>
+
+            <!-- 函数列表项 -->
+            <div class="space-y-2.5 mb-4">
+                <div v-for="(fn, idx) in functions" :key="fn.id" class="fn-card">
+                    <!-- 顶部类型与颜色选择行 -->
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <input type="color" v-model="fn.color" class="fn-color-badge" title="选择线条颜色" @change="debouncedRender" />
+                            <select 
+                                v-model="fn.type" 
+                                @change="onTypeChange(fn)" 
+                                class="bg-slate-950 border border-slate-700 text-sky-400 rounded px-2 py-0.5 text-xs font-mono font-bold"
+                            >
+                                <option value="linear">显函数 y = f(x)</option>
+                                <option value="implicit">隐函数 f(x, y) = 0</option>
+                                <option value="polar">极坐标 r = f(θ)</option>
+                                <option value="parametric">参数方程 x(t), y(t)</option>
+                            </select>
+                        </div>
+                        <button 
+                            class="text-slate-400 hover:text-red-400 p-1 transition-colors rounded hover:bg-red-500/10" 
+                            @click="removeFunction(idx)" 
+                            :disabled="functions.length <= 1"
+                            title="删除该函数"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                    </div>
+
+                    <!-- 表达式输入框 -->
+                    <!-- 1. 显函数输入 -->
+                    <div v-if="fn.type === 'linear'" class="flex items-center gap-2 mb-1.5">
+                        <span class="font-mono text-xs text-slate-400 font-bold whitespace-nowrap">f{{ idx + 1 }}(x) =</span>
+                        <input 
+                            type="text" 
+                            v-model="fn.expr" 
+                            class="fn-input flex-1" 
+                            placeholder="例如: sin(x), x^2 - 2x + 1, exp(-x/2)*cos(3x)" 
+                            @input="debouncedRender"
+                            @focus="currentInputRef = { fn, field: 'expr' }"
+                        />
+                    </div>
+
+                    <!-- 2. 隐函数输入 -->
+                    <div v-else-if="fn.type === 'implicit'" class="flex items-center gap-2 mb-1.5">
+                        <span class="font-mono text-xs text-slate-400 font-bold whitespace-nowrap">F{{ idx + 1 }}(x,y):</span>
+                        <input 
+                            type="text" 
+                            v-model="fn.expr" 
+                            class="fn-input flex-1" 
+                            placeholder="例如: x^2 + y^2 = 25 或 x^2/16 + y^2/9 = 1" 
+                            @input="debouncedRender"
+                            @focus="currentInputRef = { fn, field: 'expr' }"
+                        />
+                    </div>
+
+                    <!-- 3. 极坐标输入 -->
+                    <div v-else-if="fn.type === 'polar'" class="flex items-center gap-2 mb-1.5">
+                        <span class="font-mono text-xs text-slate-400 font-bold whitespace-nowrap">r(θ) =</span>
+                        <input 
+                            type="text" 
+                            v-model="fn.expr" 
+                            class="fn-input flex-1" 
+                            placeholder="例如: 2 * (1 - cos(theta)), 3 * sin(2*theta)" 
+                            @input="debouncedRender"
+                            @focus="currentInputRef = { fn, field: 'expr' }"
+                        />
+                    </div>
+
+                    <!-- 4. 参数方程输入 -->
+                    <div v-else-if="fn.type === 'parametric'" class="space-y-1 mb-1.5">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono text-xs text-slate-400 font-bold w-12 text-right">x(t) =</span>
+                            <input 
+                                type="text" 
+                                v-model="fn.paramX" 
+                                class="fn-input flex-1" 
+                                placeholder="例如: 5 * cos(t)" 
+                                @input="debouncedRender"
+                                @focus="currentInputRef = { fn, field: 'paramX' }"
+                            />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono text-xs text-slate-400 font-bold w-12 text-right">y(t) =</span>
+                            <input 
+                                type="text" 
+                                v-model="fn.paramY" 
+                                class="fn-input flex-1" 
+                                placeholder="例如: 3 * sin(t)" 
+                                @input="debouncedRender"
+                                @focus="currentInputRef = { fn, field: 'paramY' }"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- 导数公式展示 (显函数专享) -->
+                    <div v-if="fn.type === 'linear' && fn.derivativeStr" class="mb-2">
+                        <div class="calc-badge" title="通过 math.js 符号代数引擎解析的精确导数公式">
+                            <span>f'{{ idx + 1 }}(x) =</span>
+                            <span class="text-purple-300 font-bold">{{ fn.derivativeStr }}</span>
+                        </div>
+                    </div>
+
+                    <!-- 操作选项行 -->
+                    <div class="flex flex-wrap items-center justify-between gap-y-1 text-xs text-slate-400 pt-1 border-t border-slate-800/60">
+                        <div class="flex items-center gap-3">
+                            <label class="flex items-center gap-1 cursor-pointer hover:text-slate-200">
+                                <input type="checkbox" v-model="fn.visible" @change="debouncedRender" class="rounded bg-slate-900 border-slate-700 text-sky-500" />
+                                <span>显示</span>
+                            </label>
+
+                            <template v-if="fn.type === 'linear'">
+                                <label class="flex items-center gap-1 cursor-pointer hover:text-purple-300" title="鼠标悬浮在曲线上时，动态展示该点切线与斜率">
+                                    <input type="checkbox" v-model="fn.showDerivativeTrace" @change="debouncedRender" class="rounded bg-slate-900 border-slate-700 text-purple-500" />
+                                    <span class="text-purple-300">切线追踪</span>
+                                </label>
+                                <label class="flex items-center gap-1 cursor-pointer hover:text-purple-300" title="在画板上绘制该函数的导数虚线曲线">
+                                    <input type="checkbox" v-model="fn.showDerivativeCurve" @change="debouncedRender" class="rounded bg-slate-900 border-slate-700 text-purple-500" />
+                                    <span class="text-purple-400/80">导数曲线</span>
+                                </label>
+                            </template>
+                        </div>
+                        
+                        <div class="flex items-center gap-1">
+                            <span>粗细:</span>
+                            <select v-model.number="fn.lineWidth" @change="debouncedRender" class="bg-slate-950 border border-slate-700 text-slate-300 rounded px-1 py-0.5 text-xs">
+                                <option :value="1.5">细 1.5</option>
+                                <option :value="2.5">标准 2.5</option>
+                                <option :value="4">粗 4.0</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 语法错误提示 -->
+                    <div v-if="fn.error" class="text-red-400 text-xs mt-1.5 pt-1 border-t border-red-900/40 font-mono">
+                        {{ fn.error }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快速数学输入软键盘 -->
+            <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 mb-4">
+                <div class="text-[11px] font-bold text-slate-400 mb-1.5 flex items-center justify-between">
+                    <span>快捷数学符号输入 (Quick Insert)</span>
+                    <span class="text-[10px] text-slate-500">点击插入到当前聚焦输入框</span>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    <button v-for="key in mathKeys" :key="key.label" class="key-btn" @click="insertSymbol(key.val)">
+                        {{ key.label }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- 经典数学与物理模板 -->
+            <div class="fg-section-title">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-3.5 bg-emerald-500 rounded-sm"></span>
+                    经典曲线模板库 (16+ 预置)
+                </span>
+            </div>
+            <div class="mb-4 max-h-48 overflow-y-auto pr-1">
+                <span 
+                    v-for="tpl in presets" 
+                    :key="tpl.name" 
+                    class="preset-chip" 
+                    :title="tpl.desc" 
+                    @click="loadPreset(tpl)"
+                >
+                    <span class="text-sky-400 font-mono text-[11px] mr-1">[{{ tpl.category }}]</span>
+                    {{ tpl.name }}
+                </span>
+            </div>
+
+            <!-- 微积分与定积分阴影工具 -->
+            <div class="fg-section-title">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-3.5 bg-purple-500 rounded-sm"></span>
+                    微积分与闭区间定积分分析
+                </span>
+            </div>
+            <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800 mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="flex items-center gap-1.5 text-xs text-sky-300 font-bold cursor-pointer">
+                        <input type="checkbox" v-model="integral.enabled" @change="debouncedRender" class="rounded bg-slate-900 border-slate-700 text-sky-500" />
+                        <span>启用定积分面积阴影 ∫ f(x) dx</span>
+                    </label>
+                    <select v-if="integral.enabled" v-model="integral.targetIdx" @change="debouncedRender" class="bg-slate-950 border border-slate-700 text-sky-300 rounded px-1.5 py-0.5 text-xs">
+                        <option v-for="(fn, i) in explicitFunctions" :key="fn.id" :value="fn.origIdx">
+                            f{{ fn.origIdx + 1 }}(x)
+                        </option>
+                    </select>
+                </div>
+                
+                <div v-if="integral.enabled" class="space-y-2 pt-1 border-t border-slate-800">
+                    <div class="flex items-center justify-between text-xs text-slate-400">
+                        <div class="flex items-center gap-2">
+                            <span>下限 a:</span>
+                            <input type="number" step="0.5" v-model.number="integral.a" @input="debouncedRender" class="w-16 bg-slate-950 border border-slate-700 rounded px-1 text-center text-slate-200" />
+                            <span>上限 b:</span>
+                            <input type="number" step="0.5" v-model.number="integral.b" @input="debouncedRender" class="w-16 bg-slate-950 border border-slate-700 rounded px-1 text-center text-slate-200" />
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-slate-400 font-mono">
+                            ∫[a={{ integral.a }}, b={{ integral.b }}] =
+                        </span>
+                        <span class="text-xs font-mono text-emerald-400 font-bold">
+                            {{ isNaN(integralValue) ? '无法计算' : integralValue.toFixed(6) }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图像导出与快速操作 -->
+            <div class="fg-section-title">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-3.5 bg-amber-500 rounded-sm"></span>
+                    图像导出与画板操作
+                </span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <el-button size="small" type="success" @click="exportPNG(2)">
+                    <span class="font-bold">导出高清 PNG (2x)</span>
+                </el-button>
+                <el-button size="small" type="primary" plain @click="exportSVG">
+                    <span class="font-bold">导出 SVG 矢量图</span>
+                </el-button>
+            </div>
+        </div>
+
+        <!-- 右侧交互式画布容器 -->
+        <div class="flex flex-col gap-3">
+            <div class="plot-container-wrapper" ref="plotWrapper">
+                
+                <!-- 悬浮操作 HUD 控制条 -->
+                <div class="canvas-hud">
+                    <button class="hud-btn" @click="zoomViewport(0.8)" title="放大 (亦可通过鼠标滚轮向上)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    </button>
+                    <button class="hud-btn" @click="zoomViewport(1.25)" title="缩小 (亦可通过鼠标滚轮向下)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                    </button>
+                    <button class="hud-btn" @click="resetViewport" title="复位原点与标准视口 [-10, 10]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    </button>
+                    <button class="hud-btn" :class="{ active: showGrid }" @click="toggleGrid" :title="showGrid ? '网格: 开启 (点击隐藏)' : '网格: 关闭 (点击显示)'">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16M6 4v16M12 4v16M18 4v16"/></svg>
+                    </button>
+                    <button class="hud-btn" :class="{ active: showCrosshair }" @click="showCrosshair = !showCrosshair" :title="showCrosshair ? '十字准星: 开启' : '十字准星: 关闭'">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18M3 12h18"/></svg>
+                    </button>
+                </div>
+
+                <!-- 实时坐标与函数值拾取 HUD -->
+                <div v-if="showCrosshair && hoverInfo.active" class="coord-hud">
+                    <div class="text-sky-400 font-bold border-b border-slate-800 pb-1 mb-1">
+                        X: {{ hoverInfo.x.toFixed(4) }} | Y: {{ hoverInfo.y.toFixed(4) }}
+                    </div>
+                    <div v-for="res in hoverInfo.fnResults" :key="res.name" :style="{ color: res.color }" class="flex items-center justify-between gap-3 text-xs">
+                        <span>{{ res.name }} = {{ isNaN(res.val) ? '未定义' : res.val.toFixed(4) }}</span>
+                        <span v-if="res.derivative !== null" class="text-purple-300 text-[11px] font-normal">
+                            (斜率 f' ≈ {{ isNaN(res.derivative) ? '-' : res.derivative.toFixed(4) }})
+                        </span>
+                    </div>
+                </div>
+
+                <!-- function-plot SVG 渲染挂载根节点 -->
+                <div id="plotTarget" ref="plotTarget"></div>
+            </div>
+
+            <!-- 视口范围快速切换快捷栏 -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div class="flex items-center gap-2">
+                    <span class="text-slate-400 font-bold">X 轴快速区间:</span>
+                    <button class="bg-slate-950 hover:bg-slate-800 text-sky-400 border border-slate-700 px-2 py-1 rounded" @click="setViewportDomain('x', [-5, 5])">[-5, 5]</button>
+                    <button class="bg-slate-950 hover:bg-slate-800 text-sky-400 border border-slate-700 px-2 py-1 rounded" @click="setViewportDomain('x', [-10, 10])">[-10, 10]</button>
+                    <button class="bg-slate-950 hover:bg-slate-800 text-sky-400 border border-slate-700 px-2 py-1 rounded" @click="setViewportDomain('x', [-20, 20])">[-20, 20]</button>
+                    <button class="bg-slate-950 hover:bg-slate-800 text-purple-300 border border-slate-700 px-2 py-1 rounded" @click="setViewportDomain('x', [-3.1416, 3.1416])">[-π, π]</button>
+                    <button class="bg-slate-950 hover:bg-slate-800 text-purple-300 border border-slate-700 px-2 py-1 rounded" @click="setViewportDomain('x', [-6.2832, 6.2832])">[-2π, 2π]</button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-slate-400 font-bold">采样算法:</span>
+                    <select v-model="samplerType" @change="debouncedRender" class="bg-slate-950 border border-slate-700 text-slate-300 rounded px-2 py-1 text-xs">
+                        <option value="polyline">折线采样 (Polyline)</option>
+                        <option value="interval">区间算术 (Interval 严密检测)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部数学表达式与功能使用指南 -->
+    <div class="mt-8 bg-slate-900/60 border border-slate-800 rounded-xl p-6 text-slate-300 text-sm leading-relaxed">
+        <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+            <span class="w-2 h-5 bg-sky-500 rounded"></span>
+            数学表达式支持与全功能指南
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
+            <div>
+                <h3 class="font-bold text-sky-400 mb-2">1. 显函数 (Explicit y=f(x))</h3>
+                <ul class="list-disc list-inside space-y-1 text-slate-400 text-xs">
+                    <li>代数多项式: <code class="text-sky-300">x^2 - 2x + 1</code>, <code class="text-sky-300">x^3 - 3x</code></li>
+                    <li>指数与对数: <code class="text-sky-300">exp(-x/2)</code>, <code class="text-sky-300">log(x)</code>, <code class="text-sky-300">ln(x)</code></li>
+                    <li>三角与双曲: <code class="text-sky-300">sin(x)</code>, <code class="text-sky-300">tan(x)</code>, <code class="text-sky-300">tanh(x)</code></li>
+                    <li>Sinc采样函数: <code class="text-sky-300">sinc(x)</code> 或 <code class="text-sky-300">sin(x)/x</code></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-bold text-sky-400 mb-2">2. 隐函数与圆锥曲线</h3>
+                <ul class="list-disc list-inside space-y-1 text-slate-400 text-xs">
+                    <li>圆形与椭圆: <code class="text-sky-300">x^2 + y^2 = 25</code>, <code class="text-sky-300">x^2/16 + y^2/9 = 1</code></li>
+                    <li>双曲线与抛物线: <code class="text-sky-300">x^2 - y^2 = 1</code>, <code class="text-sky-300">y^2 = 4x</code></li>
+                    <li>代数心形方程: <code class="text-sky-300">(x^2+y^2-4)^3 - x^2*y^3 = 0</code></li>
+                    <li>椭圆曲线密码学: <code class="text-sky-300">y^2 = x^3 - 3x + 3</code></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-bold text-sky-400 mb-2">3. 极坐标与参数方程</h3>
+                <ul class="list-disc list-inside space-y-1 text-slate-400 text-xs">
+                    <li>经典心形线: <code class="text-sky-300">r = 2 * (1 - cos(theta))</code></li>
+                    <li>四叶/三叶玫瑰线: <code class="text-sky-300">r = 3 * sin(2*theta)</code></li>
+                    <li>阿基米德螺线: <code class="text-sky-300">r = 0.5 * theta</code></li>
+                    <li>星形线 / 摆线: <code class="text-sky-300">x=4*cos(t)^3, y=4*sin(t)^3</code></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-bold text-sky-400 mb-2">4. 微积分与交互功能</h3>
+                <ul class="list-disc list-inside space-y-1 text-slate-400 text-xs">
+                    <li>导数切线追踪: 鼠标悬浮自动显示实时切线与斜率</li>
+                    <li>精确符号导数: 集成 math.js 自动生成解析导数公式</li>
+                    <li>闭区间定积分: 梯形/辛普森复合数值积分与面积阴影</li>
+                    <li>图像导出: 离线生成 2x 高清 PNG 与纯矢量 SVG</li>
+                </ul>
+            </div>
+    </div>
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>本 2D 函数图像绘制器深度集成 math.js 与 function-plot 纯前端渲染引擎，支持单屏多函数方程绘制、微积分导数切线实时计算、定积分面积着色及高清图片导出，适配各类屏幕及副屏展示。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="304" :comment-class="2"></comment>
+</main>
+
+<!-- 引入本地离线依赖库 -->
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/mathjs/math.min.js"></script>
+<script src="./lib/function-plot/function-plot.js"></script>
+
+<script>
+/**
+ * 纯前端高性能数学表达式解析引擎 (Tokenize -> Shunting-Yard -> RPN Evaluator)
+ */
+class MathParser {
+    static tokenize(expr) {
+        let s = expr.replace(/\s+/g, '').toLowerCase();
+        // 补全隐式乘法: 2x -> 2*x, 3(x+1) -> 3*(x+1), x(x+1) -> x*(x+1), )x -> )*x
+        s = s.replace(/(\d)([a-z\(])/g, '$1*$2');
+        s = s.replace(/(\))(\d|[a-z\(])/g, '$1*$2');
+        s = s.replace(/(x)([a-z\(])/g, '$1*$2');
+
+        const tokens = [];
+        let i = 0;
+        while (i < s.length) {
+            const c = s[i];
+            if (/\d/.test(c) || (c === '.' && i + 1 < s.length && /\d/.test(s[i + 1]))) {
+                let numStr = '';
+                while (i < s.length && (/[\d\.]/.test(s[i]))) {
+                    numStr += s[i++];
+                }
+                tokens.push({ type: 'num', val: parseFloat(numStr) });
+            } else if (/[a-z]/.test(c)) {
+                let ident = '';
+                while (i < s.length && /[a-z0-9_]/.test(s[i])) {
+                    ident += s[i++];
+                }
+                if (ident === 'x') {
+                    tokens.push({ type: 'var', val: 'x' });
+                } else if (ident === 'pi') {
+                    tokens.push({ type: 'num', val: Math.PI });
+                } else if (ident === 'e') {
+                    tokens.push({ type: 'num', val: Math.E });
+                } else {
+                    tokens.push({ type: 'fn', val: ident });
+                }
+            } else if ('+-*/^%(),'.includes(c)) {
+                // 处理一元负号/正号
+                if ((c === '-' || c === '+') && (tokens.length === 0 || tokens[tokens.length - 1].type === 'op' || tokens[tokens.length - 1].val === '(')) {
+                    tokens.push({ type: 'op', val: c === '-' ? 'neg' : 'pos', prec: 4, assoc: 'R' });
+                } else {
+                    const precMap = { '+': 1, '-': 1, '*': 2, '/': 2, '%': 2, '^': 3 };
+                    tokens.push({ type: 'op', val: c, prec: precMap[c] || 0, assoc: c === '^' ? 'R' : 'L' });
+                }
+                i++;
+            } else {
+                i++;
+            }
+        }
+        return tokens;
+    }
+
+    static toRPN(tokens) {
+        const output = [];
+        const opStack = [];
+
+        for (let t of tokens) {
+            if (t.type === 'num' || t.type === 'var') {
+                output.push(t);
+            } else if (t.type === 'fn') {
+                opStack.push(t);
+            } else if (t.type === 'op') {
+                if (t.val === '(') {
+                    opStack.push(t);
+                } else if (t.val === ')') {
+                    while (opStack.length && opStack[opStack.length - 1].val !== '(') {
+                        output.push(opStack.pop());
+                    }
+                    opStack.pop(); // 弹出 '('
+                    if (opStack.length && opStack[opStack.length - 1].type === 'fn') {
+                        output.push(opStack.pop());
+                    }
+                } else {
+                    while (
+                        opStack.length &&
+                        opStack[opStack.length - 1].val !== '(' &&
+                        ((t.assoc === 'L' && t.prec <= opStack[opStack.length - 1].prec) ||
+                         (t.assoc === 'R' && t.prec < opStack[opStack.length - 1].prec))
+                    ) {
+                        output.push(opStack.pop());
+                    }
+                    opStack.push(t);
+                }
+            }
+        }
+        while (opStack.length) {
+            output.push(opStack.pop());
+        }
+        return output;
+    }
+
+    static compile(expr) {
+        try {
+            const tokens = this.tokenize(expr);
+            const rpn = this.toRPN(tokens);
+            return function(x) {
+                const stack = [];
+                for (let t of rpn) {
+                    if (t.type === 'num') {
+                        stack.push(t.val);
+                    } else if (t.type === 'var') {
+                        stack.push(x);
+                    } else if (t.type === 'op') {
+                        if (t.val === 'neg') {
+                            stack.push(-stack.pop());
+                        } else if (t.val === 'pos') {
+                            // no-op
+                        } else {
+                            const b = stack.pop();
+                            const a = stack.pop();
+                            switch (t.val) {
+                                case '+': stack.push(a + b); break;
+                                case '-': stack.push(a - b); break;
+                                case '*': stack.push(a * b); break;
+                                case '/': stack.push(b === 0 ? NaN : a / b); break;
+                                case '%': stack.push(a % b); break;
+                                case '^': stack.push(Math.pow(a, b)); break;
+                            }
+                        }
+                    } else if (t.type === 'fn') {
+                        const a = stack.pop();
+                        switch (t.val) {
+                            case 'sin': stack.push(Math.sin(a)); break;
+                            case 'cos': stack.push(Math.cos(a)); break;
+                            case 'tan': stack.push(Math.tan(a)); break;
+                            case 'asin': stack.push(Math.asin(a)); break;
+                            case 'acos': stack.push(Math.acos(a)); break;
+                            case 'atan': stack.push(Math.atan(a)); break;
+                            case 'sinh': stack.push(Math.sinh(a)); break;
+                            case 'cosh': stack.push(Math.cosh(a)); break;
+                            case 'tanh': stack.push(Math.tanh(a)); break;
+                            case 'exp': stack.push(Math.exp(a)); break;
+                            case 'ln':
+                            case 'log': stack.push(Math.log(a)); break;
+                            case 'log10': stack.push(Math.log10(a)); break;
+                            case 'log2': stack.push(Math.log2(a)); break;
+                            case 'sqrt': stack.push(Math.sqrt(a)); break;
+                            case 'cbrt': stack.push(Math.cbrt(a)); break;
+                            case 'abs': stack.push(Math.abs(a)); break;
+                            case 'floor': stack.push(Math.floor(a)); break;
+                            case 'ceil': stack.push(Math.ceil(a)); break;
+                            case 'round': stack.push(Math.round(a)); break;
+                            case 'sign':
+                            case 'sgn': stack.push(Math.sign(a)); break;
+                            case 'sinc': stack.push(a === 0 ? 1 : Math.sin(a) / a); break;
+                            default: stack.push(NaN);
+                        }
+                    }
+                }
+                return stack.pop();
+            };
+        } catch (e) {
+            return null;
+        }
+    }
+}
+
+const { createApp, ref, reactive, computed, onMounted, onUnmounted } = Vue;
+
+createApp({
+    setup() {
+        const canvas = ref(null);
+        const canvasContainer = ref(null);
+        let ctx = null;
+
+        const defaultColors = ['#38bdf8', '#f43f5e', '#10b981', '#fbbf24', '#a855f7', '#fb923c'];
+
+        const functions = reactive([
+            { id: 1, expr: 'exp(-0.2*x)*cos(2*x)', color: '#38bdf8', visible: true, showDerivative: false, lineWidth: 2.5, error: null, compiled: null },
+            { id: 2, expr: '0.5*x^2 - 3', color: '#f43f5e', visible: true, showDerivative: false, lineWidth: 2.5, error: null, compiled: null }
+        ]);
+
+        const presets = [
+            { name: '阻尼振荡', expr: 'exp(-0.2*x)*cos(2*x)', desc: '阻尼机械与电磁振荡衰减' },
+            { name: '高斯正态分布', expr: 'exp(-x^2 / 2) / sqrt(2 * pi)', desc: '统计学标准正态分布钟形曲线' },
+            { name: '心形线方程', expr: 'sqrt(1 - (abs(x)-1)^2)', desc: '经典数学心形线上半弧' },
+            { name: 'Sinc 采样函数', expr: 'sinc(x)', desc: '数字信号处理基带滤波器' },
+            { name: '三次双极值多项式', expr: 'x^3 / 3 - x^2 - 3*x + 2', desc: '经典导数与极值分析函数' },
+            { name: '洛伦兹线型', expr: '1 / (1 + x^2)', desc: '物理共振与谱线展宽' },
+            { name: 'Sigmoid 激活', expr: '1 / (1 + exp(-x))', desc: '深度学习经典激活函数' },
+            { name: '拍频叠加波', expr: 'sin(3*x) + sin(3.4*x)', desc: '两列相近频率声波干涉' },
+            { name: '正切周期函数', expr: 'tan(x)', desc: '具有垂直渐近线的周期三角函数' },
+            { name: '调制调幅波', expr: '(1 + 0.5*cos(0.5*x)) * sin(5*x)', desc: '无线电通信 AM 调制' },
+            { name: '绝对值包络', expr: 'abs(x) * sin(x)', desc: '对称发散波动' },
+            { name: '锯齿波', expr: 'x - floor(x)', desc: '非平滑周期阶梯波' },
+            { name: '双曲正切 tanh', expr: 'tanh(x)', desc: '平滑阈值转换函数' },
+            { name: '伽马/泊松形态', expr: 'x^3 * exp(-x)', desc: '单峰右偏概率分布' }
+        ];
+
+        // 视口状态
+        const viewport = reactive({
+            xMin: -10,
+            xMax: 10,
+            yMin: -6,
+            yMax: 6
+        });
+
+        const showGrid = ref(true);
+        const showCrosshair = ref(true);
+
+        const integral = reactive({
+            enabled: false,
+            a: -2,
+            b: 2
+        });
+
+        const integralValue = ref(0);
+
+        const hoverInfo = reactive({
+            active: false,
+            x: 0,
+            y: 0,
+            fnResults: []
+        });
+
+        let isDragging = false;
+        let dragStart = { x: 0, y: 0 };
+        let dragViewportStart = { xMin: 0, xMax: 0, yMin: 0, yMax: 0 };
+        let renderTimeout = null;
+
+        // 坐标换算: 数学坐标 (x, y) -> 画布像素 (px, py)
+        function mathToPixel(x, y, w, h) {
+            const px = ((x - viewport.xMin) / (viewport.xMax - viewport.xMin)) * w;
+            const py = ((viewport.yMax - y) / (viewport.yMax - viewport.yMin)) * h;
+            return { px, py };
+        }
+
+        // 画布像素 (px, py) -> 数学坐标 (x, y)
+        function pixelToMath(px, py, w, h) {
+            const x = viewport.xMin + (px / w) * (viewport.xMax - viewport.xMin);
+            const y = viewport.yMax - (py / h) * (viewport.yMax - viewport.yMin);
+            return { x, y };
+        }
+
+        function compileAll() {
+            functions.forEach(fn => {
+                if (!fn.expr.trim()) {
+                    fn.compiled = null;
+                    fn.error = '表达式不能为空';
+                    return;
+                }
+                const comp = MathParser.compile(fn.expr);
+                if (comp) {
+                    // 测试执行
+                    try {
+                        const testVal = comp(1);
+                        fn.compiled = comp;
+                        fn.error = null;
+                    } catch (e) {
+                        fn.compiled = null;
+                        fn.error = '语法解析错误';
+                    }
+                } else {
+                    fn.compiled = null;
+                    fn.error = '语法格式错误';
+                }
+            });
+        }
+
+        function debouncedRender() {
+            if (renderTimeout) clearTimeout(renderTimeout);
+            renderTimeout = setTimeout(() => {
+                compileAll();
+                renderGraph();
+            }, 100);
+        }
+
+        // 绘制主图形
+        function renderGraph() {
+            if (!canvas.value) return;
+            const cvs = canvas.value;
+            const width = cvs.width;
+            const height = cvs.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. 绘制背景与网格
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(0, 0, width, height);
+
+            if (showGrid.value) {
+                drawGrid(width, height);
+            }
+
+            // 2. 绘制坐标轴 (X / Y)
+            drawAxes(width, height);
+
+            // 3. 绘制定积分阴影 (如果开启)
+            if (integral.enabled && functions[0] && functions[0].compiled && functions[0].visible) {
+                drawIntegralArea(functions[0].compiled, functions[0].color, width, height);
+            }
+
+            // 4. 绘制函数曲线
+            functions.forEach(fn => {
+                if (fn.visible && fn.compiled) {
+                    drawCurve(fn.compiled, fn.color, fn.lineWidth, width, height);
+
+                    // 绘制导数虚线
+                    if (fn.showDerivative) {
+                        drawDerivativeCurve(fn.compiled, '#c084fc', 1.5, width, height);
+                    }
+                }
+            });
+
+            // 5. 绘制悬浮十字准星与交点
+            if (showCrosshair.value && hoverInfo.active) {
+                drawCrosshair(width, height);
+            }
+        }
+
+        function calculateStep(range) {
+            const rawStep = range / 10;
+            const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+            const normalized = rawStep / magnitude;
+
+            let step = magnitude;
+            if (normalized >= 5) step = 5 * magnitude;
+            else if (normalized >= 2) step = 2 * magnitude;
+            return step;
+        }
+
+        function drawGrid(w, h) {
+            const xRange = viewport.xMax - viewport.xMin;
+            const yRange = viewport.yMax - viewport.yMin;
+
+            const xStep = calculateStep(xRange);
+            const yStep = calculateStep(yRange);
+
+            ctx.lineWidth = 1;
+
+            // X 轴垂直刻度线
+            const startX = Math.floor(viewport.xMin / xStep) * xStep;
+            for (let x = startX; x <= viewport.xMax; x += xStep) {
+                const { px } = mathToPixel(x, 0, w, h);
+                ctx.strokeStyle = Math.abs(x) < 1e-6 ? 'transparent' : 'rgba(51, 65, 85, 0.35)';
+                ctx.beginPath();
+                ctx.moveTo(px, 0);
+                ctx.lineTo(px, h);
+                ctx.stroke();
+
+                // 刻度数值标签
+                if (Math.abs(x) > 1e-6) {
+                    const { py: originPy } = mathToPixel(0, 0, w, h);
+                    const labelY = Math.min(Math.max(originPy + 16, 20), h - 10);
+                    ctx.fillStyle = '#64748b';
+                    ctx.font = '11px "JetBrains Mono", Consolas, monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(Number(x.toFixed(4)).toString(), px, labelY);
+                }
+            }
+
+            // Y 轴水平刻度线
+            const startY = Math.floor(viewport.yMin / yStep) * yStep;
+            for (let y = startY; y <= viewport.yMax; y += yStep) {
+                const { py } = mathToPixel(0, y, w, h);
+                ctx.strokeStyle = Math.abs(y) < 1e-6 ? 'transparent' : 'rgba(51, 65, 85, 0.35)';
+                ctx.beginPath();
+                ctx.moveTo(0, py);
+                ctx.lineTo(w, py);
+                ctx.stroke();
+
+                if (Math.abs(y) > 1e-6) {
+                    const { px: originPx } = mathToPixel(0, 0, w, h);
+                    const labelX = Math.min(Math.max(originPx + 6, 8), w - 36);
+                    ctx.fillStyle = '#64748b';
+                    ctx.font = '11px "JetBrains Mono", Consolas, monospace';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(Number(y.toFixed(4)).toString(), labelX, py - 4);
+                }
+            }
+        }
+
+        function drawAxes(w, h) {
+            const { px: originPx, py: originPy } = mathToPixel(0, 0, w, h);
+
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#94a3b8';
+
+            // X 轴
+            if (originPy >= 0 && originPy <= h) {
+                ctx.beginPath();
+                ctx.moveTo(0, originPy);
+                ctx.lineTo(w, originPy);
+                ctx.stroke();
+
+                // X 轴箭头
+                ctx.fillStyle = '#94a3b8';
+                ctx.beginPath();
+                ctx.moveTo(w - 2, originPy);
+                ctx.lineTo(w - 10, originPy - 4);
+                ctx.lineTo(w - 10, originPy + 4);
+                ctx.fill();
+                ctx.font = '12px "JetBrains Mono", monospace';
+                ctx.fillText('x', w - 16, originPy - 8);
+            }
+
+            // Y 轴
+            if (originPx >= 0 && originPx <= w) {
+                ctx.beginPath();
+                ctx.moveTo(originPx, h);
+                ctx.lineTo(originPx, 0);
+                ctx.stroke();
+
+                // Y 轴箭头
+                ctx.fillStyle = '#94a3b8';
+                ctx.beginPath();
+                ctx.moveTo(originPx, 2);
+                ctx.lineTo(originPx - 4, 10);
+                ctx.lineTo(originPx + 4, 10);
+                ctx.fill();
+                ctx.font = '12px "JetBrains Mono", monospace';
+                ctx.fillText('y', originPx + 8, 16);
+            }
+
+            // 原点 0 标注
+            if (originPx >= 0 && originPx <= w && originPy >= 0 && originPy <= h) {
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '11px "JetBrains Mono", monospace';
+                ctx.textAlign = 'right';
+                ctx.fillText('O', originPx - 6, originPy + 14);
+            }
+        }
+
+        function drawCurve(compiledFn, color, strokeWidth, w, h) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = strokeWidth;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+
+            ctx.beginPath();
+            let drawing = false;
+            let prevY = null;
+            const samples = w * 2; // 高精度子像素采样
+
+            for (let i = 0; i <= samples; i++) {
+                const px = (i / samples) * w;
+                const mathX = viewport.xMin + (px / w) * (viewport.xMax - viewport.xMin);
+
+                let mathY;
+                try {
+                    mathY = compiledFn(mathX);
+                } catch (e) {
+                    mathY = NaN;
+                }
+
+                if (isNaN(mathY) || !isFinite(mathY)) {
+                    drawing = false;
+                    prevY = null;
+                    continue;
+                }
+
+                const { py } = mathToPixel(mathX, mathY, w, h);
+
+                // 奇点与渐近线跨跃检测 (防止 tan(x) 等在渐近线处绘制垂直跳变拉线)
+                if (prevY !== null && Math.abs(py - prevY) > h * 0.75 && ((py < 0 && prevY > h) || (py > h && prevY < 0))) {
+                    drawing = false;
+                }
+
+                if (!drawing) {
+                    ctx.moveTo(px, py);
+                    drawing = true;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+                prevY = py;
+            }
+            ctx.stroke();
+        }
+
+        function drawDerivativeCurve(compiledFn, color, strokeWidth, w, h) {
+            ctx.save();
+            ctx.setLineDash([4, 4]);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = strokeWidth;
+
+            const dx = 1e-4;
+            const samples = w;
+            ctx.beginPath();
+            let drawing = false;
+
+            for (let i = 0; i <= samples; i++) {
+                const px = (i / samples) * w;
+                const mathX = viewport.xMin + (px / w) * (viewport.xMax - viewport.xMin);
+
+                let dy;
+                try {
+                    const y1 = compiledFn(mathX + dx);
+                    const y0 = compiledFn(mathX - dx);
+                    dy = (y1 - y0) / (2 * dx);
+                } catch (e) {
+                    dy = NaN;
+                }
+
+                if (isNaN(dy) || !isFinite(dy)) {
+                    drawing = false;
+                    continue;
+                }
+
+                const { py } = mathToPixel(mathX, dy, w, h);
+                if (!drawing) {
+                    ctx.moveTo(px, py);
+                    drawing = true;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawIntegralArea(compiledFn, color, w, h) {
+            const a = Math.min(integral.a, integral.b);
+            const b = Math.max(integral.a, integral.b);
+
+            const { py: originPy } = mathToPixel(0, 0, w, h);
+
+            ctx.save();
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+            ctx.beginPath();
+
+            const { px: startPx } = mathToPixel(a, 0, w, h);
+            const { px: endPx } = mathToPixel(b, 0, w, h);
+
+            ctx.moveTo(startPx, originPy);
+
+            const stepCount = Math.max(100, Math.floor(endPx - startPx) * 2);
+            let sum = 0;
+            const dx = (b - a) / stepCount;
+
+            for (let i = 0; i <= stepCount; i++) {
+                const x = a + i * dx;
+                let y = 0;
+                try {
+                    y = compiledFn(x);
+                    if (isNaN(y) || !isFinite(y)) y = 0;
+                } catch (e) { y = 0; }
+
+                if (i > 0 && i < stepCount) sum += y;
+                else sum += y / 2;
+
+                const { px, py } = mathToPixel(x, y, w, h);
+                ctx.lineTo(px, py);
+            }
+
+            ctx.lineTo(endPx, originPy);
+            ctx.closePath();
+            ctx.fill();
+
+            // 梯形法则积分值
+            integralValue.value = sum * dx;
+            ctx.restore();
+        }
+
+        function drawCrosshair(w, h) {
+            const { px, py } = mathToPixel(hoverInfo.x, hoverInfo.y, w, h);
+
+            ctx.save();
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.5)';
+            ctx.lineWidth = 1;
+
+            // 准星竖线
+            ctx.beginPath();
+            ctx.moveTo(px, 0);
+            ctx.lineTo(px, h);
+            ctx.stroke();
+
+            // 准星横线
+            ctx.beginPath();
+            ctx.moveTo(0, py);
+            ctx.lineTo(w, py);
+            ctx.stroke();
+
+            // 与各函数曲线的交点圆圈
+            hoverInfo.fnResults.forEach(res => {
+                if (!isNaN(res.val) && isFinite(res.val)) {
+                    const { px: dotPx, py: dotPy } = mathToPixel(hoverInfo.x, res.val, w, h);
+                    ctx.beginPath();
+                    ctx.arc(dotPx, dotPy, 4.5, 0, Math.PI * 2);
+                    ctx.fillStyle = res.color;
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                }
+            });
+
+            ctx.restore();
+        }
+
+        // 交互事件处理
+        function onMouseDown(e) {
+            isDragging = true;
+            dragStart = { x: e.clientX, y: e.clientY };
+            dragViewportStart = { ...viewport };
+        }
+
+        function onMouseMove(e) {
+            const rect = canvas.value.getBoundingClientRect();
+            const px = (e.clientX - rect.left) * (canvas.value.width / rect.width);
+            const py = (e.clientY - rect.top) * (canvas.value.height / rect.height);
+
+            const mathPt = pixelToMath(px, py, canvas.value.width, canvas.value.height);
+
+            if (isDragging) {
+                const dxPx = e.clientX - dragStart.x;
+                const dyPx = e.clientY - dragStart.y;
+
+                const xSpan = dragViewportStart.xMax - dragViewportStart.xMin;
+                const ySpan = dragViewportStart.yMax - dragViewportStart.yMin;
+
+                const dxMath = (dxPx / rect.width) * xSpan;
+                const dyMath = (dyPx / rect.height) * ySpan;
+
+                viewport.xMin = dragViewportStart.xMin - dxMath;
+                viewport.xMax = dragViewportStart.xMax - dxMath;
+                viewport.yMin = dragViewportStart.yMin + dyMath;
+                viewport.yMax = dragViewportStart.yMax + dyMath;
+
+                renderGraph();
+            } else {
+                // 计算当前鼠标位置在各函数下的值
+                hoverInfo.active = true;
+                hoverInfo.x = mathPt.x;
+                hoverInfo.y = mathPt.y;
+                hoverInfo.fnResults = functions
+                    .filter(fn => fn.visible && fn.compiled)
+                    .map((fn, idx) => {
+                        let val = NaN;
+                        let derivative = null;
+                        try {
+                            val = fn.compiled(mathPt.x);
+                            const delta = 1e-4;
+                            derivative = (fn.compiled(mathPt.x + delta) - fn.compiled(mathPt.x - delta)) / (2 * delta);
+                        } catch (err) {}
+                        return {
+                            name: `f${idx + 1}`,
+                            val: val,
+                            derivative: derivative,
+                            color: fn.color
+                        };
+                    });
+
+                renderGraph();
+            }
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+        }
+
+        function onMouseLeave() {
+            isDragging = false;
+            hoverInfo.active = false;
+            renderGraph();
+        }
+
+        function onWheel(e) {
+            e.preventDefault();
+            const factor = e.deltaY < 0 ? 0.88 : 1.13;
+            zoomAt(e.clientX, e.clientY, factor);
+        }
+
+        function zoom(factor) {
+            const cx = (viewport.xMin + viewport.xMax) / 2;
+            const cy = (viewport.yMin + viewport.yMax) / 2;
+            const xHalf = ((viewport.xMax - viewport.xMin) * factor) / 2;
+            const yHalf = ((viewport.yMax - viewport.yMin) * factor) / 2;
+
+            viewport.xMin = cx - xHalf;
+            viewport.xMax = cx + xHalf;
+            viewport.yMin = cy - yHalf;
+            viewport.yMax = cy + yHalf;
+
+            renderGraph();
+        }
+
+        function zoomAt(clientX, clientY, factor) {
+            const rect = canvas.value.getBoundingClientRect();
+            const px = (clientX - rect.left) * (canvas.value.width / rect.width);
+            const py = (clientY - rect.top) * (canvas.value.height / rect.height);
+            const mathPt = pixelToMath(px, py, canvas.value.width, canvas.value.height);
+
+            viewport.xMin = mathPt.x - (mathPt.x - viewport.xMin) * factor;
+            viewport.xMax = mathPt.x + (viewport.xMax - mathPt.x) * factor;
+            viewport.yMin = mathPt.y - (mathPt.y - viewport.yMin) * factor;
+            viewport.yMax = mathPt.y + (viewport.yMax - mathPt.y) * factor;
+
+            renderGraph();
+        }
+
+        // 移动端触摸处理
+        let touchStartDist = 0;
+        function onTouchStart(e) {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                dragStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                dragViewportStart = { ...viewport };
+            } else if (e.touches.length === 2) {
+                isDragging = false;
+                touchStartDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+            }
+        }
+
+        function onTouchMove(e) {
+            e.preventDefault();
+            if (e.touches.length === 1 && isDragging) {
+                const rect = canvas.value.getBoundingClientRect();
+                const dxPx = e.touches[0].clientX - dragStart.x;
+                const dyPx = e.touches[0].clientY - dragStart.y;
+                const xSpan = dragViewportStart.xMax - dragViewportStart.xMin;
+                const ySpan = dragViewportStart.yMax - dragViewportStart.yMin;
+
+                viewport.xMin = dragViewportStart.xMin - (dxPx / rect.width) * xSpan;
+                viewport.xMax = dragViewportStart.xMax - (dxPx / rect.width) * xSpan;
+                viewport.yMin = dragViewportStart.yMin + (dyPx / rect.height) * ySpan;
+                viewport.yMax = dragViewportStart.yMax + (dyPx / rect.height) * ySpan;
+                renderGraph();
+            } else if (e.touches.length === 2) {
+                const dist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                if (touchStartDist > 0) {
+                    const factor = touchStartDist / dist;
+                    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                    zoomAt(midX, midY, factor > 1 ? 1.05 : 0.95);
+                    touchStartDist = dist;
+                }
+            }
+        }
+
+        function onTouchEnd() {
+            isDragging = false;
+            touchStartDist = 0;
+        }
+
+        function resetOrigin() {
+            viewport.xMin = -10;
+            viewport.xMax = 10;
+            viewport.yMin = -6;
+            viewport.yMax = 6;
+            renderGraph();
+        }
+
+        function setViewportRange(axis, radius) {
+            if (axis === 'x') {
+                viewport.xMin = -radius;
+                viewport.xMax = radius;
+            } else {
+                viewport.yMin = -radius;
+                viewport.yMax = radius;
+            }
+            renderGraph();
+        }
+
+        function toggleGrid() {
+            showGrid.value = !showGrid.value;
+            renderGraph();
+        }
+
+        function toggleCrosshair() {
+            showCrosshair.value = !showCrosshair.value;
+            renderGraph();
+        }
+
+        function addFunction() {
+            if (functions.length >= 8) return;
+            const nextColor = defaultColors[functions.length % defaultColors.length];
+            functions.push({
+                id: Date.now(),
+                expr: '',
+                color: nextColor,
+                visible: true,
+                showDerivative: false,
+                lineWidth: 2.5,
+                error: null,
+                compiled: null
+            });
+        }
+
+        function removeFunction(idx) {
+            if (functions.length <= 1) return;
+            functions.splice(idx, 1);
+            renderGraph();
+        }
+
+        function loadPreset(tpl) {
+            if (functions.length > 0) {
+                functions[0].expr = tpl.expr;
+                functions[0].visible = true;
+                compileAll();
+                renderGraph();
+                ElementPlus.ElMessage.success(`已载入模板: ${tpl.name}`);
+            }
+        }
+
+        function exportPNG() {
+            if (!canvas.value) return;
+            const link = document.createElement('a');
+            link.download = `function-graph-${Date.now()}.png`;
+            link.href = canvas.value.toDataURL('image/png');
+            link.click();
+            ElementPlus.ElMessage.success('PNG 图像导出成功');
+        }
+
+        function exportSVG() {
+            const w = canvas.value.width;
+            const h = canvas.value.height;
+            let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">\n`;
+            svgContent += `  <rect width="100%" height="100%" fill="#020617"/>\n`;
+
+            // 绘制函数曲线路径
+            functions.forEach(fn => {
+                if (fn.visible && fn.compiled) {
+                    let d = '';
+                    const samples = w;
+                    let drawing = false;
+                    for (let i = 0; i <= samples; i++) {
+                        const px = (i / samples) * w;
+                        const mathX = viewport.xMin + (px / w) * (viewport.xMax - viewport.xMin);
+                        let mathY;
+                        try { mathY = fn.compiled(mathX); } catch (e) { mathY = NaN; }
+                        if (isNaN(mathY) || !isFinite(mathY)) {
+                            drawing = false;
+                            continue;
+                        }
+                        const { py } = mathToPixel(mathX, mathY, w, h);
+                        if (!drawing) {
+                            d += ` M ${px.toFixed(1)} ${py.toFixed(1)}`;
+                            drawing = true;
+                        } else {
+                            d += ` L ${px.toFixed(1)} ${py.toFixed(1)}`;
+                        }
+                    }
+                    svgContent += `  <path d="${d}" fill="none" stroke="${fn.color}" stroke-width="${fn.lineWidth}" stroke-linecap="round"/>\n`;
+                }
+            });
+            svgContent += `</svg>`;
+
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const link = document.createElement('a');
+            link.download = `function-graph-${Date.now()}.svg`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            ElementPlus.ElMessage.success('SVG 矢量图导出成功');
+        }
+
+        function resizeCanvas() {
+            if (!canvasContainer.value || !canvas.value) return;
+            const rect = canvasContainer.value.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.value.width = rect.width * dpr;
+            canvas.value.height = rect.height * dpr;
+            ctx = canvas.value.getContext('2d');
+            renderGraph();
+        }
+
+        onMounted(() => {
+            compileAll();
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+        });
+
+        onUnmounted(() => {
+            window.removeEventListener('resize', resizeCanvas);
+        });
+
+        return {
+            canvas,
+            canvasContainer,
+            functions,
+            presets,
+            viewport,
+            showGrid,
+            showCrosshair,
+            integral,
+            integralValue,
+            hoverInfo,
+            addFunction,
+            removeFunction,
+            loadPreset,
+            debouncedRender,
+            renderGraph,
+            zoom,
+            resetOrigin,
+            setViewportRange,
+            toggleGrid,
+            toggleCrosshair,
+            exportPNG,
+            exportSVG,
+            onMouseDown,
+            onMouseMove,
+            onMouseUp,
+            onMouseLeave,
+            onWheel,
+            onTouchStart,
+            onTouchMove,
+            onTouchEnd
+        };
+    }
+}).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

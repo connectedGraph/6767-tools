@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-sc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="50%" stop-color="#2e1065"/>
+      <stop offset="100%" stop-color="#3b0764"/>
+    </linearGradient>
+    <linearGradient id="eq-btn" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-sc)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(192,132,252,0.2)" stroke-width="1"/>
+  
+  <!-- Calculator Body -->
+  <rect x="10" y="7" width="28" height="34" rx="5" fill="#0f0c20" stroke="#6366f1" stroke-width="1.3"/>
+  
+  <!-- LCD Display Screen -->
+  <rect x="13" y="10" width="22" height="9.5" rx="2.5" fill="#1e1b4b" stroke="#4338ca" stroke-width="1"/>
+  <text x="15" y="16.5" font-family="system-ui, -apple-system, monospace" font-size="4" font-weight="700" fill="#a5b4fc">f(x)</text>
+  <text x="33" y="16.8" text-anchor="end" font-family="system-ui, -apple-system, monospace" font-size="4.6" font-weight="900" fill="#22d3ee">sin π</text>
+  
+  <!-- Keypad Buttons -->
+  <!-- Row 1: sin, cos, tan -->
+  <rect x="13" y="22" width="6.2" height="4.5" rx="1.5" fill="#2e1065" stroke="#7c3aed" stroke-width="0.8"/>
+  <text x="16.1" y="25.3" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="3" font-weight="800" fill="#c084fc">sin</text>
+  
+  <rect x="20.9" y="22" width="6.2" height="4.5" rx="1.5" fill="#2e1065" stroke="#7c3aed" stroke-width="0.8"/>
+  <text x="24" y="25.3" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="3" font-weight="800" fill="#c084fc">cos</text>
+  
+  <rect x="28.8" y="22" width="6.2" height="4.5" rx="1.5" fill="#2e1065" stroke="#7c3aed" stroke-width="0.8"/>
+  <text x="31.9" y="25.3" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="3" font-weight="800" fill="#c084fc">tan</text>
+  
+  <!-- Row 2: √, π, x² -->
+  <rect x="13" y="28" width="6.2" height="4.5" rx="1.5" fill="#2e1065" stroke="#7c3aed" stroke-width="0.8"/>
+  <text x="16.1" y="31.4" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="3.5" font-weight="800" fill="#e9d5ff">√</text>
+  
+  <rect x="20.9" y="28" width="6.2" height="4.5" rx="1.5" fill="#2e1065" stroke="#7c3aed" stroke-width="0.8"/>
+  <text x="24" y="31.3" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="3.5" font-weight="800" fill="#fbbf24">π</text>
+  
+  <rect x="28.8" y="28" width="6.2" height="4.5" rx="1.5" fill="#2e1065" stroke="#7c3aed" stroke-width="0.8"/>
+  <text x="31.9" y="31.3" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="3.2" font-weight="800" fill="#e9d5ff">x²</text>
+  
+  <!-- Row 3: AC, ÷, = -->
+  <rect x="13" y="34" width="6.2" height="4.5" rx="1.5" fill="#4c0519" stroke="#be123c" stroke-width="0.8"/>
+  <text x="16.1" y="37.3" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="2.8" font-weight="900" fill="#fda4af">AC</text>
+  
+  <rect x="20.9" y="34" width="6.2" height="4.5" rx="1.5" fill="#1e1b4b" stroke="#6366f1" stroke-width="0.8"/>
+  <text x="24" y="37.4" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="3.8" font-weight="800" fill="#a5b4fc">÷</text>
+  
+  <rect x="28.8" y="34" width="6.2" height="4.5" rx="1.5" fill="url(#eq-btn)" stroke="#c084fc" stroke-width="0.8"/>
+  <text x="31.9" y="37.5" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="4" font-weight="900" fill="#ffffff">=</text>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-duc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </linearGradient>
+    <linearGradient id="chip-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="neon-cyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-duc)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(56,189,248,0.2)" stroke-width="1"/>
+  
+  <!-- Chip Pins -->
+  <g fill="#38bdf8" opacity="0.85">
+    <!-- Top Pins -->
+    <rect x="15" y="7.5" width="2" height="3" rx="0.6"/>
+    <rect x="23" y="7.5" width="2" height="3" rx="0.6"/>
+    <rect x="31" y="7.5" width="2" height="3" rx="0.6"/>
+    <!-- Bottom Pins -->
+    <rect x="15" y="37.5" width="2" height="3" rx="0.6"/>
+    <rect x="23" y="37.5" width="2" height="3" rx="0.6"/>
+    <rect x="31" y="37.5" width="2" height="3" rx="0.6"/>
+    <!-- Left Pins -->
+    <rect x="7.5" y="15" width="3" height="2" rx="0.6"/>
+    <rect x="7.5" y="23" width="3" height="2" rx="0.6"/>
+    <rect x="7.5" y="31" width="3" height="2" rx="0.6"/>
+    <!-- Right Pins -->
+    <rect x="37.5" y="15" width="3" height="2" rx="0.6"/>
+    <rect x="37.5" y="23" width="3" height="2" rx="0.6"/>
+    <rect x="37.5" y="31" width="3" height="2" rx="0.6"/>
+  </g>
+  
+  <!-- Central IC Chip Body -->
+  <rect x="10" y="10" width="28" height="28" rx="5" fill="url(#chip-grad)" stroke="#38bdf8" stroke-width="1.3"/>
+  <circle cx="13.5" cy="13.5" r="1" fill="#38bdf8" opacity="0.6"/>
+  
+  <!-- Conversion Content GB -> TB -->
+  <g transform="translate(0, 1)">
+    <text x="14" y="21.5" font-family="system-ui, -apple-system, sans-serif" font-size="5.5" font-weight="900" fill="#93c5fd">GB</text>
+    <!-- Arrow -->
+    <path d="M22.5 19.5 h3 m-1.5 -1.5 l1.5 1.5 l-1.5 1.5" stroke="url(#neon-cyan)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="28.5" y="21.5" font-family="system-ui, -apple-system, sans-serif" font-size="5.5" font-weight="900" fill="#38bdf8">TB</text>
+    
+    <!-- 1024 Binary Scale Badge -->
+    <rect x="14" y="25" width="20" height="7.5" rx="3.75" fill="#0284c7" fill-opacity="0.25" stroke="#0ea5e9" stroke-width="0.9"/>
+    <text x="24" y="30.3" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="4.2" font-weight="900" fill="#67e8f9" letter-spacing="0.5">× 1024</text>
+  </g>
+</svg>

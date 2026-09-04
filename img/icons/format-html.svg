@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-html" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2a1205"/>
+      <stop offset="100%" stop-color="#120601"/>
+    </linearGradient>
+    <linearGradient id="html-tag" x1="10" y1="12" x2="38" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-html)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#f97316" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Left Angle Bracket < -->
+  <path d="M16 18l-5 6 5 6" stroke="url(#html-tag)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Right Angle Bracket > -->
+  <path d="M32 18l5 6-5 6" stroke="url(#html-tag)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Slash / -->
+  <line x1="26" y1="15" x2="22" y2="33" stroke="#fed7aa" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- Indented DOM tree lines -->
+  <line x1="19" y1="20" x2="24" y2="20" stroke="#fdba74" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="21" y1="24" x2="27" y2="24" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="19" y1="28" x2="23" y2="28" stroke="#fdba74" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- Badge 5 -->
+  <circle cx="36" cy="12" r="3.5" fill="#ea580c"/>
+  <text x="36" y="13.8" font-family="sans-serif" font-weight="900" font-size="4" fill="#ffffff" text-anchor="middle">5</text>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-ico" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-ico)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Stack of Multi-Resolution Favicon Layers -->
+  <!-- Layer 3: Large (48x48 base) -->
+  <rect x="8" y="9" width="20" height="20" rx="4" fill="rgba(15,23,42,0.5)" stroke="#A78BFA" stroke-width="1.4"/>
+  <!-- Layer 2: Medium (32x32 mid) -->
+  <rect x="14" y="15" width="20" height="20" rx="3.5" fill="rgba(30,27,75,0.75)" stroke="#38BDF8" stroke-width="1.6"/>
+  <!-- Layer 1: Small (16x16 front) -->
+  <rect x="20" y="21" width="20" height="20" rx="3.5" fill="#6366F1" stroke="#FFFFFF" stroke-width="1.8"/>
+  <!-- Front Icon Sparkle -->
+  <path d="M30 24.5l1.2 3.2 3.2 1.2-3.2 1.2L30 33.3l-1.2-3.2-3.2-1.2 3.2-1.2z" fill="#FDE047"/>
+  <!-- .ICO Badge at Top Right -->
+  <rect x="29" y="6" width="13" height="7.5" rx="2.5" fill="#EF4444" stroke="#FFFFFF" stroke-width="1"/>
+  <text x="35.5" y="11.5" fill="#FFFFFF" font-family="system-ui, sans-serif" font-weight="900" font-size="4" text-anchor="middle">ICO</text>
+  <!-- Resolution dots indicator -->
+  <circle cx="12" cy="13" r="1.2" fill="#A78BFA"/>
+  <circle cx="18" cy="19" r="1.2" fill="#38BDF8"/>
+</svg>

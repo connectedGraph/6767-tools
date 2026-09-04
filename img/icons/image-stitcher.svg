@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-stitch" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-stitch)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Left Image Card -->
+  <rect x="7" y="11" width="16" height="26" rx="3" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.6"/>
+  <circle cx="12.5" cy="16.5" r="2" fill="#FDE047"/>
+  <path d="M8.5 30l4.5-5.5 3.5 4 2.5-3 2.5 3.5v3h-13v-2z" fill="#38BDF8"/>
+  <!-- Right Image Card -->
+  <rect x="25" y="11" width="16" height="26" rx="3" fill="rgba(15,23,42,0.7)" stroke="#FFFFFF" stroke-width="1.6"/>
+  <path d="M26.5 28.5l3.5-4 4 4.5 3-3.5 2.5 3v3.5h-13v-3.5z" fill="#818CF8"/>
+  <circle cx="36" cy="16.5" r="1.8" fill="#F472B6"/>
+  <!-- Stitching Center Seam & Needles -->
+  <line x1="24" y1="9" x2="24" y2="39" stroke="#FDE047" stroke-width="1.8" stroke-dasharray="3 2" stroke-linecap="round"/>
+  <!-- Cross Stitch Clamps -->
+  <path d="M21.5 15l5 4m-5 0l5-4 M21.5 24l5 4m-5 0l5-4 M21.5 33l5 4m-5 0l5-4" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Magnetic Join Indicators -->
+  <path d="M4 24h2m-1-1.5l1.5 1.5L5 25.5 M44 24h-2m1-1.5l-1.5 1.5 1.5 1.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

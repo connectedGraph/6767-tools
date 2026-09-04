@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>计算机位运算与逻辑门实验室 - 8/16/32位二进制比特可视化与位操作演示 | 在线工具集</title>
+    <meta name="description" content="纯前端计算机底层位运算与逻辑门交互实验室，支持 8 位、16 位、32 位二进制比特网格交互翻转，实时演示 AND、OR、XOR、NOT、移位操作（<<, >>, >>>, 循环移位），联动显示无符号、补码有符号数、原码、反码、十六进制、IEEE-754 浮点拆解及经典位运算算法。" />
+    <meta name="keywords" content="位运算可视化, 二进制计算器, 逻辑门模拟器, 原码反码补码, 补码溢出, 移位运算, 逻辑右移, 算术右移, IEEE-754, 在线工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+        .tech-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+
+        .tech-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #38bdf8;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 比特网格容器 */
+        .bit-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            padding: 12px;
+            background: #030712;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+        }
+
+        .nibble-group {
+            display: flex;
+            gap: 3px;
+            background: #090e1f;
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        }
+
+        .bit-box {
+            width: 30px;
+            height: 46px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+            padding: 3px 0;
+            transition: all 0.12s;
+        }
+        @media (max-width: 640px) {
+            .bit-container { gap: 4px; padding: 8px 4px; }
+            .nibble-group { gap: 2px; padding: 2px; }
+            .bit-box { width: 20px; height: 36px; padding: 1px 0; }
+            .bit-idx { font-size: 8px !important; }
+            .bit-val { font-size: 11px !important; }
+            .bit-weight { display: none; }
+        }
+
+        .bit-box:hover {
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+        }
+
+        .bit-box.bit-1 {
+            background: #064e3b;
+            border-color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+        }
+        .bit-box.bit-1 .bit-val {
+            color: #34d399;
+            font-weight: 900;
+        }
+
+        .bit-idx {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 9px;
+            color: #64748b;
+        }
+
+        .bit-val {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #94a3b8;
+            line-height: 1;
+        }
+
+        .bit-weight {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8px;
+            color: #475569;
+        }
+
+        /* 运算符按钮条 */
+        .op-btn {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 13px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .op-btn:hover {
+            border-color: #38bdf8;
+            color: #ffffff;
+            background: #1e293b;
+        }
+        .op-btn.active {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+        }
+
+        /* 结果展示与统计卡片 */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .stat-box {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-val {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 16px;
+            font-weight: 800;
+            color: #f1f5f9;
+            word-break: break-all;
+        }
+
+        /* 经典算法卡片 */
+        .trick-item {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .trick-item:hover {
+            border-color: #38bdf8;
+            background: #0f172a;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 顶部导航栏 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">计算机位运算与逻辑门实验室</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">计算机位运算与逻辑门实验室</h1>
+                </div>
+                <div class="description">纯前端计算机底层位运算与逻辑门交互实验室，支持 8 位、16 位、32 位二进制比特网格交互翻转，实时演示 AND、OR、XOR、NOT、移位操作，联动显示有符号/无符号、十六进制及经典位运算算法。</div>
+    
+    <!-- 顶部全局控制：位宽选择与模式 -->
+    <div class="tech-card mb-4 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">选择比特位宽:</span>
+            <div class="flex bg-slate-950 p-1 rounded-lg border border-slate-800">
+                <button 
+                    v-for="bw in [8, 16, 32]" 
+                    :key="bw" 
+                    class="px-4 py-1.5 rounded text-xs font-mono font-bold transition-all"
+                    :class="bitWidth === bw ? 'bg-sky-500 text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'"
+                    @click="setBitWidth(bw)"
+                >
+                    {{ bw }}-Bit {{ bw === 8 ? '(Byte)' : bw === 16 ? '(Short/Word)' : '(Int32)' }}
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs">
+            <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 font-mono transition-colors" @click="randomizeBoth">
+                🎲 随机两组操作数
+            </button>
+            <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 font-mono transition-colors" @click="swapAB" :disabled="isUnary">
+                🔄 交换 A ⇄ B
+            </button>
+        </div>
+    </div>
+
+    <!-- 操作数 A 比特位交互看板 -->
+    <div class="tech-card">
+        <div class="tech-title">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span>操作数 A (Operand A)</span>
+                <span class="text-xs font-mono text-emerald-400 font-normal">
+                    [有符号: {{ numA_signed }} | 无符号: {{ numA_unsigned }} | 0x{{ numA_hex }}]
+                </span>
+            </div>
+            <div class="flex gap-1">
+                <button class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded font-mono" @click="invertBits('A')">~ 取反</button>
+                <button class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded font-mono" @click="clearBits('A')">置0</button>
+                <button class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded font-mono" @click="fillBits('A')">置1</button>
+                <button class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded font-mono" @click="shiftOne('A', 'left')">&lt;&lt; 1</button>
+                <button class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded font-mono" @click="shiftOne('A', 'right')">&gt;&gt; 1</button>
+            </div>
+        </div>
+
+        <div class="bit-container">
+            <div v-for="(nibble, nIdx) in nibbleGroupsA" :key="'nibA-'+nIdx" class="nibble-group">
+                <div 
+                    v-for="bit in nibble" 
+                    :key="'bitA-'+bit.index" 
+                    class="bit-box" 
+                    :class="{ 'bit-1': bit.val === 1 }"
+                    @click="toggleBit('A', bit.index)"
+                    :title="'点击翻转比特位 [' + bit.index + '] (权值: 2^' + bit.index + ')'"
+                >
+                    <span class="bit-idx">{{ bit.index }}</span>
+                    <span class="bit-val">{{ bit.val }}</span>
+                    <span class="bit-weight">{{ bit.weightStr }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 运算符选择控制器 -->
+    <div class="tech-card bg-slate-900/90 border-sky-900/50">
+        <div class="tech-title">
+            <span>选择位运算操作符 (Bitwise Operator)</span>
+            <span class="text-xs font-mono text-slate-400">当前操作: {{ currentOpObj.desc }}</span>
+        </div>
+
+        <!-- 双目运算符 -->
+        <div class="mb-3">
+            <span class="text-xs text-slate-400 block mb-1.5 font-bold uppercase">双操作数运算 (Binary Operations):</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+                <button 
+                    v-for="op in binaryOps" 
+                    :key="op.key" 
+                    class="op-btn" 
+                    :class="{ 'active': currentOp === op.key }"
+                    @click="currentOp = op.key"
+                >
+                    <span>{{ op.symbol }}</span>
+                    <span class="text-xs opacity-75 font-normal">({{ op.name }})</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 单目与移位运算符 -->
+        <div>
+            <span class="text-xs text-slate-400 block mb-1.5 font-bold uppercase">单操作数与移位运算 (Unary & Shift Operations on A):</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 items-center">
+                <button 
+                    v-for="op in unaryOps" 
+                    :key="op.key" 
+                    class="op-btn" 
+                    :class="{ 'active': currentOp === op.key }"
+                    @click="currentOp = op.key"
+                >
+                    <span>{{ op.symbol }}</span>
+                    <span class="text-xs opacity-75 font-normal">({{ op.name }})</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 移位位数步长控制 (当为移位运算符时显示) -->
+        <div v-if="isShiftOp" class="mt-4 p-3 bg-slate-950 rounded-lg border border-slate-800 flex items-center gap-4">
+            <span class="text-xs text-sky-400 font-bold font-mono">移位步长 (Shift amount n): {{ shiftAmount }} 位</span>
+            <input type="range" min="0" :max="bitWidth" v-model.number="shiftAmount" class="flex-1 accent-sky-500" />
+            <div class="flex gap-1 text-xs">
+                <button v-for="n in [1, 2, 4, 8, 16]" :key="'sh-'+n" v-show="n <= bitWidth" @click="shiftAmount = n" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded font-mono">
+                    {{ n }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作数 B 比特位交互看板 (双目运算时显示) -->
+    <div v-if="!isUnary" class="tech-card">
+        <div class="tech-title">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                <span>操作数 B (Operand B)</span>
+                <span class="text-xs font-mono text-cyan-400 font-normal">
+                    [有符号: {{ numB_signed }} | 无符号: {{ numB_unsigned }} | 0x{{ numB_hex }}]
+                </span>
+            </div>
+            <div class="flex gap-1">
+                <button class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded font-mono" @click="invertBits('B')">~ 取反</button>
+                <button class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded font-mono" @click="clearBits('B')">置0</button>
+                <button class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded font-mono" @click="fillBits('B')">置1</button>
+                <button class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded font-mono" @click="shiftOne('B', 'left')">&lt;&lt; 1</button>
+                <button class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded font-mono" @click="shiftOne('B', 'right')">&gt;&gt; 1</button>
+            </div>
+        </div>
+
+        <div class="bit-container">
+            <div v-for="(nibble, nIdx) in nibbleGroupsB" :key="'nibB-'+nIdx" class="nibble-group">
+                <div 
+                    v-for="bit in nibble" 
+                    :key="'bitB-'+bit.index" 
+                    class="bit-box" 
+                    :class="{ 'bit-1': bit.val === 1 }"
+                    @click="toggleBit('B', bit.index)"
+                    :title="'点击翻转比特位 [' + bit.index + ']'"
+                >
+                    <span class="bit-idx">{{ bit.index }}</span>
+                    <span class="bit-val">{{ bit.val }}</span>
+                    <span class="bit-weight">{{ bit.weightStr }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 计算结果比特位看板 (Result) -->
+    <div class="tech-card border-sky-500/40 bg-slate-900/90 shadow-2xl">
+        <div class="tech-title">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-sky-400 animate-pulse"></span>
+                <span class="text-sky-300">运算结果 (Result = {{ formulaString }})</span>
+            </div>
+            <span class="text-xs font-mono text-emerald-400 font-bold">
+                二进制位流与进位状态
+            </span>
+        </div>
+
+        <div class="bit-container border-sky-500/30">
+            <div v-for="(nibble, nIdx) in nibbleGroupsResult" :key="'nibR-'+nIdx" class="nibble-group">
+                <div 
+                    v-for="bit in nibble" 
+                    :key="'bitR-'+bit.index" 
+                    class="bit-box" 
+                    :class="{ 'bit-1': bit.val === 1 }"
+                >
+                    <span class="bit-idx">{{ bit.index }}</span>
+                    <span class="bit-val">{{ bit.val }}</span>
+                    <span class="bit-weight">{{ bit.weightStr }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全进制与数值系统深度联动面板 -->
+    <div class="tech-card">
+        <div class="tech-title">
+            <span>结果多维数值解码系统 (Multi-Representation Decoder)</span>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-box border-emerald-500/30">
+                <div class="stat-label">
+                    <span>有符号整数 (Signed 2's Complement)</span>
+                    <span class="text-emerald-400">补码值</span>
+                </div>
+                <div class="stat-val text-emerald-300">{{ resultStats.signed }}</div>
+                <div class="text-[11px] text-slate-500 mt-1 font-mono">
+                    范围: [{{ signedMin }} ~ {{ signedMax }}]
+                </div>
+            </div>
+
+            <div class="stat-box border-sky-500/30">
+                <div class="stat-label">
+                    <span>无符号整数 (Unsigned Decimal)</span>
+                    <span class="text-sky-400">无符号</span>
+                </div>
+                <div class="stat-val text-sky-300">{{ resultStats.unsigned }}</div>
+                <div class="text-[11px] text-slate-500 mt-1 font-mono">
+                    范围: [0 ~ {{ unsignedMax }}]
+                </div>
+            </div>
+
+            <div class="stat-box border-purple-500/30">
+                <div class="stat-label">
+                    <span>十六进制 (Hexadecimal)</span>
+                    <span class="text-purple-400">HEX</span>
+                </div>
+                <div class="stat-val text-purple-300 font-mono">0x{{ resultStats.hex }}</div>
+                <div class="text-[11px] text-slate-500 mt-1 font-mono">
+                    八进制: 0o{{ resultStats.octal }}
+                </div>
+            </div>
+
+            <div class="stat-box border-amber-500/30">
+                <div class="stat-label">
+                    <span>比特特征度量 (Popcount & Zeros)</span>
+                    <span class="text-amber-400">比特统计</span>
+                </div>
+                <div class="text-xs space-y-1 font-mono text-slate-300">
+                    <div>置1比特数 (Hamming): <span class="text-amber-300 font-bold">{{ resultStats.popcount }}</span></div>
+                    <div>前导0个数 (CLZ): <span class="text-slate-400">{{ resultStats.clz }}</span> | 尾随0 (CTZ): <span class="text-slate-400">{{ resultStats.ctz }}</span></div>
+                    <div>奇偶校验 (Parity): <span class="text-slate-400">{{ resultStats.popcount % 2 === 0 ? '偶 (Even)' : '奇 (Odd)' }}</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 32位 IEEE-754 浮点拆解 (32-bit 模式下显示) -->
+        <div v-if="bitWidth === 32" class="mt-4 p-4 bg-slate-950 rounded-xl border border-slate-800">
+            <div class="text-xs font-bold text-sky-400 mb-2 flex items-center justify-between">
+                <span>IEEE-754 单精度浮点数拆解 (Float32 Inspector)</span>
+                <span class="font-mono text-white text-sm">≈ {{ resultStats.float32Val }}</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-xs font-mono">
+                <div class="p-2 bg-slate-900 rounded border border-rose-900/50">
+                    <span class="text-rose-400 block font-bold">符号位 S (Bit 31):</span>
+                    <span class="text-white text-sm">{{ resultStats.floatS }} ({{ resultStats.floatS === '1' ? '负数 -' : '正数 +' }})</span>
+                </div>
+                <div class="p-2 bg-slate-900 rounded border border-amber-900/50">
+                    <span class="text-amber-400 block font-bold">阶码 E (Bits 30-23, 8位):</span>
+                    <span class="text-white text-sm">{{ resultStats.floatE }} (指数: {{ resultStats.floatExpVal }})</span>
+                </div>
+                <div class="p-2 bg-slate-900 rounded border border-cyan-900/50">
+                    <span class="text-cyan-400 block font-bold">尾数 M (Bits 22-0, 23位):</span>
+                    <span class="text-white text-sm truncate">{{ resultStats.floatM }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 经典位运算黑魔法算法库 (Bit Hacks Playground) -->
+    <div class="tech-card">
+        <div class="tech-title">
+            <span>经典位运算算法与黑魔法 (Bit Manipulation Hacks)</span>
+            <span class="text-xs text-slate-400 font-normal">点击快速载入测试用例</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div v-for="hack in bitHacks" :key="hack.title" class="trick-item" @click="loadHack(hack)">
+                <div class="text-xs font-bold text-sky-400 mb-1">{{ hack.title }}</div>
+                <div class="font-mono text-xs text-emerald-300 bg-slate-950 px-2 py-1 rounded mb-1">
+                    {{ hack.code }}
+                </div>
+                <div class="text-xs text-slate-400 leading-relaxed">{{ hack.desc }}</div>
+            </div>
+        </div>
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>位运算（Bitwise Operation）直接作用于计算机底层内存的二进制位（Bits），是高性能算法、网络协议解析、密码学加密及系统编程的核心基础。本实验室提供直观的比特可视化操作，支持实时比特翻转、经典逻辑门模拟、有符号/无符号数转换与位运算黑魔法技巧速查。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="302" :comment-class="2"></comment>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+
+<script>
+const { createApp, ref, reactive, computed, watch } = Vue;
+
+createApp({
+    setup() {
+        const bitWidth = ref(8); // 8, 16, 32
+        const currentOp = ref('AND');
+        const shiftAmount = ref(1);
+
+        // 存储二进制比特数组 (索引 0 为最高位 MSB, 索引 length-1 为最低位 LSB)
+        const bitsA = ref(new Array(8).fill(0));
+        const bitsB = ref(new Array(8).fill(0));
+
+        // 运算符列表
+        const binaryOps = [
+            { key: 'AND', symbol: '&', name: 'AND', desc: '按位与 (同为1才为1)' },
+            { key: 'OR', symbol: '|', name: 'OR', desc: '按位或 (有1则为1)' },
+            { key: 'XOR', symbol: '^', name: 'XOR', desc: '按位异或 (相异为1，相同为0)' },
+            { key: 'NAND', symbol: '~&', name: 'NAND', desc: '与非 (AND取反)' },
+            { key: 'NOR', symbol: '~|', name: 'NOR', desc: '或非 (OR取反)' },
+            { key: 'XNOR', symbol: '~^', name: 'XNOR', desc: '同或 (XOR取反，相同为1)' },
+        ];
+
+        const unaryOps = [
+            { key: 'NOT', symbol: '~A', name: 'NOT', desc: '按位取反 (0变1, 1变0)' },
+            { key: 'SHL', symbol: '<<', name: 'SHL', desc: '逻辑左移 (低位补0)' },
+            { key: 'SAR', symbol: '>>', name: 'SAR', desc: '算术右移 (高位补符号位)' },
+            { key: 'SHR', symbol: '>>>', name: 'SHR', desc: '逻辑右移 (高位补0)' },
+            { key: 'ROL', symbol: 'ROL', name: 'ROL', desc: '循环左移 (高位溢出补至低位)' },
+            { key: 'ROR', symbol: 'ROR', name: 'ROR', desc: '循环右移 (低位溢出补至高位)' },
+        ];
+
+        const isUnary = computed(() => {
+            return unaryOps.some(o => o.key === currentOp.value);
+        });
+
+        const isShiftOp = computed(() => {
+            return ['SHL', 'SAR', 'SHR', 'ROL', 'ROR'].includes(currentOp.value);
+        });
+
+        const currentOpObj = computed(() => {
+            return [...binaryOps, ...unaryOps].find(o => o.key === currentOp.value) || binaryOps[0];
+        });
+
+        function initBits() {
+            bitsA.value = new Array(bitWidth.value).fill(0);
+            bitsB.value = new Array(bitWidth.value).fill(0);
+
+            // 预设默认值
+            if (bitWidth.value === 8) {
+                setBitsFromNumber('A', 0b00111100); // 60
+                setBitsFromNumber('B', 0b00001101); // 13
+            } else if (bitWidth.value === 16) {
+                setBitsFromNumber('A', 0x0F0F);
+                setBitsFromNumber('B', 0x00FF);
+            } else {
+                setBitsFromNumber('A', 0x0000FFFF);
+                setBitsFromNumber('B', 0x55555555);
+            }
+        }
+
+        function setBitWidth(bw) {
+            bitWidth.value = bw;
+            if (shiftAmount.value > bw) shiftAmount.value = 1;
+            initBits();
+        }
+
+        function toggleBit(target, idx) {
+            const arr = target === 'A' ? bitsA.value : bitsB.value;
+            const pos = bitWidth.value - 1 - idx;
+            arr[pos] = arr[pos] === 1 ? 0 : 1;
+        }
+
+        function invertBits(target) {
+            const arr = target === 'A' ? bitsA.value : bitsB.value;
+            for (let i = 0; i < arr.length; i++) {
+                arr[i] = arr[i] === 1 ? 0 : 1;
+            }
+        }
+
+        function clearBits(target) {
+            const arr = target === 'A' ? bitsA.value : bitsB.value;
+            arr.fill(0);
+        }
+
+        function fillBits(target) {
+            const arr = target === 'A' ? bitsA.value : bitsB.value;
+            arr.fill(1);
+        }
+
+        function shiftOne(target, dir) {
+            const arr = target === 'A' ? bitsA.value : bitsB.value;
+            if (dir === 'left') {
+                arr.shift();
+                arr.push(0);
+            } else {
+                arr.pop();
+                arr.unshift(0);
+            }
+        }
+
+        function setBitsFromNumber(target, val) {
+            const arr = target === 'A' ? bitsA.value : bitsB.value;
+            const bw = bitWidth.value;
+            for (let i = 0; i < bw; i++) {
+                const bitIdx = bw - 1 - i;
+                arr[i] = (val >>> bitIdx) & 1;
+            }
+        }
+
+        function bitsToUnsigned(arr) {
+            let res = 0;
+            for (let i = 0; i < arr.length; i++) {
+                res = (res * 2) + arr[i];
+            }
+            return res;
+        }
+
+        function bitsToSigned(arr) {
+            const unsigned = bitsToUnsigned(arr);
+            const bw = arr.length;
+            const signBit = arr[0];
+            if (signBit === 1) {
+                return unsigned - Math.pow(2, bw);
+            }
+            return unsigned;
+        }
+
+        // 计算结果比特位
+        const resultBits = computed(() => {
+            const bw = bitWidth.value;
+            const a = bitsA.value;
+            const b = bitsB.value;
+            const res = new Array(bw).fill(0);
+
+            const numA = bitsToUnsigned(a);
+            const numB = bitsToUnsigned(b);
+            const n = shiftAmount.value % (bw === 32 ? 32 : bw);
+
+            switch (currentOp.value) {
+                case 'AND':
+                    for (let i = 0; i < bw; i++) res[i] = a[i] & b[i];
+                    break;
+                case 'OR':
+                    for (let i = 0; i < bw; i++) res[i] = a[i] | b[i];
+                    break;
+                case 'XOR':
+                    for (let i = 0; i < bw; i++) res[i] = a[i] ^ b[i];
+                    break;
+                case 'NAND':
+                    for (let i = 0; i < bw; i++) res[i] = (a[i] & b[i]) === 1 ? 0 : 1;
+                    break;
+                case 'NOR':
+                    for (let i = 0; i < bw; i++) res[i] = (a[i] | b[i]) === 1 ? 0 : 1;
+                    break;
+                case 'XNOR':
+                    for (let i = 0; i < bw; i++) res[i] = (a[i] ^ b[i]) === 1 ? 0 : 1;
+                    break;
+                case 'NOT':
+                    for (let i = 0; i < bw; i++) res[i] = a[i] === 1 ? 0 : 1;
+                    break;
+                case 'SHL':
+                    for (let i = 0; i < bw; i++) {
+                        res[i] = i + n < bw ? a[i + n] : 0;
+                    }
+                    break;
+                case 'SAR':
+                    const sign = a[0];
+                    for (let i = 0; i < bw; i++) {
+                        res[i] = i - n >= 0 ? a[i - n] : sign;
+                    }
+                    break;
+                case 'SHR':
+                    for (let i = 0; i < bw; i++) {
+                        res[i] = i - n >= 0 ? a[i - n] : 0;
+                    }
+                    break;
+                case 'ROL':
+                    for (let i = 0; i < bw; i++) {
+                        const srcIdx = (i + n) % bw;
+                        res[i] = a[srcIdx];
+                    }
+                    break;
+                case 'ROR':
+                    for (let i = 0; i < bw; i++) {
+                        const srcIdx = (i - n + bw * 100) % bw;
+                        res[i] = a[srcIdx];
+                    }
+                    break;
+            }
+            return res;
+        });
+
+        // 格式化为 4 比特 nibbles 结构供 UI 渲染
+        function createNibbles(arr) {
+            const bw = arr.length;
+            const groups = [];
+            for (let i = 0; i < bw; i += 4) {
+                const nibble = [];
+                for (let j = 0; j < 4; j++) {
+                    const idxInArr = i + j;
+                    const bitIndex = bw - 1 - idxInArr;
+                    nibble.push({
+                        index: bitIndex,
+                        val: arr[idxInArr],
+                        weightStr: bitIndex < 10 ? `2^${bitIndex}` : `^${bitIndex}`
+                    });
+                }
+                groups.push(nibble);
+            }
+            return groups;
+        }
+
+        const nibbleGroupsA = computed(() => createNibbles(bitsA.value));
+        const nibbleGroupsB = computed(() => createNibbles(bitsB.value));
+        const nibbleGroupsResult = computed(() => createNibbles(resultBits.value));
+
+        // 操作数展示计算属性
+        const numA_unsigned = computed(() => bitsToUnsigned(bitsA.value));
+        const numA_signed = computed(() => bitsToSigned(bitsA.value));
+        const numA_hex = computed(() => numA_unsigned.value.toString(16).toUpperCase().padStart(bitWidth.value / 4, '0'));
+
+        const numB_unsigned = computed(() => bitsToUnsigned(bitsB.value));
+        const numB_signed = computed(() => bitsToSigned(bitsB.value));
+        const numB_hex = computed(() => numB_unsigned.value.toString(16).toUpperCase().padStart(bitWidth.value / 4, '0'));
+
+        const formulaString = computed(() => {
+            if (isUnary.value) {
+                if (isShiftOp.value) {
+                    return `A ${currentOpObj.value.symbol} ${shiftAmount.value}`;
+                }
+                return `${currentOpObj.value.symbol} A`;
+            }
+            return `A ${currentOpObj.value.symbol} B`;
+        });
+
+        // 结果统计数据与 IEEE 浮点计算
+        const resultStats = computed(() => {
+            const resArr = resultBits.value;
+            const u = bitsToUnsigned(resArr);
+            const s = bitsToSigned(resArr);
+            const hex = u.toString(16).toUpperCase().padStart(bitWidth.value / 4, '0');
+            const octal = u.toString(8);
+
+            const popcount = resArr.filter(x => x === 1).length;
+
+            let clz = 0;
+            for (let i = 0; i < resArr.length; i++) {
+                if (resArr[i] === 0) clz++;
+                else break;
+            }
+
+            let ctz = 0;
+            for (let i = resArr.length - 1; i >= 0; i--) {
+                if (resArr[i] === 0) ctz++;
+                else break;
+            }
+
+            // IEEE-754 浮点转换 (32位)
+            let float32Val = '0.0';
+            let floatS = '0';
+            let floatE = '00000000';
+            let floatM = '00000000000000000000000';
+            let floatExpVal = 0;
+
+            if (bitWidth.value === 32) {
+                const buf = new ArrayBuffer(4);
+                const view = new DataView(buf);
+                view.setUint32(0, u);
+                float32Val = view.getFloat32(0).toExponential(5);
+                if (Math.abs(view.getFloat32(0)) < 1e5 && Math.abs(view.getFloat32(0)) > 1e-4) {
+                    float32Val = view.getFloat32(0).toFixed(6);
+                }
+
+                const binStr = resArr.join('');
+                floatS = binStr[0];
+                floatE = binStr.slice(1, 9);
+                floatM = binStr.slice(9);
+                floatExpVal = parseInt(floatE, 2) - 127;
+            }
+
+            return {
+                unsigned: u,
+                signed: s,
+                hex: hex,
+                octal: octal,
+                popcount: popcount,
+                clz: clz,
+                ctz: ctz,
+                float32Val: float32Val,
+                floatS: floatS,
+                floatE: floatE,
+                floatM: floatM,
+                floatExpVal: floatExpVal
+            };
+        });
+
+        const signedMin = computed(() => -Math.pow(2, bitWidth.value - 1));
+        const signedMax = computed(() => Math.pow(2, bitWidth.value - 1) - 1);
+        const unsignedMax = computed(() => Math.pow(2, bitWidth.value) - 1);
+
+        function randomizeBoth() {
+            const bw = bitWidth.value;
+            for (let i = 0; i < bw; i++) {
+                bitsA.value[i] = Math.random() > 0.5 ? 1 : 0;
+                bitsB.value[i] = Math.random() > 0.5 ? 1 : 0;
+            }
+        }
+
+        function swapAB() {
+            const temp = [...bitsA.value];
+            bitsA.value = [...bitsB.value];
+            bitsB.value = temp;
+        }
+
+        // 经典位运算算法预设
+        const bitHacks = [
+            {
+                title: '判断是否为 2 的整数幂',
+                code: '(x > 0) && (x & (x - 1)) == 0',
+                desc: '2的幂二进制仅有1个高位1，减1后所有低位变为1，与操作结果必为0。',
+                setup: () => {
+                    setBitWidth(8);
+                    setBitsFromNumber('A', 16);
+                    setBitsFromNumber('B', 15);
+                    currentOp.value = 'AND';
+                }
+            },
+            {
+                title: 'Lowbit: 提取最低有效 1 位',
+                code: 'lowbit = x & (-x)',
+                desc: '树状数组核心。在补码体系中 -x = ~x + 1，与原数相与即可保留最低位1。',
+                setup: () => {
+                    setBitWidth(8);
+                    setBitsFromNumber('A', 0b00101100); // 44
+                    setBitsFromNumber('B', 0b11010100); // -44
+                    currentOp.value = 'AND';
+                }
+            },
+            {
+                title: '消除最低有效 1 位 (Clear Lowbit)',
+                code: 'x = x & (x - 1)',
+                desc: '常用于快速统计二进制中 1 的个数 (Kernighan 算法)。',
+                setup: () => {
+                    setBitWidth(8);
+                    setBitsFromNumber('A', 0b00111000);
+                    setBitsFromNumber('B', 0b00110111);
+                    currentOp.value = 'AND';
+                }
+            },
+            {
+                title: '无临时变量异或交换两数',
+                code: 'a ^= b; b ^= a; a ^= b;',
+                desc: '利用异或的自反律 (x ^ y ^ y = x) 实现零内存原地数值互换。',
+                setup: () => {
+                    setBitWidth(8);
+                    setBitsFromNumber('A', 0b10100101);
+                    setBitsFromNumber('B', 0b01011010);
+                    currentOp.value = 'XOR';
+                }
+            },
+            {
+                title: '高低半字节 (Nibble) 交换',
+                code: '((x & 0x0F) << 4) | ((x & 0xF0) >> 4)',
+                desc: '嵌入式与通信协议中常见的大小端与字节重组技巧。',
+                setup: () => {
+                    setBitWidth(8);
+                    setBitsFromNumber('A', 0xAB);
+                    currentOp.value = 'ROL';
+                    shiftAmount.value = 4;
+                }
+            },
+            {
+                title: '有符号数算术右移符号位保留',
+                code: '(-8) >> 2 == -2',
+                desc: '算术右移 (SAR) 保持最高符号位不变，实现负数除以 2 的幂次向下取整。',
+                setup: () => {
+                    setBitWidth(8);
+                    setBitsFromNumber('A', 0b11111000); // -8
+                    currentOp.value = 'SAR';
+                    shiftAmount.value = 2;
+                }
+            }
+        ];
+
+        function loadHack(hack) {
+            hack.setup();
+            ElementPlus.ElMessage.success(`已载入算法用例: ${hack.title}`);
+        }
+
+        initBits();
+
+        return {
+            bitWidth,
+            currentOp,
+            shiftAmount,
+            bitsA,
+            bitsB,
+            binaryOps,
+            unaryOps,
+            isUnary,
+            isShiftOp,
+            currentOpObj,
+            nibbleGroupsA,
+            nibbleGroupsB,
+            nibbleGroupsResult,
+            numA_unsigned,
+            numA_signed,
+            numA_hex,
+            numB_unsigned,
+            numB_signed,
+            numB_hex,
+            formulaString,
+            resultStats,
+            signedMin,
+            signedMax,
+            unsignedMax,
+            bitHacks,
+            setBitWidth,
+            toggleBit,
+            invertBits,
+            clearBits,
+            fillBits,
+            shiftOne,
+            randomizeBoth,
+            swapAB,
+            loadHack
+        };
+    }
+}).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

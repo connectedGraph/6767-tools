@@ -1,0 +1,968 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>WebSocket / SSE 在线调试客户端 - 在线工具</title>
+    <meta name="description" content="纯前端 WebSocket (ws/wss) 与 SSE (Server-Sent Events) 双协议在线调试工具，支持自定义子协议、定时自动心跳保活、JSON消息格式化与高亮、实时通信日志毫秒级监控与导出。" />
+    <meta name="keywords" content="WebSocket在线测试,WebSocket调试工具,SSE调试,Server-Sent Events,WSS测试,WebSocket心跳包,WebSocket客户端,长连接调试" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .ws-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 16px;
+            margin-top: 14px;
+        }
+        @media (max-width: 860px) {
+            .ws-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        .terminal-panel {
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+        .terminal-header {
+            background: #111c30;
+            padding: 8px 14px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        /* Connection Status Pulse Badge */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-family: ui-monospace, monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-connected {
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+        }
+        .status-connected .status-dot {
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse-green 2s infinite;
+        }
+        .status-disconnected {
+            background: rgba(100, 116, 139, 0.18);
+            border: 1px solid rgba(100, 116, 139, 0.4);
+            color: #94a3b8;
+        }
+        .status-disconnected .status-dot { background: #64748b; }
+        .status-connecting {
+            background: rgba(245, 158, 11, 0.18);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+        }
+        .status-connecting .status-dot {
+            background: #f59e0b;
+            animation: pulse-amber 1s infinite;
+        }
+        .status-error {
+            background: rgba(239, 68, 68, 0.18);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #f87171;
+        }
+        .status-error .status-dot { background: #ef4444; }
+
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+        @keyframes pulse-amber {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Stats Strip */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background: #090f1d;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-top: 10px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 0.68rem;
+            color: #64748b;
+            font-family: ui-monospace, monospace;
+        }
+        .stat-val {
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #cbd5e1;
+        }
+
+        /* Message Log Container */
+        .log-box {
+            background: #060b14;
+            height: 440px;
+            overflow-y: auto;
+            padding: 12px;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 12.5px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .log-entry {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            border-radius: 6px;
+            padding: 8px 10px;
+            transition: all 0.15s ease;
+        }
+        .log-entry:hover {
+            border-color: rgba(56, 189, 248, 0.5);
+            background: #0d172a;
+        }
+        .log-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-size: 0.72rem;
+        }
+        .badge-send { background: rgba(52, 211, 153, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); }
+        .badge-recv { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+        .badge-sys { background: rgba(192, 132, 252, 0.2); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.4); }
+        .badge-ping { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); }
+        .badge-err { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+        .log-content {
+            color: #e2e8f0;
+            word-break: break-all;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        /* Send Box */
+        .send-container {
+            background: #090f1d;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .send-textarea {
+            width: 100%;
+            height: 90px;
+            background: #060b14;
+            color: #e2e8f0;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            resize: vertical;
+            outline: none;
+        }
+        .send-textarea:focus {
+            border-color: #38bdf8;
+        }
+
+        .toolbar-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="WebSocket / SSE 在线调试客户端 - 在线工具" />
+    <meta property="og:description" content="纯前端 WebSocket (ws/wss) 与 SSE (Server-Sent Events) 双协议在线调试工具，支持自动心跳、JSON高亮、实时日志监控与导出。" />
+    <meta property="og:url" content="https://tool.6767.chat/websocket-tester" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="WebSocket / SSE 在线调试客户端 - 在线工具" />
+    <meta name="twitter:description" content="纯前端 WebSocket (ws/wss) 与 SSE (Server-Sent Events) 双协议在线调试工具，支持自动心跳、JSON高亮、实时日志监控与导出。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/websocket-tester" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 标准顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">WebSocket / SSE 在线调试客户端</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">WebSocket / SSE 在线调试客户端 (WebSocket & SSE Tester)</h1>
+                </div>
+                <div class="description">
+                    全功能长连接在线调试利器：支持标准 WebSocket (ws://、wss://) 与 Server-Sent Events (SSE HTTP 流式推送) 双协议；提供自定义子协议配置、可控周期性定时心跳保活、JSON 语法自动检测校验、毫秒级通信报文看板及离线 Mock 模拟回显。
+                </div>
+
+                <!-- 顶层快捷操作栏 -->
+                <div class="toolbar-strip">
+                    <el-dropdown @command="loadPresetUrl" trigger="click">
+                        <el-button size="small" type="primary">
+                            公共测试服务预设 <i class="el-icon--right">▼</i>
+                        </el-button>
+                        <template #dropdown>
+                            <el-dropdown-menu>
+                                <el-dropdown-item command="mock">内置本地离线 Mock Echo 回显模拟器</el-dropdown-item>
+                                <el-dropdown-item command="echoEvents">wss://echo.websocket.events (标准公网回显)</el-dropdown-item>
+                                <el-dropdown-item command="postman">wss://ws.postman-echo.com/raw (Postman 回显)</el-dropdown-item>
+                                <el-dropdown-item command="piesocket">wss://demo.piesocket.com/v3/channel_123 (PieSocket 演示)</el-dropdown-item>
+                                <el-dropdown-item command="sseExample">https://stream.wikimedia.org/v2/stream/recentchange (SSE 真实流)</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+
+                    <!-- 连接状态徽标 -->
+                    <div :class="['status-indicator', connectionStatusClass]">
+                        <span class="status-dot"></span>
+                        <span>{{ statusText }}</span>
+                    </div>
+
+                    <div style="margin-left: auto; display: flex; gap: 8px;">
+                        <el-button size="small" type="success" plain @click="exportLogs">导出通信日志 (.log)</el-button>
+                        <el-button size="small" type="danger" plain @click="clearLogs">清空看板</el-button>
+                    </div>
+                </div>
+
+                <!-- 核心工作区 -->
+                <div class="ws-layout">
+                    <!-- 左侧：连接与心跳配置面板 -->
+                    <div class="terminal-panel">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <span class="terminal-dot dot-red"></span>
+                                <span class="terminal-dot dot-yellow"></span>
+                                <span class="terminal-dot dot-green"></span>
+                                <span style="margin-left: 6px; font-weight: 600; color: #cbd5e1;">CONNECTION CONFIG</span>
+                            </div>
+                            <span style="font-size: 0.72rem; color: #38bdf8;">{{ connProtocol }}</span>
+                        </div>
+
+                        <div style="padding: 14px; background: #090f1d; display: flex; flex-direction: column; gap: 12px;">
+                            <!-- 协议切换 -->
+                            <div>
+                                <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px;">协议类型 (Protocol):</label>
+                                <el-radio-group v-model="connProtocol" size="small" :disabled="isConnected || isConnecting" @change="handleProtocolChange">
+                                    <el-radio-button label="WebSocket">WebSocket (ws/wss)</el-radio-button>
+                                    <el-radio-button label="SSE">SSE (Server-Sent Events)</el-radio-button>
+                                </el-radio-group>
+                            </div>
+
+                            <!-- 服务端地址输入 -->
+                            <div>
+                                <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px;">服务端 URL:</label>
+                                <el-input
+                                    v-model="serverUrl"
+                                    :placeholder="connProtocol === 'WebSocket' ? 'ws://localhost:8080 或 wss://...' : 'http://localhost:8080/sse'"
+                                    :disabled="isConnected || isConnecting"
+                                    clearable
+                                ></el-input>
+                            </div>
+
+                            <!-- 子协议 (Subprotocols) -->
+                            <div v-if="connProtocol === 'WebSocket'">
+                                <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px;">子协议 (Sub-Protocols, 可选):</label>
+                                <el-input
+                                    v-model="subProtocols"
+                                    placeholder="如 chat, graphql-ws (逗号分隔)"
+                                    :disabled="isConnected || isConnecting"
+                                ></el-input>
+                            </div>
+
+                            <!-- 连接/断开主控按钮 -->
+                            <div style="display: flex; gap: 8px;">
+                                <el-button
+                                    v-if="!isConnected && !isConnecting"
+                                    type="primary"
+                                    style="flex: 1;"
+                                    @click="startConnect"
+                                >
+                                    🚀 建立连接 (Connect)
+                                </el-button>
+                                <el-button
+                                    v-else-if="isConnecting"
+                                    type="warning"
+                                    style="flex: 1;"
+                                    @click="closeConnection"
+                                >
+                                    ⏳ 连接中... (取消)
+                                </el-button>
+                                <el-button
+                                    v-else
+                                    type="danger"
+                                    style="flex: 1;"
+                                    @click="closeConnection"
+                                >
+                                    🛑 断开连接 (Disconnect)
+                                </el-button>
+                            </div>
+
+                            <!-- 定时心跳包配置 -->
+                            <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px; padding: 12px; margin-top: 4px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-size: 0.76rem; font-weight: 700; color: #cbd5e1;">💓 定时心跳保活 (Keep-Alive)</span>
+                                    <el-switch v-model="heartbeatEnabled" @change="toggleHeartbeat" size="small"></el-switch>
+                                </div>
+
+                                <div v-if="heartbeatEnabled" style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="font-size: 0.72rem; color: #94a3b8;">心跳间隔: {{ heartbeatInterval }} ms</span>
+                                    </div>
+                                    <el-slider v-model="heartbeatInterval" :min="1000" :max="30000" :step="1000" size="small"></el-slider>
+
+                                    <div>
+                                        <span style="font-size: 0.72rem; color: #94a3b8; display: block; margin-bottom: 4px;">心跳内容 (支持 JSON):</span>
+                                        <el-input v-model="heartbeatMessage" size="small" placeholder='{"type":"ping"}'></el-input>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 流量统计指标 -->
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-label">连接时长</div>
+                                    <div class="stat-val" style="color: #38bdf8;">{{ connectedDurationStr }}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">发送报文</div>
+                                    <div class="stat-val" style="color: #34d399;">{{ stats.sentCount }}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">接收报文</div>
+                                    <div class="stat-val" style="color: #c084fc;">{{ stats.recvCount }}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">总流量</div>
+                                    <div class="stat-val" style="color: #fbbf24;">{{ formatBytes(stats.sentBytes + stats.recvBytes) }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧：实时日志看板与消息发送器 -->
+                    <div class="terminal-panel">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <span class="terminal-dot dot-green"></span>
+                                <span style="margin-left: 6px; font-weight: 600; color: #cbd5e1;">LIVE COMMUNICATION LOGS</span>
+                            </div>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <el-checkbox v-model="autoScroll" size="small"><span style="font-size: 0.72rem; color: #94a3b8;">自动滚屏</span></el-checkbox>
+                                <el-radio-group v-model="logFilter" size="small">
+                                    <el-radio-button label="all">全部 ({{ logs.length }})</el-radio-button>
+                                    <el-radio-button label="send">发送</el-radio-button>
+                                    <el-radio-button label="recv">接收</el-radio-button>
+                                    <el-radio-button label="sys">系统</el-radio-button>
+                                </el-radio-group>
+                            </div>
+                        </div>
+
+                        <!-- 滚动日志面板 -->
+                        <div class="log-box" ref="logContainerRef">
+                            <div v-for="entry in filteredLogs" :key="entry.id" class="log-entry">
+                                <div class="log-meta">
+                                    <div style="display: flex; gap: 6px; align-items: center;">
+                                        <span :class="['type-badge', getLogBadgeClass(entry.type)]">{{ entry.type.toUpperCase() }}</span>
+                                        <span style="color: #64748b; font-family: ui-monospace, monospace;">{{ entry.time }}</span>
+                                    </div>
+                                    <div style="display: flex; gap: 8px;">
+                                        <span style="color: #64748b; font-size: 0.7rem;">{{ entry.size }} B</span>
+                                        <el-button size="small" type="text" style="color: #94a3b8; padding: 0;" @click="copyLogContent(entry.content)">复制</el-button>
+                                    </div>
+                                </div>
+                                <div class="log-content">{{ entry.content }}</div>
+                            </div>
+                            <div v-if="filteredLogs.length === 0" style="text-align: center; color: #475569; padding: 60px 0;">
+                                暂无通信日志。点击左侧“建立连接”开始调试...
+                            </div>
+                        </div>
+
+                        <!-- 下方：消息发送器 (仅 WebSocket 支持发送，SSE 为单向接收) -->
+                        <div class="send-container">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">发送消息 (Payload):</span>
+                                    <el-dropdown @command="loadMessageTemplate" trigger="click">
+                                        <el-button size="small" type="text" style="color: #38bdf8;">
+                                            快速模板 <i class="el-icon--right">▼</i>
+                                        </el-button>
+                                        <template #dropdown>
+                                            <el-dropdown-menu>
+                                                <el-dropdown-item command="ping">Ping 心跳测试包</el-dropdown-item>
+                                                <el-dropdown-item command="auth">JWT Token 鉴权认证包</el-dropdown-item>
+                                                <el-dropdown-item command="sub">频道订阅 Subscribe 包</el-dropdown-item>
+                                                <el-dropdown-item command="chat">聊天室发言 JSON</el-dropdown-item>
+                                                <el-dropdown-item command="echo">Echo 自定义回显请求</el-dropdown-item>
+                                            </el-dropdown-menu>
+                                        </template>
+                                    </el-dropdown>
+                                </div>
+
+                                <div style="display: flex; gap: 6px;">
+                                    <el-button size="small" type="text" style="color: #34d399;" @click="formatSendJson">JSON 美化</el-button>
+                                    <span style="font-size: 0.72rem; color: #64748b;">快捷键: Ctrl + Enter</span>
+                                </div>
+                            </div>
+
+                            <textarea
+                                class="send-textarea"
+                                v-model="sendMessageText"
+                                @keydown.ctrl.enter.prevent="handleSendMessage"
+                                @keydown.meta.enter.prevent="handleSendMessage"
+                                placeholder='在此输入要发送的消息内容 (支持文本或 JSON 格式，如 {"event": "hello"})...'
+                                spellcheck="false"
+                                :disabled="!isConnected || connProtocol === 'SSE'"
+                            ></textarea>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.72rem; color: #64748b;">
+                                    {{ connProtocol === 'SSE' ? '提示：SSE 为服务端单向流式推送协议，不支持客户端上行发送。' : (isConnected ? '已连接，可发送' : '未连接，请先建立连接') }}
+                                </span>
+                                <el-button
+                                    type="primary"
+                                    size="small"
+                                    :disabled="!isConnected || connProtocol === 'SSE'"
+                                    @click="handleSendMessage"
+                                >
+                                    📤 发送消息 (Send)
+                                </el-button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+    const { createApp, ref, reactive, computed, onMounted, onUnmounted, nextTick } = Vue;
+
+    const app = createApp({
+        setup() {
+            const connProtocol = ref('WebSocket');
+            const serverUrl = ref('wss://echo.websocket.events');
+            const subProtocols = ref('');
+            const isConnected = ref(false);
+            const isConnecting = ref(false);
+            const statusText = ref('未连接');
+            const isMockMode = ref(false);
+
+            // Heartbeat
+            const heartbeatEnabled = ref(false);
+            const heartbeatInterval = ref(5000);
+            const heartbeatMessage = ref('{"type":"ping"}');
+            let heartbeatTimer = null;
+
+            // Stats
+            const stats = reactive({
+                sentCount: 0,
+                recvCount: 0,
+                sentBytes: 0,
+                recvBytes: 0,
+                connectedSeconds: 0
+            });
+            let durationTimer = null;
+
+            // Logs
+            const logs = ref([]);
+            let logIdSeq = 0;
+            const logFilter = ref('all');
+            const autoScroll = ref(true);
+            const logContainerRef = ref(null);
+
+            // Send
+            const sendMessageText = ref('{\n  "action": "echo",\n  "message": "Hello WebSocket!"\n}');
+
+            let wsInstance = null;
+            let sseInstance = null;
+            let mockBroadcastTimer = null;
+
+            const formatTimestamp = () => {
+                const now = new Date();
+                const pad = (n, l=2) => String(n).padStart(l, '0');
+                return `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}.${pad(now.getMilliseconds(), 3)}`;
+            };
+
+            const addLog = (type, content) => {
+                const text = typeof content === 'object' ? JSON.stringify(content, null, 2) : String(content);
+                const bytes = new TextEncoder().encode(text).length;
+
+                logs.value.push({
+                    id: ++logIdSeq,
+                    type,
+                    time: formatTimestamp(),
+                    content: text,
+                    size: bytes
+                });
+
+                if (autoScroll.value) {
+                    nextTick(() => {
+                        if (logContainerRef.value) {
+                            logContainerRef.value.scrollTop = logContainerRef.value.scrollHeight;
+                        }
+                    });
+                }
+            };
+
+            const connectionStatusClass = computed(() => {
+                if (isConnected.value) return 'status-connected';
+                if (isConnecting.value) return 'status-connecting';
+                return 'status-disconnected';
+            });
+
+            const connectedDurationStr = computed(() => {
+                const s = stats.connectedSeconds;
+                const hrs = Math.floor(s / 3600);
+                const mins = Math.floor((s % 3600) / 60);
+                const secs = s % 60;
+                const pad = n => String(n).padStart(2, '0');
+                return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+            });
+
+            const formatBytes = (bytes) => {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+            };
+
+            const getLogBadgeClass = (type) => {
+                if (type === 'send') return 'badge-send';
+                if (type === 'recv') return 'badge-recv';
+                if (type === 'sys') return 'badge-sys';
+                if (type === 'ping') return 'badge-ping';
+                if (type === 'err') return 'badge-err';
+                return 'badge-sys';
+            };
+
+            const filteredLogs = computed(() => {
+                if (logFilter.value === 'all') return logs.value;
+                if (logFilter.value === 'send') return logs.value.filter(l => l.type === 'send' || l.type === 'ping');
+                if (logFilter.value === 'recv') return logs.value.filter(l => l.type === 'recv');
+                if (logFilter.value === 'sys') return logs.value.filter(l => l.type === 'sys' || l.type === 'err');
+                return logs.value;
+            });
+
+            const handleProtocolChange = () => {
+                if (connProtocol.value === 'SSE') {
+                    if (serverUrl.value.startsWith('ws://') || serverUrl.value.startsWith('wss://')) {
+                        serverUrl.value = 'https://stream.wikimedia.org/v2/stream/recentchange';
+                    }
+                } else {
+                    if (serverUrl.value.startsWith('http://') || serverUrl.value.startsWith('https://')) {
+                        serverUrl.value = 'wss://echo.websocket.events';
+                    }
+                }
+            };
+
+            const startConnect = () => {
+                const url = serverUrl.value.trim();
+                if (!url) {
+                    ElementPlus.ElMessage.warning('请输入有效的服务端 URL');
+                    return;
+                }
+
+                closeConnection();
+                isConnecting.value = true;
+                statusText.value = '正在连接...';
+                addLog('sys', `[系统] 正在尝试连接至 ${url}...`);
+
+                // 1. Mock Mode
+                if (isMockMode.value || url === 'mock://echo') {
+                    setTimeout(() => {
+                        isConnecting.value = false;
+                        isConnected.value = true;
+                        statusText.value = '已连接 (本地离线 Mock)';
+                        addLog('sys', `[Mock 系统] 本地 Mock 回显服务器连接成功！发送的消息将立即自动回显。`);
+                        startDurationTimer();
+                        startHeartbeat();
+
+                        // Simulate periodic broadcast
+                        mockBroadcastTimer = setInterval(() => {
+                            if (isConnected.value) {
+                                const dummy = { event: "ticker", timestamp: Date.now(), load: (Math.random() * 100).toFixed(1) + "%" };
+                                stats.recvCount++;
+                                stats.recvBytes += JSON.stringify(dummy).length;
+                                addLog('recv', dummy);
+                            }
+                        }, 12000);
+                    }, 500);
+                    return;
+                }
+
+                // 2. WebSocket Protocol
+                if (connProtocol.value === 'WebSocket') {
+                    try {
+                        const protos = subProtocols.value.trim() ? subProtocols.value.split(',').map(s => s.trim()).filter(Boolean) : undefined;
+                        wsInstance = protos && protos.length > 0 ? new WebSocket(url, protos) : new WebSocket(url);
+
+                        wsInstance.onopen = (evt) => {
+                            isConnecting.value = false;
+                            isConnected.value = true;
+                            statusText.value = `已连接 (${wsInstance.protocol || '默认协议'})`;
+                            addLog('sys', `[系统] WebSocket 握手成功！连接已就绪 (Protocol: ${wsInstance.protocol || 'None'})`);
+                            startDurationTimer();
+                            startHeartbeat();
+                            ElementPlus.ElMessage.success('WebSocket 连接成功！');
+                        };
+
+                        wsInstance.onmessage = (evt) => {
+                            stats.recvCount++;
+                            const byteLen = typeof evt.data === 'string' ? new TextEncoder().encode(evt.data).length : (evt.data.byteLength || 0);
+                            stats.recvBytes += byteLen;
+                            addLog('recv', evt.data);
+                        };
+
+                        wsInstance.onerror = (err) => {
+                            addLog('err', `[错误] WebSocket 通信发生异常`);
+                        };
+
+                        wsInstance.onclose = (evt) => {
+                            addLog('sys', `[系统] WebSocket 连接已关闭 (Code: ${evt.code}, Reason: ${evt.reason || '无'})`);
+                            closeConnection(false);
+                        };
+                    } catch (e) {
+                        isConnecting.value = false;
+                        statusText.value = '连接异常';
+                        addLog('err', `[异常] 实例化 WebSocket 失败: ${e.message}`);
+                        ElementPlus.ElMessage.error(`连接失败: ${e.message}`);
+                    }
+                } else {
+                    // 3. SSE Protocol (EventSource)
+                    try {
+                        sseInstance = new EventSource(url);
+
+                        sseInstance.onopen = () => {
+                            isConnecting.value = false;
+                            isConnected.value = true;
+                            statusText.value = '已连接 (SSE 接收中)';
+                            addLog('sys', `[系统] SSE 事件流已成功开启连接！等待服务端数据推送...`);
+                            startDurationTimer();
+                            ElementPlus.ElMessage.success('SSE 事件流连接成功！');
+                        };
+
+                        sseInstance.onmessage = (evt) => {
+                            stats.recvCount++;
+                            const byteLen = new TextEncoder().encode(evt.data).length;
+                            stats.recvBytes += byteLen;
+                            addLog('recv', evt.data);
+                        };
+
+                        sseInstance.onerror = (err) => {
+                            addLog('err', `[错误] SSE 事件流连接异常或断开重连中`);
+                        };
+                    } catch (e) {
+                        isConnecting.value = false;
+                        statusText.value = '连接异常';
+                        addLog('err', `[异常] 实例化 EventSource 失败: ${e.message}`);
+                        ElementPlus.ElMessage.error(`连接失败: ${e.message}`);
+                    }
+                }
+            };
+
+            const closeConnection = (shouldLog = true) => {
+                if (heartbeatTimer) clearInterval(heartbeatTimer);
+                if (durationTimer) clearInterval(durationTimer);
+                if (mockBroadcastTimer) clearInterval(mockBroadcastTimer);
+
+                if (wsInstance) {
+                    try { wsInstance.close(); } catch(e){}
+                    wsInstance = null;
+                }
+                if (sseInstance) {
+                    try { sseInstance.close(); } catch(e){}
+                    sseInstance = null;
+                }
+
+                isConnected.value = false;
+                isConnecting.value = false;
+                statusText.value = '已断开';
+                if (shouldLog) {
+                    addLog('sys', `[系统] 连接已主动断开`);
+                }
+            };
+
+            const startDurationTimer = () => {
+                if (durationTimer) clearInterval(durationTimer);
+                stats.connectedSeconds = 0;
+                durationTimer = setInterval(() => {
+                    stats.connectedSeconds++;
+                }, 1000);
+            };
+
+            // Heartbeat
+            const startHeartbeat = () => {
+                if (heartbeatTimer) clearInterval(heartbeatTimer);
+                if (!heartbeatEnabled.value || !isConnected.value) return;
+
+                heartbeatTimer = setInterval(() => {
+                    if (isConnected.value && connProtocol.value === 'WebSocket') {
+                        let payload = heartbeatMessage.value.replace(/\$\{timestamp\}/g, Date.now());
+                        stats.sentCount++;
+                        stats.sentBytes += new TextEncoder().encode(payload).length;
+                        addLog('ping', payload);
+
+                        if (isMockMode.value || serverUrl.value === 'mock://echo') {
+                            setTimeout(() => {
+                                stats.recvCount++;
+                                addLog('recv', '{"type":"pong","reply_to":"ping","time":' + Date.now() + '}');
+                            }, 100);
+                        } else if (wsInstance && wsInstance.readyState === WebSocket.OPEN) {
+                            wsInstance.send(payload);
+                        }
+                    }
+                }, heartbeatInterval.value);
+            };
+
+            const toggleHeartbeat = () => {
+                if (heartbeatEnabled.value) {
+                    startHeartbeat();
+                    ElementPlus.ElMessage.success('已开启心跳定时保活');
+                } else {
+                    if (heartbeatTimer) clearInterval(heartbeatTimer);
+                    ElementPlus.ElMessage.info('已关闭心跳保活');
+                }
+            };
+
+            // Send Message
+            const handleSendMessage = () => {
+                if (!isConnected.value) {
+                    ElementPlus.ElMessage.warning('未连接到服务端，无法发送消息');
+                    return;
+                }
+                const msg = sendMessageText.value;
+                if (!msg) {
+                    ElementPlus.ElMessage.warning('发送内容不能为空');
+                    return;
+                }
+
+                stats.sentCount++;
+                const bytes = new TextEncoder().encode(msg).length;
+                stats.sentBytes += bytes;
+                addLog('send', msg);
+
+                // Mock Echo
+                if (isMockMode.value || serverUrl.value === 'mock://echo') {
+                    setTimeout(() => {
+                        stats.recvCount++;
+                        stats.recvBytes += bytes;
+                        addLog('recv', `[Mock 回显] ` + msg);
+                    }, 80);
+                    return;
+                }
+
+                if (wsInstance && wsInstance.readyState === WebSocket.OPEN) {
+                    wsInstance.send(msg);
+                } else {
+                    ElementPlus.ElMessage.error('WebSocket 连接状态异常，发送失败');
+                }
+            };
+
+            const formatSendJson = () => {
+                try {
+                    const parsed = JSON.parse(sendMessageText.value);
+                    sendMessageText.value = JSON.stringify(parsed, null, 2);
+                    ElementPlus.ElMessage.success('JSON 格式化成功');
+                } catch (e) {
+                    ElementPlus.ElMessage.error('当前文本不是合法的 JSON: ' + e.message);
+                }
+            };
+
+            // Preset URLs
+            const loadPresetUrl = (cmd) => {
+                closeConnection();
+                if (cmd === 'mock') {
+                    connProtocol.value = 'WebSocket';
+                    serverUrl.value = 'mock://echo';
+                    isMockMode.value = true;
+                    startConnect();
+                } else if (cmd === 'echoEvents') {
+                    connProtocol.value = 'WebSocket';
+                    serverUrl.value = 'wss://echo.websocket.events';
+                    isMockMode.value = false;
+                } else if (cmd === 'postman') {
+                    connProtocol.value = 'WebSocket';
+                    serverUrl.value = 'wss://ws.postman-echo.com/raw';
+                    isMockMode.value = false;
+                } else if (cmd === 'piesocket') {
+                    connProtocol.value = 'WebSocket';
+                    serverUrl.value = 'wss://demo.piesocket.com/v3/channel_123?api_key=VC3vm8EIGB0BpOApAqdqYrqeUMr09mf5IvbsFynL';
+                    isMockMode.value = false;
+                } else if (cmd === 'sseExample') {
+                    connProtocol.value = 'SSE';
+                    serverUrl.value = 'https://stream.wikimedia.org/v2/stream/recentchange';
+                    isMockMode.value = false;
+                }
+            };
+
+            // Templates
+            const loadMessageTemplate = (cmd) => {
+                const templates = {
+                    ping: '{\n  "type": "ping",\n  "timestamp": ' + Date.now() + '\n}',
+                    auth: '{\n  "action": "auth",\n  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",\n  "client_id": "client_001"\n}',
+                    sub: '{\n  "action": "subscribe",\n  "channel": "market_ticker_btc_usdt",\n  "depth": 20\n}',
+                    chat: '{\n  "event": "chat_message",\n  "user": "Alice",\n  "content": "Hello everyone in the room!",\n  "room_id": "global_99"\n}',
+                    echo: '{\n  "type": "echo_request",\n  "data": "Online Toolkit Tester",\n  "seq": 1001\n}'
+                };
+                sendMessageText.value = templates[cmd] || '';
+                ElementPlus.ElMessage.success('已载入快捷消息模板');
+            };
+
+            const copyLogContent = (content) => {
+                navigator.clipboard.writeText(content).then(() => {
+                    ElementPlus.ElMessage.success('日志已复制到剪贴板');
+                });
+            };
+
+            const clearLogs = () => {
+                logs.value = [];
+                ElementPlus.ElMessage.info('通信日志已清空');
+            };
+
+            const exportLogs = () => {
+                if (logs.value.length === 0) {
+                    ElementPlus.ElMessage.warning('暂无可导出的通信日志');
+                    return;
+                }
+                const formatted = logs.value.map(l => `[${l.time}] [${l.type.toUpperCase()}] (${l.size} B)\n${l.content}\n`).join('\n----------------------------------------\n\n');
+                const blob = new Blob([formatted], { type: 'text/plain;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `websocket-logs-${Date.now()}.log`;
+                a.click();
+                URL.revokeObjectURL(url);
+                ElementPlus.ElMessage.success('日志已成功导出');
+            };
+
+            onMounted(() => {
+                addLog('sys', `[系统] WebSocket & SSE 调试客户端初始化就绪。`);
+            });
+
+            onUnmounted(() => {
+                closeConnection(false);
+            });
+
+            return {
+                connProtocol,
+                serverUrl,
+                subProtocols,
+                isConnected,
+                isConnecting,
+                statusText,
+                connectionStatusClass,
+                heartbeatEnabled,
+                heartbeatInterval,
+                heartbeatMessage,
+                stats,
+                connectedDurationStr,
+                logs,
+                logFilter,
+                autoScroll,
+                logContainerRef,
+                sendMessageText,
+                filteredLogs,
+                formatBytes,
+                getLogBadgeClass,
+                handleProtocolChange,
+                startConnect,
+                closeConnection,
+                toggleHeartbeat,
+                handleSendMessage,
+                formatSendJson,
+                loadPresetUrl,
+                loadMessageTemplate,
+                copyLogContent,
+                clearLogs,
+                exportLogs
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('.main-body');
+</script>
+</body>
+</html>

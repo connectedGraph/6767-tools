@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线工具集</title>
+    <meta name="description" content="本站是一个在线工具集合网站，为用户提供便捷的在线工具和软件。我们提供脑力训练、办公助手、图像、音视频、生成、程序员、学习、生活、娱乐、健康等几百个在线工具。" />
+    <meta name="keywords" content="在线工具,脑力训练,健康查询,生活查询,娱乐工具,办公助手,图像工具,视频音频工具,生成工具,代码工具,学习工具" />
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="./img/67.svg" />
+    <link rel="apple-touch-icon" href="./img/67.svg" />
+    <link rel="stylesheet" href="./css/6767-tailwind.css?v=20260813">
+    <link rel="stylesheet" href="./css/6767-site.css?v=20260813">
+    <style>
+        /* ── 本站元素：搜索框 ── */
+        .search-6767 {
+            display: flex;
+            gap: 10px;
+            max-width: 520px;
+            margin: 22px auto 0;
+        }
+        .search-6767 input {
+            flex: 1;
+            height: 46px;
+            padding: 0 18px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s, color 0.25s;
+        }
+        .search-6767 input::placeholder { color: var(--text-dim); }
+        .search-6767 input:focus {
+            border-color: var(--c-cyan);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+        html.dark .search-6767 input:focus {
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
+        }
+        .search-6767 button {
+            height: 46px;
+            padding: 0 26px;
+            border-radius: 999px;
+            border: 1px solid var(--c-cyan);
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+        }
+        .search-6767 button:hover {
+            background: linear-gradient(135deg, #0369a1, #075985);
+            transform: translateY(-1px);
+        }
+        html.dark .search-6767 button {
+            background: rgba(8, 47, 73, 0.6);
+            border: 1px solid rgba(34, 211, 238, 0.5);
+            color: #67e8f9;
+            box-shadow: none;
+        }
+        html.dark .search-6767 button:hover {
+            background: rgba(34, 211, 238, 0.2);
+            color: #ccfbf1;
+        }
+        .search-hint {
+            margin-top: 10px;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* ── 本站元素：工具分类终端卡片 ── */
+        .tool-terminal {
+            border-color: var(--border-color);
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 8px;
+        }
+        .tool-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            text-decoration: none;
+            min-width: 0;
+            transition: border-color 0.2s, color 0.2s, transform 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+        .tool-chip:hover {
+            border-color: #38bdf8;
+            color: #0284c7;
+            background: #f0f9ff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.1);
+            transform: translateY(-1px);
+        }
+        html.dark .tool-chip {
+            background: rgba(15, 23, 42, 0.6);
+            color: #94a3b8;
+        }
+        html.dark .tool-chip:hover {
+            border-color: rgba(34, 211, 238, 0.5);
+            color: #e2e8f0;
+            background: rgba(8, 47, 73, 0.5);
+            box-shadow: none;
+        }
+        .tool-chip span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .tool-icon {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            flex-shrink: 0;
+            border-radius: 4px;
+        }
+        .tool-subgroup { margin-bottom: 14px; }
+        .tool-subgroup:last-child { margin-bottom: 0; }
+        .tool-subtitle {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="在线工具集" />
+    <meta property="og:description" content="本站是一个在线工具集合网站，为用户提供便捷的在线工具和软件。我们提供脑力训练、办公助手、图像、音视频、生成、程序员、学习、生活、娱乐、健康等几百个在线工具。" />
+    <meta property="og:url" content="https://tool.6767.chat/" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="在线工具集" />
+    <meta name="twitter:description" content="本站是一个在线工具集合网站，为用户提供便捷的在线工具和软件。我们提供脑力训练、办公助手、图像、音视频、生成、程序员、学习、生活、娱乐、健康等几百个在线工具。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/" />
+</head>
+<body>
+
+<div class="lead-notice" role="note" aria-label="站点通知">
+    <a class="lead-notice-link" href="#brain" aria-label="浏览全部工具">
+        <span class="lead-notice-tag">NOTICE</span>
+        <span class="lead-notice-marquee">
+            <span class="lead-notice-track">
+                <span class="lead-notice-item">本站为本地自托管副本 · 全部工具本地运行，零外部请求</span>
+                <span class="lead-notice-item" aria-hidden="true">本站为本地自托管副本 · 全部工具本地运行，零外部请求</span>
+            </span>
+        </span>
+        <span class="lead-notice-cta">浏览工具</span>
+    </a>
+</div>
+
+<!-- ══ 顶部右上角统一胶囊组 (从左到右: 1. 语言切换 | 2. 主题切换 | 3. 访问展示) ══ -->
+<div id="siteTopActions" class="site-top-actions" aria-label="全局操作与访问数据">
+    <div id="visitsBadge" class="visits-badge" aria-label="访问数据">
+        <span class="visits-dot"></span>
+        <span class="visits-text">today</span>
+        <span class="visits-num" id="visitsToday">—</span>
+        <span class="visits-sep">·</span>
+        <span class="visits-text">online</span>
+        <span class="visits-num visits-num-online" id="visitsOnline">—</span>
+    </div>
+</div>
+
+<div class="grid-bg"></div>
+
+<!-- ══ TOC SIDEBAR ══ -->
+<aside id="toc" class="toc-rail" aria-label="目录">
+    <div class="toc-head">
+        <span class="toc-eyebrow">// tools</span>
+        <button type="button" id="tocClose" class="toc-close" aria-label="收起目录">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+    </div>
+    <nav class="toc-list">
+        <a href="#brain" class="toc-item" data-toc="brain" data-glyph="脑"><span class="toc-num">01</span><span class="toc-label">脑力训练</span></a>
+        <a href="#office" class="toc-item" data-toc="office" data-glyph="办"><span class="toc-num">02</span><span class="toc-label">办公助手</span></a>
+        <a href="#image" class="toc-item" data-toc="image" data-glyph="图"><span class="toc-num">03</span><span class="toc-label">图像</span></a>
+        <a href="#audio-and-video" class="toc-item" data-toc="audio-and-video" data-glyph="音"><span class="toc-num">04</span><span class="toc-label">音视频</span></a>
+        <a href="#generate" class="toc-item" data-toc="generate" data-glyph="成"><span class="toc-num">05</span><span class="toc-label">生成</span></a>
+        <a href="#code" class="toc-item" data-toc="code" data-glyph="程"><span class="toc-num">06</span><span class="toc-label">程序员</span></a>
+        <a href="#study" class="toc-item" data-toc="study" data-glyph="学"><span class="toc-num">07</span><span class="toc-label">学习</span></a>
+        <a href="#life" class="toc-item" data-toc="life" data-glyph="生"><span class="toc-num">08</span><span class="toc-label">生活</span></a>
+        <a href="#ent" class="toc-item" data-toc="ent" data-glyph="娱"><span class="toc-num">09</span><span class="toc-label">娱乐</span></a>
+        <a href="#health" class="toc-item" data-toc="health" data-glyph="健"><span class="toc-num">10</span><span class="toc-label">健康</span></a>
+    </nav>
+</aside>
+
+<button type="button" id="tocOpen" class="toc-open" aria-label="展开目录">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+</button>
+
+<main class="relative z-10 max-w-3xl mx-auto px-5 py-16 md:py-24 space-y-10">
+
+    <!-- ══ HERO ══ -->
+    <section class="text-center fade-in">
+        <div class="visits-card font-kai" aria-label="在线人数与累计访问数">
+            <span class="visits-card-eyebrow">online</span>
+            <span class="visits-card-num visits-card-online" id="visitsOnlineHero">—</span>
+            <span class="visits-card-divider">·</span>
+            <span class="visits-card-eyebrow">cumulative</span>
+            <span class="visits-card-num" id="visitsTotal">—</span>
+            <span class="visits-card-label">总访问</span>
+        </div>
+        <div class="visitor-location font-kai" aria-label="IP 所在地">
+            <span>IP 所在地：</span><span id="visitorLocation">识别中</span>
+        </div>
+        <div class="name-zh font-kai mb-2">在线工具集</div>
+        <div class="name-en">在线工具集 · local self-host</div>
+
+        <!-- ══ 本站元素：搜索框 ══ -->
+        <div class="search-6767">
+            <input id="homeSearchInput" type="text" placeholder="搜索工具，如 md5、2048、BMI…" autocomplete="off" />
+            <button type="button" id="homeSearchBtn">搜索</button>
+        </div>
+        <div class="search-hint">回车 / 点击搜索 → 跳转 /Search?keyword=</div>
+    </section>
+
+    <!-- ══ 工具分类（由 toolData 渲染） ══ -->
+    <div id="toolSections" class="space-y-10"></div>
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="text-center fade-in delay-5 pt-4">
+        <p class="font-kai text-slate-600 text-sm">在线工具集</p>
+        <p class="font-mono text-slate-700 text-xs mt-2">Built with ♥ &amp; code</p>
+        <p class="font-mono text-slate-700 text-xs mt-2">本项目开源 · 仓库地址待补充</p>
+    </footer>
+
+</main>
+
+<script>
+    var languageCode = 'zh';
+    var websiteRoot = "";
+    var mainWebSiteHost = "";
+    var webApiSiteHost = "/api";
+    var staticSiteHost = "";
+    var staticFileVersion = "260728100716";
+    var toolData = [{"key":"brain","desc":"脑力训练","children":[{"key":"记忆力","desc":"记忆力","toolList":[{"toolName":"数字顺序记忆训练","toolCode":"number-sequence-memory","icon":"./img/brain/game-logo/szsxjy.png"},{"toolName":"顺序记忆训练","toolCode":"sequence-memory","icon":"./img/brain/game-logo/sxjy.png"},{"toolName":"N-Back 记忆力训练游戏","toolCode":"n-back","icon":"./img/brain/game-logo/nback.png"},{"toolName":"色块印记","toolCode":"color-block-imprint","icon":"./img/brain/game-logo/skyj.png"}]},{"key":"注意力","desc":"注意力","toolList":[{"toolName":"舒尔特方格训练","toolCode":"shult-grid","icon":"./img/brain/game-logo/setfg.png"},{"toolName":"找不同的字","toolCode":"find-different-word","icon":"./img/brain/game-logo/zbtdz.png"},{"toolName":"斯特鲁普效应","toolCode":"stroop-effect","icon":"./img/brain/game-logo/stlpxy.png"},{"toolName":"坐标迷航","toolCode":"coordinate-drift","icon":"./img/brain/game-logo/zbmh.png"},{"toolName":"视觉追踪训练","toolCode":"visual-tracking-training","icon":"./img/brain/game-logo/sjzzxl.png"}]},{"key":"推演","desc":"推演","toolList":[{"toolName":"复古推箱子 50 关益智挑战","toolCode":"sokoban","icon":"./img/icons/sokoban.svg"},{"toolName":"经典扫雷游戏","toolCode":"minesweeper","icon":"./img/icons/minesweeper.svg"},{"toolName":"在线数独游戏","toolCode":"sudoku","icon":"./img/icons/sudoku.svg"},{"toolName":"熄灯解谜游戏","toolCode":"lights-out","icon":"./img/icons/lights-out.svg"},{"toolName":"数字华容道","toolCode":"digital-huarong-road","icon":"./img/brain/game-logo/szhrd.png"},{"toolName":"上下瓶色匹配","toolCode":"bottle-color-matching","icon":"./img/brain/game-logo/sxpspp.png"},{"toolName":"2048","toolCode":"2048","icon":"./img/brain/game-logo/elsb.png"}]},{"key":"反应","desc":"反应","toolList":[{"toolName":"反应速度测试","toolCode":"react-speed-test","icon":"./img/brain/game-logo/fysdcs.png"},{"toolName":"点击速度测试","toolCode":"click-speed-test","icon":"./img/brain/game-logo/sscs.png"},{"toolName":"右键点击速度测试","toolCode":"right-click-test","icon":"./img/brain/game-logo/yjdjsdcs.png"},{"toolName":"空格键计数器","toolCode":"spacebar-counter","icon":"./img/brain/game-logo/kgjjsq.png"},{"toolName":"动态视力测试","toolCode":"dynamic-visual-acuity-test","icon":"./img/brain/game-logo/dtslcs.png"}]},{"key":"感知","desc":"感知","toolList":[{"toolName":"静态色差感知","toolCode":"jing-tai-se-cha","icon":"./img/brain/game-logo/jtsc.png"},{"toolName":"动态色差感知","toolCode":"dong-tai-se-cha","icon":"./img/brain/game-logo/dtsc.png"},{"toolName":"时间感知训练","toolCode":"time-perception-training","icon":"./img/brain/game-logo/sjgzxl.png"}]},{"key":"空间","desc":"空间","toolList":[{"toolName":"对称方块","toolCode":"symmetry-blocks","icon":"./img/brain/game-logo/dcfk.png"}]}]},{"key":"office","desc":"办公助手","toolList":[{"toolName":"文本去重与多维排序器","toolCode":"text-dedup-sort","icon":"./img/icons/text-dedup-sort.svg"},{"toolName":"中英文排版规范美化器","toolCode":"text-autospace","icon":"./img/icons/text-autospace.svg"},{"toolName":"在线表格转换器","toolCode":"table-converter","icon":"./img/icons/table-converter.svg"},{"toolName":"人民币大写金额转换器","toolCode":"rmb-capital-converter","icon":"./img/icons/rmb-capital-converter.svg"},{"toolName":"综合字数与阅读时长统计","toolCode":"word-counter","icon":"./img/icons/word-counter.svg"},{"toolName":"现代简历制作与排版器","toolCode":"resume-maker","icon":"./img/icons/resume-maker.svg"},{"toolName":"简历模板中心","toolCode":"resume-template","icon":"./img/icons/resume-template.svg"},{"toolName":"A4纸张尺寸，各种纸张尺寸查询","toolCode":"paper-size","icon":"./img/icons/paper-size.svg"},{"toolName":"转换大小写","toolCode":"convert-case","icon":"./img/icons/convert-case.svg"},{"toolName":"标题大小写转换器","toolCode":"title-case-converter","icon":"./img/icons/title-case-converter.svg"},{"toolName":"句子大小写转换器","toolCode":"sentence-case-converter","icon":"./img/icons/sentence-case-converter.svg"},{"toolName":"粗体文本生成器","toolCode":"bold-text-generator","icon":"./img/icons/bold-text-generator.svg"},{"toolName":"斜体文本生成器","toolCode":"italic-text-generator","icon":"./img/icons/italic-text-generator.svg"},{"toolName":"删除线文本生成器","toolCode":"strikethrough-text-generator","icon":"./img/icons/strikethrough-text-generator.svg"},{"toolName":"下划线文本生成器","toolCode":"underline-text","icon":"./img/icons/underline-text.svg"},{"toolName":"颠倒文本生成器","toolCode":"upside-down-text-generator","icon":"./img/icons/upside-down-text-generator.svg"},{"toolName":"镜像文本生成器","toolCode":"mirror-text-generator","icon":"./img/icons/mirror-text-generator.svg"},{"toolName":"反向文本生成器","toolCode":"reverse-text-generator","icon":"./img/icons/reverse-text-generator.svg"},{"toolName":"文本替换工具","toolCode":"replace-text","icon":"./img/icons/replace-text.svg"},{"toolName":"符号大全","toolCode":"symbols","icon":"./img/icons/symbols.svg"},{"toolName":"emoji表情大全","toolCode":"emoji","icon":"./img/icons/emoji.svg"},{"toolName":"颜文字表情大全","toolCode":"emoticon","icon":"./img/icons/emoticon.svg"}]},{"key":"image","desc":"图像","toolList":[{"toolName":"图片调色板提取器","toolCode":"color-palette-extractor","icon":"./img/icons/color-palette-extractor.svg"},{"toolName":"多图无损拼接与长图生成器","toolCode":"image-stitcher","icon":"./img/icons/image-stitcher.svg"},{"toolName":"图片马赛克与局部隐私遮挡","toolCode":"image-mosaic-blur","icon":"./img/icons/image-mosaic-blur.svg"},{"toolName":"图像格式转换器","toolCode":"convert-image","icon":"./img/icons/convert-image.svg"},{"toolName":"压缩图像","toolCode":"compress-image","icon":"./img/icons/compress-image.svg"},{"toolName":"调整图像大小","toolCode":"resize-image","icon":"./img/icons/resize-image.svg"},{"toolName":"调整图像宽高比例","toolCode":"adjust-image-aspect-ratio","icon":"./img/icons/adjust-image-aspect-ratio.svg"},{"toolName":"批量给图片加水印","toolCode":"watermark-image","icon":"./img/icons/watermark-image.svg"},{"toolName":"批量旋转图像","toolCode":"rotate-image","icon":"./img/icons/rotate-image.svg"},{"toolName":"在线生成透明ICO图标","toolCode":"ico-generator","icon":"./img/icons/ico-generator.svg"},{"toolName":"在线生成透明圆角图片","toolCode":"round-image","icon":"./img/icons/round-image.svg"},{"toolName":"制作gif图片，编辑gif图片","toolCode":"create-gif","icon":"./img/icons/create-gif.svg"},{"toolName":"视频转gif图片，视频转动图","toolCode":"video-to-gif","icon":"./img/icons/video-to-gif.svg"},{"toolName":"分解gif图片","toolCode":"decompose-gif","icon":"./img/icons/decompose-gif.svg"},{"toolName":"裁剪、编辑图像","toolCode":"crop-image","icon":"./img/icons/crop-image.svg"},{"toolName":"生成宫格图像，分割图片","toolCode":"generate-grid-image","icon":"./img/icons/generate-grid-image.svg"},{"toolName":"图像处理助手桌面应用程序","toolCode":"image-processing-assistant-app","icon":"./up/2023/1028/image-processing-assistant-icon.png"},{"toolName":"图像压缩器桌面应用程序","toolCode":"image-compressor-app","icon":"./up/2023/1028/image-compress-logo.png"}]},{"key":"audio-and-video","desc":"音视频","toolList":[{"toolName":"白噪音与专注助眠多轨混音器","toolCode":"white-noise-player","icon":"./img/icons/white-noise-player.svg"},{"toolName":"免插件屏幕与窗口录制工具","toolCode":"screen-recorder","icon":"./img/icons/screen-recorder.svg"},{"toolName":"在线波形录音机与音频剪辑","toolCode":"voice-recorder","icon":"./img/icons/voice-recorder.svg"},{"toolName":"极简电子节拍器与乐器调音器","toolCode":"metronome-tuner","icon":"./img/icons/metronome-tuner.svg"},{"toolName":"视频处理助手桌面应用程序","toolCode":"video-processing-assistant-app","icon":"./up/2023/1028/video-processing-assistant-icon.png"},{"toolName":"视频剪切合并桌面应用程序","toolCode":"video-cut-merge-app","icon":"./up/2023/1028/video-cut-merge-icon.png"},{"toolName":"视频压缩器桌面应用程序","toolCode":"video-compressor-app","icon":"./up/2023/1028/video-compress-icon.png"},{"toolName":"视频格式转换器桌面应用程序","toolCode":"video-format-converter-app","icon":"./up/2023/1028/video-format-conversion-icon.png"},{"toolName":"音频处理助手桌面应用程序","toolCode":"audio-processing-assistant-app","icon":"./up/2023/1028/audio-processing-assistant-icon.png"},{"toolName":"音频剪切合并桌面应用程序","toolCode":"audio-cut-merge-app","icon":"./up/2023/1028/audio-cut-merge-icon.png"},{"toolName":"音频压缩器桌面应用程序","toolCode":"audio-compressor-app","icon":"./up/2023/1028/audio-compress-icon.png"},{"toolName":"音频格式转换器桌面应用程序","toolCode":"audio-format-convertor-app","icon":"./up/2023/1028/audio-format-conversion-icon.png"}]},{"key":"generate","desc":"生成","toolList":[{"toolName":"测试模拟数据 (Mock Data) 批量生成器","toolCode":"mock-data-generator","icon":"./img/icons/mock-data-generator.svg"},{"toolName":"WiFi 扫码直连二维码生成器","toolCode":"wifi-qrcode","icon":"./img/icons/wifi-qrcode.svg"},{"toolName":"无障碍色彩对比度检测器 (WCAG)","toolCode":"contrast-checker","icon":"./img/icons/contrast-checker.svg"},{"toolName":"CSS 玻璃拟态与毛玻璃生成器","toolCode":"css-glassmorphism","icon":"./img/icons/css-glassmorphism.svg"},{"toolName":"ASCII 艺术字与字符 Logo 生成器","toolCode":"ascii-art-generator","icon":"./img/icons/ascii-art-generator.svg"},{"toolName":"UUID / ULID / NanoID 批量生成器","toolCode":"uuid-generator","icon":"./img/icons/uuid-generator.svg"},{"toolName":"CSS 渐变色生成器","toolCode":"css-gradient-generator","icon":"./img/icons/css-gradient-generator.svg"},{"toolName":"CSS 盒子阴影生成器","toolCode":"css-shadow-generator","icon":"./img/icons/css-shadow-generator.svg"},{"toolName":"条形码生成器","toolCode":"bar-code","icon":"./img/icons/bar-code.svg"},{"toolName":"二维码生成器","toolCode":"qrcode","icon":"./img/icons/qrcode.svg"},{"toolName":"序列号生成器","toolCode":"serial-number","icon":"./img/icons/serial-number.svg"},{"toolName":"随机数生成器","toolCode":"random-number","icon":"./img/icons/random-number.svg"},{"toolName":"在线随机密码生成器","toolCode":"random-password","icon":"./img/icons/random-password.svg"}]},{"key":"code","desc":"程序员","toolList":[{"toolName":"IP 子网掩码与 CIDR 计算器","toolCode":"subnet-calculator","icon":"./img/icons/subnet-calculator.svg"},{"toolName":"多格式配置文件双向转换器","toolCode":"data-format-converter","icon":"./img/icons/data-format-converter.svg"},{"toolName":"HTTP 状态码速查与排错全书","toolCode":"http-status-codes","icon":"./img/icons/http-status-codes.svg"},{"toolName":"WebSocket / SSE 在线调试客户端","toolCode":"websocket-tester","icon":"./img/icons/websocket-tester.svg"},{"toolName":"cURL 转换多语言代码工具","toolCode":"curl-converter","icon":"./img/icons/curl-converter.svg"},{"toolName":"SQL 格式化与美化器","toolCode":"sql-formatter","icon":"./img/icons/sql-formatter.svg"},{"toolName":"JSON 格式化与高能工具箱","toolCode":"json-formatter","icon":"./img/icons/json-formatter.svg"},{"toolName":"JWT 解码与调试器","toolCode":"jwt-debugger","icon":"./img/icons/jwt-debugger.svg"},{"toolName":"正则表达式测试器","toolCode":"regex-tester","icon":"./img/icons/regex-tester.svg"},{"toolName":"Cron 表达式生成与预测器","toolCode":"cron-generator","icon":"./img/icons/cron-generator.svg"},{"toolName":"端口扫描","toolCode":"port-scan","icon":"./img/icons/port-scan.svg"},{"toolName":"JavaScript混淆加密","toolCode":"js-obfuscator","icon":"./img/icons/js-obfuscator.svg"},{"toolName":"Markdown在线编辑器，Markdown转Word/Html/Pdf","toolCode":"markdown","icon":"./img/icons/markdown.svg"},{"toolName":"时间戳转换","toolCode":"timestamp","icon":"./img/icons/timestamp.svg"},{"toolName":"进制转换","toolCode":"base-converter","icon":"./img/icons/base-converter.svg"},{"toolName":"MD5加密","toolCode":"md5-encrypt","icon":"./img/icons/md5-encrypt.svg"},{"toolName":"AES加密/解密","toolCode":"aes-encrypt","icon":"./img/icons/aes-encrypt.svg"},{"toolName":"DES加密/解密","toolCode":"des-encrypt","icon":"./img/icons/des-encrypt.svg"},{"toolName":"SHA加密","toolCode":"sha-encrypt","icon":"./img/icons/sha-encrypt.svg"},{"toolName":"RIPEMD160哈希加密","toolCode":"ripemd160-encrypt","icon":"./img/icons/ripemd160-encrypt.svg"},{"toolName":"HMAC哈希加密","toolCode":"hmac-encrypt","icon":"./img/icons/hmac-encrypt.svg"},{"toolName":"Rabbit加密/解密","toolCode":"rabbit-encrypt","icon":"./img/icons/rabbit-encrypt.svg"},{"toolName":"RC4加密/解密","toolCode":"rc4-encrypt","icon":"./img/icons/rc4-encrypt.svg"},{"toolName":"图片转base64","toolCode":"image-to-base64","icon":"./img/icons/image-to-base64.svg"},{"toolName":"base64编码解码","toolCode":"base64-encoder-decoder","icon":"./img/icons/base64-encoder-decoder.svg"},{"toolName":"URL编码解码","toolCode":"url-encoder-decoder","icon":"./img/icons/url-encoder-decoder.svg"},{"toolName":"文本与ASCLL转换器","toolCode":"text-to-ascll-converter","icon":"./img/icons/text-to-ascll-converter.svg"},{"toolName":"Unicode编码器/解码器","toolCode":"unicode-encoder-decoder","icon":"./img/icons/unicode-encoder-decoder.svg"},{"toolName":"文本（代码）对比工具","toolCode":"compare-text","icon":"./img/icons/compare-text.svg"},{"toolName":"html格式化、压缩","toolCode":"format-html","icon":"./img/icons/format-html.svg"},{"toolName":"css格式化、压缩","toolCode":"format-css","icon":"./img/icons/format-css.svg"},{"toolName":"js格式化、压缩","toolCode":"format-js","icon":"./img/icons/format-js.svg"}]},{"key":"study","desc":"学习","toolList":[{"toolName":"2D 数学函数图像绘制器","toolCode":"function-grapher","icon":"./img/icons/function-grapher.svg"},{"toolName":"计算机位运算与逻辑门实验室","toolCode":"bitwise-visualizer","icon":"./img/icons/bitwise-visualizer.svg"},{"toolName":"汉字转标准拼音与多音字排版","toolCode":"pinyin-converter","icon":"./img/icons/pinyin-converter.svg"},{"toolName":"化学元素周期表交互系统","toolCode":"periodic-table","icon":"./img/icons/periodic-table.svg"},{"toolName":"数据存储单位与进阶换算器","toolCode":"data-unit-converter","icon":"./img/icons/data-unit-converter.svg"},{"toolName":"科学高级计算器","toolCode":"scientific-calculator","icon":"./img/icons/scientific-calculator.svg"},{"toolName":"长度单位转换器","toolCode":"length-converter","icon":"./img/icons/length-converter.svg"},{"toolName":"面积单位转换器","toolCode":"area-converter","icon":"./img/icons/area-converter.svg"},{"toolName":"体积单位转换器","toolCode":"volume-converter","icon":"./img/icons/volume-converter.svg"},{"toolName":"重量转换器","toolCode":"weight-converter","icon":"./img/icons/weight-converter.svg"},{"toolName":"温度转换器","toolCode":"temperature-converter","icon":"./img/icons/temperature-converter.svg"},{"toolName":"比例计算器","toolCode":"proportion-calculator","icon":"./img/icons/proportion-calculator.svg"},{"toolName":"周长计算器","toolCode":"perimeter-calculator","icon":"./img/icons/perimeter-calculator.svg"},{"toolName":"面积计算器","toolCode":"area-calculator","icon":"./img/icons/area-calculator.svg"},{"toolName":"表面积计算器","toolCode":"surface-area-calculator","icon":"./img/icons/surface-area-calculator.svg"},{"toolName":"体积计算器","toolCode":"volume-calculator","icon":"./img/icons/volume-calculator.svg"},{"toolName":"圆周率查询","toolCode":"pi-query","icon":"./img/icons/pi-query.svg"}]},{"key":"life","desc":"生活","toolList":[{"toolName":"复利定投与理财收益计算器","toolCode":"compound-interest-calculator","icon":"./img/icons/compound-interest-calculator.svg"},{"toolName":"全款与车贷落地费用精算器","toolCode":"car-loan-calculator","icon":"./img/icons/car-loan-calculator.svg"},{"toolName":"世界时钟与跨时区会议规划器","toolCode":"world-clock-planner","icon":"./img/icons/world-clock-planner.svg"},{"toolName":"生活垃圾分类离线速查字典","toolCode":"garbage-classification","icon":"./img/icons/garbage-classification.svg"},{"toolName":"中国亲戚关系称谓换算器","toolCode":"kinship-calculator","icon":"./img/icons/kinship-calculator.svg"},{"toolName":"2026最新个税与五险一金计算器","toolCode":"salary-tax-calculator","icon":"./img/icons/salary-tax-calculator.svg"},{"toolName":"房贷提前还款与省息对比器","toolCode":"mortgage-advanced-calculator","icon":"./img/icons/mortgage-advanced-calculator.svg"},{"toolName":"日期间隔与重要日子倒计时","toolCode":"date-calculator","icon":"./img/icons/date-calculator.svg"},{"toolName":"年龄计算器","toolCode":"age","icon":"./img/icons/age.svg"},{"toolName":"退休年龄查询","toolCode":"retirement-time-query","icon":"./img/icons/retirement-time-query.svg"},{"toolName":"世界各国首都","toolCode":"capital","icon":"./img/icons/capital.svg"},{"toolName":"世界各国国旗和区旗图案","toolCode":"flag","icon":"./img/icons/flag.svg"},{"toolName":"贷款计算器","toolCode":"loan-calculator","icon":"./img/icons/loan-calculator.svg"},{"toolName":"文胸尺码查询","toolCode":"bra-size","icon":"./img/icons/bra-size.svg"},{"toolName":"内裤尺码查询","toolCode":"underwear-size","icon":"./img/icons/underwear-size.svg"},{"toolName":"女装尺码查询","toolCode":"woman-clothing-size","icon":"./img/icons/woman-clothing-size.svg"},{"toolName":"女士衬衫尺码查询","toolCode":"woman-shirt-size","icon":"./img/icons/woman-shirt-size.svg"},{"toolName":"连衣裙尺码查询","toolCode":"dress-size","icon":"./img/icons/dress-size.svg"},{"toolName":"小孩服装尺码查询","toolCode":"child-clothe-size","icon":"./img/icons/child-clothe-size.svg"},{"toolName":"男士服装尺码查询","toolCode":"man-clothing-size","icon":"./img/icons/man-clothing-size.svg"},{"toolName":"男士裤子尺码查询","toolCode":"man-pant-size","icon":"./img/icons/man-pant-size.svg"}]},{"key":"ent","desc":"娱乐","toolList":[{"toolName":"像素画 / 8-bit 图标在线编辑器","toolCode":"pixel-art-maker","icon":"./img/icons/pixel-art-maker.svg"},{"toolName":"今天吃什么 / 帮我做决定","toolCode":"decision-maker","icon":"./img/icons/decision-maker.svg"},{"toolName":"手持全屏弹幕 / LED 滚动屏幕","toolCode":"led-banner","icon":"./img/icons/led-banner.svg"},{"toolName":"摩斯密码翻译器，摩斯密码音频播放器","toolCode":"morse-code-translator","icon":"./img/icons/morse-code-translator.svg"},{"toolName":"幸运大转盘抽奖","toolCode":"lucky-wheel","icon":"./img/icons/lucky-wheel.svg"},{"toolName":"在线抽奖工具","toolCode":"lottery","icon":"./img/icons/lottery.svg"},{"toolName":"身价计算器","toolCode":"worth","icon":"./img/icons/worth.svg"},{"toolName":"死亡时间计算器","toolCode":"death-time","icon":"./img/icons/death-time.svg"},{"toolName":"幸运数字计算器","toolCode":"lucky-number","icon":"./img/icons/lucky-number.svg"},{"toolName":"星座幸运色","toolCode":"lucky-color","icon":"./img/icons/lucky-color.svg"},{"toolName":"哈希头像生成器","toolCode":"hash-avatar","icon":"./img/icons/hash-avatar.svg"}]},{"key":"health","desc":"健康","toolList":[{"toolName":"科学每日饮水量计算器","toolCode":"water-intake-calculator","icon":"./img/icons/water-intake-calculator.svg"},{"toolName":"90分钟睡眠周期与起床时间计算器","toolCode":"sleep-cycle-calculator","icon":"./img/icons/sleep-cycle-calculator.svg"},{"toolName":"常用食物热量与营养成分速查表","toolCode":"food-calories-lookup","icon":"./img/icons/food-calories-lookup.svg"},{"toolName":"BMI指数计算","toolCode":"bmi","icon":"./img/icons/bmi.svg"},{"toolName":"基础代谢率(BMR)计算器","toolCode":"bmr","icon":"./img/icons/bmr.svg"},{"toolName":"体脂率（BFR）计算器","toolCode":"bfr","icon":"./img/icons/bfr.svg"},{"toolName":"标准体重计算器","toolCode":"weight","icon":"./img/icons/weight.svg"},{"toolName":"燃脂心率计算器","toolCode":"burn-fat-heart-rate","icon":"./img/icons/burn-fat-heart-rate.svg"},{"toolName":"体质综合测试","toolCode":"physical-fitness-test","icon":"./img/icons/physical-fitness-test.svg"},{"toolName":"蛋白质摄入量计算器","toolCode":"protein-intake","icon":"./img/icons/protein-intake.svg"},{"toolName":"焦耳卡路里换算器","toolCode":"energy-convert","icon":"./img/icons/energy-convert.svg"},{"toolName":"跑步卡路里消耗计算器","toolCode":"running-calorie","icon":"./img/icons/running-calorie.svg"},{"toolName":"女性最佳身材计算器","toolCode":"best-figure","icon":"./img/icons/best-figure.svg"},{"toolName":"女性安全期计算器","toolCode":"female-safe-period","icon":"./img/icons/female-safe-period.svg"},{"toolName":"孩子身高预测","toolCode":"child-height","icon":"./img/icons/child-height.svg"},{"toolName":"血型遗传规律和血型性格","toolCode":"bood-type","icon":"./img/icons/bood-type.svg"},{"toolName":"色盲色弱检测","toolCode":"color-blindness-test","icon":"./img/icons/color-blindness-test.svg"},{"toolName":"植物油脂肪含量查询","toolCode":"vegetable-oil","icon":"./img/icons/vegetable-oil.svg"}]}];
+    var phoneSmsEnable = 0;
+    var wp = 'zp';
+    var ap = 'qx';
+</script>
+<script src="./js/6767-site.js?v=20260813" defer></script>
+<script>
+    /* ── 渲染工具分类（vanilla JS，遍历 toolData，支持 i18n 动态切换） ── */
+    (function () {
+        var container = document.getElementById('toolSections');
+        if (!container || typeof toolData === 'undefined') return;
+
+        function toolLink(t) {
+            var icon = t.icon
+                ? '<img class="tool-icon" src="' + t.icon + '" alt="" loading="lazy">'
+                : '';
+            var name = t.toolName;
+            if (window.__i18n) {
+                name = window.__i18n.getToolName(t.toolCode, name);
+            }
+            return '<a class="tool-chip" href="./' + t.toolCode + '">' + icon + '<span>' + name + '</span></a>';
+        }
+
+        function traffic(key) {
+            return '<div class="flex gap-2 mb-5">'
+                + '<div class="w-3 h-3 rounded-full bg-red-500 opacity-80"></div>'
+                + '<div class="w-3 h-3 rounded-full bg-yellow-500 opacity-80"></div>'
+                + '<div class="w-3 h-3 rounded-full bg-green-500 opacity-80"></div>'
+                + '<span class="ml-3 text-xs text-slate-600 font-mono">~ ' + key + '</span>'
+                + '</div>';
+        }
+
+        function renderToolSections() {
+            var activeData = window.__i18n ? window.__i18n.translateToolData(toolData) : toolData;
+            container.innerHTML = activeData.map(function (cat, i) {
+                var inner = '';
+                var catTitle = window.__i18n ? window.__i18n.getCategoryName(cat.key) : cat.desc;
+                if (cat.children && cat.children.length) {
+                    inner = cat.children.map(function (sub) {
+                        var tools = (sub.toolList || []).map(toolLink).join('');
+                        var subTitle = window.__i18n ? window.__i18n.getSubcategoryName(sub.key || sub.desc) : sub.desc;
+                        return '<div class="tool-subgroup">'
+                            + '<div class="tool-subtitle">' + subTitle + '</div>'
+                            + '<div class="tool-grid">' + tools + '</div>'
+                            + '</div>';
+                    }).join('');
+                } else {
+                    var tools = (cat.toolList || []).map(toolLink).join('');
+                    inner = '<div class="tool-grid">' + tools + '</div>';
+                }
+                return '<section id="' + cat.key + '" class="fade-in delay-' + Math.min(i + 1, 6) + '">'
+                    + '<div class="sec-label font-kai mb-3">' + catTitle + '</div>'
+                    + '<div class="terminal p-6 tool-terminal">' + traffic(cat.key) + inner + '</div>'
+                    + '</section>';
+            }).join('');
+        }
+
+        renderToolSections();
+        window.addEventListener('langchange', renderToolSections);
+    })();
+
+    /* ── 本站元素：搜索跳转 ── */
+    (function () {
+        var input = document.getElementById('homeSearchInput');
+        var btn = document.getElementById('homeSearchBtn');
+        if (!input || !btn) return;
+        var go = function () {
+            var kw = (input.value || '').trim();
+            if (!kw) { input.focus(); return; }
+            location.href = './Search?keyword=' + encodeURIComponent(kw);
+        };
+        btn.addEventListener('click', go);
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') go();
+        });
+    })();
+</script>
+
+</body>
+</html>

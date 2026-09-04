@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-strike" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4c0519"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-strike)" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <!-- Letter 'S' -->
+  <path d="M31 16.5 C31 12.5 27 10.5 24 10.5 C20 10.5 16.5 12.5 16.5 16.5 C16.5 20.5 20 22.5 24 23.5 C28 24.5 31.5 26.5 31.5 30.5 C31.5 35 28 37.5 24 37.5 C19 37.5 15.5 34.5 15.5 30.5" fill="none" stroke="#f1f5f9" stroke-width="3.6" stroke-linecap="round"/>
+
+  <!-- Horizontal Strike Bar (Laser Red + Glow) -->
+  <path d="M8 24 L40 24" stroke="#f43f5e" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M9 24 L39 24" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Strike Sparks -->
+  <circle cx="8.5" cy="24" r="1.5" fill="#f43f5e"/>
+  <circle cx="39.5" cy="24" r="1.5" fill="#f43f5e"/>
+</svg>

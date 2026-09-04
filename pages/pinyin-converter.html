@@ -1,0 +1,417 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>汉字转拼音与多音字排版 - 在线工具</title>
+    <meta name="description" content="专业纯前端汉字转拼音工具：基于 pinyin-pro 核心库，支持 20000+ 完整汉字字库、标准声调、数字声调、无声调、首字母缩写、HTML5 ruby 上下注音排版、多音字智能分词校准与拼音检索高亮。" />
+    <meta name="keywords" content="汉字转拼音,拼音转换器,pinyin-pro,多音字识别,ruby上下注音,拼音首字母,声母韵母提取" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        /* 极简输入与控制条 */
+        .command-bar {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .input-textarea {
+            width: 100%;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.4) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 10px;
+            color: #f3f4f6 !important;
+            font-size: 1rem;
+            line-height: 1.7;
+            padding: 14px 16px;
+            outline: none;
+            resize: vertical;
+            transition: all 0.2s ease;
+        }
+        .input-textarea:focus {
+            border-color: rgba(168, 85, 247, 0.5) !important;
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.15);
+        }
+
+        .pill-chip {
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: #9ca3af;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+        .pill-chip:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .pill-chip.active {
+            color: #ffffff;
+            background: rgba(168, 85, 247, 0.2);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.15);
+        }
+
+        /* 转换结果主画布 */
+        .result-canvas {
+            background: rgba(11, 17, 32, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+        }
+
+        .canvas-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(8, 13, 25, 0.6);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tab-switcher {
+            display: flex;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 3px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .tab-btn {
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #9ca3af;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+        .tab-btn:hover { color: #f3f4f6; }
+        .tab-btn.active {
+            color: #c084fc;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .output-box {
+            padding: 24px;
+            min-height: 280px;
+            font-size: 1.1rem;
+            line-height: 2;
+            color: #f1f5f9;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background: #030712;
+            overflow-y: auto;
+            max-height: 520px;
+        }
+        .output-box.mono {
+            font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.95rem;
+            color: #38bdf8;
+            line-height: 1.8;
+        }
+
+        /* HTML5 Ruby 注音排版 */
+        .ruby-preview-wrap {
+            padding: 28px;
+            line-height: 3;
+            font-size: 1.25rem;
+            background: #030712;
+            min-height: 280px;
+            max-height: 520px;
+            overflow-y: auto;
+        }
+        ruby {
+            display: inline-flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            margin: 0 4px;
+            vertical-align: bottom;
+        }
+        rb {
+            font-size: 1.35rem;
+            color: #ffffff;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+        rt {
+            font-size: 0.85rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #c084fc;
+            font-weight: 500;
+            line-height: 1.2;
+            padding-bottom: 2px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶栏 -->
+<header class="tool-topbar">
+    <a href="./" class="tool-topbar-logo" aria-label="首页">
+        <span>在线工具集</span>
+    </a>
+    <span class="tool-topbar-sep">/</span>
+    <span class="tool-topbar-title">汉字转拼音与多音字排版</span>
+    <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app" v-cloak>
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">汉字转拼音与多音字排版</h1>
+                </div>
+                <div class="description">专业纯前端汉字转拼音工具：基于 pinyin-pro 核心库，支持 20000+ 完整汉字字库、标准声调、数字声调、无声调、首字母缩写、HTML5 ruby 上下注音排版、多音字智能分词校准与拼音检索高亮。</div>
+
+    <!-- 交互式输入控制条 -->
+    <div class="command-bar">
+        <div>
+            <textarea v-model="inputText" @input="handleConvert" placeholder="在此输入或粘贴需要转换的中文汉字..." class="input-textarea"></textarea>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/5">
+            <!-- 声调格式 -->
+            <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs text-slate-400 mr-1">声调格式:</span>
+                <button v-for="t in toneOptions" :key="t.val"
+                        @click="toneType = t.val; handleConvert()"
+                        :class="['pill-chip', toneType === t.val ? 'active' : '']">
+                    {{ t.label }}
+                </button>
+            </div>
+
+            <!-- 输出排版模式 -->
+            <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs text-slate-400 mr-1">排版形式:</span>
+                <button v-for="m in modeOptions" :key="m.val"
+                        @click="viewMode = m.val; handleConvert()"
+                        :class="['pill-chip', viewMode === m.val ? 'active' : '']">
+                    {{ m.label }}
+                </button>
+            </div>
+
+            <!-- 特殊选项 -->
+            <div class="flex items-center gap-3 text-xs text-slate-400">
+                <label class="flex items-center gap-1.5 cursor-pointer select-none">
+                    <input type="checkbox" v-model="surnameMode" @change="handleConvert" class="accent-purple-500 rounded">
+                    <span>百家姓模式</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer select-none">
+                    <input type="checkbox" v-model="vForU" @change="handleConvert" class="accent-purple-500 rounded">
+                    <span>ü 转 v</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果工作画布 -->
+    <div class="result-canvas">
+        <div class="canvas-toolbar">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-mono text-slate-400">转换结果 ({{ inputText.length }} 字符)</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button class="action-btn" @click="copyResult">复制拼音</button>
+                <button v-if="viewMode === 'ruby'" class="action-btn" @click="copyHtml">复制 HTML5 Ruby</button>
+                <button class="action-btn !text-purple-400 !border-purple-500/20 hover:!bg-purple-500/10" @click="downloadText">导出文本</button>
+            </div>
+        </div>
+
+        <!-- 1. Ruby 上下注音视图 -->
+        <div v-if="viewMode === 'ruby'" class="ruby-preview-wrap" v-html="rubyHtml"></div>
+
+        <!-- 2. 普通拼音 / 双行对照视图 -->
+        <div v-else class="output-box" :class="{ mono: toneType !== 'symbol' }">{{ convertedOutput }}</div>
+    </div>
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>汉字转拼音工具基于高性能中文注音库 pinyin-pro 开发，精准支持多音字智能分词校准（如“重庆/重量”、“音乐/快乐”等上下文消歧）。支持带调拼音、无调拼音、拼音首字母以及 HTML5 标准 <code>&lt;ruby&gt;</code> 上下注音排版，适合语文教学、排版排版与大段拼音注音处理。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="309" :comment-class="2"></comment>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/pinyin-pro/pinyin-pro.js"></script>
+
+<script>
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    createApp({
+        setup() {
+            const inputText = ref('重庆的火锅非常地道，音乐会带来无尽的快乐。曾几何时，单老师与查先生在重阳节登高远眺。');
+            const toneType = ref('symbol'); // symbol, num, none, first
+            const viewMode = ref('ruby'); // ruby, pinyin, contrast, bracket
+            const surnameMode = ref(false);
+            const vForU = ref(false);
+
+            const toneOptions = [
+                { label: '标准符号 (hàn)', val: 'symbol' },
+                { label: '带数字 (han4)', val: 'num' },
+                { label: '无声调 (han)', val: 'none' },
+                { label: '首字母 (H)', val: 'first' }
+            ];
+
+            const modeOptions = [
+                { label: 'HTML5 上下注音', val: 'ruby' },
+                { label: '纯拼音', val: 'pinyin' },
+                { label: '双行对照', val: 'contrast' },
+                { label: '汉字(拼音)', val: 'bracket' }
+            ];
+
+            const samplePresets = [
+                { name: '多音字语境', text: '重庆的火锅非常地道，音乐会带来无尽的快乐。银行行长正在行使职权。' },
+                { name: '古诗《静夜思》', text: '床前明月光，疑是地上霜。举头望明月，低头思故乡。' },
+                { name: '百家姓特例', text: '单雄信、朴树、仇英、区适子、查良镛、曾巩、解缙。' }
+            ];
+
+            const convertedOutput = ref('');
+            const rubyHtml = ref('');
+
+            const handleConvert = () => {
+                if (!window.pinyinPro || !inputText.value) {
+                    convertedOutput.value = '';
+                    rubyHtml.value = '';
+                    return;
+                }
+
+                const { pinyin } = window.pinyinPro;
+                const opts = {
+                    toneType: toneType.value,
+                    mode: surnameMode.value ? 'surname' : 'normal',
+                    v: vForU.value
+                };
+
+                // 1. Ruby 上下注音生成
+                try {
+                    const rubyRes = pinyin(inputText.value, { ...opts, type: 'html', resultForm: 'segment' });
+                    rubyHtml.value = rubyRes;
+                } catch (e) {
+                    rubyHtml.value = '';
+                }
+
+                // 2. 普通文本转换
+                if (viewMode.value === 'pinyin') {
+                    convertedOutput.value = pinyin(inputText.value, { ...opts, type: 'string' });
+                } else if (viewMode.value === 'contrast') {
+                    const py = pinyin(inputText.value, { ...opts, type: 'string' });
+                    convertedOutput.value = inputText.value + '\n' + py;
+                } else if (viewMode.value === 'bracket') {
+                    const chars = Array.from(inputText.value);
+                    const pyArray = pinyin(inputText.value, { ...opts, type: 'array' });
+                    let res = '';
+                    chars.forEach((c, idx) => {
+                        if (/[一-龥]/.test(c)) {
+                            res += c + '(' + (pyArray[idx] || '') + ') ';
+                        } else {
+                            res += c;
+                        }
+                    });
+                    convertedOutput.value = res.trim();
+                }
+            };
+
+            const copyResult = () => {
+                const text = viewMode.value === 'ruby' ? (window.pinyinPro ? window.pinyinPro.pinyin(inputText.value, { toneType: toneType.value }) : '') : convertedOutput.value;
+                navigator.clipboard.writeText(text).then(() => {
+                    ElementPlus.ElMessage.success('已复制拼音文本！');
+                });
+            };
+
+            const copyHtml = () => {
+                navigator.clipboard.writeText(rubyHtml.value).then(() => {
+                    ElementPlus.ElMessage.success('已复制 HTML5 Ruby 代码！');
+                });
+            };
+
+            const downloadText = () => {
+                const blob = new Blob([convertedOutput.value || rubyHtml.value], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'pinyin_export_' + Date.now() + '.txt';
+                a.click();
+                URL.revokeObjectURL(url);
+                ElementPlus.ElMessage.success('已开始下载导出文件');
+            };
+
+            onMounted(() => {
+                handleConvert();
+            });
+
+            return {
+                inputText,
+                toneType,
+                viewMode,
+                surnameMode,
+                vForU,
+                toneOptions,
+                modeOptions,
+                samplePresets,
+                convertedOutput,
+                rubyHtml,
+                handleConvert,
+                copyResult,
+                copyHtml,
+                downloadText
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

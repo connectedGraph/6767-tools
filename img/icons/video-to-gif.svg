@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-vgif" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="50%" stop-color="#A855F7"/>
+      <stop offset="100%" stop-color="#F43F5E"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-vgif)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Video Camcorder on Left -->
+  <rect x="6" y="16" width="16" height="16" rx="3" fill="rgba(15,23,42,0.75)" stroke="#FFFFFF" stroke-width="1.6"/>
+  <!-- Camera Lens -->
+  <path d="M22 21l6-4.5v15l-6-4.5v-6z" fill="#38BDF8" stroke="#FFFFFF" stroke-width="1.4" stroke-linejoin="round"/>
+  <!-- Rec Light -->
+  <circle cx="10" cy="20" r="1.5" fill="#EF4444"/>
+  <!-- Central Conversion Curved Arrow -->
+  <path d="M26 12a10 10 0 0 1 12 5" fill="none" stroke="#FDE047" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M37 13.5l2.5 3.5-4 0.5" fill="none" stroke="#FDE047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- GIF Animation Frame on Right -->
+  <rect x="25" y="23" width="17" height="16" rx="3" fill="#EC4899" stroke="#FFFFFF" stroke-width="1.6"/>
+  <!-- Sprockets on mini GIF reel -->
+  <rect x="27" y="24.5" width="2" height="2" rx="0.5" fill="#FFFFFF"/>
+  <rect x="38" y="24.5" width="2" height="2" rx="0.5" fill="#FFFFFF"/>
+  <rect x="27" y="35.5" width="2" height="2" rx="0.5" fill="#FFFFFF"/>
+  <rect x="38" y="35.5" width="2" height="2" rx="0.5" fill="#FFFFFF"/>
+  <!-- Play triangle in GIF -->
+  <path d="M32 28.5l4 2.5-4 2.5v-5z" fill="#FFFFFF"/>
+</svg>

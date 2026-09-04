@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-hmac" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2d124d"/>
+      <stop offset="100%" stop-color="#120422"/>
+    </linearGradient>
+    <linearGradient id="hmac-key" x1="14" y1="14" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="hmac-mesh" x1="12" y1="12" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#e879f9"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-hmac)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#c084fc" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Hash Matrix Grid Background -->
+  <path d="M15 19h18M15 25h18M15 31h18M19 15v20M25 15v20M31 15v20" stroke="#7e22ce" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+
+  <!-- Outer Authentication Seal Circle -->
+  <circle cx="24" cy="24" r="13" stroke="url(#hmac-mesh)" stroke-width="2" stroke-dasharray="4 2"/>
+
+  <!-- Key Overlay -->
+  <circle cx="19" cy="19" r="4" stroke="url(#hmac-key)" stroke-width="2.2" fill="#2e1065"/>
+  <circle cx="19" cy="19" r="1.5" fill="#fbbf24"/>
+  <path d="M22 22l9 9M28 28l2.5-2.5M30 30l2-2" stroke="url(#hmac-key)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

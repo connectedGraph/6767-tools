@@ -1,0 +1,331 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>SQL 格式化与美化器 - 在线工具</title>
+    <meta name="description" content="专业 SQL 语句在线美化与压缩工具，基于官方 sql-formatter 引擎，支持 MySQL, PostgreSQL, Oracle, SQLite, T-SQL, MariaDB 等主流方言，支持关键字大写与缩进定制。" />
+    <meta name="keywords" content="SQL格式化,SQL美化,SQL压缩,MySQL格式化,PostgreSQL,SQL Beautifier,SQL Formatter" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+    <style>
+        .control-bar {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            backdrop-filter: blur(16px);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .options-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .opt-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .geek-select {
+            background: #090f1d !important;
+            border: 1px solid rgba(51, 65, 85, 0.8) !important;
+            color: #e2e8f0 !important;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            border-radius: 6px;
+            padding: 6px 12px;
+            outline: none;
+            cursor: pointer;
+        }
+        .geek-select:focus { border-color: #38bdf8 !important; }
+
+        .btn-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tool-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            background: #0f172a;
+            color: #cbd5e1;
+        }
+        .tool-btn:hover { transform: translateY(-1px); border-color: #38bdf8; color: #38bdf8; }
+        .tool-btn-primary {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+        }
+        .tool-btn-primary:hover { background: #0369a1; color: #ffffff; }
+
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 900px) {
+            .workspace-grid { grid-template-columns: 1fr; }
+        }
+
+        .editor-box {
+            background: #070b14;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+        .editor-topbar {
+            background: #0f172a;
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .sql-textarea {
+            width: 100%;
+            height: 460px;
+            background: #070b14 !important;
+            color: #f1f5f9 !important;
+            font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            padding: 16px;
+            border: none;
+            outline: none;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        .sql-textarea.output {
+            color: #38bdf8 !important;
+            background: #070b14 !important;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./code" class="text-slate-400 hover:text-cyan-400 text-sm">程序员工具</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">SQL 格式化与美化器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">SQL 格式化与美化器</h1>
+                </div>
+                <div class="description">专业 SQL 语句在线美化与压缩工具，基于官方 sql-formatter 引擎，支持 MySQL, PostgreSQL, Oracle, SQLite, T-SQL, MariaDB 等主流方言，支持关键字大写与缩进定制。</div>
+
+    <!-- Control Bar -->
+    <div class="control-bar">
+        <div class="options-group">
+            <div class="opt-item">
+                <span>方言:</span>
+                <select v-model="dialect" @change="formatSql" class="geek-select">
+                    <option value="sql">Standard SQL (通用)</option>
+                    <option value="mysql">MySQL / MariaDB</option>
+                    <option value="postgresql">PostgreSQL</option>
+                    <option value="sqlite">SQLite</option>
+                    <option value="plsql">Oracle PL/SQL</option>
+                    <option value="tsql">SQL Server (T-SQL)</option>
+                </select>
+            </div>
+
+            <div class="opt-item">
+                <span>缩进:</span>
+                <select v-model="tabWidth" @change="formatSql" class="geek-select">
+                    <option :value="2">2 空格</option>
+                    <option :value="4">4 空格</option>
+                    <option value="tab">Tab 缩进</option>
+                </select>
+            </div>
+
+            <label class="opt-item" style="cursor: pointer;">
+                <input type="checkbox" v-model="uppercaseKeyword" @change="formatSql" />
+                <span>关键字大写 (UPPERCASE)</span>
+            </label>
+        </div>
+
+        <div class="btn-group">
+            <button @click="loadSample" class="tool-btn">载入复杂示例</button>
+            <button @click="formatSql" class="tool-btn tool-btn-primary">✨ 立即美化</button>
+            <button @click="minifySql" class="tool-btn" style="color: #fbbf24;">📦 压缩单行</button>
+            <button @click="clearSql" class="tool-btn" style="color: #f43f5e;">清空</button>
+        </div>
+    </div>
+
+    <!-- Dual Workspace Grid -->
+    <div class="workspace-grid">
+        <div class="editor-box">
+            <div class="editor-topbar">
+                <span>// 原始 SQL 输入 (Raw Input)</span>
+                <span>{{ rawSql.length }} 字符</span>
+            </div>
+            <textarea v-model="rawSql" @input="formatSql" placeholder="在此粘贴待格式化的 SQL 语句..." class="sql-textarea"></textarea>
+        </div>
+
+        <div class="editor-box">
+            <div class="editor-topbar">
+                <span style="color: #38bdf8;">// 格式化输出 (Formatted Output)</span>
+                <div style="display: flex; gap: 8px;">
+                    <button @click="copyFormatted" class="tool-btn" style="padding: 4px 10px; font-size: 11px;">📋 复制结果</button>
+                    <button @click="downloadSql" class="tool-btn" style="padding: 4px 10px; font-size: 11px;">💾 导出 .sql</button>
+                </div>
+            </div>
+            <textarea readonly :value="formattedSql" class="sql-textarea output"></textarea>
+        </div>
+    </div>
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>SQL 格式化工具基于业界主流的 sql-formatter 解析引擎构建，支持 Standard SQL、MySQL、PostgreSQL、Oracle PL/SQL、SQLite、SQL Server (T-SQL) 等多种 SQL 方言。提供关键字大写转换、自定义缩进、单行压缩与一键导出功能，帮助开发者快速规范数据库脚本与日志查询语句。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="313" :comment-class="2"></comment>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/sql-formatter/sql-formatter.min.js"></script>
+<script>
+    const { createApp, ref, onMounted } = Vue;
+
+    createApp({
+        setup() {
+            const rawSql = ref('');
+            const formattedSql = ref('');
+            const dialect = ref('sql');
+            const tabWidth = ref(2);
+            const uppercaseKeyword = ref(true);
+
+            const sampleSql = `WITH RankedOrders AS (
+    SELECT o.order_id, o.customer_id, o.order_date, o.total_amount,
+           ROW_NUMBER() OVER (PARTITION BY o.customer_id ORDER BY o.order_date DESC) as rn
+    FROM orders o
+    WHERE o.status IN ('COMPLETED', 'SHIPPED') AND o.order_date >= '2026-01-01'
+)
+SELECT c.customer_name, c.email, r.order_id, r.total_amount,
+       COUNT(oi.item_id) AS items_count, SUM(oi.quantity * oi.unit_price) AS calculated_sum
+FROM RankedOrders r
+JOIN customers c ON c.customer_id = r.customer_id
+LEFT JOIN order_items oi ON oi.order_id = r.order_id
+WHERE r.rn = 1 AND r.total_amount > 500.00
+GROUP BY c.customer_name, c.email, r.order_id, r.total_amount
+HAVING COUNT(oi.item_id) >= 2
+ORDER BY r.total_amount DESC, c.customer_name ASC
+LIMIT 50;`;
+
+            function formatSql() {
+                if (!rawSql.value.trim()) {
+                    formattedSql.value = '';
+                    return;
+                }
+                try {
+                    formattedSql.value = sqlFormatter.format(rawSql.value, {
+                        language: dialect.value,
+                        tabWidth: Number(tabWidth.value) || 2,
+                        useTabs: tabWidth.value === 'tab',
+                        keywordCase: uppercaseKeyword.value ? 'upper' : 'preserve',
+                    });
+                } catch (e) {
+                    formattedSql.value = '-- [解析提示]: ' + e.message + '\n\n' + rawSql.value;
+                }
+            }
+
+            function minifySql() {
+                if (!rawSql.value.trim()) return;
+                formattedSql.value = rawSql.value
+                    .replace(/\/\*[\s\S]*?\*\//g, '')
+                    .replace(/--.*$/gm, '')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+                ElementPlus.ElMessage.success('已压缩为单行 SQL！');
+            }
+
+            function loadSample() {
+                rawSql.value = sampleSql;
+                formatSql();
+            }
+
+            function clearSql() {
+                rawSql.value = '';
+                formattedSql.value = '';
+            }
+
+            function copyFormatted() {
+                if (!formattedSql.value) return;
+                navigator.clipboard.writeText(formattedSql.value).then(() => {
+                    ElementPlus.ElMessage.success('已复制格式化后的 SQL！');
+                });
+            }
+
+            function downloadSql() {
+                if (!formattedSql.value) return;
+                const blob = new Blob([formattedSql.value], { type: 'text/sql;charset=utf-8' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'query-' + Date.now() + '.sql';
+                a.click();
+            }
+
+            onMounted(() => {
+                loadSample();
+            });
+
+            return {
+                rawSql,
+                formattedSql,
+                dialect,
+                tabWidth,
+                uppercaseKeyword,
+                formatSql,
+                minifySql,
+                loadSample,
+                clearSql,
+                copyFormatted,
+                downloadSql
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

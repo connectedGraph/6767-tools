@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>文本多行去重与多维排序器 - 在线工具</title>
+    <meta name="description" content="专业级大段文本按行清洗、去重与多维排序工具。支持按出现次序去重、仅提取重复项、去除空白行与首尾空格、中文拼音及字母大小写排序、文本长度排序、自然数值排序与反转行序。纯前端离线计算，实时统计行数、字符数与节省比率。" />
+    <meta name="keywords" content="文本去重,多行去重,在线行排序,拼音排序,文本长度排序,提取重复行,去除空行,自然数排序,文本清洗工具,行反转,在线办公工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="dns-prefetch" href="" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+        .dedup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 860px) {
+            .dedup-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .pane-card {
+            background: rgba(10, 16, 30, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+        .pane-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+        .pane-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #22d3ee;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        }
+        .pane-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .editor-textarea {
+            width: 100%;
+            height: 380px;
+            min-height: 280px;
+            padding: 12px;
+            background: rgba(2, 6, 23, 0.7);
+            border: none;
+            outline: none;
+            color: #e2e8f0;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            resize: vertical;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .editor-textarea:focus {
+            background: rgba(2, 6, 23, 0.9);
+        }
+        .pane-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: rgba(15, 23, 42, 0.85);
+            border-top: 1px solid rgba(51, 65, 85, 0.6);
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        }
+        .config-card {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+        .config-section-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .config-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 14px;
+            background: #22d3ee;
+            border-radius: 2px;
+        }
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 8px;
+            padding: 10px 14px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            color: #f1f5f9;
+        }
+        .stat-value.highlight-cyan {
+            color: #22d3ee;
+        }
+        .stat-value.highlight-green {
+            color: #34d399;
+        }
+        .stat-value.highlight-orange {
+            color: #fb923c;
+        }
+        .btn-group-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+            align-items: center;
+        }
+        .tag-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            background: rgba(34, 211, 238, 0.12);
+            color: #22d3ee;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+        .option-group-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px 20px;
+            align-items: center;
+        }
+        .example-btn-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="文本多行去重与多维排序器 - 在线工具" />
+    <meta property="og:description" content="专业级大段文本按行清洗、去重与多维排序工具。支持按出现次序去重、仅提取重复项、去除空白行与首尾空格、中文拼音及字母大小写排序、文本长度排序、自然数值排序与反转行序。" />
+    <meta property="og:url" content="https://tool.6767.chat/text-dedup-sort" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="文本多行去重与多维排序器 - 在线工具" />
+    <meta name="twitter:description" content="专业级大段文本按行清洗、去重与多维排序工具。支持大文本多行去重、多维排序与行数统计对比。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/text-dedup-sort" />
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">文本多行去重与多维排序器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+  <div class="tool-body">
+    <div class="card-model">
+      <div class="card-body">
+        <div class="tool-head">
+          <div>
+            <h1 class="title">文本多行去重与多维排序器</h1>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="tag-badge">纯前端离线运行</span>
+            <span class="tag-badge">拓展时间: 2026-08-31</span>
+          </div>
+        </div>
+        <div class="description">
+          专业级大段文本按行清洗、去重与多维排序工具。支持按出现次序去重、仅提取重复项、去除空白行与首尾空格、中文拼音及字母升降序、文本长度排序、自然数值排序与反转行序。纯前端离线计算，实时统计前后行数、字符数与节省比率。
+        </div>
+
+        <div id="app" v-cloak>
+          <!-- 统计指示板 -->
+          <div class="stats-bar">
+            <div class="stat-item">
+              <div class="stat-label">原文本总行数</div>
+              <div class="stat-value">{{ originalStats.lines }}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">处理后行数</div>
+              <div class="stat-value highlight-cyan">{{ resultStats.lines }}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">削减 / 过滤行数</div>
+              <div class="stat-value highlight-orange">{{ reducedLines }}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">行数节省率</div>
+              <div class="stat-value highlight-green">{{ savingsRatio }}%</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">发现重复行数</div>
+              <div class="stat-value">{{ originalStats.duplicateCount }}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">字符数变化</div>
+              <div class="stat-value">{{ originalStats.chars }} → {{ resultStats.chars }}</div>
+            </div>
+          </div>
+
+          <!-- 双栏编辑器 -->
+          <div class="dedup-grid">
+            <!-- 左栏：输入区域 -->
+            <div class="pane-card">
+              <div class="pane-header">
+                <div class="pane-title">
+                  <span>INPUT // 待处理文本</span>
+                </div>
+                <div class="pane-actions">
+                  <el-button size="small" type="primary" plain @click="pasteFromClipboard">粘贴</el-button>
+                  <el-button size="small" @click="handleClear">清空</el-button>
+                </div>
+              </div>
+              <textarea
+                v-model="inputText"
+                class="editor-textarea"
+                placeholder="在此处粘贴或输入需要去重、排序或清洗的大段文本内容（每行一条）..."
+                spellcheck="false"
+                @input="debouncedProcess"
+              ></textarea>
+              <div class="pane-footer">
+                <span>行数: {{ originalStats.lines }} | 非空行: {{ originalStats.nonEmptyLines }} | 字符数: {{ originalStats.chars }}</span>
+                <span>UTF-8</span>
+              </div>
+            </div>
+
+            <!-- 右栏：输出区域 -->
+            <div class="pane-card">
+              <div class="pane-header">
+                <div class="pane-title">
+                  <span>OUTPUT // 处理结果</span>
+                </div>
+                <div class="pane-actions">
+                  <el-button size="small" type="primary" @click="handleCopy">复制结果</el-button>
+                  <el-button size="small" plain @click="handleDownload">下载 .txt</el-button>
+                  <el-button size="small" plain @click="swapInputOutput" title="将当前输出内容填入输入框继续处理">结果转输入</el-button>
+                </div>
+              </div>
+              <textarea
+                v-model="outputText"
+                class="editor-textarea"
+                placeholder="处理后的文本将在此实时显示..."
+                readonly
+                spellcheck="false"
+              ></textarea>
+              <div class="pane-footer">
+                <span>结果行数: {{ resultStats.lines }} | 字符数: {{ resultStats.chars }}</span>
+                <span class="text-emerald-400" v-if="savingsRatio > 0">体积减少 {{ savingsRatio }}%</span>
+                <span v-else>无行数缩减</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 参数控制配置面板 -->
+          <div class="config-card">
+            <!-- 去重与提取策略 -->
+            <div class="mb-4">
+              <div class="config-section-title">去重与提取模式 (Deduplication & Extraction)</div>
+              <div class="option-group-box">
+                <el-radio-group v-model="options.dedupMode" @change="processText">
+                  <el-radio-button label="dedup">去除重复行 (保留唯一项)</el-radio-button>
+                  <el-radio-button label="duplicates_only">仅保留重复行 (提取冲突项)</el-radio-button>
+                  <el-radio-button label="none">不进行去重 (仅清洗与排序)</el-radio-button>
+                </el-radio-group>
+
+                <div v-if="options.dedupMode === 'duplicates_only'" class="flex items-center gap-2">
+                  <el-select v-model="options.duplicateExtractType" size="small" style="width: 190px;" @change="processText">
+                    <el-option label="单份输出 (唯一重复行)" value="unique"></el-option>
+                    <el-option label="全部输出 (所有重复副本)" value="all"></el-option>
+                  </el-select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 排序策略 -->
+            <div class="mb-4">
+              <div class="config-section-title">多维排序规则 (Multi-dimensional Sorting)</div>
+              <div class="option-group-box">
+                <el-select v-model="options.sortOrder" style="width: 260px;" @change="processText">
+                  <el-option label="保持原出现次序 (不排序)" value="original"></el-option>
+                  <el-option label="拼音 / 字母升序 (A → Z)" value="pinyin_asc"></el-option>
+                  <el-option label="拼音 / 字母降序 (Z → A)" value="pinyin_desc"></el-option>
+                  <el-option label="按文本长度升序 (短 → 长)" value="length_asc"></el-option>
+                  <el-option label="按文本长度降序 (长 → 短)" value="length_desc"></el-option>
+                  <el-option label="自然数值升序 (0 → 9)" value="numeric_asc"></el-option>
+                  <el-option label="自然数值降序 (9 → 0)" value="numeric_desc"></el-option>
+                  <el-option label="反转行序 (Reverse Lines)" value="reverse"></el-option>
+                  <el-option label="随机打乱行序 (Shuffle)" value="shuffle"></el-option>
+                </el-select>
+
+                <el-button v-if="options.sortOrder === 'shuffle'" size="small" type="primary" plain @click="processText">
+                  重新随机打乱
+                </el-button>
+              </div>
+            </div>
+
+            <!-- 清洗与过滤选项 -->
+            <div class="mb-4">
+              <div class="config-section-title">文本清洗与比对规则 (Cleaning & Matching Options)</div>
+              <div class="option-group-box">
+                <el-checkbox v-model="options.removeEmpty" @change="processText">去除空白行 / 纯空行</el-checkbox>
+                <el-checkbox v-model="options.trimLines" @change="processText">去除每行首尾空格 (Trim)</el-checkbox>
+                <el-checkbox v-model="options.caseSensitive" @change="processText">区分大小写 (Case Sensitive)</el-checkbox>
+                <el-checkbox v-model="options.ignoreInnerSpaces" @change="processText">比对时忽略行内所有空格</el-checkbox>
+              </div>
+            </div>
+
+            <!-- 前缀/后缀与格式修饰 -->
+            <div>
+              <div class="config-section-title">高级修饰与前后缀 (Decoration & Prefix/Suffix)</div>
+              <div class="flex flex-wrap gap-4 items-center">
+                <el-checkbox v-model="options.addLineNumbers" @change="processText">添加行号前缀</el-checkbox>
+                <div v-if="options.addLineNumbers" class="flex items-center gap-2">
+                  <el-select v-model="options.lineNumberFormat" size="small" style="width: 140px;" @change="processText">
+                    <el-option label="1. 格式" value="dot"></el-option>
+                    <el-option label="[1] 格式" value="bracket"></el-option>
+                    <el-option label="01. 补零格式" value="zeropad"></el-option>
+                  </el-select>
+                </div>
+
+                <el-checkbox v-model="options.enablePrefixSuffix" @change="processText">自定义每行前后缀</el-checkbox>
+                <div v-if="options.enablePrefixSuffix" class="flex items-center gap-2">
+                  <el-input v-model="options.linePrefix" size="small" placeholder="行前缀..." style="width: 110px;" @input="debouncedProcess" />
+                  <el-input v-model="options.lineSuffix" size="small" placeholder="行后缀..." style="width: 110px;" @input="debouncedProcess" />
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-slate-400">字母转换:</span>
+                  <el-select v-model="options.caseTransform" size="small" style="width: 130px;" @change="processText">
+                    <el-option label="保持原样" value="none"></el-option>
+                    <el-option label="全部大写" value="upper"></el-option>
+                    <el-option label="全部小写" value="lower"></el-option>
+                    <el-option label="首字母大写" value="capitalize"></el-option>
+                  </el-select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 操作与载入示例 -->
+            <div class="btn-group-row justify-between border-t border-slate-700/60 pt-3 mt-4">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">载入示例数据:</span>
+                <div class="example-btn-list">
+                  <el-button size="small" plain @click="loadSample('contacts')">邮箱名单 (带重复/空格)</el-button>
+                  <el-button size="small" plain @click="loadSample('names')">中文姓名 (拼音乱序)</el-button>
+                  <el-button size="small" plain @click="loadSample('ips')">服务器 IP 日志</el-button>
+                  <el-button size="small" plain @click="loadSample('lengths')">短句长文本排序</el-button>
+                </div>
+              </div>
+              <div>
+                <el-button type="primary" @click="processText">立即重新计算</el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 详细说明文档 -->
+        <div class="content">
+          <h3>功能与核心特性介绍</h3>
+          <p>
+            <strong>文本多行去重与多维排序器</strong>是一款专为办公文案整理、数据清洗、SEO 词表过滤、名单汇总及开发者日志分析打造的专业级文本处理工具。支持大文本毫秒级离线处理，确保数据绝对私密安全。
+          </p>
+          <ul>
+            <li><strong>多模式去重与筛选</strong>：支持去除多余重复行仅保留第一条；支持反向提取所有发生冲突的“重复行”，便于核对异常与排查冲突。</li>
+            <li><strong>多维排序引擎</strong>：
+              <ul>
+                <li><strong>拼音/字母升序与降序</strong>：基于国际化 `Intl.Collator` 算法，支持中文字符精准按汉语拼音（A-Z / Z-A）排序，英文与符号自然融合。</li>
+                <li><strong>文本长度升降序</strong>：按每行字符长度快速归类短语与长句，适合 SEO 关键词分层或词条筛选。</li>
+                <li><strong>自然数值排序</strong>：智能识别行内数字大小（如 <code>file2.txt</code> 排在 <code>file10.txt</code> 之前），避免标准字符序导致的错位。</li>
+                <li><strong>反转行序与随机乱序</strong>：一键倒序或全随机打乱，满足抽样与乱序需求。</li>
+              </ul>
+            </li>
+            <li><strong>智能清洗与前后缀修饰</strong>：支持自动消除空行、清理行首行尾冗余空白符、大小写敏感比对切换，并支持批量生成编号前缀或包裹引号。</li>
+            <li><strong>前后对比与节省统计</strong>：实时测算处理前后行数与字符数的变化，直观展示削减量与节省比率。</li>
+          </ul>
+
+          <h3>常见应用场景</h3>
+          <ol>
+            <li><strong>名单与通讯录整理</strong>：合并多个来源的客户名单、邮箱列表、手机号，快速一键剔除重复项并按姓名拼音排序。</li>
+            <li><strong>SEO 关键词清洗</strong>：过滤大量爬取或导出的长尾关键词，按词长排列或去除冗余词。</li>
+            <li><strong>服务器访问日志分析</strong>：从 Access Log 中提取 IP 地址或请求路径，过滤重复 IP 并统计唯一访问源。</li>
+            <li><strong>代码与配置项去重</strong>：整理 CSS 规则、环境变量列表、依赖包名单，规范格式。</li>
+          </ol>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+  const { createApp, ref, reactive, computed, watch, onMounted } = Vue;
+
+  createApp({
+    setup() {
+      const inputText = ref('');
+      const outputText = ref('');
+
+      const options = reactive({
+        dedupMode: 'dedup',             // 'dedup', 'duplicates_only', 'none'
+        duplicateExtractType: 'unique', // 'unique', 'all'
+        sortOrder: 'original',          // 'original', 'pinyin_asc', 'pinyin_desc', 'length_asc', 'length_desc', 'numeric_asc', 'numeric_desc', 'reverse', 'shuffle'
+        removeEmpty: true,
+        trimLines: true,
+        caseSensitive: false,
+        ignoreInnerSpaces: false,
+        addLineNumbers: false,
+        lineNumberFormat: 'dot',        // 'dot', 'bracket', 'zeropad'
+        enablePrefixSuffix: false,
+        linePrefix: '',
+        lineSuffix: '',
+        caseTransform: 'none'           // 'none', 'upper', 'lower', 'capitalize'
+      });
+
+      const originalStats = reactive({
+        lines: 0,
+        nonEmptyLines: 0,
+        chars: 0,
+        duplicateCount: 0
+      });
+
+      const resultStats = reactive({
+        lines: 0,
+        chars: 0
+      });
+
+      let debounceTimer = null;
+      const debouncedProcess = () => {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          processText();
+        }, 150);
+      };
+
+      // 核心处理函数
+      const processText = () => {
+        const raw = inputText.value || '';
+        
+        // 统计输入信息
+        const rawLines = raw.split(/\r?\n/);
+        originalStats.chars = raw.length;
+        originalStats.lines = raw === '' ? 0 : rawLines.length;
+        originalStats.nonEmptyLines = raw === '' ? 0 : rawLines.filter(l => l.trim().length > 0).length;
+
+        if (raw === '') {
+          outputText.value = '';
+          resultStats.lines = 0;
+          resultStats.chars = 0;
+          originalStats.duplicateCount = 0;
+          return;
+        }
+
+        // 1. 预处理各行（Trim / 清洗）
+        let workingLines = rawLines.map(line => {
+          return options.trimLines ? line.trim() : line;
+        });
+
+        // 2. 过滤空白行
+        if (options.removeEmpty) {
+          workingLines = workingLines.filter(line => line.length > 0);
+        }
+
+        // 3. 构建规范化比较 Key 生成器
+        const getCompareKey = (line) => {
+          let k = line;
+          if (!options.caseSensitive) {
+            k = k.toLowerCase();
+          }
+          if (options.ignoreInnerSpaces) {
+            k = k.replace(/\s+/g, '');
+          }
+          return k;
+        };
+
+        // 统计重复行频次
+        const frequencyMap = new Map();
+        for (const line of workingLines) {
+          const key = getCompareKey(line);
+          frequencyMap.set(key, (frequencyMap.get(key) || 0) + 1);
+        }
+
+        let duplicateCount = 0;
+        for (const count of frequencyMap.values()) {
+          if (count > 1) {
+            duplicateCount += (count - 1);
+          }
+        }
+        originalStats.duplicateCount = duplicateCount;
+
+        // 4. 去重与提取策略
+        let processed = [];
+        if (options.dedupMode === 'dedup') {
+          const seen = new Set();
+          for (const line of workingLines) {
+            const key = getCompareKey(line);
+            if (!seen.has(key)) {
+              seen.add(key);
+              processed.push(line);
+            }
+          }
+        } else if (options.dedupMode === 'duplicates_only') {
+          if (options.duplicateExtractType === 'unique') {
+            const seen = new Set();
+            for (const line of workingLines) {
+              const key = getCompareKey(line);
+              if ((frequencyMap.get(key) || 0) > 1 && !seen.has(key)) {
+                seen.add(key);
+                processed.push(line);
+              }
+            }
+          } else {
+            // 保留所有副本
+            for (const line of workingLines) {
+              const key = getCompareKey(line);
+              if ((frequencyMap.get(key) || 0) > 1) {
+                processed.push(line);
+              }
+            }
+          }
+        } else {
+          // none
+          processed = [...workingLines];
+        }
+
+        // 5. 多维排序
+        if (options.sortOrder === 'pinyin_asc') {
+          const collator = new Intl.Collator('zh-CN', { numeric: true, sensitivity: 'base' });
+          processed.sort((a, b) => collator.compare(a, b));
+        } else if (options.sortOrder === 'pinyin_desc') {
+          const collator = new Intl.Collator('zh-CN', { numeric: true, sensitivity: 'base' });
+          processed.sort((a, b) => collator.compare(b, a));
+        } else if (options.sortOrder === 'length_asc') {
+          processed.sort((a, b) => a.length - b.length || a.localeCompare(b));
+        } else if (options.sortOrder === 'length_desc') {
+          processed.sort((a, b) => b.length - a.length || a.localeCompare(b));
+        } else if (options.sortOrder === 'numeric_asc') {
+          processed.sort((a, b) => {
+            const numA = parseFloat(a.replace(/[^0-9.-]/g, '')) || 0;
+            const numB = parseFloat(b.replace(/[^0-9.-]/g, '')) || 0;
+            return numA - numB;
+          });
+        } else if (options.sortOrder === 'numeric_desc') {
+          processed.sort((a, b) => {
+            const numA = parseFloat(a.replace(/[^0-9.-]/g, '')) || 0;
+            const numB = parseFloat(b.replace(/[^0-9.-]/g, '')) || 0;
+            return numB - numA;
+          });
+        } else if (options.sortOrder === 'reverse') {
+          processed.reverse();
+        } else if (options.sortOrder === 'shuffle') {
+          for (let i = processed.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [processed[i], processed[j]] = [processed[j], processed[i]];
+          }
+        }
+
+        // 6. 大小写转换修饰
+        if (options.caseTransform === 'upper') {
+          processed = processed.map(l => l.toUpperCase());
+        } else if (options.caseTransform === 'lower') {
+          processed = processed.map(l => l.toLowerCase());
+        } else if (options.caseTransform === 'capitalize') {
+          processed = processed.map(l => l.replace(/\b\w/g, c => c.toUpperCase()));
+        }
+
+        // 7. 自定义前后缀
+        if (options.enablePrefixSuffix) {
+          const prefix = options.linePrefix || '';
+          const suffix = options.lineSuffix || '';
+          processed = processed.map(l => `${prefix}${l}${suffix}`);
+        }
+
+        // 8. 添加行号
+        if (options.addLineNumbers && processed.length > 0) {
+          const totalDigits = String(processed.length).length;
+          processed = processed.map((line, idx) => {
+            const n = idx + 1;
+            if (options.lineNumberFormat === 'bracket') {
+              return `[${n}] ${line}`;
+            } else if (options.lineNumberFormat === 'zeropad') {
+              const pad = String(n).padStart(totalDigits, '0');
+              return `${pad}. ${line}`;
+            } else {
+              return `${n}. ${line}`;
+            }
+          });
+        }
+
+        outputText.value = processed.join('\n');
+        resultStats.lines = processed.length;
+        resultStats.chars = outputText.value.length;
+      };
+
+      const reducedLines = computed(() => {
+        const diff = originalStats.lines - resultStats.lines;
+        return diff > 0 ? diff : 0;
+      });
+
+      const savingsRatio = computed(() => {
+        if (originalStats.lines === 0) return '0.0';
+        const ratio = ((originalStats.lines - resultStats.lines) / originalStats.lines) * 100;
+        return ratio > 0 ? ratio.toFixed(1) : '0.0';
+      });
+
+      const handleClear = () => {
+        inputText.value = '';
+        outputText.value = '';
+        processText();
+      };
+
+      const handleCopy = () => {
+        if (!outputText.value) {
+          ElementPlus.ElMessage.warning('输出内容为空，无需复制');
+          return;
+        }
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(outputText.value).then(() => {
+            ElementPlus.ElMessage.success('已复制到剪贴板');
+          }).catch(() => fallbackCopy());
+        } else {
+          fallbackCopy();
+        }
+      };
+
+      const fallbackCopy = () => {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = outputText.value;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          ElementPlus.ElMessage.success('已复制到剪贴板');
+        } catch (e) {
+          ElementPlus.ElMessage.error('复制失败，请手动选取复制');
+        }
+      };
+
+      const handleDownload = () => {
+        if (!outputText.value) {
+          ElementPlus.ElMessage.warning('输出内容为空');
+          return;
+        }
+        const blob = new Blob([outputText.value], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `dedup_sort_${new Date().toISOString().slice(0, 10)}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        ElementPlus.ElMessage.success('文本文件已开始下载');
+      };
+
+      const swapInputOutput = () => {
+        if (!outputText.value) return;
+        inputText.value = outputText.value;
+        processText();
+        ElementPlus.ElMessage.info('已将处理结果载入为输入源');
+      };
+
+      const pasteFromClipboard = async () => {
+        try {
+          if (navigator.clipboard && navigator.clipboard.readText) {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+              inputText.value = text;
+              processText();
+              ElementPlus.ElMessage.success('已从剪贴板粘贴文本');
+              return;
+            }
+          }
+          ElementPlus.ElMessage.info('请在输入框内使用 Ctrl+V 粘贴内容');
+        } catch (e) {
+          ElementPlus.ElMessage.info('浏览器安全限制，请直接使用快捷键 Ctrl+V 粘贴');
+        }
+      };
+
+      const loadSample = (type) => {
+        if (type === 'contacts') {
+          inputText.value = [
+            'alice.wang@example.com',
+            'bob.smith@company.org',
+            'charlie.li@domain.cn',
+            'alice.wang@example.com   ',
+            'david.zhang@tech.com',
+            'BOB.SMITH@COMPANY.ORG',
+            '',
+            'eva.chen@example.com',
+            'charlie.li@domain.cn',
+            '   frank.zhao@domain.cn',
+            'grace.liu@cloud.io',
+            'alice.wang@example.com'
+          ].join('\n');
+          options.sortOrder = 'pinyin_asc';
+          options.dedupMode = 'dedup';
+        } else if (type === 'names') {
+          inputText.value = [
+            '张伟',
+            '王芳',
+            '李强',
+            '张伟',
+            '刘洋',
+            '陈静',
+            '王芳',
+            '杨光',
+            '赵敏',
+            '黄磊',
+            '周杰',
+            '吴宣',
+            '孙悟空',
+            '白骨精',
+            '李强'
+          ].join('\n');
+          options.sortOrder = 'pinyin_asc';
+          options.dedupMode = 'dedup';
+        } else if (type === 'ips') {
+          inputText.value = [
+            '192.168.1.100',
+            '10.0.0.1',
+            '192.168.1.1',
+            '172.16.0.5',
+            '10.0.0.1',
+            '192.168.1.100',
+            '127.0.0.1',
+            '10.0.0.254',
+            '172.16.0.5',
+            '8.8.8.8'
+          ].join('\n');
+          options.sortOrder = 'numeric_asc';
+          options.dedupMode = 'dedup';
+        } else if (type === 'lengths') {
+          inputText.value = [
+            '人工智能正在改变各行各业',
+            '你好',
+            '在线工具集为您提供超过150款离线实用工具',
+            '高效办公',
+            '极简设计与深色终端风格',
+            '快',
+            '数据完全在本地计算，保护隐私安全',
+            '去重与多维排序'
+          ].join('\n');
+          options.sortOrder = 'length_asc';
+          options.dedupMode = 'none';
+        }
+        processText();
+        ElementPlus.ElMessage.success('已载入示例数据');
+      };
+
+      onMounted(() => {
+        // 初始载入示例
+        loadSample('contacts');
+      });
+
+      return {
+        inputText,
+        outputText,
+        options,
+        originalStats,
+        resultStats,
+        reducedLines,
+        savingsRatio,
+        processText,
+        debouncedProcess,
+        handleClear,
+        handleCopy,
+        handleDownload,
+        swapInputOutput,
+        pasteFromClipboard,
+        loadSample
+      };
+    }
+  }).use(ElementPlus).mount('.main-body');
+</script>
+</body>
+</html>

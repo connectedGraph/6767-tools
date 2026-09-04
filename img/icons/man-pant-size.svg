@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="mps-bg" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="mps-pants" x1="12" y1="12" x2="36" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#3730a3"/>
+    </linearGradient>
+    <linearGradient id="mps-tape" x1="8" y1="10" x2="40" y2="18" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </linearGradient>
+    <filter id="mps-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#mps-bg)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="#818cf8" stroke-opacity="0.25" stroke-width="1.5"/>
+  <g filter="url(#mps-glow)">
+    <!-- Trousers Contour -->
+    <path d="M14 14 H34 L32.5 40 H26 L24 25 L22 40 H15.5 Z" fill="url(#mps-pants)" stroke="#c7d2fe" stroke-width="1.5" stroke-linejoin="round"/>
+
+    <!-- Belt Loops and Fly -->
+    <line x1="24" y1="14" x2="24" y2="22" stroke="#a5b4fc" stroke-width="1.2"/>
+    <!-- Crease Lines -->
+    <line x1="18.5" y1="20" x2="19" y2="38" stroke="#a5b4fc" stroke-width="0.9" opacity="0.8"/>
+    <line x1="29.5" y1="20" x2="29" y2="38" stroke="#a5b4fc" stroke-width="0.9" opacity="0.8"/>
+
+    <!-- Waist Tape Measure Banner -->
+    <rect x="10" y="11" width="28" height="4.5" rx="1.5" fill="url(#mps-tape)" stroke="#ffffff" stroke-width="1"/>
+    <!-- Tape Ticks -->
+    <line x1="14" y1="11" x2="14" y2="13.5" stroke="#78350f" stroke-width="1"/>
+    <line x1="18" y1="11" x2="18" y2="14.5" stroke="#78350f" stroke-width="1.2"/>
+    <line x1="22" y1="11" x2="22" y2="13.5" stroke="#78350f" stroke-width="1"/>
+    <line x1="26" y1="11" x2="26" y2="14.5" stroke="#78350f" stroke-width="1.2"/>
+    <line x1="30" y1="11" x2="30" y2="13.5" stroke="#78350f" stroke-width="1"/>
+    <line x1="34" y1="11" x2="34" y2="14.5" stroke="#78350f" stroke-width="1.2"/>
+
+    <!-- Size Label Badge "32" -->
+    <circle cx="34" cy="27" r="5" fill="#38bdf8" stroke="#ffffff" stroke-width="1"/>
+    <!-- 32 text markings -->
+    <text x="34" y="29.5" font-size="5" font-family="Arial, sans-serif" font-weight="bold" fill="#0f172a" text-anchor="middle">32</text>
+  </g>
+</svg>

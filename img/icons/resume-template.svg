@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-resumetpl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2e1065"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-resumetpl)" stroke="#7c3aed" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <!-- Background Layered Card (Tilted) -->
+  <rect x="14" y="6" width="24" height="29" rx="3" fill="#1e1b4b" stroke="#a78bfa" stroke-width="1.2" opacity="0.6" transform="rotate(7 26 20.5)"/>
+  <rect x="7" y="8" width="25" height="30" rx="3" fill="#172554" stroke="#60a5fa" stroke-width="1.2" opacity="0.75" transform="rotate(-5 19.5 23)"/>
+
+  <!-- Front Prominent Template Card -->
+  <rect x="10" y="10" width="27" height="31" rx="3.5" fill="#0f172a" stroke="#c084fc" stroke-width="1.6"/>
+
+  <!-- Template layout structure -->
+  <rect x="13" y="13" width="5" height="5" rx="1.5" fill="#a855f7"/>
+  <rect x="20" y="14" width="12" height="2" rx="1" fill="#f8fafc"/>
+  <rect x="20" y="17" width="8" height="1.5" rx="0.75" fill="#94a3b8"/>
+  <path d="M13 21 L33 21" stroke="#334155" stroke-width="1"/>
+
+  <!-- Content 2 Columns -->
+  <rect x="13" y="24" width="7" height="1.8" rx="0.9" fill="#c084fc"/>
+  <rect x="13" y="27.5" width="6" height="1.8" rx="0.9" fill="#818cf8"/>
+  <rect x="13" y="31" width="7" height="1.8" rx="0.9" fill="#38bdf8"/>
+  <rect x="13" y="34.5" width="5" height="1.8" rx="0.9" fill="#94a3b8"/>
+
+  <rect x="22" y="24" width="12" height="1.8" rx="0.9" fill="#e2e8f0"/>
+  <rect x="22" y="27.5" width="9" height="1.8" rx="0.9" fill="#94a3b8"/>
+  <rect x="22" y="31" width="11" height="1.8" rx="0.9" fill="#64748b"/>
+
+  <!-- Template Grid Selector Badge -->
+  <rect x="30" y="30" width="9" height="9" rx="2" fill="#7c3aed" stroke="#ffffff" stroke-width="1.2"/>
+  <rect x="32" y="32" width="2" height="2" rx="0.5" fill="#ffffff"/>
+  <rect x="35" y="32" width="2" height="2" rx="0.5" fill="#ffffff"/>
+  <rect x="32" y="35" width="2" height="2" rx="0.5" fill="#ffffff"/>
+  <rect x="35" y="35" width="2" height="2" rx="0.5" fill="#ffffff"/>
+</svg>

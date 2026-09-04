@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-emoji" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#78350f"/>
+      <stop offset="100%" stop-color="#c2410c"/>
+    </linearGradient>
+    <linearGradient id="face-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="60%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-emoji)" stroke="#f59e0b" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <!-- Emoji Face -->
+  <circle cx="24" cy="24" r="14.5" fill="url(#face-grad)" stroke="#b45309" stroke-width="1.2"/>
+
+  <!-- Expressive Eyes -->
+  <ellipse cx="19" cy="19" rx="2" ry="2.6" fill="#451a03"/>
+  <circle cx="18.2" cy="18" r="0.9" fill="#ffffff"/>
+  <ellipse cx="29" cy="19" rx="2" ry="2.6" fill="#451a03"/>
+  <circle cx="28.2" cy="18" r="0.9" fill="#ffffff"/>
+
+  <!-- Cheerful Smile -->
+  <path d="M17.5 24 C17.5 29.5 30.5 29.5 30.5 24 Z" fill="#7f1d1d"/>
+  <path d="M18 24.5 C20.5 25.5 27.5 25.5 30 24.5 L30 24 L18 24 Z" fill="#ffffff"/>
+  <path d="M21 27.5 C22.5 29.2 25.5 29.2 27 27.5 C25.5 26.8 22.5 26.8 21 27.5 Z" fill="#f43f5e"/>
+
+  <!-- Rosy Cheeks -->
+  <ellipse cx="15" cy="23.5" rx="2.2" ry="1.4" fill="#f87171" opacity="0.65"/>
+  <ellipse cx="33" cy="23.5" rx="2.2" ry="1.4" fill="#f87171" opacity="0.65"/>
+
+  <!-- Sparkles -->
+  <path d="M37 8 L38 11 L41 12 L38 13 L37 16 L36 13 L33 12 L36 11 Z" fill="#fef08a"/>
+  <path d="M9 34 L9.8 36 L12 36.8 L9.8 37.6 L9 39.8 L8.2 37.6 L6 36.8 L8.2 36 Z" fill="#fde047"/>
+</svg>

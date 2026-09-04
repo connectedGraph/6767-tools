@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-resumemk" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-resumemk)" stroke="#3b82f6" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <!-- Resume Main Card -->
+  <rect x="8" y="7" width="32" height="34" rx="4" fill="#0f172a" stroke="#60a5fa" stroke-width="1.5"/>
+
+  <!-- Header: Avatar + Title -->
+  <circle cx="16" cy="15" r="4.5" fill="#1e293b" stroke="#38bdf8" stroke-width="1.2"/>
+  <circle cx="16" cy="13.8" r="1.8" fill="#38bdf8"/>
+  <path d="M12.8 18 C13.3 16.5 14.5 16 16 16 C17.5 16 18.7 16.5 19.2 18" fill="#38bdf8"/>
+  
+  <rect x="23" y="12" width="13" height="2.5" rx="1.2" fill="#ffffff"/>
+  <rect x="23" y="16" width="9" height="1.8" rx="0.9" fill="#94a3b8"/>
+
+  <!-- Divider -->
+  <path d="M12 22 L36 22" stroke="#334155" stroke-width="1"/>
+
+  <!-- Left Column (Skills) -->
+  <rect x="12" y="25" width="8" height="2" rx="1" fill="#38bdf8"/>
+  <rect x="12" y="28.5" width="7" height="2" rx="1" fill="#818cf8"/>
+  <rect x="12" y="32" width="9" height="2" rx="1" fill="#34d399"/>
+  <rect x="12" y="35.5" width="6" height="2" rx="1" fill="#94a3b8"/>
+
+  <!-- Right Column (Experience) -->
+  <rect x="23" y="25" width="13" height="2" rx="1" fill="#f1f5f9"/>
+  <rect x="23" y="28.5" width="10" height="1.8" rx="0.9" fill="#94a3b8"/>
+  <rect x="23" y="32" width="12" height="1.8" rx="0.9" fill="#64748b"/>
+
+  <!-- Maker Pen Badge (Bottom Right) -->
+  <circle cx="35" cy="35" r="5" fill="#2563eb" stroke="#ffffff" stroke-width="1.2"/>
+  <path d="M33 37 L33.5 35 L36.5 32 L38 33.5 L35 36.5 Z" fill="#ffffff"/>
+  <path d="M36 32.5 L37.5 34" stroke="#2563eb" stroke-width="0.8"/>
+</svg>

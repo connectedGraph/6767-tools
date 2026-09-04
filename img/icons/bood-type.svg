@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-blood" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b0712"/>
+      <stop offset="50%" stop-color="#5c0d1f"/>
+      <stop offset="100%" stop-color="#24040a"/>
+    </linearGradient>
+    <linearGradient id="drop-blood" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb7185"/>
+      <stop offset="40%" stop-color="#e11d48"/>
+      <stop offset="100%" stop-color="#9f1239"/>
+    </linearGradient>
+    <filter id="glow-blood" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#e11d48" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-blood)"/>
+  <rect width="46" height="46" x="1" y="1" rx="11" fill="none" stroke="rgba(251, 113, 133, 0.25)" stroke-width="1"/>
+  
+  <!-- Large Blood Droplet -->
+  <path d="M24 7 C24 7 12 20 12 28.5 C12 35.5 17.4 41 24 41 C30.6 41 36 35.5 36 28.5 C36 20 24 7 24 7 Z" fill="url(#drop-blood)" filter="url(#glow-blood)"/>
+  
+  <!-- Specular Light Reflection curve -->
+  <path d="M16 26 C15 30 17 35 21 38" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/>
+  
+  <!-- ABO Heredity Gene / Antigen Structure inside drop -->
+  <!-- DNA Double Helix Rungs -->
+  <path d="M19 22 Q24 25 29 22" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M19 28 Q24 25 29 28" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M19 34 Q24 37 29 34" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+  
+  <!-- ABO Badges (Small nodes) -->
+  <circle cx="19" cy="22" r="1.5" fill="#fde047"/>
+  <circle cx="29" cy="22" r="1.5" fill="#38bdf8"/>
+  <circle cx="19" cy="28" r="1.5" fill="#34d399"/>
+  <circle cx="29" cy="28" r="1.5" fill="#f43f5e"/>
+  <circle cx="24" cy="35.5" r="1.5" fill="#ffffff"/>
+</svg>

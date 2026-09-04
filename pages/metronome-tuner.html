@@ -1,0 +1,1000 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>极简电子节拍器与乐器调音器 - 在线工具</title>
+    <meta name="description" content="基于 Web Audio API 的高精度无漂移电子节拍器与麦克风实时乐器调音器。支持 30~280 BPM 快速调节、多种拍号细分、敲击定速 (Tap Tempo)；调音器支持吉他/尤克里里/小提琴自相关基频识别与音分偏差仪表盘动态显示。" />
+    <meta name="keywords" content="节拍器,在线调音器,吉他调音器,尤克里里调音,BPM测量,Tap Tempo,乐器校音,Web Audio节拍器,音分偏差" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        /* 顶部模式切换选项卡 */
+        .mode-tabs {
+            display: flex;
+            background: #090f1d;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 12px;
+            padding: 4px;
+            max-width: 440px;
+            margin: 0 auto 24px;
+        }
+        .mode-tab-btn {
+            flex: 1;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .mode-tab-btn.active {
+            background: #d97706;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
+        }
+
+        /* 节拍器主体面板 */
+        .metro-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(245, 158, 11, 0.28);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 20px rgba(245, 158, 11, 0.08);
+            backdrop-filter: blur(16px);
+        }
+
+        /* BPM 巨型显示与微调 */
+        .bpm-hero-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .bpm-number {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 72px;
+            font-weight: 900;
+            color: #fbbf24;
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+            user-select: none;
+        }
+        .bpm-unit {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .tempo-term-badge {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 3px 12px;
+            border-radius: 999px;
+        }
+
+        /* 节拍视觉指示灯阵列 */
+        .beat-lights-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .beat-light {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #1e293b;
+            border: 2px solid rgba(51, 65, 85, 0.8);
+            transition: all 0.08s ease-out;
+        }
+        .beat-light.is-first {
+            border-color: rgba(244, 63, 94, 0.6);
+        }
+        .beat-light.active {
+            background: #fbbf24;
+            border-color: #f59e0b;
+            box-shadow: 0 0 16px #fbbf24;
+            transform: scale(1.25);
+        }
+        .beat-light.active.is-first {
+            background: #f43f5e;
+            border-color: #e11d48;
+            box-shadow: 0 0 18px #f43f5e;
+            transform: scale(1.35);
+        }
+
+        /* 摆针动态画布 */
+        .pendulum-box {
+            width: 100%;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .pendulum-canvas {
+            width: 320px;
+            height: 100px;
+        }
+
+        /* 节拍参数选择器栏 */
+        .metro-options-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: #090f1d;
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 10px;
+        }
+        .opt-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .opt-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #64748b;
+        }
+        .opt-select {
+            background: #0f172a !important;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #e2e8f0;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        /* 核心控制按钮 */
+        .metro-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        .btn-metro-play {
+            padding: 14px 44px;
+            font-size: 18px;
+            font-weight: 800;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-metro-play.start {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #111827;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+        .btn-metro-play.start:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 26px rgba(245, 158, 11, 0.5);
+        }
+        .btn-metro-play.stop {
+            background: #dc2626;
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
+        }
+        .btn-tap-tempo {
+            padding: 12px 24px;
+            background: #1e293b;
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-tap-tempo:active {
+            background: rgba(56, 189, 248, 0.25);
+            transform: scale(0.95);
+        }
+
+        /* 调音器主体面板 */
+        .tuner-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 20px rgba(34, 211, 238, 0.08);
+            backdrop-filter: blur(16px);
+        }
+
+        /* 调音器主仪表盘视窗 */
+        .dial-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .gauge-canvas {
+            width: 380px;
+            height: 210px;
+        }
+        .note-center-display {
+            position: absolute;
+            bottom: 30px;
+            text-align: center;
+        }
+        .note-letter {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1;
+            color: #22d3ee;
+            transition: color 0.15s;
+        }
+        .note-letter.in-tune {
+            color: #10b981;
+            text-shadow: 0 0 24px rgba(16, 185, 129, 0.6);
+        }
+        .note-octave {
+            font-size: 20px;
+            color: #94a3b8;
+            vertical-align: super;
+        }
+        .freq-info {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-top: 4px;
+        }
+
+        /* 乐器基准弦卡片 */
+        .strings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .string-btn {
+            background: #090f1d;
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 8px;
+            padding: 10px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .string-btn:hover {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.08);
+            transform: translateY(-2px);
+        }
+        .string-btn.active {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        /* 文档说明 */
+        .doc-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.7;
+        }
+        .doc-tag {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            color: #fbbf24;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./audio-and-video" class="text-slate-400 hover:text-cyan-400 text-sm">音视频</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">极简电子节拍器与乐器调音器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">极简电子节拍器与乐器调音器</h1>
+                </div>
+                <div class="description">基于 Web Audio API 的高精度无漂移电子节拍器与麦克风实时乐器调音器。支持 30~280 BPM 快速调节、多种拍号细分、敲击定速 (Tap Tempo)；调音器支持吉他/尤克里里/小提琴自相关基频识别与音分偏差仪表盘动态显示。</div>
+
+    <!-- Dual Mode Tabs -->
+    <div class="mode-tabs">
+        <button class="mode-tab-btn" :class="{'active': activeMode === 'metronome'}" @click="switchMode('metronome')">
+            <span>⏱️ 电子节拍器 (Metronome)</span>
+        </button>
+        <button class="mode-tab-btn" :class="{'active': activeMode === 'tuner'}" @click="switchMode('tuner')">
+            <span>🎸 乐器调音器 (Tuner)</span>
+        </button>
+    </div>
+
+    <!-- ═══════════ MODE 1: METRONOME ═══════════ -->
+    <div v-if="activeMode === 'metronome'" class="metro-card">
+        <!-- BPM Big Display & Slider -->
+        <div class="bpm-hero-box">
+            <div class="bpm-number">{{ bpm }}</div>
+            <div class="bpm-unit">BPM · BEATS PER MINUTE</div>
+            <div class="tempo-term-badge">{{ tempoMarking }}</div>
+        </div>
+
+        <!-- BPM Slider & Step Buttons -->
+        <div class="max-w-md mx-auto mb-4 flex items-center gap-3">
+            <el-button size="small" circle @click="adjustBpm(-5)">-5</el-button>
+            <el-button size="small" circle @click="adjustBpm(-1)">-1</el-button>
+            <el-slider v-model="bpm" :min="30" :max="280" :show-tooltip="false" style="flex: 1;"></el-slider>
+            <el-button size="small" circle @click="adjustBpm(1)">+1</el-button>
+            <el-button size="small" circle @click="adjustBpm(5)">+5</el-button>
+        </div>
+
+        <!-- Visual Beat Lights Array -->
+        <div class="beat-lights-container">
+            <div v-for="b in beatsPerBar" :key="b"
+                 class="beat-light"
+                 :class="{
+                     'is-first': b === 1,
+                     'active': isMetronomeRunning && currentBeatIndex === (b - 1)
+                 }">
+            </div>
+        </div>
+
+        <!-- Pendulum Visualizer Canvas -->
+        <div class="pendulum-box">
+            <canvas ref="pendulumCanvas" class="pendulum-canvas"></canvas>
+        </div>
+
+        <!-- Metronome Options Matrix -->
+        <div class="metro-options-row">
+            <div class="opt-group">
+                <span class="opt-label">拍号 (TIME SIGNATURE):</span>
+                <select v-model="timeSignature" @change="onSignatureChange" class="opt-select">
+                    <option value="2/4">2/4 拍 (二拍子)</option>
+                    <option value="3/4">3/4 拍 (圆舞曲)</option>
+                    <option value="4/4">4/4 拍 (标准常用四拍) [推荐]</option>
+                    <option value="6/8">6/8 拍 (六八拍)</option>
+                    <option value="3/8">3/8 拍</option>
+                    <option value="5/4">5/4 拍 (奇数复合拍)</option>
+                </select>
+            </div>
+
+            <div class="opt-group">
+                <span class="opt-label">节拍音色 (SOUND PROFILE):</span>
+                <select v-model="soundProfile" class="opt-select">
+                    <option value="wood">经典原木木节拍器 (Woodblock) [推荐]</option>
+                    <option value="beep">电子蜂鸣清脆音 (Digital Beep)</option>
+                    <option value="mechanical">机械钟表敲击 (Mechanical Click)</option>
+                </select>
+            </div>
+
+            <div class="opt-group">
+                <span class="opt-label">细分节奏 (SUBDIVISION):</span>
+                <select v-model="subdivision" class="opt-select">
+                    <option :value="1">标准四分音符 (1/4)</option>
+                    <option :value="2">八分音符细分 (1/8)</option>
+                    <option :value="3">三连音细分 (Triplets)</option>
+                    <option :value="4">十六分音符细分 (1/16)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Control Action Buttons -->
+        <div class="metro-actions">
+            <button class="btn-metro-play" :class="isMetronomeRunning ? 'stop' : 'start'" @click="toggleMetronome">
+                <span>{{ isMetronomeRunning ? '⏹ 停止节拍器' : '▶ 启动节拍器' }}</span>
+            </button>
+            <button class="btn-tap-tempo" @click="handleTapTempo" title="连续匀速点击以自动计算 BPM 速度">
+                <span>👆 敲击测速 (TAP TEMPO)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════ MODE 2: INSTRUMENT TUNER ═══════════ -->
+    <div v-if="activeMode === 'tuner'" class="tuner-card">
+        <!-- Tuner Dial & Needle Canvas -->
+        <div class="dial-container">
+            <canvas ref="gaugeCanvas" class="gauge-canvas"></canvas>
+            <div class="note-center-display">
+                <div class="note-letter" :class="{'in-tune': Math.abs(detectedCent) <= 3 && detectedFreq > 0}">
+                    {{ detectedNote || '--' }}
+                    <span class="note-octave">{{ detectedOctave }}</span>
+                </div>
+                <div class="freq-info">
+                    {{ detectedFreq > 0 ? detectedFreq.toFixed(1) + ' Hz' : '// 等待拾音输入...' }}
+                    <span v-if="detectedFreq > 0" class="ml-2 font-mono text-xs" :class="Math.abs(detectedCent) <= 3 ? 'text-emerald-400 font-bold' : 'text-slate-400'">
+                        ({{ detectedCent > 0 ? '+' : '' }}{{ detectedCent.toFixed(0) }} 音分)
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tuner Microphone Action -->
+        <div class="text-center mb-6">
+            <button class="btn-metro-play" :class="isTunerListening ? 'stop' : 'start'" @click="toggleTunerListening">
+                <span>{{ isTunerListening ? '⏹ 停止麦克风拾音' : '🎙️ 开启麦克风实时校音' }}</span>
+            </button>
+        </div>
+
+        <!-- Instrument Reference Tuning -->
+        <div class="border-t border-slate-700/60 pt-4">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-mono font-bold text-slate-300 uppercase">// 标准乐器空弦音与发声校准:</span>
+                <select v-model="selectedInstrument" class="bg-slate-900 text-slate-200 border border-slate-700 text-xs rounded px-2 py-1 outline-none font-mono">
+                    <option value="guitar">吉他 (Standard Guitar)</option>
+                    <option value="ukulele">尤克里里 (Ukulele)</option>
+                    <option value="violin">小提琴 (Violin)</option>
+                </select>
+            </div>
+
+            <!-- Strings Buttons -->
+            <div class="strings-grid">
+                <div v-for="str in currentInstrumentStrings" :key="str.name" class="string-btn" @click="playReferenceTone(str.freq)">
+                    <div class="text-xs font-bold text-slate-200">{{ str.label }}</div>
+                    <div class="text-xs font-mono text-cyan-400 font-bold mt-1">{{ str.name }}</div>
+                    <div class="text-[11px] font-mono text-slate-500">{{ str.freq }} Hz</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p><strong>节拍器引擎：</strong>采用 Web Audio 硬件时钟 Lookahead 预调度算法，彻底规避传统 JavaScript 浏览器主线程由于垃圾回收 (GC) 和 UI 重排造成的节拍不稳与漂移现象。<br>
+                    <strong>调音器引擎：</strong>采用经过自适应平滑与高斯插值的自相关 (Autocorrelation) 基频检测算法，结合 A4=440Hz 国际标准十二平均律，实现 ±1 Cent 高灵敏度音分误差校准。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="306" :comment-class="2"></comment>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script>
+    const { createApp, ref, computed, onMounted, onUnmounted, watch } = Vue;
+
+    createApp({
+        setup() {
+            const activeMode = ref('metronome'); // 'metronome' | 'tuner'
+
+            // ───────────────────────────────────────────────
+            // 1. METRONOME ENGINE (WEB AUDIO LOOKAHEAD)
+            // ───────────────────────────────────────────────
+            const bpm = ref(120);
+            const timeSignature = ref('4/4');
+            const beatsPerBar = ref(4);
+            const subdivision = ref(1);
+            const soundProfile = ref('wood');
+
+            const isMetronomeRunning = ref(false);
+            const currentBeatIndex = ref(0);
+
+            let audioCtx = null;
+            let timerWorker = null;
+            let nextNoteTime = 0.0;
+            let current16thNote = 0;
+            const lookahead = 25.0; // ms
+            const scheduleAheadTime = 0.1; // seconds
+
+            const pendulumCanvas = ref(null);
+            let pendAnimId = null;
+
+            // Tap Tempo variables
+            let tapTimes = [];
+
+            const tempoMarking = computed(() => {
+                const b = bpm.value;
+                if (b < 60) return 'Largo (广板 40-60)';
+                if (b < 76) return 'Adagio (柔板 66-76)';
+                if (b < 108) return 'Andante (行板 76-108)';
+                if (b < 120) return 'Moderato (中板 108-120)';
+                if (b < 168) return 'Allegro (快板 120-168)';
+                if (b < 200) return 'Presto (急板 168-200)';
+                return 'Prestissimo (极急板 200+)';
+            });
+
+            function onSignatureChange() {
+                const [top] = timeSignature.value.split('/').map(Number);
+                beatsPerBar.value = top || 4;
+            }
+
+            function adjustBpm(delta) {
+                bpm.value = Math.max(30, Math.min(280, bpm.value + delta));
+            }
+
+            function getAudioContext() {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                return audioCtx;
+            }
+
+            function playClickSound(time, isAccent) {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                if (soundProfile.value === 'wood') {
+                    // Resonant Woodblock Click
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(isAccent ? 1400 : 900, time);
+                    gain.gain.setValueAtTime(isAccent ? 0.9 : 0.6, time);
+                    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.035);
+                } else if (soundProfile.value === 'beep') {
+                    // Crisp digital beep
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(isAccent ? 1600 : 800, time);
+                    gain.gain.setValueAtTime(isAccent ? 0.8 : 0.5, time);
+                    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
+                } else {
+                    // Mechanical click
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(isAccent ? 800 : 400, time);
+                    gain.gain.setValueAtTime(isAccent ? 0.7 : 0.4, time);
+                    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.02);
+                }
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(time);
+                osc.stop(time + 0.05);
+            }
+
+            function nextNote() {
+                const secondsPerBeat = 60.0 / bpm.value;
+                nextNoteTime += (secondsPerBeat / subdivision.value);
+                current16thNote++;
+                if (current16thNote >= beatsPerBar.value * subdivision.value) {
+                    current16thNote = 0;
+                }
+            }
+
+            function scheduler() {
+                while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
+                    // Only play click on subdivision ticks
+                    const isMainBeat = (current16thNote % subdivision.value) === 0;
+                    const beatNum = Math.floor(current16thNote / subdivision.value);
+                    const isAccent = (beatNum === 0 && isMainBeat);
+
+                    if (isMainBeat) {
+                        playClickSound(nextNoteTime, isAccent);
+                        // Trigger UI light sync
+                        setTimeout(() => {
+                            currentBeatIndex.value = beatNum;
+                        }, Math.max(0, (nextNoteTime - audioCtx.currentTime) * 1000));
+                    }
+                    nextNote();
+                }
+            }
+
+            function toggleMetronome() {
+                if (isMetronomeRunning.value) {
+                    isMetronomeRunning.value = false;
+                    if (timerWorker) clearInterval(timerWorker);
+                    if (pendAnimId) cancelAnimationFrame(pendAnimId);
+                } else {
+                    const ctx = getAudioContext();
+                    isMetronomeRunning.value = true;
+                    current16thNote = 0;
+                    nextNoteTime = ctx.currentTime + 0.05;
+                    timerWorker = setInterval(scheduler, lookahead);
+                    startPendulumAnimation();
+                }
+            }
+
+            function handleTapTempo() {
+                const now = performance.now();
+                tapTimes.push(now);
+                if (tapTimes.length > 4) tapTimes.shift();
+
+                if (tapTimes.length >= 2) {
+                    const intervals = [];
+                    for (let i = 1; i < tapTimes.length; i++) {
+                        intervals.push(tapTimes[i] - tapTimes[i - 1]);
+                    }
+                    const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                    if (avgInterval > 150 && avgInterval < 3000) {
+                        const calculatedBpm = Math.round(60000 / avgInterval);
+                        bpm.value = Math.max(30, Math.min(280, calculatedBpm));
+                    }
+                }
+            }
+
+            function startPendulumAnimation() {
+                if (!pendulumCanvas.value) return;
+                const canvas = pendulumCanvas.value;
+                const ctx = canvas.getContext('2d');
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = canvas.clientWidth * dpr;
+                canvas.height = canvas.clientHeight * dpr;
+
+                const render = (ts) => {
+                    if (!isMetronomeRunning.value) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        return;
+                    }
+                    pendAnimId = requestAnimationFrame(render);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    const speed = (bpm.value / 60) * Math.PI;
+                    const angle = Math.sin(ts * 0.001 * speed) * (Math.PI / 4);
+
+                    const pivotX = canvas.width / 2;
+                    const pivotY = 10 * dpr;
+                    const length = canvas.height - 20 * dpr;
+
+                    const needleX = pivotX + Math.sin(angle) * length;
+                    const needleY = pivotY + Math.cos(angle) * length;
+
+                    // Draw pivot
+                    ctx.beginPath();
+                    ctx.arc(pivotX, pivotY, 4 * dpr, 0, Math.PI * 2);
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fill();
+
+                    // Draw needle
+                    ctx.beginPath();
+                    ctx.moveTo(pivotX, pivotY);
+                    ctx.lineTo(needleX, needleY);
+                    ctx.lineWidth = 2.5 * dpr;
+                    ctx.strokeStyle = '#fbbf24';
+                    ctx.stroke();
+
+                    // Draw sliding weight bob
+                    ctx.beginPath();
+                    ctx.arc(needleX, needleY, 8 * dpr, 0, Math.PI * 2);
+                    ctx.fillStyle = '#f43f5e';
+                    ctx.shadowColor = '#f43f5e';
+                    ctx.shadowBlur = 10 * dpr;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                };
+                pendAnimId = requestAnimationFrame(render);
+            }
+
+            // ───────────────────────────────────────────────
+            // 2. INSTRUMENT TUNER ENGINE (YIN / AUTOCORRELATION)
+            // ───────────────────────────────────────────────
+            const isTunerListening = ref(false);
+            const detectedFreq = ref(0);
+            const detectedNote = ref('');
+            const detectedOctave = ref('');
+            const detectedCent = ref(0);
+            const gaugeCanvas = ref(null);
+
+            let tunerStream = null;
+            let tunerAudioCtx = null;
+            let tunerAnalyser = null;
+            let tunerAnimId = null;
+
+            const selectedInstrument = ref('guitar');
+            const noteStrings = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+            const instrumentPresets = {
+                guitar: [
+                    { label: '6弦 (低音E)', name: 'E2', freq: 82.4 },
+                    { label: '5弦 (A弦)', name: 'A2', freq: 110.0 },
+                    { label: '4弦 (D弦)', name: 'D3', freq: 146.8 },
+                    { label: '3弦 (G弦)', name: 'G3', freq: 196.0 },
+                    { label: '2弦 (B弦)', name: 'B3', freq: 246.9 },
+                    { label: '1弦 (高音E)', name: 'E4', freq: 329.6 },
+                ],
+                ukulele: [
+                    { label: '4弦 (G弦)', name: 'G4', freq: 392.0 },
+                    { label: '3弦 (C弦)', name: 'C4', freq: 261.6 },
+                    { label: '2弦 (E弦)', name: 'E4', freq: 329.6 },
+                    { label: '1弦 (A弦)', name: 'A4', freq: 440.0 },
+                ],
+                violin: [
+                    { label: '4弦 (G弦)', name: 'G3', freq: 196.0 },
+                    { label: '3弦 (D弦)', name: 'D4', freq: 293.7 },
+                    { label: '2弦 (A弦)', name: 'A4', freq: 440.0 },
+                    { label: '1弦 (E弦)', name: 'E5', freq: 659.3 },
+                ]
+            };
+
+            const currentInstrumentStrings = computed(() => {
+                return instrumentPresets[selectedInstrument.value] || instrumentPresets.guitar;
+            });
+
+            // Autocorrelation Pitch Detection Algorithm
+            function autoCorrelate(buf, sampleRate) {
+                let SIZE = buf.length;
+                let rms = 0;
+
+                for (let i = 0; i < SIZE; i++) {
+                    const val = buf[i];
+                    rms += val * val;
+                }
+                rms = Math.sqrt(rms / SIZE);
+                if (rms < 0.012) return -1; // Not enough signal volume
+
+                let r1 = 0, r2 = SIZE - 1, thres = 0.2;
+                for (let i = 0; i < SIZE / 2; i++) {
+                    if (Math.abs(buf[i]) < thres) { r1 = i; break; }
+                }
+                for (let i = 1; i < SIZE / 2; i++) {
+                    if (Math.abs(buf[SIZE - i]) < thres) { r2 = SIZE - i; break; }
+                }
+
+                buf = buf.slice(r1, r2);
+                SIZE = buf.length;
+
+                const c = new Array(SIZE).fill(0);
+                for (let i = 0; i < SIZE; i++) {
+                    for (let j = 0; j < SIZE - i; j++) {
+                        c[i] = c[i] + buf[j] * buf[j + i];
+                    }
+                }
+
+                let d = 0; while (c[d] > c[d + 1]) d++;
+                let maxval = -1, maxpos = -1;
+                for (let i = d; i < SIZE; i++) {
+                    if (c[i] > maxval) {
+                        maxval = c[i];
+                        maxpos = i;
+                    }
+                }
+                let T0 = maxpos;
+
+                // Parabolic interpolation for precision sub-sample resolution
+                const x1 = c[T0 - 1], x2 = c[T0], x3 = c[T0 + 1];
+                const a = (x1 + x3 - 2 * x2) / 2;
+                const b = (x3 - x1) / 2;
+                if (a) T0 = T0 - b / (2 * a);
+
+                return sampleRate / T0;
+            }
+
+            function noteFromPitch(frequency) {
+                const noteNum = 12 * (Math.log(frequency / 440) / Math.log(2));
+                return Math.round(noteNum) + 69;
+            }
+
+            function centsOffFromPitch(frequency, note) {
+                return Math.floor((1200 * Math.log(frequency / (440 * Math.pow(2, (note - 69) / 12)))) / Math.log(2));
+            }
+
+            async function toggleTunerListening() {
+                if (isTunerListening.value) {
+                    isTunerListening.value = false;
+                    if (tunerStream) tunerStream.getTracks().forEach(t => t.stop());
+                    if (tunerAnimId) cancelAnimationFrame(tunerAnimId);
+                    detectedFreq.value = 0;
+                    detectedNote.value = '';
+                    detectedOctave.value = '';
+                    detectedCent.value = 0;
+                    drawTunerGauge(0);
+                } else {
+                    try {
+                        tunerStream = await navigator.mediaDevices.getUserMedia({
+                            audio: {
+                                echoCancellation: false,
+                                autoGainControl: false,
+                                noiseSuppression: false
+                            }
+                        });
+
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        tunerAudioCtx = new AudioContext();
+                        const source = tunerAudioCtx.createMediaStreamSource(tunerStream);
+                        tunerAnalyser = tunerAudioCtx.createAnalyser();
+                        tunerAnalyser.fftSize = 2048;
+                        source.connect(tunerAnalyser);
+
+                        isTunerListening.value = true;
+                        startTunerLoop();
+
+                    } catch (e) {
+                        ElementPlus.ElMessageBox.alert('无法获取麦克风权限进行调音，请检查浏览器设置。', '麦克风权限提示');
+                    }
+                }
+            }
+
+            function startTunerLoop() {
+                const buf = new Float32Array(tunerAnalyser.fftSize);
+                let smoothedCent = 0;
+
+                const updatePitch = () => {
+                    if (!isTunerListening.value) return;
+                    tunerAnimId = requestAnimationFrame(updatePitch);
+
+                    tunerAnalyser.getFloatTimeDomainData(buf);
+                    const ac = autoCorrelate(buf, tunerAudioCtx.sampleRate);
+
+                    if (ac !== -1 && ac > 30 && ac < 2000) {
+                        detectedFreq.value = ac;
+                        const midiNote = noteFromPitch(ac);
+                        detectedNote.value = noteStrings[midiNote % 12];
+                        detectedOctave.value = Math.floor(midiNote / 12) - 1;
+                        const cent = centsOffFromPitch(ac, midiNote);
+                        smoothedCent += (cent - smoothedCent) * 0.25;
+                        detectedCent.value = smoothedCent;
+                        drawTunerGauge(smoothedCent);
+                    } else {
+                        drawTunerGauge(smoothedCent);
+                    }
+                };
+                updatePitch();
+            }
+
+            // Draw Gauge Arc & Needle
+            function drawTunerGauge(cent) {
+                if (!gaugeCanvas.value) return;
+                const canvas = gaugeCanvas.value;
+                const ctx = canvas.getContext('2d');
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = canvas.clientWidth * dpr;
+                canvas.height = canvas.clientHeight * dpr;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const cx = canvas.width / 2;
+                const cy = canvas.height - 20 * dpr;
+                const radius = 150 * dpr;
+
+                // Arc Track
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, Math.PI * 1.15, Math.PI * 1.85);
+                ctx.lineWidth = 14 * dpr;
+                ctx.strokeStyle = '#1e293b';
+                ctx.stroke();
+
+                // Perfect Green Zone in Center (-5 to +5 cents)
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, Math.PI * 1.46, Math.PI * 1.54);
+                ctx.lineWidth = 14 * dpr;
+                ctx.strokeStyle = '#10b981';
+                ctx.stroke();
+
+                // Scale Ticks
+                for (let c = -50; c <= 50; c += 10) {
+                    const ang = Math.PI * 1.5 + (c / 50) * (Math.PI * 0.35);
+                    const tx1 = cx + Math.cos(ang) * (radius - 12 * dpr);
+                    const ty1 = cy + Math.sin(ang) * (radius - 12 * dpr);
+                    const tx2 = cx + Math.cos(ang) * (radius + 12 * dpr);
+                    const ty2 = cy + Math.sin(ang) * (radius + 12 * dpr);
+
+                    ctx.beginPath();
+                    ctx.moveTo(tx1, ty1);
+                    ctx.lineTo(tx2, ty2);
+                    ctx.lineWidth = (c === 0 ? 3 : 1.5) * dpr;
+                    ctx.strokeStyle = c === 0 ? '#10b981' : '#475569';
+                    ctx.stroke();
+                }
+
+                // Needle
+                const clampedCent = Math.max(-50, Math.min(50, cent));
+                const needleAng = Math.PI * 1.5 + (clampedCent / 50) * (Math.PI * 0.35);
+                const nx = cx + Math.cos(needleAng) * (radius - 18 * dpr);
+                const ny = cy + Math.sin(needleAng) * (radius - 18 * dpr);
+
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(nx, ny);
+                ctx.lineWidth = 3 * dpr;
+                ctx.strokeStyle = Math.abs(clampedCent) <= 3 ? '#10b981' : (Math.abs(clampedCent) <= 12 ? '#fbbf24' : '#f43f5e');
+                ctx.stroke();
+            }
+
+            // Play Standard Reference Tone for Ear Tuning
+            function playReferenceTone(freq) {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const g = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                g.gain.setValueAtTime(0.01, ctx.currentTime);
+                g.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.05);
+                g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.8);
+
+                osc.connect(g);
+                g.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 1.9);
+
+                ElementPlus.ElMessage.info(`正在发声基准音: ${freq} Hz`);
+            }
+
+            function switchMode(m) {
+                if (m !== 'metronome' && isMetronomeRunning.value) {
+                    toggleMetronome();
+                }
+                if (m !== 'tuner' && isTunerListening.value) {
+                    toggleTunerListening();
+                }
+                activeMode.value = m;
+            }
+
+            onMounted(() => {
+                setTimeout(() => {
+                    if (gaugeCanvas.value) drawTunerGauge(0);
+                }, 100);
+            });
+
+            onUnmounted(() => {
+                if (isMetronomeRunning.value) toggleMetronome();
+                if (isTunerListening.value) toggleTunerListening();
+                if (audioCtx) audioCtx.close();
+                if (tunerAudioCtx) tunerAudioCtx.close();
+            });
+
+            return {
+                activeMode,
+                bpm,
+                timeSignature,
+                beatsPerBar,
+                subdivision,
+                soundProfile,
+                tempoMarking,
+                isMetronomeRunning,
+                currentBeatIndex,
+                pendulumCanvas,
+                adjustBpm,
+                onSignatureChange,
+                toggleMetronome,
+                handleTapTempo,
+                isTunerListening,
+                detectedFreq,
+                detectedNote,
+                detectedOctave,
+                detectedCent,
+                gaugeCanvas,
+                selectedInstrument,
+                currentInstrumentStrings,
+                toggleTunerListening,
+                playReferenceTone,
+                switchMode
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-replace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#065f46"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-replace)" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <!-- Search Magnifying Glass (Left) -->
+  <circle cx="18.5" cy="18.5" r="8.5" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <circle cx="18.5" cy="18.5" r="6.5" fill="#0284c7" opacity="0.25"/>
+  <path d="M25 25 L33 33" stroke="#38bdf8" stroke-width="2.8" stroke-linecap="round"/>
+
+  <!-- Letter 'A' inside lens -->
+  <path d="M15.5 22.5 L18.5 14 L21.5 22.5 M16.5 20 L20.5 20" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Replacement Letter 'B' Box (Right) -->
+  <rect x="29" y="9" width="13" height="15" rx="2.5" fill="#1e1b4b" stroke="#34d399" stroke-width="1.5"/>
+  <path d="M33 13 L36.5 13 C37.5 13 38.5 13.8 38.5 14.8 C38.5 15.8 37.5 16.5 36.5 16.5 L33 16.5 L37 16.5 C38 16.5 39 17.4 39 18.5 C39 19.8 38 21 37 21 L33 21 Z" fill="none" stroke="#34d399" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- Curved Swap Arrows -->
+  <path d="M25.5 11.5 C27.5 9.5 29 9.5 30 10.5" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M28.5 9.5 L30.5 11 L28.5 12.5" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <path d="M30 26 C28 28 26.5 28 25 27" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M26.5 28.5 L24.5 27 L26.5 25.5" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

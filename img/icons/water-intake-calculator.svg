@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-water" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#082f49"/>
+      <stop offset="50%" stop-color="#0369a1"/>
+      <stop offset="100%" stop-color="#0c4a6e"/>
+    </linearGradient>
+    <linearGradient id="water-wave" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="drop-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <filter id="glow-water" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#0284c7" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-water)"/>
+  <rect width="46" height="46" x="1" y="1" rx="11" fill="none" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1"/>
+  
+  <!-- Glass body -->
+  <path d="M16 13 L18.5 35 C18.8 38 20.8 39.5 24 39.5 C27.2 39.5 29.2 38 29.5 35 L32 13 Z" fill="rgba(14, 165, 233, 0.12)" stroke="#7dd3fc" stroke-width="1.8" stroke-linejoin="round"/>
+  
+  <!-- Water Fill with wave surface -->
+  <path d="M17.4 22 C19.5 20.8 21.5 23.2 24 22 C26.5 20.8 28.5 23.2 30.6 22 L29.3 35 C29.1 37.2 27.5 38.5 24 38.5 C20.5 38.5 18.9 37.2 18.7 35 Z" fill="url(#water-wave)" opacity="0.85"/>
+  
+  <!-- Hourly measurement markers -->
+  <line x1="14.5" y1="18" x2="18" y2="18" stroke="#bae6fd" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="15.2" y1="24" x2="18.5" y2="24" stroke="#bae6fd" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="16" y1="30" x2="19" y2="30" stroke="#bae6fd" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Floating water droplet at top right -->
+  <path d="M32 7.5 C32 7.5 36 12 36 14.5 A4 4 0 0 1 28 14.5 C28 12 32 7.5 32 7.5 Z" fill="url(#drop-grad)" filter="url(#glow-water)"/>
+  <circle cx="30.5" cy="13" r="0.8" fill="#ffffff"/>
+  
+  <!-- Mini splash droplet -->
+  <circle cx="21" cy="9.5" r="1.5" fill="#7dd3fc"/>
+</svg>

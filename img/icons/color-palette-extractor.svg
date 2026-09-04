@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-cpe" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+    <filter id="shadow-cpe" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-cpe)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <g filter="url(#shadow-cpe)">
+    <!-- Palette Board -->
+    <path d="M23 10C14.7 10 9 16.2 9 24.5c0 4.8 3.5 7.5 7.5 7.5 1.5 0 2.5-0.8 3.5-1.8 0.8-0.8 1.5-1.2 2.5-1.2 2.2 0 4 1.8 4 4 0 1-0.4 1.8-1 2.5 2 0.8 4.2 0.5 6-0.5 6.5-3.5 7.5-11.5 7.5-16.5C39 15.5 31.8 10 23 10z" fill="rgba(15,23,42,0.72)" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/>
+    <!-- 5 Gradient Color Dots -->
+    <circle cx="16" cy="18" r="2.8" fill="#EF4444" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="23" cy="15" r="2.8" fill="#F59E0B" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="30" cy="18" r="2.8" fill="#10B981" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="33.5" cy="25" r="2.8" fill="#06B6D4" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="26" cy="32" r="2.8" fill="#A855F7" stroke="#FFFFFF" stroke-width="1"/>
+    <!-- Pipette Dropper extracting color -->
+    <g transform="translate(4, -1)">
+      <path d="M34 8.5l1.5 1.5a1.8 1.8 0 0 1 0 2.5l-3.2 3.2-2.5-2.5 3.2-3.2a1.8 1.8 0 0 1 2.5 0z" fill="#FFFFFF"/>
+      <path d="M29.8 13.2l2.5 2.5-6 6-2 0.5 0.5-2 5-7z" fill="#CBD5E1"/>
+      <circle cx="23" cy="23.5" r="1.5" fill="#06B6D4"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-wc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#451a03"/>
+      <stop offset="50%" stop-color="#78350f"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="gold-metal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-wc)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(251,191,36,0.25)" stroke-width="1"/>
+  
+  <!-- Center Column Fulcrum -->
+  <path d="M24 13 v23 M19 36 h10" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round"/>
+  <polygon points="24,13 21.5,17 26.5,17" fill="#fbbf24"/>
+  <circle cx="24" cy="13" r="2" fill="url(#gold-metal)"/>
+  
+  <!-- Balance Beam -->
+  <path d="M11 16 L24 13 L37 16" stroke="url(#gold-metal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Left Pan (kg) -->
+  <path d="M11 16 L7.5 27 M11 16 L14.5 27" stroke="#fbbf24" stroke-width="1" opacity="0.85"/>
+  <path d="M6 27 Q11 30.5 16 27" fill="none" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- kg weight block -->
+  <rect x="8.5" y="21.5" width="5" height="5.5" rx="1" fill="#d97706" stroke="#fef3c7" stroke-width="0.8"/>
+  <text x="11" y="25.8" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="3" font-weight="900" fill="#ffffff">kg</text>
+  
+  <!-- Right Pan (lb) -->
+  <path d="M37 16 L33.5 27 M37 16 L40.5 27" stroke="#fbbf24" stroke-width="1" opacity="0.85"/>
+  <path d="M32 27 Q37 30.5 42 27" fill="none" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- lb weight block -->
+  <rect x="34.5" y="21.5" width="5" height="5.5" rx="1" fill="#d97706" stroke="#fef3c7" stroke-width="0.8"/>
+  <text x="37" y="25.8" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="3" font-weight="900" fill="#ffffff">lb</text>
+  
+  <!-- Center balance pointer -->
+  <path d="M24 13 v5.5" stroke="#ef4444" stroke-width="1.2" stroke-linecap="round"/>
+</svg>

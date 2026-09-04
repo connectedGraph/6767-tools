@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-upsidedown" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2e1065"/>
+      <stop offset="100%" stop-color="#701a75"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-upsidedown)" stroke="#c084fc" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <!-- Upright Letter 'A' (Top) -->
+  <path d="M18.5 21 L23.5 10.5 L28.5 21 M20 17.8 L27 17.8" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Inverted Letter '∀' (Bottom) -->
+  <path d="M18.5 27 L23.5 37.5 L28.5 27 M20 30.2 L27 30.2" fill="none" stroke="#f472b6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 180° Vertical Flip Arrows -->
+  <path d="M34 17 C37.5 20.5 37.5 27.5 34 31" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M31.5 30 L34 32.5 L36.5 30" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M13 31 C9.5 27.5 9.5 20.5 13 17" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M15.5 18 L13 15.5 L10.5 18" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

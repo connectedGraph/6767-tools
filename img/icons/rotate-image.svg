@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-rot" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D97706"/>
+      <stop offset="50%" stop-color="#EA580C"/>
+      <stop offset="100%" stop-color="#E11D48"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-rot)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Dynamic Tilted Photo Frame (15 deg) -->
+  <g transform="rotate(15 24 24)">
+    <rect x="13" y="11" width="22" height="26" rx="3.5" fill="rgba(15,23,42,0.75)" stroke="#FFFFFF" stroke-width="1.8"/>
+    <circle cx="18" cy="17" r="2" fill="#FDE047"/>
+    <path d="M14.5 29l4.5-5 3.5 3.5 3-3.5 5 5h-16z" fill="#38BDF8"/>
+  </g>
+  <!-- 90 Degree Rotation Circular Arrow -->
+  <path d="M24 6a17 17 0 1 1-15 9" fill="none" stroke="#FDE047" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M8 8l1.5 7-7-1" fill="none" stroke="#FDE047" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Degree Badge -->
+  <rect x="17" y="38" width="14" height="6.5" rx="2.5" fill="rgba(15,23,42,0.85)" stroke="#FFFFFF" stroke-width="1"/>
+  <text x="24" y="42.8" fill="#FFFFFF" font-family="system-ui, sans-serif" font-weight="900" font-size="4.2" text-anchor="middle">90°</text>
+</svg>

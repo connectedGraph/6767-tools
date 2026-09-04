@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>中英文排版规范美化器 - 在线工具</title>
+    <meta name="description" content="严格遵循《中文文案排版指北》与现代中文排版规范。自动在中英文之间、中文与数字之间添加标准半角空格，智能规范全角/半角标点符号，统一弯引号与直角引号，保护 Markdown 与代码块。纯前端离线计算，让技术文档与文案更加优雅规范。" />
+    <meta name="keywords" content="中英文排版,中文文案排版指北,盘古之白,中英文加空格,标点符号规范,全角半角转换,文案排版美化,Markdown排版,引号统一,直角引号,在线排版工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="dns-prefetch" href="" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+        .autospace-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 860px) {
+            .autospace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .pane-card {
+            background: rgba(10, 16, 30, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+        .pane-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+        .pane-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #22d3ee;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        }
+        .pane-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .editor-textarea {
+            width: 100%;
+            height: 380px;
+            min-height: 280px;
+            padding: 12px 14px;
+            background: rgba(2, 6, 23, 0.7);
+            border: none;
+            outline: none;
+            color: #e2e8f0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+            font-size: 0.92rem;
+            line-height: 1.75;
+            resize: vertical;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .editor-textarea:focus {
+            background: rgba(2, 6, 23, 0.9);
+        }
+        .diff-preview-box {
+            width: 100%;
+            height: 380px;
+            min-height: 280px;
+            padding: 12px 14px;
+            background: rgba(2, 6, 23, 0.8);
+            color: #cbd5e1;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-size: 0.92rem;
+            line-height: 1.75;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .diff-added-space {
+            background: rgba(34, 211, 238, 0.25);
+            border-bottom: 2px solid #22d3ee;
+            color: #67e8f9;
+            padding: 0 1px;
+            border-radius: 2px;
+            display: inline-block;
+            line-height: 1;
+        }
+        .diff-fixed-punct {
+            background: rgba(52, 211, 153, 0.25);
+            border-bottom: 2px solid #34d399;
+            color: #6ee7b7;
+            font-weight: 600;
+            padding: 0 1px;
+            border-radius: 2px;
+        }
+        .pane-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: rgba(15, 23, 42, 0.85);
+            border-top: 1px solid rgba(51, 65, 85, 0.6);
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        }
+        .config-card {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+        .config-section-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .config-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 14px;
+            background: #22d3ee;
+            border-radius: 2px;
+        }
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 8px;
+            padding: 10px 14px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            color: #f1f5f9;
+        }
+        .stat-value.highlight-cyan {
+            color: #22d3ee;
+        }
+        .stat-value.highlight-green {
+            color: #34d399;
+        }
+        .stat-value.highlight-orange {
+            color: #fb923c;
+        }
+        .tag-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            background: rgba(34, 211, 238, 0.12);
+            color: #22d3ee;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px 20px;
+        }
+        .rule-card {
+            background: rgba(2, 6, 23, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+        }
+        .rule-card h4 {
+            color: #38bdf8;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .rule-card p {
+            color: #94a3b8;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .rule-card .example {
+            margin-top: 6px;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+        .rule-card .bad {
+            color: #f87171;
+            text-decoration: line-through;
+            margin-right: 8px;
+        }
+        .rule-card .good {
+            color: #34d399;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="中英文排版规范美化器 - 在线工具" />
+    <meta property="og:description" content="严格遵循《中文文案排版指北》与现代中文排版规范。自动在中英文之间、中文与数字之间添加标准半角空格，智能规范全角/半角标点符号，统一弯引号与直角引号，保护 Markdown 与代码块。" />
+    <meta property="og:url" content="https://tool.6767.chat/text-autospace" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="中英文排版规范美化器 - 在线工具" />
+    <meta name="twitter:description" content="严格遵循《中文文案排版指北》与现代中文排版规范。自动在中英文之间、中文与数字之间添加标准半角空格，智能规范标点与引号。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/text-autospace" />
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">中英文排版规范美化器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+  <div class="tool-body">
+    <div class="card-model">
+      <div class="card-body">
+        <div class="tool-head">
+          <div>
+            <h1 class="title">中英文排版规范美化器</h1>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="tag-badge">排版指北标准规范</span>
+            <span class="tag-badge">纯前端离线运行</span>
+            <span class="tag-badge">拓展时间: 2026-08-31</span>
+          </div>
+        </div>
+        <div class="description">
+          严格遵循《中文文案排版指北》标准规范。自动在中英文之间、中文与数字之间插入标准半角空格（盘古之白），智能转换中文语境下的全角/半角标点符号，统一规范弯引号与直角引号，消除冗余空格，同时完整保护 Markdown 语法、行内代码与代码块。纯前端离线计算，让文案、博客与技术文档赏心悦目。
+        </div>
+
+        <div id="app" v-cloak>
+          <!-- 统计指示板 -->
+          <div class="stats-bar">
+            <div class="stat-item">
+              <div class="stat-label">自动补全空格数</div>
+              <div class="stat-value highlight-cyan">{{ stats.spacesAdded }}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">规范标点符号数</div>
+              <div class="stat-value highlight-green">{{ stats.punctuationsFixed }}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">清除冗余空格数</div>
+              <div class="stat-value highlight-orange">{{ stats.redundantSpacesRemoved }}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">统一引号对数</div>
+              <div class="stat-value">{{ stats.quotesUnified }}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">保护代码/链接段</div>
+              <div class="stat-value">{{ stats.protectedBlocks }}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">字符总数变化</div>
+              <div class="stat-value">{{ stats.origChars }} → {{ stats.newChars }}</div>
+            </div>
+          </div>
+
+          <!-- 双栏编辑器 -->
+          <div class="autospace-grid">
+            <!-- 左栏：输入区域 -->
+            <div class="pane-card">
+              <div class="pane-header">
+                <div class="pane-title">
+                  <span>INPUT // 原始文案文本</span>
+                </div>
+                <div class="pane-actions">
+                  <el-button size="small" type="primary" plain @click="pasteFromClipboard">粘贴</el-button>
+                  <el-button size="small" @click="handleClear">清空</el-button>
+                </div>
+              </div>
+              <textarea
+                v-model="inputText"
+                class="editor-textarea"
+                placeholder="在此处粘贴需要规范化排版的美化文案、文章段落、技术文档或 Markdown 内容..."
+                spellcheck="false"
+                @input="debouncedBeautify"
+              ></textarea>
+              <div class="pane-footer">
+                <span>字符数: {{ stats.origChars }} | 行数: {{ origLineCount }}</span>
+                <span>UTF-8</span>
+              </div>
+            </div>
+
+            <!-- 右栏：输出区域 -->
+            <div class="pane-card">
+              <div class="pane-header">
+                <div class="pane-title">
+                  <span>OUTPUT // 规范美化排版结果</span>
+                </div>
+                <div class="pane-actions">
+                  <!-- 视图模式切换 -->
+                  <el-radio-group v-model="viewMode" size="small">
+                    <el-radio-button label="text">纯文本</el-radio-button>
+                    <el-radio-button label="diff">高亮对比</el-radio-button>
+                  </el-radio-group>
+                  <el-button size="small" type="primary" @click="handleCopy">复制结果</el-button>
+                  <el-button size="small" plain @click="handleDownload">下载文件</el-button>
+                  <el-button size="small" plain @click="swapInputOutput" title="将当前输出内容填入输入框继续编辑">结果转输入</el-button>
+                </div>
+              </div>
+
+              <!-- 纯文本模式 -->
+              <textarea
+                v-if="viewMode === 'text'"
+                v-model="outputText"
+                class="editor-textarea"
+                placeholder="排版美化结果将在此实时呈现..."
+                readonly
+                spellcheck="false"
+              ></textarea>
+
+              <!-- 高亮差异对比模式 -->
+              <div
+                v-else
+                class="diff-preview-box"
+                v-html="diffHtml"
+              ></div>
+
+              <div class="pane-footer">
+                <span>字符数: {{ stats.newChars }} | 行数: {{ newLineCount }}</span>
+                <span class="text-cyan-400" v-if="stats.spacesAdded > 0 || stats.punctuationsFixed > 0">
+                  已完成排版规范修正
+                </span>
+                <span v-else>文案排版已符合规范</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 排版规则配置面板 -->
+          <div class="config-card">
+            <!-- 核心空格规则 -->
+            <div class="mb-4">
+              <div class="config-section-title">间距与空格规范 (Spacing Rules)</div>
+              <div class="option-grid">
+                <el-checkbox v-model="rules.cjkLatinSpace" @change="beautifyText">
+                  中英文之间添加半角空格 (如: <code>Vue 框架</code>)
+                </el-checkbox>
+                <el-checkbox v-model="rules.cjkNumberSpace" @change="beautifyText">
+                  中文与数字之间添加半角空格 (如: <code>第 2 个版本</code>)
+                </el-checkbox>
+                <el-checkbox v-model="rules.numberUnitSpace" @change="beautifyText">
+                  数字与常用单位之间添加空格 (如: <code>100 MB</code>, <code>2.5 GHz</code>)
+                </el-checkbox>
+                <el-checkbox v-model="rules.cleanPunctSpace" @change="beautifyText">
+                  清理中文全角标点周围多余空格 (如: <code>你好 ， 世界</code> → <code>你好，世界</code>)
+                </el-checkbox>
+                <el-checkbox v-model="rules.mergeConsecutiveSpaces" @change="beautifyText">
+                  合并连续多余半角空格为单空格
+                </el-checkbox>
+                <el-checkbox v-model="rules.trimLineEnds" @change="beautifyText">
+                  清理每行行首与行尾多余空白符
+                </el-checkbox>
+              </div>
+            </div>
+
+            <!-- 标点与符号规范 -->
+            <div class="mb-4">
+              <div class="config-section-title">标点符号与特殊字符规范 (Punctuation & Symbols)</div>
+              <div class="option-grid">
+                <el-checkbox v-model="rules.fixChinesePunctuation" @change="beautifyText">
+                  中文语境标点转全角 (<code>, . ! ? : ; ( )</code> → <code>， 。 ！ ？ ： ； （ ）</code>)
+                </el-checkbox>
+                <el-checkbox v-model="rules.fullwidthAlphanumericToHalf" @change="beautifyText">
+                  全角英文/数字转半角 (<code>１２３ ＡＢＣ</code> → <code>123 ABC</code>)
+                </el-checkbox>
+                <el-checkbox v-model="rules.standardizeEllipsis" @change="beautifyText">
+                  规范化省略号 (<code>...</code> / <code>。。。</code> → <code>……</code>)
+                </el-checkbox>
+                <el-checkbox v-model="rules.standardizeDash" @change="beautifyText">
+                  规范化破折号 (<code>--</code> / <code>——</code> → <code>——</code>)
+                </el-checkbox>
+              </div>
+            </div>
+
+            <!-- 引号格式规范 -->
+            <div class="mb-4">
+              <div class="config-section-title">引号样式统一 (Quotes Style Normalization)</div>
+              <div class="flex flex-wrap items-center gap-4">
+                <span class="text-xs text-slate-400">选择引号统一格式:</span>
+                <el-radio-group v-model="rules.quoteStyle" @change="beautifyText">
+                  <el-radio-button label="curve">规范弯引号 “ ” 与 ‘ ’</el-radio-button>
+                  <el-radio-button label="corner">规范直角引号 「 」 与 『 』</el-radio-button>
+                  <el-radio-button label="none">保持原样不修改</el-radio-button>
+                </el-radio-group>
+              </div>
+            </div>
+
+            <!-- 代码与语法保护 -->
+            <div>
+              <div class="config-section-title">语法保护机制 (Syntax & Code Protection)</div>
+              <div class="option-grid">
+                <el-checkbox v-model="rules.protectCodeBlocks" @change="beautifyText">
+                  保护 Markdown 多行代码块 (<code>```...```</code>)
+                </el-checkbox>
+                <el-checkbox v-model="rules.protectInlineCode" @change="beautifyText">
+                  保护 Markdown 行内代码 (<code>`code`</code>)
+                </el-checkbox>
+                <el-checkbox v-model="rules.protectUrlsAndLinks" @change="beautifyText">
+                  保护 URL 链接与 Markdown 链接 (<code>http://...</code> / <code>[title](url)</code>)
+                </el-checkbox>
+                <el-checkbox v-model="rules.protectHtmlTags" @change="beautifyText">
+                  保护 HTML 标签及属性 (<code>&lt;div class="..."&gt;</code>)
+                </el-checkbox>
+              </div>
+            </div>
+
+            <!-- 底部操作与示例 -->
+            <div class="flex flex-wrap justify-between items-center border-t border-slate-700/60 pt-3 mt-4 gap-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs text-slate-400">载入示例数据:</span>
+                <el-button size="small" plain @click="loadSample('mixed_tech')">技术文案 (中英混排+代码)</el-button>
+                <el-button size="small" plain @click="loadSample('messy_blog')">博客段落 (乱标点+无空格)</el-button>
+                <el-button size="small" plain @click="loadSample('quotes_demo')">引号与单位混排示例</el-button>
+              </div>
+              <div class="flex items-center gap-2">
+                <el-button type="primary" @click="beautifyText">立即排版美化</el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 《中文文案排版指北》精要规范速查 -->
+        <div class="content">
+          <h3>《中文文案排版指北》核心规范速查</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-3">
+            <div class="rule-card">
+              <h4>1. 中英文之间需要空格 (盘古之白)</h4>
+              <p>在中文和英文字符、拉丁字母之间，应保留一个半角空格，提升可读性。</p>
+              <div class="example">
+                <span class="bad">在精通Vue和React之后</span>
+                <span class="good">→ 在精通 Vue 和 React 之后</span>
+              </div>
+            </div>
+            <div class="rule-card">
+              <h4>2. 中文与数字之间需要空格</h4>
+              <p>在中文与阿拉伯数字之间，应保留一个半角空格。</p>
+              <div class="example">
+                <span class="bad">共进行了3次测试，耗时5分钟</span>
+                <span class="good">→ 共进行了 3 次测试，耗时 5 分钟</span>
+              </div>
+            </div>
+            <div class="rule-card">
+              <h4>3. 数字与常用物理/存储单位之间空格</h4>
+              <p>数字与单位之间应保留一个半角空格，但度数（°）、百分比（%）除外。</p>
+              <div class="example">
+                <span class="bad">硬盘剩余100GB，CPU主频3.2GHz</span>
+                <span class="good">→ 硬盘剩余 100 GB，CPU 主频 3.2 GHz</span>
+              </div>
+            </div>
+            <div class="rule-card">
+              <h4>4. 中文语境下使用全角标点</h4>
+              <p>中文句子内部或句末使用全角标点（如逗号、句号、感叹号、问号、括号）。</p>
+              <div class="example">
+                <span class="bad">你好,请问你的名字是?</span>
+                <span class="good">→ 你好，请问你的名字是？</span>
+              </div>
+            </div>
+            <div class="rule-card">
+              <h4>5. 全角标点与其他字符间不留空格</h4>
+              <p>全角标点自身已包含视觉间隙，因此不应再人为插入空格。</p>
+              <div class="example">
+                <span class="bad">你好 ， 欢迎使用 在线工具集 。</span>
+                <span class="good">→ 你好，欢迎使用 在线工具集。</span>
+              </div>
+            </div>
+            <div class="rule-card">
+              <h4>6. 规范使用引号格式</h4>
+              <p>简体中文文案推荐使用弯双引号 <code>“ ”</code> 与 <code>‘ ’</code>，或出版规范直角引号 <code>「 」</code> 与 <code>『 』</code>。</p>
+              <div class="example">
+                <span class="bad">他说:"这是一个'绝妙'的主意"</span>
+                <span class="good">→ 他说：“这是一个‘绝妙’的主意”</span>
+              </div>
+            </div>
+          </div>
+
+          <h3>工具安全性与隐私说明</h3>
+          <p>
+            本工具所有排版格式化、标点替换、语法保护算法均<strong>100% 在您的浏览器端本地离线计算完成</strong>，不会向任何远端服务器发送或存储您的文案与代码数据，完全保护文档与商业机密安全。
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+  const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+  createApp({
+    setup() {
+      const inputText = ref('');
+      const outputText = ref('');
+      const diffHtml = ref('');
+      const viewMode = ref('text'); // 'text' or 'diff'
+
+      const rules = reactive({
+        cjkLatinSpace: true,
+        cjkNumberSpace: true,
+        numberUnitSpace: true,
+        cleanPunctSpace: true,
+        mergeConsecutiveSpaces: true,
+        trimLineEnds: true,
+        fixChinesePunctuation: true,
+        fullwidthAlphanumericToHalf: true,
+        standardizeEllipsis: true,
+        standardizeDash: true,
+        quoteStyle: 'curve', // 'curve', 'corner', 'none'
+        protectCodeBlocks: true,
+        protectInlineCode: true,
+        protectUrlsAndLinks: true,
+        protectHtmlTags: true
+      });
+
+      const stats = reactive({
+        spacesAdded: 0,
+        punctuationsFixed: 0,
+        redundantSpacesRemoved: 0,
+        quotesUnified: 0,
+        protectedBlocks: 0,
+        origChars: 0,
+        newChars: 0
+      });
+
+      let debounceTimer = null;
+      const debouncedBeautify = () => {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          beautifyText();
+        }, 150);
+      };
+
+      const origLineCount = computed(() => {
+        if (!inputText.value) return 0;
+        return inputText.value.split(/\r?\n/).length;
+      });
+
+      const newLineCount = computed(() => {
+        if (!outputText.value) return 0;
+        return outputText.value.split(/\r?\n/).length;
+      });
+
+      // 核心排版引擎
+      const beautifyText = () => {
+        const raw = inputText.value || '';
+        stats.origChars = raw.length;
+
+        if (!raw) {
+          outputText.value = '';
+          diffHtml.value = '';
+          stats.newChars = 0;
+          stats.spacesAdded = 0;
+          stats.punctuationsFixed = 0;
+          stats.redundantSpacesRemoved = 0;
+          stats.quotesUnified = 0;
+          stats.protectedBlocks = 0;
+          return;
+        }
+
+        let current = raw;
+        const placeholders = [];
+        const createPlaceholder = (content) => {
+          const id = `__AUTOSPACE_HOLD_${placeholders.length}__`;
+          placeholders.push({ id, content });
+          return id;
+        };
+
+        // 统计指标计数器
+        let spacesAddedCount = 0;
+        let punctsFixedCount = 0;
+        let redundantSpacesCount = 0;
+        let quotesCount = 0;
+
+        // 1. 语法保护阶段 (Code Blocks, Inline Code, URLs, HTML)
+        if (rules.protectCodeBlocks) {
+          // 保护多行代码块 ```...```
+          current = current.replace(/```[\s\S]*?```/g, (match) => createPlaceholder(match));
+        }
+
+        if (rules.protectInlineCode) {
+          // 保护行内代码 `...`
+          current = current.replace(/`[^`\n]+`/g, (match) => createPlaceholder(match));
+        }
+
+        if (rules.protectUrlsAndLinks) {
+          // 保护 Markdown 链接中的 URL: [title](URL)
+          current = current.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, title, url) => {
+            const safeUrl = createPlaceholder(url);
+            return `[${title}](${safeUrl})`;
+          });
+          // 保护普通独立 URL
+          current = current.replace(/https?:\/\/[a-zA-Z0-9_\-./?:%&=+#@!$,;'*~]+/g, (match) => createPlaceholder(match));
+        }
+
+        if (rules.protectHtmlTags) {
+          // 保护 HTML 标签
+          current = current.replace(/<[a-zA-Z\/][^>]*>/g, (match) => createPlaceholder(match));
+        }
+
+        stats.protectedBlocks = placeholders.length;
+
+        // 2. 全角英文字符与全角数字转半角
+        if (rules.fullwidthAlphanumericToHalf) {
+          current = current.replace(/[\uff01-\uff5e]/g, (ch) => {
+            const code = ch.charCodeAt(0);
+            // 排除中文标点，仅转换英文字母与数字及常用 ASCII 全角字符
+            if ((code >= 0xff10 && code <= 0xff19) || (code >= 0xff21 && code <= 0xff3a) || (code >= 0xff41 && code <= 0xff5a)) {
+              punctsFixedCount++;
+              return String.fromCharCode(code - 0xfee0);
+            }
+            return ch;
+          });
+          // 全角空格 \u3000
+          current = current.replace(/\u3000/g, () => {
+            redundantSpacesCount++;
+            return ' ';
+          });
+        }
+
+        // 3. 标点符号规范化 (中文语境标点转全角)
+        if (rules.fixChinesePunctuation) {
+          // 中文后面的半角逗号 -> 全角逗号
+          current = current.replace(/([\u4e00-\u9fa5\u3040-\u30ff])\s*,\s*/g, (m, c) => {
+            punctsFixedCount++;
+            return `${c}，`;
+          });
+          // 中文后面的半角分号 -> 全角分号
+          current = current.replace(/([\u4e00-\u9fa5\u3040-\u30ff])\s*;\s*/g, (m, c) => {
+            punctsFixedCount++;
+            return `${c}；`;
+          });
+          // 中文后面的半角问号 -> 全角问号
+          current = current.replace(/([\u4e00-\u9fa5\u3040-\u30ff])\s*\?\s*/g, (m, c) => {
+            punctsFixedCount++;
+            return `${c}？`;
+          });
+          // 中文后面的半角感叹号 -> 全角感叹号
+          current = current.replace(/([\u4e00-\u9fa5\u3040-\u30ff])\s*!\s*/g, (m, c) => {
+            punctsFixedCount++;
+            return `${c}！`;
+          });
+          // 中文后面的冒号（若不是 http/https/数字时间） -> 全角冒号
+          current = current.replace(/([\u4e00-\u9fa5\u3040-\u30ff])\s*:\s*/g, (m, c) => {
+            punctsFixedCount++;
+            return `${c}：`;
+          });
+          // 中文后面的半角句号（非数字小数点） -> 全角句号
+          current = current.replace(/([\u4e00-\u9fa5\u3040-\u30ff])\s*\.\s*(?!\d|[a-zA-Z])/g, (m, c) => {
+            punctsFixedCount++;
+            return `${c}。`;
+          });
+          // 中文与半角圆括号 (中文) -> （中文）
+          current = current.replace(/\(([\u4e00-\u9fa5\u3040-\u30ff][^()]*)\)/g, (m, inner) => {
+            punctsFixedCount += 2;
+            return `（${inner}）`;
+          });
+        }
+
+        // 4. 省略号与破折号规范化
+        if (rules.standardizeEllipsis) {
+          current = current.replace(/(\.{3,}|。{3,}|…{1,})/g, () => {
+            punctsFixedCount++;
+            return '……';
+          });
+        }
+        if (rules.standardizeDash) {
+          current = current.replace(/(--{1,}|——{1,})/g, () => {
+            punctsFixedCount++;
+            return '——';
+          });
+        }
+
+        // 5. 引号格式规范化
+        if (rules.quoteStyle === 'curve') {
+          // 双引号配对: "..." -> “...”
+          let isDoubleOpen = true;
+          current = current.replace(/"/g, () => {
+            quotesCount++;
+            const q = isDoubleOpen ? '“' : '”';
+            isDoubleOpen = !isDoubleOpen;
+            return q;
+          });
+          // 单引号配对: '...' -> ‘...’ (中文语境下)
+          let isSingleOpen = true;
+          current = current.replace(/([\u4e00-\u9fa5])'([^'\n]+)'/g, (m, prefix, inner) => {
+            quotesCount += 2;
+            return `${prefix}‘${inner}’`;
+          });
+        } else if (rules.quoteStyle === 'corner') {
+          // 双引号配对: "..." -> 『...』 或 「...」
+          let isDoubleOpen = true;
+          current = current.replace(/"/g, () => {
+            quotesCount++;
+            const q = isDoubleOpen ? '「' : '」';
+            isDoubleOpen = !isDoubleOpen;
+            return q;
+          });
+          current = current.replace(/“/g, '「').replace(/”/g, '」');
+          current = current.replace(/‘/g, '『').replace(/’/g, '』');
+        }
+
+        // 6. 盘古空格算法 (Pangu Auto-spacing)
+        // 6.1 中文与英文/拉丁字符之间加半角空格
+        if (rules.cjkLatinSpace) {
+          // 中文 + 英文
+          current = current.replace(/([\u4e00-\u9fa5\u3040-\u30ff])([a-zA-Z])/g, (m, c1, c2) => {
+            spacesAddedCount++;
+            return `${c1} ${c2}`;
+          });
+          // 英文 + 中文
+          current = current.replace(/([a-zA-Z])([\u4e00-\u9fa5\u3040-\u30ff])/g, (m, c1, c2) => {
+            spacesAddedCount++;
+            return `${c1} ${c2}`;
+          });
+        }
+
+        // 6.2 中文与数字之间加半角空格
+        if (rules.cjkNumberSpace) {
+          // 中文 + 数字 (排除年月日: 如 2026年、8月、31日 中间不加)
+          current = current.replace(/([\u4e00-\u9fa5\u3040-\u30ff])([0-9]+)/g, (m, c1, c2) => {
+            spacesAddedCount++;
+            return `${c1} ${c2}`;
+          });
+          // 数字 + 中文 (排除年月日: 如 2026年 保持紧凑)
+          current = current.replace(/([0-9]+)([\u4e00-\u9fa5\u3040-\u30ff])/g, (m, num, c2) => {
+            if (['年', '月', '日', '号', '点', '分', '秒', '折', '倍', '度', '楼', '层', '级'].includes(c2)) {
+              return `${num}${c2}`;
+            }
+            spacesAddedCount++;
+            return `${num} ${c2}`;
+          });
+        }
+
+        // 6.3 数字与常用单位之间空格 (MB, GB, TB, KB, GHz, MHz, kHz, kg, g, mg, km, m, cm, mm, px, em, rem, pt, ms, s, fps)
+        if (rules.numberUnitSpace) {
+          const unitRegex = /([0-9]+(?:\.[0-9]+)?)\s*(MB|GB|TB|KB|GHz|MHz|kHz|Hz|kg|mg|km|cm|mm|px|rem|em|fps|ms)(?![a-zA-Z])/gi;
+          current = current.replace(unitRegex, (m, num, unit) => {
+            return `${num} ${unit}`;
+          });
+        }
+
+        // 7. 清理全角标点周围多余空格
+        if (rules.cleanPunctSpace) {
+          const fullPuncts = '，。！？：；（）《》【】“”‘’「」『』';
+          // 中文/字母 + 空格 + 全角标点
+          const regexBefore = new RegExp(`\\s+([${fullPuncts}])`, 'g');
+          current = current.replace(regexBefore, (m, p) => {
+            redundantSpacesCount += (m.length - 1);
+            return p;
+          });
+          // 全角标点 + 空格 + 中文
+          const regexAfter = new RegExp(`([${fullPuncts}])\\s+([\u4e00-\u9fa5])`, 'g');
+          current = current.replace(regexAfter, (m, p, c) => {
+            redundantSpacesCount += (m.length - 2);
+            return `${p}${c}`;
+          });
+        }
+
+        // 8. 合并多余连续半角空格
+        if (rules.mergeConsecutiveSpaces) {
+          current = current.replace(/ {2,}/g, (m) => {
+            redundantSpacesCount += (m.length - 1);
+            return ' ';
+          });
+        }
+
+        // 9. 行首行尾空白修剪
+        if (rules.trimLineEnds) {
+          current = current.split('\n').map(line => line.trimEnd()).join('\n');
+        }
+
+        // 10. 还原受保护的代码块、URL 与占位符
+        for (let i = placeholders.length - 1; i >= 0; i--) {
+          const item = placeholders[i];
+          current = current.replace(item.id, item.content);
+        }
+
+        outputText.value = current;
+        stats.newChars = current.length;
+        stats.spacesAdded = spacesAddedCount;
+        stats.punctuationsFixed = punctsFixedCount;
+        stats.redundantSpacesRemoved = redundantSpacesCount;
+        stats.quotesUnified = Math.floor(quotesCount / 2);
+
+        // 生成高亮差异预览 HTML
+        generateDiffPreview(raw, current);
+      };
+
+      // 生成对比高亮视图
+      const generateDiffPreview = (orig, beautified) => {
+        if (!beautified) {
+          diffHtml.value = '<div class="text-slate-500 italic p-4">暂无对比内容</div>';
+          return;
+        }
+        // 对空格、中文全角标点进行微高亮呈现
+        let escaped = beautified
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+
+        // 高亮全角中文标点与引号
+        escaped = escaped.replace(/([，。！？：；（）「」『』“”‘’……——])/g, '<span class="diff-fixed-punct">$1</span>');
+
+        // 高亮中英文间新增的半角空格
+        escaped = escaped.replace(/([\u4e00-\u9fa5]) ([\w\d])/g, '$1<span class="diff-added-space">&nbsp;</span>$2');
+        escaped = escaped.replace(/([\w\d]) ([\u4e00-\u9fa5])/g, '$1<span class="diff-added-space">&nbsp;</span>$2');
+
+        diffHtml.value = escaped;
+      };
+
+      const handleClear = () => {
+        inputText.value = '';
+        outputText.value = '';
+        diffHtml.value = '';
+        beautifyText();
+      };
+
+      const handleCopy = () => {
+        if (!outputText.value) {
+          ElementPlus.ElMessage.warning('排版结果为空，无需复制');
+          return;
+        }
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(outputText.value).then(() => {
+            ElementPlus.ElMessage.success('已复制排版美化结果');
+          }).catch(() => fallbackCopy());
+        } else {
+          fallbackCopy();
+        }
+      };
+
+      const fallbackCopy = () => {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = outputText.value;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          ElementPlus.ElMessage.success('已复制排版美化结果');
+        } catch (e) {
+          ElementPlus.ElMessage.error('复制失败，请手动选取复制');
+        }
+      };
+
+      const handleDownload = () => {
+        if (!outputText.value) {
+          ElementPlus.ElMessage.warning('输出内容为空');
+          return;
+        }
+        const blob = new Blob([outputText.value], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `autospace_typeset_${new Date().toISOString().slice(0, 10)}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        ElementPlus.ElMessage.success('排版文件已开始下载');
+      };
+
+      const swapInputOutput = () => {
+        if (!outputText.value) return;
+        inputText.value = outputText.value;
+        beautifyText();
+        ElementPlus.ElMessage.info('已将美化结果填入输入框');
+      };
+
+      const pasteFromClipboard = async () => {
+        try {
+          if (navigator.clipboard && navigator.clipboard.readText) {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+              inputText.value = text;
+              beautifyText();
+              ElementPlus.ElMessage.success('已从剪贴板粘贴文本');
+              return;
+            }
+          }
+          ElementPlus.ElMessage.info('请在输入框内使用快捷键 Ctrl+V 粘贴');
+        } catch (e) {
+          ElementPlus.ElMessage.info('浏览器权限限制，请直接在输入框内按 Ctrl+V 粘贴');
+        }
+      };
+
+      const loadSample = (type) => {
+        if (type === 'mixed_tech') {
+          inputText.value = [
+            '# Vue3与TypeScript实战指南',
+            '',
+            '在2026年,前端生态发生了翻天覆地的变化.最新发布的Vue3.5版本带来了超过30%的性能提升,内存占用降低了25MB.',
+            '',
+            '正如尤雨溪所说:"Composition API是现代前端开发的未来."',
+            '',
+            '我们可以通过以下npm命令进行快速安装:',
+            '```bash',
+            'npm install vue@latest pinia axios',
+            '```',
+            '',
+            '在代码中引用`ref()`与`reactive()`时 , 请务必注意响应式丢失的问题 !',
+            '更多详情请访问官网: https://vuejs.org/guide/introduction.html 进行查阅.'
+          ].join('\n');
+        } else if (type === 'messy_blog') {
+          inputText.value = [
+            '今天天气真好 ,我和朋友一起去体验了新款的iPhone16Pro .',
+            '这款手机搭载了最新的A18Pro芯片,运行内存为8GB,屏幕刷新率高达120Hz!',
+            '店员热情地对我们说:"这款手机的拍照性能提升了50%,特别适合夜景拍摄."',
+            '我们测试了大约30分钟...体验非常流畅...确实很值得入手!',
+            '最后我们在Apple Store门口合影留念,度过了愉快的一天.'
+          ].join('\n');
+        } else if (type === 'quotes_demo') {
+          inputText.value = [
+            '《中文文案排版指北》指出:"正确的排版能让读者的阅读体验提升10倍以上."',
+            '例如:把"HTML5和CSS3"写成"HTML 5 和 CSS 3"或者规范中英混排.',
+            '对于数字与单位:500MB的带宽比100MB快5倍,CPU主频从2.4GHz提升到了3.6GHz.',
+            '全角字符如：１２３和ＡＢＣ应该自动修正为半角123和ABC.',
+            '希望所有开发者都能遵循这一原则--共同建设优雅的中文互联网环境!'
+          ].join('\n');
+        }
+        beautifyText();
+        ElementPlus.ElMessage.success('已载入示例排版数据');
+      };
+
+      onMounted(() => {
+        loadSample('mixed_tech');
+      });
+
+      return {
+        inputText,
+        outputText,
+        diffHtml,
+        viewMode,
+        rules,
+        stats,
+        origLineCount,
+        newLineCount,
+        beautifyText,
+        debouncedBeautify,
+        handleClear,
+        handleCopy,
+        handleDownload,
+        swapInputOutput,
+        pasteFromClipboard,
+        loadSample
+      };
+    }
+  }).use(ElementPlus).mount('.main-body');
+</script>
+</body>
+</html>

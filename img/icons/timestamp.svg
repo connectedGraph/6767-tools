@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-time" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#082f49"/>
+      <stop offset="100%" stop-color="#021526"/>
+    </linearGradient>
+    <linearGradient id="clock-grad" x1="12" y1="12" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-time)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#38bdf8" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Stopwatch top crown & side button -->
+  <path d="M22 9h4v3h-4z" fill="#94a3b8"/>
+  <path d="M33 13l2-2" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Clock Main Dial -->
+  <circle cx="24" cy="27" r="13.5" stroke="url(#clock-grad)" stroke-width="2.4" fill="#0b192c" fill-opacity="0.6"/>
+
+  <!-- Dial Ticks -->
+  <line x1="24" y1="16" x2="24" y2="18" stroke="#bae6fd" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="35" y1="27" x2="33" y2="27" stroke="#bae6fd" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="24" y1="38" x2="24" y2="36" stroke="#bae6fd" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="13" y1="27" x2="15" y2="27" stroke="#bae6fd" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- Clock Hands -->
+  <circle cx="24" cy="27" r="2" fill="#f43f5e"/>
+  <line x1="24" y1="27" x2="24" y2="20" stroke="#f8fafc" stroke-width="2" stroke-linecap="round"/>
+  <line x1="24" y1="27" x2="30" y2="24" stroke="#f43f5e" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- Digital timestamp digits -->
+  <rect x="18" y="30.5" width="12" height="4" rx="1" fill="#0369a1" fill-opacity="0.7"/>
+  <text x="24" y="33.6" font-family="monospace" font-weight="bold" font-size="3" fill="#7dd3fc" text-anchor="middle">170000</text>
+</svg>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-ascii" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#191338"/>
+      <stop offset="100%" stop-color="#090517"/>
+    </linearGradient>
+    <linearGradient id="a-grad" x1="10" y1="14" x2="22" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="num-grad" x1="26" y1="14" x2="38" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-ascii)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#a78bfa" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Left: Letter 'A' Box -->
+  <rect x="9" y="14" width="13" height="20" rx="3" fill="#2e1065" stroke="url(#a-grad)" stroke-width="1.8"/>
+  <text x="15.5" y="28" font-family="sans-serif" font-weight="900" font-size="12" fill="#e9d5ff" text-anchor="middle">A</text>
+
+  <!-- Central Conversion Arrow -->
+  <path d="M23.5 24h3.5M25 21.5l2.5 2.5-2.5 2.5" stroke="#f472b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Right: Decimal '65' ASCII Code Box -->
+  <rect x="28" y="14" width="13" height="20" rx="3" fill="#064e3b" stroke="url(#num-grad)" stroke-width="1.8"/>
+  <text x="34.5" y="27" font-family="monospace" font-weight="900" font-size="9" fill="#a7f3d0" text-anchor="middle">65</text>
+  
+  <circle cx="31" cy="31" r="0.8" fill="#34d399"/>
+  <circle cx="34.5" cy="31" r="0.8" fill="#34d399"/>
+  <circle cx="38" cy="31" r="0.8" fill="#34d399"/>
+</svg>

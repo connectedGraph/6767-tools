@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>化学元素周期表交互系统 - 在线工具</title>
+    <meta name="description" content="全功能响应式 118 个化学元素周期表交互系统，支持按金属、非金属、稀有气体等分类高亮筛选，温度模拟相态变化，支持拼音与发音读音注音、相对原子质量、电子排布、熔沸点、发现历史与工业用途详细查询。" />
+    <meta name="keywords" content="元素周期表,化学元素周期表,118个化学元素,相对原子质量,电子排布,元素读音拼音,金属分类,在线化学工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .tool-page-body.periodic-container {
+            max-width: 1200px;
+        }
+
+        /* ── 控制栏与筛选 ── */
+        .pt-control-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 20px;
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(12px);
+        }
+        .pt-filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .pt-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            background: rgba(30, 41, 59, 0.5);
+            color: #94a3b8;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .pt-chip:hover {
+            border-color: var(--chip-color, #22d3ee);
+            color: #f1f5f9;
+            transform: translateY(-1px);
+        }
+        .pt-chip.active {
+            background: rgba(34, 211, 238, 0.15);
+            border-color: var(--chip-color, #22d3ee);
+            color: #38bdf8;
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.25);
+        }
+        .pt-chip-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--chip-color, #38bdf8);
+        }
+
+        /* ── 周期表网格包装器 ── */
+        .pt-table-scroll {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 12px;
+        }
+        .pt-table-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+        .pt-table-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 4px;
+        }
+        .pt-table-scroll::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 4px;
+        }
+        .pt-table-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(34, 211, 238, 0.5);
+        }
+
+        .pt-grid {
+            display: grid;
+            grid-template-columns: 28px repeat(18, minmax(58px, 1fr));
+            gap: 4px;
+            min-width: 1140px;
+            user-select: none;
+        }
+
+        /* 族标号与周期标号 */
+        .pt-label-col {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .pt-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* ── 元素卡片 ── */
+        .pt-cell {
+            position: relative;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 6px;
+            padding: 4px 5px;
+            min-height: 66px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .pt-cell:hover {
+            transform: translateY(-3px) scale(1.04);
+            z-index: 10;
+            border-color: var(--elem-color, #38bdf8) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 12px var(--elem-glow, rgba(56, 189, 248, 0.4));
+        }
+        .pt-cell.dimmed {
+            opacity: 0.22;
+            filter: grayscale(0.8);
+        }
+        .pt-cell.highlighted {
+            border-color: var(--elem-color, #38bdf8) !important;
+            background: rgba(30, 41, 59, 0.95);
+            box-shadow: 0 0 10px var(--elem-glow, rgba(56, 189, 248, 0.35));
+        }
+
+        .pt-cell-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.65rem;
+            line-height: 1;
+        }
+        .pt-cell-num {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+        .pt-cell-mass {
+            font-size: 0.6rem;
+            color: #64748b;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 34px;
+        }
+        .pt-cell-symbol {
+            font-size: 1.15rem;
+            font-weight: 800;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            color: #f8fafc;
+            text-align: center;
+            line-height: 1.1;
+            margin: 1px 0;
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.15);
+        }
+        .pt-cell-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.7rem;
+            line-height: 1;
+        }
+        .pt-cell-name {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        .pt-cell-pinyin {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            font-family: system-ui, sans-serif;
+        }
+
+        /* 元素分类颜色定义 */
+        .cat-alkali-metal      { --elem-color: #f87171; --elem-glow: rgba(248, 113, 113, 0.4); border-top: 3px solid #f87171; }
+        .cat-alkaline-earth    { --elem-color: #fb923c; --elem-glow: rgba(251, 146, 60, 0.4);  border-top: 3px solid #fb923c; }
+        .cat-transition-metal  { --elem-color: #facc15; --elem-glow: rgba(250, 204, 21, 0.4);  border-top: 3px solid #facc15; }
+        .cat-lanthanide        { --elem-color: #e879f9; --elem-glow: rgba(232, 121, 249, 0.4); border-top: 3px solid #e879f9; }
+        .cat-actinide          { --elem-color: #c084fc; --elem-glow: rgba(192, 132, 252, 0.4); border-top: 3px solid #c084fc; }
+        .cat-post-transition   { --elem-color: #38bdf8; --elem-glow: rgba(56, 189, 248, 0.4);  border-top: 3px solid #38bdf8; }
+        .cat-metalloid         { --elem-color: #2dd4bf; --elem-glow: rgba(45, 212, 191, 0.4);  border-top: 3px solid #2dd4bf; }
+        .cat-reactive-nonmetal { --elem-color: #4ade80; --elem-glow: rgba(74, 222, 128, 0.4);  border-top: 3px solid #4ade80; }
+        .cat-noble-gas         { --elem-color: #818cf8; --elem-glow: rgba(129, 140, 248, 0.4); border-top: 3px solid #818cf8; }
+
+        /* 镧系/锕系占位格 */
+        .pt-cell-placeholder {
+            border: 1px dashed rgba(51, 65, 85, 0.8);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            color: #94a3b8;
+            background: rgba(30, 41, 59, 0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pt-cell-placeholder:hover {
+            background: rgba(30, 41, 59, 0.7);
+            color: #f1f5f9;
+        }
+
+        /* ── 详情弹窗样式 ── */
+        .pt-dialog .el-dialog {
+            background: #090d16 !important;
+            border: 1px solid rgba(56, 189, 248, 0.3) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(34, 211, 238, 0.15) !important;
+            max-width: 780px;
+        }
+        .pt-dialog .el-dialog__header {
+            padding: 16px 24px 12px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            margin-right: 0;
+        }
+        .pt-dialog .el-dialog__title {
+            color: #f8fafc;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .pt-dialog .el-dialog__body {
+            padding: 20px 24px;
+            color: #cbd5e1;
+        }
+
+        .elem-badge-hero {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.7));
+            border-radius: 14px;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            margin-bottom: 20px;
+        }
+        .elem-badge-box {
+            width: 86px;
+            height: 86px;
+            border-radius: 12px;
+            background: #050a14;
+            border: 2px solid var(--curr-color, #38bdf8);
+            box-shadow: 0 0 16px var(--curr-glow, rgba(56, 189, 248, 0.4));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .elem-badge-box .num {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            font-family: monospace;
+            font-weight: 700;
+        }
+        .elem-badge-box .sym {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #f8fafc;
+            font-family: monospace;
+            line-height: 1;
+        }
+        .elem-badge-box .mass {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-family: monospace;
+        }
+
+        .elem-hero-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .elem-hero-title {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .elem-hero-name {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+        .elem-hero-pinyin {
+            font-size: 1.1rem;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+        .elem-hero-en {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            font-family: ui-monospace, monospace;
+        }
+        .elem-hero-cat {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--curr-color, #38bdf8);
+            color: var(--curr-color, #38bdf8);
+        }
+
+        /* 属性表格网格 */
+        .prop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .prop-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+        .prop-label {
+            font-size: 0.72rem;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+        .prop-val {
+            font-size: 0.88rem;
+            color: #e2e8f0;
+            font-weight: 600;
+            font-family: system-ui, -apple-system, sans-serif;
+            word-break: break-word;
+        }
+        .prop-val.mono {
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            color: #38bdf8;
+        }
+
+        .text-desc-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+        }
+        .text-desc-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .text-desc-content {
+            font-size: 0.82rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        /* 玻尔原子结构示意图 */
+        .bohr-canvas-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        .bohr-svg {
+            max-width: 180px;
+            max-height: 180px;
+        }
+
+        /* 状态指示器与温控条 */
+        .pt-temp-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 8px;
+            padding: 6px 14px;
+        }
+        .pt-temp-val {
+            font-family: monospace;
+            font-weight: 700;
+            color: #38bdf8;
+            min-width: 70px;
+            text-align: right;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .pt-control-bar { flex-direction: column; align-items: stretch; }
+            .elem-badge-hero { flex-direction: column; text-align: center; }
+            .elem-badge-box { margin: 0 auto; }
+            .elem-hero-title { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">化学元素周期表</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body periodic-container">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">化学元素周期表交互系统</h1>
+                </div>
+                <div class="description">
+                    完整收录 118 个化学元素（1号氢 H 至 118号鿫 Og），支持按金属/非金属/稀有气体/镧系/锕系分类多维高亮、实时中文拼音与发音朗读、电子排布式、熔沸点、温度相态模拟、发现历史与工业应用场景全面解析。纯前端本地离线运行。
+                </div>
+
+    <!-- 交互控制与筛选栏 -->
+    <div class="pt-control-bar">
+        <!-- 分类选择 -->
+        <div class="pt-filter-chips">
+            <div 
+                v-for="cat in categories" 
+                :key="cat.key"
+                class="pt-chip"
+                :class="{ active: selectedCategory === cat.key }"
+                :style="{ '--chip-color': cat.color }"
+                @click="setCategory(cat.key)"
+            >
+                <span class="pt-chip-dot"></span>
+                <span>{{ cat.name }}</span>
+            </div>
+        </div>
+
+        <!-- 搜索与温度模拟 -->
+        <div class="flex flex-wrap items-center gap-3">
+            <div class="pt-temp-bar">
+                <span class="text-xs text-slate-400 font-mono">温度模拟:</span>
+                <input 
+                    type="range" 
+                    min="-273" 
+                    max="6000" 
+                    step="50" 
+                    v-model.number="currentTemp" 
+                    class="w-28 accent-cyan-400 cursor-pointer"
+                />
+                <span class="pt-temp-val">{{ currentTemp }} ℃</span>
+                <el-button size="small" text @click="currentTemp = 25" style="padding: 0 4px; font-size: 0.72rem;">室温</el-button>
+            </div>
+
+            <div style="width: 180px;">
+                <el-input 
+                    v-model="searchQuery" 
+                    placeholder="搜元素/符号/序数/拼音" 
+                    clearable 
+                    size="small"
+                ></el-input>
+            </div>
+        </div>
+    </div>
+
+    <!-- 周期表网格主体 -->
+    <div class="pt-table-scroll">
+        <div class="pt-grid">
+            <!-- 族标号 (0 ~ 18) -->
+            <div class="pt-label-col"></div>
+            <div v-for="g in 18" :key="'g-'+g" class="pt-label-col">
+                {{ g }}
+            </div>
+
+            <!-- 主周期表 1 ~ 7 周期 -->
+            <template v-for="p in 7" :key="'p-'+p">
+                <!-- 周期标号 -->
+                <div class="pt-label-row">{{ p }}</div>
+
+                <!-- 18 个族格 -->
+                <template v-for="g in 18" :key="'cell-'+p+'-'+g">
+                    <!-- 镧系占位符 (第6周期，第3族) -->
+                    <div 
+                        v-if="p === 6 && g === 3" 
+                        class="pt-cell-placeholder" 
+                        @click="setCategory('lanthanide')"
+                        title="点击高亮 57-71 镧系金属"
+                    >
+                        <span class="font-bold text-xs" style="color: #e879f9;">57-71</span>
+                        <span style="font-size: 0.65rem;">La-Lu</span>
+                    </div>
+
+                    <!-- 锕系占位符 (第7周期，第3族) -->
+                    <div 
+                        v-else-if="p === 7 && g === 3" 
+                        class="pt-cell-placeholder" 
+                        @click="setCategory('actinide')"
+                        title="点击高亮 89-103 锕系金属"
+                    >
+                        <span class="font-bold text-xs" style="color: #c084fc;">89-103</span>
+                        <span style="font-size: 0.65rem;">Ac-Lr</span>
+                    </div>
+
+                    <!-- 真实元素单元格 -->
+                    <div 
+                        v-else-if="getElementByPosition(p, g)"
+                        :class="[
+                            'pt-cell',
+                            'cat-' + getElementByPosition(p, g).category,
+                            isDimmed(getElementByPosition(p, g)) ? 'dimmed' : '',
+                            isHighlighted(getElementByPosition(p, g)) ? 'highlighted' : ''
+                        ]"
+                        @click="openDetail(getElementByPosition(p, g))"
+                    >
+                        <div class="pt-cell-top">
+                            <span class="pt-cell-num">{{ getElementByPosition(p, g).z }}</span>
+                            <span class="pt-cell-mass">{{ getElementByPosition(p, g).mass }}</span>
+                        </div>
+                        <div class="pt-cell-symbol">
+                            {{ getElementByPosition(p, g).symbol }}
+                        </div>
+                        <div class="pt-cell-bottom">
+                            <span class="pt-cell-name">{{ getElementByPosition(p, g).name }}</span>
+                            <span class="pt-cell-pinyin">{{ getElementByPosition(p, g).pinyin }}</span>
+                        </div>
+                    </div>
+
+                    <!-- 空白占位格 -->
+                    <div v-else class="pt-cell-empty"></div>
+                </template>
+            </template>
+
+            <!-- 分隔空白行 -->
+            <div style="grid-column: 1 / -1; height: 14px;"></div>
+
+            <!-- 镧系独立行 (57 ~ 71) -->
+            <div class="pt-label-row" style="color: #e879f9; font-size: 0.68rem;">镧系</div>
+            <div style="grid-column: span 2;"></div>
+            <div 
+                v-for="elem in lanthanides" 
+                :key="'la-'+elem.z"
+                :class="[
+                    'pt-cell',
+                    'cat-lanthanide',
+                    isDimmed(elem) ? 'dimmed' : '',
+                    isHighlighted(elem) ? 'highlighted' : ''
+                ]"
+                @click="openDetail(elem)"
+            >
+                <div class="pt-cell-top">
+                    <span class="pt-cell-num">{{ elem.z }}</span>
+                    <span class="pt-cell-mass">{{ elem.mass }}</span>
+                </div>
+                <div class="pt-cell-symbol">{{ elem.symbol }}</div>
+                <div class="pt-cell-bottom">
+                    <span class="pt-cell-name">{{ elem.name }}</span>
+                    <span class="pt-cell-pinyin">{{ elem.pinyin }}</span>
+                </div>
+            </div>
+            <div style="grid-column: span 1;"></div>
+
+            <!-- 锕系独立行 (89 ~ 103) -->
+            <div class="pt-label-row" style="color: #c084fc; font-size: 0.68rem;">锕系</div>
+            <div style="grid-column: span 2;"></div>
+            <div 
+                v-for="elem in actinides" 
+                :key="'ac-'+elem.z"
+                :class="[
+                    'pt-cell',
+                    'cat-actinide',
+                    isDimmed(elem) ? 'dimmed' : '',
+                    isHighlighted(elem) ? 'highlighted' : ''
+                ]"
+                @click="openDetail(elem)"
+            >
+                <div class="pt-cell-top">
+                    <span class="pt-cell-num">{{ elem.z }}</span>
+                    <span class="pt-cell-mass">{{ elem.mass }}</span>
+                </div>
+                <div class="pt-cell-symbol">{{ elem.symbol }}</div>
+                <div class="pt-cell-bottom">
+                    <span class="pt-cell-name">{{ elem.name }}</span>
+                    <span class="pt-cell-pinyin">{{ elem.pinyin }}</span>
+                </div>
+            </div>
+            <div style="grid-column: span 1;"></div>
+        </div>
+    </div>
+
+    <!-- 底部图例说明 -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mt-6 text-xs text-slate-400">
+        <div class="p-3 bg-slate-900/60 border border-slate-800 rounded-lg">
+            <span class="font-bold text-slate-300">当前温度相态：</span>
+            <span v-if="selectedTempState" class="text-cyan-400">{{ selectedTempState }}</span>
+            <span v-else class="text-slate-500">滑动滑块查看实时熔沸</span>
+        </div>
+        <div class="p-3 bg-slate-900/60 border border-slate-800 rounded-lg">
+            <span class="font-bold text-slate-300">键盘快捷键：</span>
+            <span class="text-slate-400">弹窗中按 ← / → 切换相邻元素</span>
+        </div>
+        <div class="p-3 bg-slate-900/60 border border-slate-800 rounded-lg">
+            <span class="font-bold text-slate-300">发音功能：</span>
+    </div>
+
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>化学元素周期表是根据原子序数从小到大排序的化学元素列表。本系统收录全部 118 种元素，支持多维分类高亮、温度模拟相态变化（固/液/气态），并提供中文拼音读音、电子排布及工业用途深度解析，支持副屏与窄屏左右横向无级滑动浏览。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="308" :comment-class="2"></comment>
+
+    <!-- 元素详细属性弹窗 -->
+    <el-dialog 
+        v-model="detailVisible" 
+        :title="currentElem ? `元素档案 #${currentElem.z} · ${currentElem.symbol} ${currentElem.name}` : '元素详情'"
+        class="pt-dialog"
+        destroy-on-close
+        align-center
+    >
+        <div v-if="currentElem" :style="{ '--curr-color': getCategoryColor(currentElem.category), '--curr-glow': getCategoryGlow(currentElem.category) }">
+            <!-- 头部大卡片 -->
+            <div class="elem-badge-hero">
+                <div class="elem-badge-box">
+                    <span class="num">{{ currentElem.z }}</span>
+                    <span class="sym">{{ currentElem.symbol }}</span>
+                    <span class="mass">{{ currentElem.mass }}</span>
+                </div>
+                <div class="elem-hero-info">
+                    <div class="elem-hero-title">
+                        <span class="elem-hero-name">{{ currentElem.name }}</span>
+                        <span class="elem-hero-pinyin">{{ currentElem.pinyin }} ({{ currentElem.pinyinTone }})</span>
+                        <button 
+                            class="px-2 py-1 bg-slate-800 hover:bg-cyan-950 text-cyan-400 border border-slate-700 rounded text-xs transition" 
+                            @click="speakPinyin(currentElem)" 
+                            title="播放读音"
+                        >
+                            🔊 朗读
+                        </button>
+                        <span class="elem-hero-en">{{ currentElem.enName }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="elem-hero-cat">{{ currentElem.categoryName }}</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 font-mono">
+                            {{ currentElem.period }}周期 · {{ currentElem.group }}族 · {{ currentElem.block }}区
+                        </span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-cyan-300 border border-slate-700">
+                            {{ calcStateAtTemp(currentElem, currentTemp) }} ({{ currentTemp }}℃)
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 属性表格 -->
+            <div class="prop-grid">
+                <div class="prop-item">
+                    <div class="prop-label">相对原子质量</div>
+                    <div class="prop-val mono">{{ currentElem.mass }} u</div>
+                </div>
+                <div class="prop-item">
+                    <div class="prop-label">核外电子排布</div>
+                    <div class="prop-val mono">{{ currentElem.electron }}</div>
+                </div>
+                <div class="prop-item">
+                    <div class="prop-label">各能层电子分布 (K-Q)</div>
+                    <div class="prop-val mono">{{ currentElem.shells.join(', ') }}</div>
+                </div>
+                <div class="prop-item">
+                    <div class="prop-label">常见氧化态 / 化合价</div>
+                    <div class="prop-val mono">{{ currentElem.oxidation }}</div>
+                </div>
+                <div class="prop-item">
+                    <div class="prop-label">熔点 (Melting Point)</div>
+                    <div class="prop-val mono">{{ currentElem.melting !== null ? currentElem.melting + ' ℃ (' + (currentElem.melting + 273.15).toFixed(2) + ' K)' : '未知' }}</div>
+                </div>
+                <div class="prop-item">
+                    <div class="prop-label">沸点 (Boiling Point)</div>
+                    <div class="prop-val mono">{{ currentElem.boiling !== null ? currentElem.boiling + ' ℃ (' + (currentElem.boiling + 273.15).toFixed(2) + ' K)' : '未知' }}</div>
+                </div>
+                <div class="prop-item">
+                    <div class="prop-label">密度 (Density)</div>
+                    <div class="prop-val mono">{{ currentElem.density || '未知' }}</div>
+                </div>
+                <div class="prop-item">
+                    <div class="prop-label">电负性 (鲍林标度)</div>
+                    <div class="prop-val mono">{{ currentElem.electronegativity !== null ? currentElem.electronegativity : '—' }}</div>
+                </div>
+            </div>
+
+            <!-- 描述文本与发现故事 -->
+            <div class="text-desc-box">
+                <div class="text-desc-title">
+                    <span>📜 发现历史与词源来源</span>
+                </div>
+                <div class="text-desc-content">
+                    <p class="mb-1"><strong class="text-slate-300">发现者：</strong> {{ currentElem.discoverer }} ({{ currentElem.year }})</p>
+                    <p><strong class="text-slate-300">名称来源：</strong> {{ currentElem.origin }}</p>
+                </div>
+            </div>
+
+            <div class="text-desc-box">
+                <div class="text-desc-title">
+                    <span>💡 主要用途与科技应用</span>
+                </div>
+                <div class="text-desc-content">
+                    {{ currentElem.uses }}
+                </div>
+            </div>
+
+            <!-- 底部切换按钮 -->
+            <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+                <el-button 
+                    size="small" 
+                    :disabled="currentElem.z <= 1" 
+                    @click="prevElem"
+                >
+                    ← 上一个 (#{{ currentElem.z - 1 }})
+                </el-button>
+                <span class="text-xs text-slate-500 font-mono">第 {{ currentElem.z }} / 118 号元素</span>
+                <el-button 
+                    size="small" 
+                    :disabled="currentElem.z >= 118" 
+                    @click="nextElem"
+                >
+                    下一个 (#{{ currentElem.z + 1 }}) →
+                </el-button>
+            </div>
+        </div>
+    </el-dialog>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+<script src="./js/tools/study/periodic-table.js"></script>
+
+<script>
+const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
+
+const app = createApp({
+    setup() {
+        const elements = ref(window.ELEMENTS_DATA || []);
+        const categories = ref(window.PERIODIC_CATEGORIES || []);
+        const selectedCategory = ref('all');
+        const searchQuery = ref('');
+        const currentTemp = ref(25); // 25 ℃
+        const detailVisible = ref(false);
+        const currentElem = ref(null);
+
+        // 镧系元素 (57-71) 与 锕系元素 (89-103)
+        const lanthanides = computed(() => elements.value.filter(e => e.z >= 57 && e.z <= 71));
+        const actinides = computed(() => elements.value.filter(e => e.z >= 89 && e.z <= 103));
+
+        // 根据周期和族获取主表元素 (不含镧系锕系内部)
+        const getElementByPosition = (p, g) => {
+            return elements.value.find(e => {
+                if (e.z >= 57 && e.z <= 71) return false;
+                if (e.z >= 89 && e.z <= 103) return false;
+                return e.period === p && e.group === g;
+            });
+        };
+
+        const setCategory = (catKey) => {
+            if (selectedCategory.value === catKey && catKey !== 'all') {
+                selectedCategory.value = 'all';
+            } else {
+                selectedCategory.value = catKey;
+            }
+        };
+
+        // 判断元素是否处于高亮/暗淡状态
+        const isDimmed = (elem) => {
+            if (!elem) return false;
+            
+            // 搜索过滤
+            const q = searchQuery.value.trim().toLowerCase();
+            if (q) {
+                const matchZ = String(elem.z) === q;
+                const matchSym = elem.symbol.toLowerCase().includes(q);
+                const matchName = elem.name.includes(q);
+                const matchPy = elem.pinyin.toLowerCase().includes(q);
+                const matchEn = elem.enName.toLowerCase().includes(q);
+                if (!matchZ && !matchSym && !matchName && !matchPy && !matchEn) {
+                    return true;
+                }
+            }
+
+            // 分类过滤
+            if (selectedCategory.value !== 'all') {
+                if (elem.category !== selectedCategory.value) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        const isHighlighted = (elem) => {
+            if (!elem) return false;
+            if (selectedCategory.value !== 'all' && elem.category === selectedCategory.value) return true;
+            const q = searchQuery.value.trim().toLowerCase();
+            if (q) {
+                return elem.symbol.toLowerCase() === q || elem.name === q || String(elem.z) === q;
+            }
+            return false;
+        };
+
+        // 计算当前温度下的相态
+        const calcStateAtTemp = (elem, temp) => {
+            if (elem.melting === null || elem.boiling === null) {
+                return elem.stateName;
+            }
+            if (temp < elem.melting) return '固态 (Solid)';
+            if (temp >= elem.melting && temp < elem.boiling) return '液态 (Liquid)';
+            return '气态 (Gas)';
+        };
+
+        const getCategoryColor = (catKey) => {
+            const found = categories.value.find(c => c.key === catKey);
+            return found ? found.color : '#38bdf8';
+        };
+
+        const getCategoryGlow = (catKey) => {
+            const color = getCategoryColor(catKey);
+            return color ? color + '66' : 'rgba(56, 189, 248, 0.4)';
+        };
+
+        const openDetail = (elem) => {
+            currentElem.value = elem;
+            detailVisible.value = true;
+        };
+
+        const prevElem = () => {
+            if (!currentElem.value || currentElem.value.z <= 1) return;
+            const targetZ = currentElem.value.z - 1;
+            const found = elements.value.find(e => e.z === targetZ);
+            if (found) currentElem.value = found;
+        };
+
+        const nextElem = () => {
+            if (!currentElem.value || currentElem.value.z >= 118) return;
+            const targetZ = currentElem.value.z + 1;
+            const found = elements.value.find(e => e.z === targetZ);
+            if (found) currentElem.value = found;
+        };
+
+        // 语音朗读中文读音
+        const speakPinyin = (elem) => {
+            if (!('speechSynthesis' in window)) {
+                ElementPlus.ElMessage.warning('当前浏览器不支持语音合成播放');
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const textToSpeak = `${elem.name}，拼音 ${elem.pinyin}`;
+            const utter = new SpeechSynthesisUtterance(textToSpeak);
+            utter.lang = 'zh-CN';
+            utter.rate = 0.9;
+            window.speechSynthesis.speak(utter);
+        };
+
+        // 键盘方向键监听
+        const handleKeyDown = (e) => {
+            if (!detailVisible.value) return;
+            if (e.key === 'ArrowLeft') {
+                prevElem();
+            } else if (e.key === 'ArrowRight') {
+                nextElem();
+            }
+        };
+
+        onMounted(() => {
+            window.addEventListener('keydown', handleKeyDown);
+        });
+
+        onUnmounted(() => {
+            window.removeEventListener('keydown', handleKeyDown);
+        });
+
+        return {
+            elements,
+            categories,
+            selectedCategory,
+            searchQuery,
+            currentTemp,
+            detailVisible,
+            currentElem,
+            lanthanides,
+            actinides,
+            getElementByPosition,
+            setCategory,
+            isDimmed,
+            isHighlighted,
+            calcStateAtTemp,
+            getCategoryColor,
+            getCategoryGlow,
+            openDetail,
+            prevElem,
+            nextElem,
+            speakPinyin
+        };
+    }
+});
+
+app.use(ElementPlus);
+app.mount('.main-body');
+</script>
+</body>
+</html>

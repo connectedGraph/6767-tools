@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-rc4" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2a0826"/>
+      <stop offset="100%" stop-color="#0f020e"/>
+    </linearGradient>
+    <linearGradient id="rc4-wheel" x1="12" y1="12" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="rc4-swap" x1="16" y1="16" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-rc4)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#f43f5e" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- RC4 256-state Permutation Array Circle -->
+  <circle cx="24" cy="24" r="12.5" stroke="url(#rc4-wheel)" stroke-width="2" stroke-dasharray="3 3"/>
+
+  <!-- S-Box Nodes -->
+  <circle cx="24" cy="11.5" r="1.8" fill="#38bdf8"/>
+  <circle cx="36.5" cy="24" r="1.8" fill="#34d399"/>
+  <circle cx="24" cy="36.5" r="1.8" fill="#f43f5e"/>
+  <circle cx="11.5" cy="24" r="1.8" fill="#fbbf24"/>
+
+  <!-- Central Permutation Swap Arrows -->
+  <path d="M18 20c3-3 8-3 11 0" stroke="url(#rc4-swap)" stroke-width="2" stroke-linecap="round"/>
+  <polyline points="28 17 30 20 27 22" stroke="url(#rc4-swap)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M30 28c-3 3-8 3-11 0" stroke="url(#rc4-swap)" stroke-width="2" stroke-linecap="round"/>
+  <polyline points="20 31 18 28 21 26" stroke="url(#rc4-swap)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Center XOR symbol ⊕ -->
+  <circle cx="24" cy="24" r="2.2" fill="#0f172a" stroke="#e2e8f0" stroke-width="1.2"/>
+  <line x1="24" y1="22.5" x2="24" y2="25.5" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="22.5" y1="24" x2="25.5" y2="24" stroke="#e2e8f0" stroke-width="1"/>
+</svg>

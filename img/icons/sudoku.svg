@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-sudoku" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-sudoku)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(129,140,248,0.25)" stroke-width="1"/>
+  
+  <!-- Sudoku 3x3 Outer Frame -->
+  <rect x="8" y="8" width="32" height="32" rx="4" fill="#090d16" stroke="#4f46e5" stroke-width="1.8"/>
+  
+  <!-- Subdividing Grid Lines -->
+  <path d="M18.66 8 V40 M29.33 8 V40 M8 18.66 H40 M8 29.33 H40" stroke="#3730a3" stroke-width="1.2"/>
+  
+  <!-- Active / Highlighted Center Cell -->
+  <rect x="19.2" y="19.2" width="9.6" height="9.6" rx="1" fill="#4338ca" fill-opacity="0.4" stroke="#818cf8" stroke-width="1.2"/>
+  
+  <!-- Sudoku Numbers (9 5 2 pattern) -->
+  <!-- Top Left: 9 -->
+  <text x="13.3" y="16.5" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7.5" font-weight="900" fill="#38bdf8">9</text>
+  
+  <!-- Center: 5 -->
+  <text x="24" y="27.2" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="900" fill="#fbbf24">5</text>
+  
+  <!-- Bottom Right: 2 -->
+  <text x="34.7" y="37.5" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7.5" font-weight="900" fill="#34d399">2</text>
+  
+  <!-- Subtle secondary hints (Top Right: 7, Bottom Left: 4) -->
+  <text x="34.7" y="16.5" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="6" font-weight="700" fill="#64748b" opacity="0.6">7</text>
+  <text x="13.3" y="37.5" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="6" font-weight="700" fill="#64748b" opacity="0.6">4</text>
+</svg>

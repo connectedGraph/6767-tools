@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script><script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no" />
+    <title>调整图像大小，图片缩放 - 在线工具</title>
+        <meta name="description" content="免费在线图像尺寸修改器，支持批量调整图像大小，图片缩放，支持jpg、jpeg、png、gif、webp、bmp、tiff、psd等近30种图像格式。图像尺寸调整是在本地浏览器中进行，不用把图片上传后再处理，节省了转换时间，保护了隐私。转换完成后可一键批量下载。" />
+        <meta name="keywords" content="图像尺寸修改器,调整图像大小,照片大小修改,照片在线修改大小,照片分辨率修改,图片大小修改,图片大小修改器,图片尺寸修改,图片分辨率修改,处理图片大小" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="dns-prefetch" href="" />
+        <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+    
+    <style>
+        .tool-body .tool-form { max-width: 100%; display: flex; }
+        .tool-body .tool-form .file { flex: 1; width: 0; margin: 0 10px 0 0; display: flex; flex-direction: column; }
+        [dir=rtl] .tool-body .tool-form .file { margin: 0 0 0 10px; }
+
+        .file-handle { padding: 0 0 5px 0; width: 100%; display: flex; justify-content: space-between; flex-wrap: wrap; }
+        .file-handle .handle-left { display: flex; flex-wrap: wrap; margin: 0 12px 0 0; }
+        [dir=rtl] .file-handle .handle-left { margin: 0 0 0 12px; }
+        .file-handle .handle-right { display: flex; flex-wrap: wrap; }
+        .file-handle button { margin-bottom: 5px; }
+
+        .file-box { border: 3px dashed #D7D7DB; width: 100%; min-height: 300px; max-height: 502px; overflow-x: hidden; overflow-y: auto; border-radius: 6px; display: flex; flex: 1; }
+        .choose-file-cover { width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; padding: 10px; }
+        .choose-file-cover .my-icon-add-image { color: var(--el-color-primary); font-size: 70px; height: 74px; display: flex; align-items: center; }
+        .choose-file-cover .tip { font-size: 22px; padding: 10px 0; }
+        .file-list { width: 100%; margin: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; }
+        .file-list .file-item { width: 210px; min-height: 210px; display: flex; justify-content: center; align-items: center; flex-direction: column; background: #E8E8E8; border-radius: 6px; margin: 5px; padding: 5px; position: relative; overflow: hidden; }
+        .file-list .file-item .img-box { width: 200px; height: 150px; display: flex; justify-content: center; align-items: center; }
+        .file-list .file-item .img-box img { max-width: 200px; max-height: 150px; }
+        .file-list .file-item .img-box .my-icon-image { font-size: 40px; color: #666; }
+        .file-list .file-item .name { margin-top: 3px; width: 100%; text-align: center; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+        .file-list .file-item .file-info { display: flex; justify-content: center; align-items: center; font-size: 12px; line-height: 20px; margin-top: 3px; color: #777; }
+        .file-list .file-item .file-info span { background: #aaa; border-radius: 4px; color: #fff; padding: 0 3px; }
+        .file-list .file-item .file-info span.new-size { background: var(--el-color-primary); }
+        .file-list .file-item .file-info .my-icon-jiantou-right { font-size: 10px; color: #888; }
+        .file-list .file-item .download { width: 80%; margin-top: 3px; display: flex; justify-content: center; align-items: center; line-height: 22px; }
+        .file-list .file-item .download .my-icon-download{cursor:pointer;font-weight:600;font-size:18px;padding:0 10px;}
+        .file-list .file-item .top { position: absolute; top: 0; z-index: 10; width: 100%; height: 46px; background: linear-gradient(to bottom, #00000082, #0000); opacity: 0; transition-duration: 0.15s; }
+        .file-list .file-item .top .delete { cursor: pointer; background: #ff0000c2; border-radius: 50%; width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; float: right; margin: 10px; }
+        .file-list .file-item .top .delete.disabled { cursor: not-allowed; background: #777; }
+        .file-list .file-item .top .delete i { color: #fff; font-weight: 600; }
+        .file-list .file-item:hover .top{opacity:1;}
+        .file-list .file-item .handle-over { position: absolute; left: 0; top: 0; color: #fff; border-bottom: 34px solid transparent; border-left: 34px solid var(--el-color-primary); z-index: 11; }
+        .file-list .file-item .handle-over i { position: absolute; left: -30px; top: 0; }
+
+        .tool-body .tool-form .setting { width: 330px; margin: 0; border: 1px solid #ccc; border-radius: 4px; display: flex; flex-direction: column; overflow: auto; text-align: start; }
+        .tool-body .tool-form .setting .title { font-weight: bold; padding: 10px 10px 5px 10px; }
+        .tool-body .tool-form .setting .el-form { flex: 1; padding: 10px; }
+        .tool-body .tool-form .setting .el-space { width:100%; }
+        .tool-body .tool-form .setting .el-space__item { margin: 0 !important; }
+        .tool-body .tool-form .setting .el-alert { padding: 8px; }
+        .tool-body .tool-form .setting .el-alert__content { padding: 0 0 0 8px; }
+        [dir=rtl] .tool-body .tool-form .setting .el-alert__content { padding: 0 8px 0 0; }
+        .tool-body .tool-form .setting .el-alert--info.is-light .el-alert__description { color: #888;margin:0; }
+        .tool-body .tool-form .setting .divider { margin: 0 0 18px 0; background-color:#ddd; }
+        .tool-body .tool-form .setting .el-slider { padding: 0 8px; }
+        .tool-body .tool-form .setting .el-checkbox__label { white-space: pre-wrap; }
+
+        @media (max-width:1400px) {
+            .tool-body .tool-form .setting { width: 270px; }
+        }
+        @media (max-width:1000px) {
+            .tool-body .tool-form { max-width: 100%; flex-direction: column; }
+            .tool-body .tool-form .file { flex: unset; width: 100%; margin: 0 0 10px 0; }
+            [dir=rtl] .tool-body .tool-form .file { margin: 0 0 10px 0; }
+            .tool-body .tool-form .setting { width: 100%; }
+            .tool-body .tool-form .setting .el-form { flex: unset; }
+        }
+        @media (max-width:768px) {
+            .file-list .file-item .top { opacity: 1 !important; }
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="调整图像大小，图片缩放 - 在线工具" />
+    <meta property="og:description" content="免费在线图像尺寸修改器，支持批量调整图像大小，图片缩放，支持jpg、jpeg、png、gif、webp、bmp、tiff、psd等近30种图像格式。图像尺寸调整是在本地浏览器中进行，不用把图片上传后再处理，节省了转换时间，保护了隐私。转换完成后可一键批量下载。" />
+    <meta property="og:url" content="https://tool.6767.chat/resize-image" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="调整图像大小，图片缩放 - 在线工具" />
+    <meta name="twitter:description" content="免费在线图像尺寸修改器，支持批量调整图像大小，图片缩放，支持jpg、jpeg、png、gif、webp、bmp、tiff、psd等近30种图像格式。图像尺寸调整是在本地浏览器中进行，不用把图片上传后再处理，节省了转换时间，保护了隐私。转换完成后可一键批量下载。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/resize-image" />
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">调整图像大小</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+    <main class="main-body tool-page-body">
+        
+
+<div class="tool-body">
+    <div class="card-model">
+        <div class="card-body">
+            <div class="tool-head">
+                <h1 class="title">调整图像大小</h1>
+            </div>
+            <div class="description">免费在线图像尺寸修改器，支持批量调整图像大小，图片缩放，支持jpg、jpeg、png、gif、webp、bmp、tiff、psd等近30种图像格式。图像尺寸调整是在本地浏览器中进行，不用把图片上传后再处理，节省了转换时间，保护了隐私。转换完成后可一键批量下载。</div>
+            <div class="tool-form" v-cloak>
+                <div class="file">
+                    <div class="file-handle">
+                        <div class="handle-left">
+                            <el-button type="primary" v-on:click="selectImg" :disabled="addingFile || processing">
+                                <i class="my-icon my-icon-add-image"></i>
+                                <span>{{addingFile?"正在加载图片":"添加图像"}}{{fileList.length==0?"":"("+fileList.length+")"}}</span>
+                            </el-button>
+                            <el-button type="danger" v-on:click="removeFileListData()" :disabled="fileList.length==0 || addingFile || processing">
+                                <i class="my-icon my-icon-delete"></i>
+                                <span>清空</span>
+                            </el-button>
+                        </div>
+                        <div class="handle-right">
+                            <el-button type="primary" v-on:click="process" :disabled="processBtnDisabled">
+                                <i class="my-icon my-icon-resize"></i>
+                                <span>{{processing?processPercent:"开始调整大小"}}</span>
+                            </el-button>
+                            <el-button v-if="!processing && processedCount>0" type="primary" v-on:click="downloadAll" :disabled="processing">
+                                <i class="my-icon my-icon-download"></i>
+                                <span>下载全部</span>
+                            </el-button>
+                        </div>
+                    </div>
+                    <div class="file-box">
+                        <input id="flFile" name="flFile" type="file" multiple="multiple" :accept="fileAccept" style="display:none;" />
+                        <div v-if="fileList.length==0" class="choose-file-cover" v-on:click="selectImg">
+                            <i class="my-icon my-icon-add-image"></i>
+                            <div class="tip">拖放图片到此处或单击选择</div>
+                            <div>支持的格式 {{imageExtArr.join(", ")}}</div>
+                        </div>
+                        <div v-else class="file-list">
+                            <div class="file-item" v-for="(item,index) in fileList">
+                                <div class="img-box">
+                                    <el-image :src="item.sourceConvertBlobUrl!=null?item.sourceConvertBlobUrl:item.sourceBlobUrl" :preview-src-list="imageList" :initial-index="index" fit="contain">
+                                        <template #error>
+                                            <i class="my-icon my-icon-image"></i>
+                                        </template>
+                                    </el-image>
+                                </div>
+                                <div class="name">{{item.name}}</div>
+                                <div class="file-info">
+                                    <div class="flex-center">
+                                        <span>{{item.originalSizeDesc}}</span>
+                                        <template v-if="item.newSizeDesc!=null">
+                                            <i class="my-icon my-icon-jiantou-right"></i>
+                                            <span>{{item.newSizeDesc}}</span>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="file-info">
+                                    <div class="flex-center">
+                                        <span>{{item.sourceWidth}}x{{item.sourceHeight}}</span>
+                                        <template v-if="item.newWidth!=null">
+                                            <i class="my-icon my-icon-jiantou-right"></i>
+                                            <span class="new-size">{{item.newWidth}}x{{item.newHeight}}</span>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div v-if="item.newBlob!=null" class="download">
+                                    <div class="my-icon my-icon-download" v-on:click="download(index)"></div>
+                                </div>
+                                <div class="top">
+                                    <div class="delete" v-bind:class="converting?'disabled':''" v-on:click="removeFileListData(index)"><i class="my-icon my-icon-cuo"></i></div>
+                                </div>
+                                <div v-if="item.newBlob!=null" class="handle-over"><i class="my-icon my-icon-dui"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="setting">
+                    <div class="title">调整大小选项</div>
+                    <el-form :model="processOptions" :rules="processOptionsRules" ref="processOptionsForm" label-position="top">
+                        <el-space fill>
+                            <el-alert v-if="processOptions.type==0 && processOptions.toScale" type="info" show-icon :closable="false">你输入的宽度和高度将被视为最大尺寸，并将保留图片的长宽比。</el-alert>
+                            <el-alert v-if="processOptions.type==0 && !processOptions.toScale" type="info" show-icon :closable="false">将图片的尺寸调整为精确尺寸，若设置的图片长宽比和源图片的长宽比不同，图片会变形。</el-alert>
+                            <el-alert v-if="processOptions.type==1" type="info" show-icon :closable="false">{{processOptionsPercentage}}</el-alert>
+                            <el-form-item style="margin-bottom: 10px;">
+                                <el-radio-group v-model="processOptions.type" :disabled="processing">
+                                    <el-radio v-for='(item,index) in ["按像素","按百分比"]' :label="index">{{item}}</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </el-space>
+                        <div class="divider"></div>
+                        <template v-if="processOptions.type==0">
+                            <el-form-item>
+                                <el-input v-model="processOptions.width" type="number" placeholder="Auto" :disabled="processing">
+                                    <template #prepend>宽度(px)：</template>
+                                </el-input>
+                            </el-form-item>
+                            <div class="divider"></div>
+                            <el-form-item>
+                                <el-input v-model="processOptions.height" type="number" placeholder="Auto" :disabled="processing">
+                                    <template #prepend>高度(px)：</template>
+                                </el-input>
+                            </el-form-item>
+                            <div class="divider" style="margin-bottom: 6px;"></div>
+                            <el-form-item style="margin-bottom:6px;">
+                                <el-checkbox v-model="processOptions.toScale" :disabled="processing">保留长宽比</el-checkbox>
+                            </el-form-item>
+                            <div class="divider" style="margin-bottom: 6px;"></div>
+                            <el-form-item style="margin-bottom:0;">
+                                <el-checkbox v-model="processOptions.filterSmallSize" :disabled="processing">如果像素较小则不放大</el-checkbox>
+                            </el-form-item>
+                        </template>
+                        <el-slider v-else v-model="processOptions.percentage" :min="1" :max="300" :disabled="processing"></el-slider>
+                    </el-form>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="content">
+                <h3>介绍</h3><p>您还在为调整图像大小而发愁吗？当有成百上千甚至上万的图像需要调整大小时，若不借助工具那将是一个繁重的工作。</p><p>本工具是一款免费在线图像尺寸修改器，支持jpg、jpeg、png、gif、webp、bmp、tiff、psd等近30种图片格式。</p><p>我们实现了在本地浏览器中调整图像大小，不用把图像上传到服务器，节省了大量时间，还保护了隐私，防止了您的图片资源被其他人获取。</p><p>本工具没有图片数量限制，可一键批量转换，处理完成后可以一键批量下载，操作简单高效，功能强大，是您调整图像大小的好帮手。</p><h3>使用方法</h3><ul><li>点击“添加图片”按钮选择要调整的图片，也可以把图片拖放到上面。</li><li>设置调整图像大小参数，我们可以选择按像素或者按百分比来调整图像大小，给了用户最大的自由设置权。</li><ul><li>按像素：手动设置图像宽高，可以保留图像长宽比，也可以强制把图像调整为您设置的宽度和长度。</li><li>按百分比：例如若设置百分比是60%，则会把图像尺寸缩小到源图片尺寸的60%。</li></ul><li>点击“开始调整图像大小”按钮。</li><li>等待图像大小调整完毕，点击“下载全部”按钮。</li></ul>
+            </div>
+        </div>
+    </div>
+</div>
+<comment :relate-id="53" :comment-class="2"></comment>
+
+
+    </main>
+</div>
+
+    <script>
+        var languageCode = 'zh';
+        var websiteRoot = "";
+        var mainWebSiteHost = "";
+        var webApiSiteHost = "/api";
+        var staticSiteHost = "";
+        var staticFileVersion="260728100716";
+        var toolData = [{"key":"brain","desc":"脑力训练","children":[{"key":"记忆力","desc":"记忆力","toolList":[{"toolName":"数字顺序记忆训练","toolCode":"number-sequence-memory","icon":"./img/brain/game-logo/szsxjy.png"},{"toolName":"顺序记忆训练","toolCode":"sequence-memory","icon":"./img/brain/game-logo/sxjy.png"},{"toolName":"N-Back 记忆力训练游戏","toolCode":"n-back","icon":"./img/brain/game-logo/nback.png"},{"toolName":"色块印记","toolCode":"color-block-imprint","icon":"./img/brain/game-logo/skyj.png"}]},{"key":"注意力","desc":"注意力","toolList":[{"toolName":"舒尔特方格训练","toolCode":"shult-grid","icon":"./img/brain/game-logo/setfg.png"},{"toolName":"找不同的字","toolCode":"find-different-word","icon":"./img/brain/game-logo/zbtdz.png"},{"toolName":"斯特鲁普效应","toolCode":"stroop-effect","icon":"./img/brain/game-logo/stlpxy.png"},{"toolName":"坐标迷航","toolCode":"coordinate-drift","icon":"./img/brain/game-logo/zbmh.png"},{"toolName":"视觉追踪训练","toolCode":"visual-tracking-training","icon":"./img/brain/game-logo/sjzzxl.png"}]},{"key":"推演","desc":"推演","toolList":[{"toolName":"复古推箱子 50 关益智挑战","toolCode":"sokoban","icon":"./img/icons/sokoban.svg"},{"toolName":"经典扫雷游戏","toolCode":"minesweeper","icon":"./img/icons/minesweeper.svg"},{"toolName":"在线数独游戏","toolCode":"sudoku","icon":"./img/icons/sudoku.svg"},{"toolName":"熄灯解谜游戏","toolCode":"lights-out","icon":"./img/icons/lights-out.svg"},{"toolName":"数字华容道","toolCode":"digital-huarong-road","icon":"./img/brain/game-logo/szhrd.png"},{"toolName":"上下瓶色匹配","toolCode":"bottle-color-matching","icon":"./img/brain/game-logo/sxpspp.png"},{"toolName":"2048","toolCode":"2048","icon":"./img/brain/game-logo/elsb.png"}]},{"key":"反应","desc":"反应","toolList":[{"toolName":"反应速度测试","toolCode":"react-speed-test","icon":"./img/brain/game-logo/fysdcs.png"},{"toolName":"点击速度测试","toolCode":"click-speed-test","icon":"./img/brain/game-logo/sscs.png"},{"toolName":"右键点击速度测试","toolCode":"right-click-test","icon":"./img/brain/game-logo/yjdjsdcs.png"},{"toolName":"空格键计数器","toolCode":"spacebar-counter","icon":"./img/brain/game-logo/kgjjsq.png"},{"toolName":"动态视力测试","toolCode":"dynamic-visual-acuity-test","icon":"./img/brain/game-logo/dtslcs.png"}]},{"key":"感知","desc":"感知","toolList":[{"toolName":"静态色差感知","toolCode":"jing-tai-se-cha","icon":"./img/brain/game-logo/jtsc.png"},{"toolName":"动态色差感知","toolCode":"dong-tai-se-cha","icon":"./img/brain/game-logo/dtsc.png"},{"toolName":"时间感知训练","toolCode":"time-perception-training","icon":"./img/brain/game-logo/sjgzxl.png"}]},{"key":"空间","desc":"空间","toolList":[{"toolName":"对称方块","toolCode":"symmetry-blocks","icon":"./img/brain/game-logo/dcfk.png"}]}]},{"key":"office","desc":"办公助手","toolList":[{"toolName":"文本去重与多维排序器","toolCode":"text-dedup-sort","icon":"./img/icons/text-dedup-sort.svg"},{"toolName":"中英文排版规范美化器","toolCode":"text-autospace","icon":"./img/icons/text-autospace.svg"},{"toolName":"在线表格转换器","toolCode":"table-converter","icon":"./img/icons/table-converter.svg"},{"toolName":"人民币大写金额转换器","toolCode":"rmb-capital-converter","icon":"./img/icons/rmb-capital-converter.svg"},{"toolName":"综合字数与阅读时长统计","toolCode":"word-counter","icon":"./img/icons/word-counter.svg"},{"toolName":"现代简历制作与排版器","toolCode":"resume-maker","icon":"./img/icons/resume-maker.svg"},{"toolName":"简历模板中心","toolCode":"resume-template","icon":"./img/icons/resume-template.svg"},{"toolName":"A4纸张尺寸，各种纸张尺寸查询","toolCode":"paper-size","icon":"./img/icons/paper-size.svg"},{"toolName":"转换大小写","toolCode":"convert-case","icon":"./img/icons/convert-case.svg"},{"toolName":"标题大小写转换器","toolCode":"title-case-converter","icon":"./img/icons/title-case-converter.svg"},{"toolName":"句子大小写转换器","toolCode":"sentence-case-converter","icon":"./img/icons/sentence-case-converter.svg"},{"toolName":"粗体文本生成器","toolCode":"bold-text-generator","icon":"./img/icons/bold-text-generator.svg"},{"toolName":"斜体文本生成器","toolCode":"italic-text-generator","icon":"./img/icons/italic-text-generator.svg"},{"toolName":"删除线文本生成器","toolCode":"strikethrough-text-generator","icon":"./img/icons/strikethrough-text-generator.svg"},{"toolName":"下划线文本生成器","toolCode":"underline-text","icon":"./img/icons/underline-text.svg"},{"toolName":"颠倒文本生成器","toolCode":"upside-down-text-generator","icon":"./img/icons/upside-down-text-generator.svg"},{"toolName":"镜像文本生成器","toolCode":"mirror-text-generator","icon":"./img/icons/mirror-text-generator.svg"},{"toolName":"反向文本生成器","toolCode":"reverse-text-generator","icon":"./img/icons/reverse-text-generator.svg"},{"toolName":"文本替换工具","toolCode":"replace-text","icon":"./img/icons/replace-text.svg"},{"toolName":"符号大全","toolCode":"symbols","icon":"./img/icons/symbols.svg"},{"toolName":"emoji表情大全","toolCode":"emoji","icon":"./img/icons/emoji.svg"},{"toolName":"颜文字表情大全","toolCode":"emoticon","icon":"./img/icons/emoticon.svg"}]},{"key":"image","desc":"图像","toolList":[{"toolName":"图片调色板提取器","toolCode":"color-palette-extractor","icon":"./img/icons/color-palette-extractor.svg"},{"toolName":"多图无损拼接与长图生成器","toolCode":"image-stitcher","icon":"./img/icons/image-stitcher.svg"},{"toolName":"图片马赛克与局部隐私遮挡","toolCode":"image-mosaic-blur","icon":"./img/icons/image-mosaic-blur.svg"},{"toolName":"图像格式转换器","toolCode":"convert-image","icon":"./img/icons/convert-image.svg"},{"toolName":"压缩图像","toolCode":"compress-image","icon":"./img/icons/compress-image.svg"},{"toolName":"调整图像大小","toolCode":"resize-image","icon":"./img/icons/resize-image.svg"},{"toolName":"调整图像宽高比例","toolCode":"adjust-image-aspect-ratio","icon":"./img/icons/adjust-image-aspect-ratio.svg"},{"toolName":"批量给图片加水印","toolCode":"watermark-image","icon":"./img/icons/watermark-image.svg"},{"toolName":"批量旋转图像","toolCode":"rotate-image","icon":"./img/icons/rotate-image.svg"},{"toolName":"在线生成透明ICO图标","toolCode":"ico-generator","icon":"./img/icons/ico-generator.svg"},{"toolName":"在线生成透明圆角图片","toolCode":"round-image","icon":"./img/icons/round-image.svg"},{"toolName":"制作gif图片，编辑gif图片","toolCode":"create-gif","icon":"./img/icons/create-gif.svg"},{"toolName":"视频转gif图片，视频转动图","toolCode":"video-to-gif","icon":"./img/icons/video-to-gif.svg"},{"toolName":"分解gif图片","toolCode":"decompose-gif","icon":"./img/icons/decompose-gif.svg"},{"toolName":"裁剪、编辑图像","toolCode":"crop-image","icon":"./img/icons/crop-image.svg"},{"toolName":"生成宫格图像，分割图片","toolCode":"generate-grid-image","icon":"./img/icons/generate-grid-image.svg"},{"toolName":"图像处理助手桌面应用程序","toolCode":"image-processing-assistant-app","icon":"./up/2023/1028/image-processing-assistant-icon.png"},{"toolName":"图像压缩器桌面应用程序","toolCode":"image-compressor-app","icon":"./up/2023/1028/image-compress-logo.png"}]},{"key":"audio-and-video","desc":"音视频","toolList":[{"toolName":"白噪音与专注助眠多轨混音器","toolCode":"white-noise-player","icon":"./img/icons/white-noise-player.svg"},{"toolName":"免插件屏幕与窗口录制工具","toolCode":"screen-recorder","icon":"./img/icons/screen-recorder.svg"},{"toolName":"在线波形录音机与音频剪辑","toolCode":"voice-recorder","icon":"./img/icons/voice-recorder.svg"},{"toolName":"极简电子节拍器与乐器调音器","toolCode":"metronome-tuner","icon":"./img/icons/metronome-tuner.svg"},{"toolName":"视频处理助手桌面应用程序","toolCode":"video-processing-assistant-app","icon":"./up/2023/1028/video-processing-assistant-icon.png"},{"toolName":"视频剪切合并桌面应用程序","toolCode":"video-cut-merge-app","icon":"./up/2023/1028/video-cut-merge-icon.png"},{"toolName":"视频压缩器桌面应用程序","toolCode":"video-compressor-app","icon":"./up/2023/1028/video-compress-icon.png"},{"toolName":"视频格式转换器桌面应用程序","toolCode":"video-format-converter-app","icon":"./up/2023/1028/video-format-conversion-icon.png"},{"toolName":"音频处理助手桌面应用程序","toolCode":"audio-processing-assistant-app","icon":"./up/2023/1028/audio-processing-assistant-icon.png"},{"toolName":"音频剪切合并桌面应用程序","toolCode":"audio-cut-merge-app","icon":"./up/2023/1028/audio-cut-merge-icon.png"},{"toolName":"音频压缩器桌面应用程序","toolCode":"audio-compressor-app","icon":"./up/2023/1028/audio-compress-icon.png"},{"toolName":"音频格式转换器桌面应用程序","toolCode":"audio-format-convertor-app","icon":"./up/2023/1028/audio-format-conversion-icon.png"}]},{"key":"generate","desc":"生成","toolList":[{"toolName":"测试模拟数据 (Mock Data) 批量生成器","toolCode":"mock-data-generator","icon":"./img/icons/mock-data-generator.svg"},{"toolName":"WiFi 扫码直连二维码生成器","toolCode":"wifi-qrcode","icon":"./img/icons/wifi-qrcode.svg"},{"toolName":"无障碍色彩对比度检测器 (WCAG)","toolCode":"contrast-checker","icon":"./img/icons/contrast-checker.svg"},{"toolName":"CSS 玻璃拟态与毛玻璃生成器","toolCode":"css-glassmorphism","icon":"./img/icons/css-glassmorphism.svg"},{"toolName":"ASCII 艺术字与字符 Logo 生成器","toolCode":"ascii-art-generator","icon":"./img/icons/ascii-art-generator.svg"},{"toolName":"UUID / ULID / NanoID 批量生成器","toolCode":"uuid-generator","icon":"./img/icons/uuid-generator.svg"},{"toolName":"CSS 渐变色生成器","toolCode":"css-gradient-generator","icon":"./img/icons/css-gradient-generator.svg"},{"toolName":"CSS 盒子阴影生成器","toolCode":"css-shadow-generator","icon":"./img/icons/css-shadow-generator.svg"},{"toolName":"条形码生成器","toolCode":"bar-code","icon":"./img/icons/bar-code.svg"},{"toolName":"二维码生成器","toolCode":"qrcode","icon":"./img/icons/qrcode.svg"},{"toolName":"序列号生成器","toolCode":"serial-number","icon":"./img/icons/serial-number.svg"},{"toolName":"随机数生成器","toolCode":"random-number","icon":"./img/icons/random-number.svg"},{"toolName":"在线随机密码生成器","toolCode":"random-password","icon":"./img/icons/random-password.svg"}]},{"key":"code","desc":"程序员","toolList":[{"toolName":"IP 子网掩码与 CIDR 计算器","toolCode":"subnet-calculator","icon":"./img/icons/subnet-calculator.svg"},{"toolName":"多格式配置文件双向转换器","toolCode":"data-format-converter","icon":"./img/icons/data-format-converter.svg"},{"toolName":"HTTP 状态码速查与排错全书","toolCode":"http-status-codes","icon":"./img/icons/http-status-codes.svg"},{"toolName":"WebSocket / SSE 在线调试客户端","toolCode":"websocket-tester","icon":"./img/icons/websocket-tester.svg"},{"toolName":"cURL 转换多语言代码工具","toolCode":"curl-converter","icon":"./img/icons/curl-converter.svg"},{"toolName":"SQL 格式化与美化器","toolCode":"sql-formatter","icon":"./img/icons/sql-formatter.svg"},{"toolName":"JSON 格式化与高能工具箱","toolCode":"json-formatter","icon":"./img/icons/json-formatter.svg"},{"toolName":"JWT 解码与调试器","toolCode":"jwt-debugger","icon":"./img/icons/jwt-debugger.svg"},{"toolName":"正则表达式测试器","toolCode":"regex-tester","icon":"./img/icons/regex-tester.svg"},{"toolName":"Cron 表达式生成与预测器","toolCode":"cron-generator","icon":"./img/icons/cron-generator.svg"},{"toolName":"端口扫描","toolCode":"port-scan","icon":"./img/icons/port-scan.svg"},{"toolName":"JavaScript混淆加密","toolCode":"js-obfuscator","icon":"./img/icons/js-obfuscator.svg"},{"toolName":"Markdown在线编辑器，Markdown转Word/Html/Pdf","toolCode":"markdown","icon":"./img/icons/markdown.svg"},{"toolName":"时间戳转换","toolCode":"timestamp","icon":"./img/icons/timestamp.svg"},{"toolName":"进制转换","toolCode":"base-converter","icon":"./img/icons/base-converter.svg"},{"toolName":"MD5加密","toolCode":"md5-encrypt","icon":"./img/icons/md5-encrypt.svg"},{"toolName":"AES加密/解密","toolCode":"aes-encrypt","icon":"./img/icons/aes-encrypt.svg"},{"toolName":"DES加密/解密","toolCode":"des-encrypt","icon":"./img/icons/des-encrypt.svg"},{"toolName":"SHA加密","toolCode":"sha-encrypt","icon":"./img/icons/sha-encrypt.svg"},{"toolName":"RIPEMD160哈希加密","toolCode":"ripemd160-encrypt","icon":"./img/icons/ripemd160-encrypt.svg"},{"toolName":"HMAC哈希加密","toolCode":"hmac-encrypt","icon":"./img/icons/hmac-encrypt.svg"},{"toolName":"Rabbit加密/解密","toolCode":"rabbit-encrypt","icon":"./img/icons/rabbit-encrypt.svg"},{"toolName":"RC4加密/解密","toolCode":"rc4-encrypt","icon":"./img/icons/rc4-encrypt.svg"},{"toolName":"图片转base64","toolCode":"image-to-base64","icon":"./img/icons/image-to-base64.svg"},{"toolName":"base64编码解码","toolCode":"base64-encoder-decoder","icon":"./img/icons/base64-encoder-decoder.svg"},{"toolName":"URL编码解码","toolCode":"url-encoder-decoder","icon":"./img/icons/url-encoder-decoder.svg"},{"toolName":"文本与ASCLL转换器","toolCode":"text-to-ascll-converter","icon":"./img/icons/text-to-ascll-converter.svg"},{"toolName":"Unicode编码器/解码器","toolCode":"unicode-encoder-decoder","icon":"./img/icons/unicode-encoder-decoder.svg"},{"toolName":"文本（代码）对比工具","toolCode":"compare-text","icon":"./img/icons/compare-text.svg"},{"toolName":"html格式化、压缩","toolCode":"format-html","icon":"./img/icons/format-html.svg"},{"toolName":"css格式化、压缩","toolCode":"format-css","icon":"./img/icons/format-css.svg"},{"toolName":"js格式化、压缩","toolCode":"format-js","icon":"./img/icons/format-js.svg"}]},{"key":"study","desc":"学习","toolList":[{"toolName":"2D 数学函数图像绘制器","toolCode":"function-grapher","icon":"./img/icons/function-grapher.svg"},{"toolName":"计算机位运算与逻辑门实验室","toolCode":"bitwise-visualizer","icon":"./img/icons/bitwise-visualizer.svg"},{"toolName":"汉字转标准拼音与多音字排版","toolCode":"pinyin-converter","icon":"./img/icons/pinyin-converter.svg"},{"toolName":"化学元素周期表交互系统","toolCode":"periodic-table","icon":"./img/icons/periodic-table.svg"},{"toolName":"数据存储单位与进阶换算器","toolCode":"data-unit-converter","icon":"./img/icons/data-unit-converter.svg"},{"toolName":"科学高级计算器","toolCode":"scientific-calculator","icon":"./img/icons/scientific-calculator.svg"},{"toolName":"长度单位转换器","toolCode":"length-converter","icon":"./img/icons/length-converter.svg"},{"toolName":"面积单位转换器","toolCode":"area-converter","icon":"./img/icons/area-converter.svg"},{"toolName":"体积单位转换器","toolCode":"volume-converter","icon":"./img/icons/volume-converter.svg"},{"toolName":"重量转换器","toolCode":"weight-converter","icon":"./img/icons/weight-converter.svg"},{"toolName":"温度转换器","toolCode":"temperature-converter","icon":"./img/icons/temperature-converter.svg"},{"toolName":"比例计算器","toolCode":"proportion-calculator","icon":"./img/icons/proportion-calculator.svg"},{"toolName":"周长计算器","toolCode":"perimeter-calculator","icon":"./img/icons/perimeter-calculator.svg"},{"toolName":"面积计算器","toolCode":"area-calculator","icon":"./img/icons/area-calculator.svg"},{"toolName":"表面积计算器","toolCode":"surface-area-calculator","icon":"./img/icons/surface-area-calculator.svg"},{"toolName":"体积计算器","toolCode":"volume-calculator","icon":"./img/icons/volume-calculator.svg"},{"toolName":"圆周率查询","toolCode":"pi-query","icon":"./img/icons/pi-query.svg"}]},{"key":"life","desc":"生活","toolList":[{"toolName":"复利定投与理财收益计算器","toolCode":"compound-interest-calculator","icon":"./img/icons/compound-interest-calculator.svg"},{"toolName":"全款与车贷落地费用精算器","toolCode":"car-loan-calculator","icon":"./img/icons/car-loan-calculator.svg"},{"toolName":"世界时钟与跨时区会议规划器","toolCode":"world-clock-planner","icon":"./img/icons/world-clock-planner.svg"},{"toolName":"生活垃圾分类离线速查字典","toolCode":"garbage-classification","icon":"./img/icons/garbage-classification.svg"},{"toolName":"中国亲戚关系称谓换算器","toolCode":"kinship-calculator","icon":"./img/icons/kinship-calculator.svg"},{"toolName":"2026最新个税与五险一金计算器","toolCode":"salary-tax-calculator","icon":"./img/icons/salary-tax-calculator.svg"},{"toolName":"房贷提前还款与省息对比器","toolCode":"mortgage-advanced-calculator","icon":"./img/icons/mortgage-advanced-calculator.svg"},{"toolName":"日期间隔与重要日子倒计时","toolCode":"date-calculator","icon":"./img/icons/date-calculator.svg"},{"toolName":"年龄计算器","toolCode":"age","icon":"./img/icons/age.svg"},{"toolName":"退休年龄查询","toolCode":"retirement-time-query","icon":"./img/icons/retirement-time-query.svg"},{"toolName":"世界各国首都","toolCode":"capital","icon":"./img/icons/capital.svg"},{"toolName":"世界各国国旗和区旗图案","toolCode":"flag","icon":"./img/icons/flag.svg"},{"toolName":"贷款计算器","toolCode":"loan-calculator","icon":"./img/icons/loan-calculator.svg"},{"toolName":"文胸尺码查询","toolCode":"bra-size","icon":"./img/icons/bra-size.svg"},{"toolName":"内裤尺码查询","toolCode":"underwear-size","icon":"./img/icons/underwear-size.svg"},{"toolName":"女装尺码查询","toolCode":"woman-clothing-size","icon":"./img/icons/woman-clothing-size.svg"},{"toolName":"女士衬衫尺码查询","toolCode":"woman-shirt-size","icon":"./img/icons/woman-shirt-size.svg"},{"toolName":"连衣裙尺码查询","toolCode":"dress-size","icon":"./img/icons/dress-size.svg"},{"toolName":"小孩服装尺码查询","toolCode":"child-clothe-size","icon":"./img/icons/child-clothe-size.svg"},{"toolName":"男士服装尺码查询","toolCode":"man-clothing-size","icon":"./img/icons/man-clothing-size.svg"},{"toolName":"男士裤子尺码查询","toolCode":"man-pant-size","icon":"./img/icons/man-pant-size.svg"}]},{"key":"ent","desc":"娱乐","toolList":[{"toolName":"像素画 / 8-bit 图标在线编辑器","toolCode":"pixel-art-maker","icon":"./img/icons/pixel-art-maker.svg"},{"toolName":"今天吃什么 / 帮我做决定","toolCode":"decision-maker","icon":"./img/icons/decision-maker.svg"},{"toolName":"手持全屏弹幕 / LED 滚动屏幕","toolCode":"led-banner","icon":"./img/icons/led-banner.svg"},{"toolName":"摩斯密码翻译器，摩斯密码音频播放器","toolCode":"morse-code-translator","icon":"./img/icons/morse-code-translator.svg"},{"toolName":"幸运大转盘抽奖","toolCode":"lucky-wheel","icon":"./img/icons/lucky-wheel.svg"},{"toolName":"在线抽奖工具","toolCode":"lottery","icon":"./img/icons/lottery.svg"},{"toolName":"身价计算器","toolCode":"worth","icon":"./img/icons/worth.svg"},{"toolName":"死亡时间计算器","toolCode":"death-time","icon":"./img/icons/death-time.svg"},{"toolName":"幸运数字计算器","toolCode":"lucky-number","icon":"./img/icons/lucky-number.svg"},{"toolName":"星座幸运色","toolCode":"lucky-color","icon":"./img/icons/lucky-color.svg"},{"toolName":"哈希头像生成器","toolCode":"hash-avatar","icon":"./img/icons/hash-avatar.svg"}]},{"key":"health","desc":"健康","toolList":[{"toolName":"科学每日饮水量计算器","toolCode":"water-intake-calculator","icon":"./img/icons/water-intake-calculator.svg"},{"toolName":"90分钟睡眠周期与起床时间计算器","toolCode":"sleep-cycle-calculator","icon":"./img/icons/sleep-cycle-calculator.svg"},{"toolName":"常用食物热量与营养成分速查表","toolCode":"food-calories-lookup","icon":"./img/icons/food-calories-lookup.svg"},{"toolName":"BMI指数计算","toolCode":"bmi","icon":"./img/icons/bmi.svg"},{"toolName":"基础代谢率(BMR)计算器","toolCode":"bmr","icon":"./img/icons/bmr.svg"},{"toolName":"体脂率（BFR）计算器","toolCode":"bfr","icon":"./img/icons/bfr.svg"},{"toolName":"标准体重计算器","toolCode":"weight","icon":"./img/icons/weight.svg"},{"toolName":"燃脂心率计算器","toolCode":"burn-fat-heart-rate","icon":"./img/icons/burn-fat-heart-rate.svg"},{"toolName":"体质综合测试","toolCode":"physical-fitness-test","icon":"./img/icons/physical-fitness-test.svg"},{"toolName":"蛋白质摄入量计算器","toolCode":"protein-intake","icon":"./img/icons/protein-intake.svg"},{"toolName":"焦耳卡路里换算器","toolCode":"energy-convert","icon":"./img/icons/energy-convert.svg"},{"toolName":"跑步卡路里消耗计算器","toolCode":"running-calorie","icon":"./img/icons/running-calorie.svg"},{"toolName":"女性最佳身材计算器","toolCode":"best-figure","icon":"./img/icons/best-figure.svg"},{"toolName":"女性安全期计算器","toolCode":"female-safe-period","icon":"./img/icons/female-safe-period.svg"},{"toolName":"孩子身高预测","toolCode":"child-height","icon":"./img/icons/child-height.svg"},{"toolName":"血型遗传规律和血型性格","toolCode":"bood-type","icon":"./img/icons/bood-type.svg"},{"toolName":"色盲色弱检测","toolCode":"color-blindness-test","icon":"./img/icons/color-blindness-test.svg"},{"toolName":"植物油脂肪含量查询","toolCode":"vegetable-oil","icon":"./img/icons/vegetable-oil.svg"}]}];
+        var phoneSmsEnable = 0;
+        var wp='zp';
+        var ap='qx';
+    </script>
+        <script src="./lib/vue/vue.global.prod.js"></script>
+        <script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+    <script src="./js/components/SlideCaptcha.js?v=260728100716"></script>
+    <script src="./js/common.js?260728100716"></script>
+    <script src="./js/search.js?260728100716"></script>
+    
+    <script>
+        var locales = {
+            clearConfirm: "确定要清空吗？",
+            alertTitle: "提示",
+            ok: "确定",
+            cancel: "取消",
+            percentage: "调整大小进度 100%",
+            settingTip3: "缩放到原尺寸的 50%",
+            processOver: "图像大小调整完毕"
+        };
+    </script>
+    <script src="./lib/jszip/jszip.min.js"></script>
+    <script src="./lib/jszip/filesaver.js"></script>
+    <script src="./js/components/Comment.js?260728100716"></script>
+    <script type='module' src="./js/tools/image/resize-image.js?260728100716"></script>
+
+
+        
+</body>
+</html>

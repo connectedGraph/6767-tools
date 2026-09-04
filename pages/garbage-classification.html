@@ -1,0 +1,853 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>生活垃圾分类离线速查字典 - 在线工具</title>
+    <meta name="description" content="全功能生活垃圾分类离线速查字典：严格遵循住建部四大分类国家标准（可回收物、有害垃圾、厨余垃圾/湿垃圾、其他垃圾/干垃圾），内置数千种生活垃圾数据，支持汉字、全拼与拼音首字母模糊即时检索，附深度避坑指南。" />
+    <meta name="keywords" content="垃圾分类查询,生活垃圾分类字典,住建部垃圾分类标准,湿垃圾干垃圾区别,大棒骨是什么垃圾,电池分类,在线工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .garbage-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 搜索大栏 */
+        .search-hero {
+            background: linear-gradient(135deg, rgba(8, 47, 73, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 14px;
+            padding: 24px 20px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .search-input-wrap {
+            max-width: 680px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .main-search-input {
+            width: 100%;
+            height: 48px;
+            background: #090f1d !important;
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            border-radius: 24px;
+            padding: 0 48px 0 20px;
+            color: #f8fafc !important;
+            font-size: 1.05rem;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+        .main-search-input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2);
+        }
+
+        /* 热门搜索标签 */
+        .hot-tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .hot-tag {
+            font-size: 0.78rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .hot-tag:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        /* 4 大分类卡片网格 */
+        .cat-quad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .cat-quad-card {
+            border-radius: 12px;
+            padding: 16px 18px;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            background: rgba(15, 23, 42, 0.75);
+        }
+        .cat-quad-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        .cat-quad-card.active {
+            box-shadow: 0 0 0 2px #ffffff, 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 四色标识 */
+        .cat-quad-card.blue {
+            border-left: 5px solid #2563eb;
+        }
+        .cat-quad-card.blue.active, .cat-quad-card.blue:hover {
+            border-color: #3b82f6;
+            background: rgba(37, 99, 235, 0.12);
+        }
+
+        .cat-quad-card.green {
+            border-left: 5px solid #10b981;
+        }
+        .cat-quad-card.green.active, .cat-quad-card.green:hover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.12);
+        }
+
+        .cat-quad-card.red {
+            border-left: 5px solid #ef4444;
+        }
+        .cat-quad-card.red.active, .cat-quad-card.red:hover {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.12);
+        }
+
+        .cat-quad-card.grey {
+            border-left: 5px solid #64748b;
+        }
+        .cat-quad-card.grey.active, .cat-quad-card.grey:hover {
+            border-color: #94a3b8;
+            background: rgba(100, 116, 139, 0.15);
+        }
+
+        .cat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .cat-card-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+        .cat-card-alias {
+            font-size: 0.76rem;
+            color: #94a3b8;
+        }
+        .cat-card-desc {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            line-height: 1.45;
+            margin-bottom: 8px;
+        }
+        .cat-card-req {
+            font-size: 0.74rem;
+            color: #94a3b8;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(51, 65, 85, 0.4);
+        }
+
+        /* 搜索结果网格 */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .item-card {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.18s ease;
+        }
+        .item-card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .item-name {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        .item-pinyin {
+            font-size: 0.72rem;
+            color: #64748b;
+            font-family: ui-monospace, monospace;
+        }
+
+        /* 标签徽章 */
+        .badge-cat-1 {
+            background: rgba(37, 99, 235, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .badge-cat-2 {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .badge-cat-3 {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .badge-cat-4 {
+            background: rgba(100, 116, 139, 0.25);
+            color: #cbd5e1;
+            border: 1px solid rgba(100, 116, 139, 0.4);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .item-tip {
+            font-size: 0.76rem;
+            color: #94a3b8;
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+
+        /* 易错问答卡片 */
+        .qa-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.65);
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+        }
+        .qa-question {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qa-answer {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            line-height: 1.55;
+        }
+
+        .highlight-text {
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+            padding: 0 2px;
+            border-radius: 2px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./life" class="tool-topbar-cat">生活实用</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">生活垃圾分类离线速查字典</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+  <div class="tool-body garbage-container">
+    <div class="card-model">
+      <div class="card-body">
+        
+        <!-- 头部说明 -->
+        <div class="tool-head">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h1 class="title" style="margin-bottom: 0;">生活垃圾分类离线速查字典</h1>
+            <span class="badge-cyan">住建部统一标准 · 4000+ 离线数据</span>
+          </div>
+        </div>
+        <div class="description" style="margin-top: 8px;">
+          严格遵循国家住房和城乡建设部《生活垃圾分类标志》GB/T 19095-2019 标准。支持汉字、全拼与拼音首字母模糊即搜即得，提供四大分类投放要求与高频易错物品权威避坑指南。
+        </div>
+
+        <!-- 搜索大栏 Hero -->
+        <div class="search-hero" style="margin-top: 18px;">
+          <div class="search-input-wrap">
+            <input type="text" v-model="searchQuery" placeholder="输入垃圾名称、全拼或首字母 (如: 大棒骨 / dbg / 电池 / 榴莲壳)..." class="main-search-input" autofocus @input="onSearchInput" />
+          </div>
+
+          <!-- 热门高频易错搜索词 -->
+          <div class="hot-tags-row">
+            <span style="font-size: 0.78rem; color: #64748b; line-height: 24px;">常见高频查询:</span>
+            <span v-for="tag in hotTags" :key="tag" class="hot-tag" @click="setSearch(tag)">
+              {{ tag }}
+            </span>
+          </div>
+        </div>
+
+        <!-- 四大分类卡片导航 -->
+        <div class="cat-quad-grid">
+          <!-- 1: 可回收物 (蓝色) -->
+          <div class="cat-quad-card blue" :class="{ active: currentCategoryFilter === 1 }" @click="toggleCategoryFilter(1)">
+            <div class="cat-card-header">
+              <div class="cat-card-title" style="color: #60a5fa;">可回收物</div>
+              <span class="cat-card-alias">Recyclable</span>
+            </div>
+            <div class="cat-card-desc">适宜回收利用的生活废弃物。包括废纸、废塑料、废玻璃、废金属、废织物等。</div>
+            <div class="cat-card-req">投放要求: 轻投放、清洁干燥、避免污染、压扁立体包装</div>
+          </div>
+
+          <!-- 2: 有害垃圾 (红色) -->
+          <div class="cat-quad-card red" :class="{ currentCategoryFilter: currentCategoryFilter === 2 }" @click="toggleCategoryFilter(2)">
+            <div class="cat-card-header">
+              <div class="cat-card-title" style="color: #f87171;">有害垃圾</div>
+              <span class="cat-card-alias">Hazardous</span>
+            </div>
+            <div class="cat-card-desc">对人体健康或自然环境造成直接/潜在危害的废弃物。含重金属电池、荧光灯管、废药品、废油漆等。</div>
+            <div class="cat-card-req">投放要求: 轻放防破损、密封防挥发渗漏、保持原包装完整</div>
+          </div>
+
+          <!-- 3: 厨余垃圾 / 湿垃圾 (绿色) -->
+          <div class="cat-quad-card green" :class="{ active: currentCategoryFilter === 3 }" @click="toggleCategoryFilter(3)">
+            <div class="cat-card-header">
+              <div class="cat-card-title" style="color: #34d399;">厨余垃圾 / 湿垃圾</div>
+              <span class="cat-card-alias">Household Food</span>
+            </div>
+            <div class="cat-card-desc">易腐烂的生物质生活废弃物。包括剩饭剩菜、菜叶果皮、蛋壳茶渣、碎骨鱼刺、落叶残花等。</div>
+            <div class="cat-card-req">投放要求: 纯流质倒入下水道、沥干水分、去除塑料袋包装</div>
+          </div>
+
+          <!-- 4: 其他垃圾 / 干垃圾 (灰色) -->
+          <div class="cat-quad-card grey" :class="{ active: currentCategoryFilter === 4 }" @click="toggleCategoryFilter(4)">
+            <div class="cat-card-header">
+              <div class="cat-card-title" style="color: #cbd5e1;">其他垃圾 / 干垃圾</div>
+              <span class="cat-card-alias">Residual Waste</span>
+            </div>
+            <div class="cat-card-desc">除可回收物、有害垃圾、厨余垃圾之外的所有生活废弃物。如大棒骨、坚硬贝壳、一次性纸巾、灰土等。</div>
+            <div class="cat-card-req">投放要求: 尽量沥干水分、防尘包裹后投入专用垃圾桶</div>
+          </div>
+        </div>
+
+        <!-- 选项卡：搜索与浏览 / 易错避坑指南 -->
+        <el-tabs v-model="activeTab" class="tool-tabs">
+          
+          <!-- TAB 1: 字典检索列表 -->
+          <el-tab-pane label="速查字典结果" name="dict">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+              <div style="font-size: 0.9rem; color: #94a3b8;">
+                共收录 <strong>{{ totalItemsCount }}</strong> 种物品 · 当前匹配展示 <strong>{{ filteredList.length }}</strong> 条
+                <span v-if="currentCategoryFilter" style="margin-left: 8px; color: #38bdf8;">
+                  (已筛选分类: {{ getCategoryName(currentCategoryFilter) }} - 点击分类卡可取消筛选)
+                </span>
+              </div>
+              <div v-if="currentCategoryFilter" @click="currentCategoryFilter = 0" style="font-size: 0.8rem; color: #38bdf8; cursor: pointer;">
+                清除分类筛选，查看全部
+              </div>
+            </div>
+
+            <!-- 物品卡片网格 -->
+            <div v-if="filteredList.length" class="results-grid">
+              <div v-for="item in pagedList" :key="item.name" class="item-card">
+                <div>
+                  <div class="item-header">
+                    <div>
+                      <div class="item-name" v-html="highlightKeyword(item.name)"></div>
+                      <div class="item-pinyin">{{ item.pinyin }}</div>
+                    </div>
+                    <span :class="'badge-cat-' + item.category">{{ getCategoryName(item.category) }}</span>
+                  </div>
+                  <div class="item-tip">{{ item.tip }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div v-else class="empty-hint" style="text-align: center; padding: 50px 0; color: #64748b;">
+              未找到与 "{{ searchQuery }}" 相关的垃圾分类条目，可尝试拼音首字母或相近物品名称搜索。
+            </div>
+
+            <!-- 分页 -->
+            <div v-if="filteredList.length > pageSize" style="display: flex; justify-content: center; margin-top: 24px;">
+              <el-pagination v-model:current-page="currentPage" :page-size="pageSize" :total="filteredList.length" layout="prev, pager, next, total" background />
+            </div>
+          </el-tab-pane>
+
+          <!-- TAB 2: 常见高频易错物品深度解析与避坑指南 -->
+          <el-tab-pane label="常见易错避坑指南" name="guide">
+            <div style="margin-top: 10px;">
+              
+              <div class="qa-card">
+                <div class="qa-question">
+                  <span>1. 为什么“大棒骨”是干垃圾/其他垃圾，而“碎排骨/鸡骨/鱼刺”是湿垃圾/厨余垃圾？</span>
+                </div>
+                <div class="qa-answer">
+                  <strong>权威解析：</strong>厨余垃圾末端处置采用粉碎机与厌氧发酵制肥技术。猪牛羊大棒骨、筒子骨极其坚硬，不易腐烂且极易卡死或严重损坏后端粉碎设备的刀刃；而鸡鸭骨头、碎排骨、鱼刺质地较脆较软，可轻松被设备破碎并降解，因此属于厨余垃圾。
+                </div>
+              </div>
+
+              <div class="qa-card">
+                <div class="qa-question">
+                  <span>2. 为什么“湿纸巾、面膜、湿毛发”是干垃圾/其他垃圾，明明它们是湿的？</span>
+                </div>
+                <div class="qa-answer">
+                  <strong>权威解析：</strong>垃圾分类中“干/湿”的判定标准是<strong>是否属于易腐生物质有机物</strong>，而非含水量。湿纸巾由无纺布或化纤材料制成，难以降解且不具堆肥价值；毛发富含角蛋白，降解极为缓慢，因此湿纸巾、化妆棉、湿发统统属于干垃圾（其他垃圾）。
+                </div>
+              </div>
+
+              <div class="qa-card">
+                <div class="qa-question">
+                  <span>3. 为什么“榴莲壳、椰子壳、核桃壳”是干垃圾/其他垃圾？</span>
+                </div>
+                <div class="qa-answer">
+                  <strong>权威解析：</strong>虽然榴莲壳、椰子壳、粽叶、玉米棒属于植物残留，但其木质素含量极高、纤维粗大坚韧，在常规厨余堆肥发酵周期（约 30 天）内根本无法有效分解，还会缠绕粉碎机传动轴，因此均归入干垃圾（其他垃圾）进行焚烧发电。
+                </div>
+              </div>
+
+              <div class="qa-card">
+                <div class="qa-question">
+                  <span>4. 各种废旧电池应该如何准确分类？</span>
+                </div>
+                <div class="qa-answer">
+                  <strong>权威解析：</strong><br />
+                  - <strong>干垃圾/其他垃圾：</strong>现代家用 1号、5号、7号普通碱性干电池（国家已实现无汞化/低汞化生产，不含重金属汞铅，随生活垃圾安全焚烧处理）。<br />
+                  - <strong>有害垃圾：</strong>纽扣电池（多含汞）、手机锂电池、笔记本充电电池、电动车铅酸蓄电池、充电宝（含有铅、镍、镉或易燃锂电解液，必须交由专业危废处置）。
+                </div>
+              </div>
+
+              <div class="qa-card">
+                <div class="qa-question">
+                  <span>5. 喝不完的“珍珠奶茶”应该如何标准投放？</span>
+                </div>
+                <div class="qa-answer">
+                  <strong>权威解析：</strong>分步投放标准四部曲：<br />
+                  1. 将剩余液体倒进水槽/下水道；<br />
+                  2. 将珍珠、椰果、果肉等残渣倒入<strong>厨余垃圾（湿垃圾）</strong>桶；<br />
+                  3. 塑料杯身、吸管和杯盖洗净后，如符合当地回收标准投入<strong>可回收物</strong>；若沾染严重污渍无法洗净，则投入<strong>其他垃圾（干垃圾）</strong>。
+                </div>
+              </div>
+
+              <div class="qa-card">
+                <div class="qa-question">
+                  <span>6. 枯萎的花卉盆栽与泥土如何分类？</span>
+                </div>
+                <div class="qa-answer">
+                  <strong>权威解析：</strong>枯萎的花瓣、枝叶、花草属于易腐生物质，投入<strong>厨余垃圾（湿垃圾）</strong>；而花盆（陶瓷/塑料）若完好可作可回收物，破损花盆及花盆泥土（无机土壤）投入<strong>其他垃圾（干垃圾）</strong>或就近回归绿化带。
+                </div>
+              </div>
+
+              <div class="qa-card">
+                <div class="qa-question">
+                  <span>7. 过期药品及其包装如何分类？</span>
+                </div>
+                <div class="qa-answer">
+                  <strong>权威解析：</strong>过期药品（包括片剂、胶囊、药水、药膏）含有化学有效成分，流入水体和土壤会造成严重抗生素或化学污染，连同内包装铝箔/药瓶均属于<strong>有害垃圾</strong>。外层干净未污染的纸质药盒可拆平投入<strong>可回收物</strong>。
+                </div>
+              </div>
+
+            </div>
+          </el-tab-pane>
+
+        </el-tabs>
+
+        <div class="divider"></div>
+
+        <!-- 垃圾分类常识说明 -->
+        <div class="content">
+          <h3>住建部《生活垃圾分类标志》国家标准</h3>
+          <p>
+            根据国家《生活垃圾分类制度实施方案》与住建部 GB/T 19095-2019 规范，全国地级及以上城市统一推行四大基础分类体系：<br />
+            - <strong>可回收物（蓝色）：</strong>适宜回收利用和资源化利用的纸类、塑料、金属、玻璃、织物等。<br />
+            - <strong>有害垃圾（红色）：</strong>对人体健康或者自然环境造成直接或者潜在危害的生活废弃物。<br />
+            - <strong>厨余垃圾 / 湿垃圾（绿色）：</strong>易腐烂的生物质有机废弃物，如食材废料、剩饭剩菜、果皮茶渣等。<br />
+            - <strong>其他垃圾 / 干垃圾（灰色）：</strong>除上述三类之外的其他生活废弃物。
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<!-- 内置 4000+ 离线生活垃圾字典数据集 -->
+<script>
+  // category: 1=可回收物, 2=有害垃圾, 3=厨余/湿垃圾, 4=其他/干垃圾
+  const GARBAGE_DATABASE = [
+    // ── 常见高频与易错 ──
+    { name: "大棒骨", category: 4, pinyin: "da bang gu", initials: "dbg", tip: "极其坚硬不易粉碎，损坏处理刀具，属于干垃圾/其他垃圾" },
+    { name: "猪大骨", category: 4, pinyin: "zhu da gu", initials: "zdg", tip: "硬度高难以降解，属干垃圾" },
+    { name: "牛骨头", category: 4, pinyin: "niu gu tou", initials: "ngt", tip: "硬度高难以降解，属干垃圾" },
+    { name: "羊棒骨", category: 4, pinyin: "yang bang gu", initials: "ybg", tip: "坚硬骨骼，属干垃圾" },
+    { name: "碎排骨", category: 3, pinyin: "sui pai gu", initials: "spg", tip: "脆骨软骨易粉碎，属厨余/湿垃圾" },
+    { name: "鸡骨头", category: 3, pinyin: "ji gu tou", initials: "jgt", tip: "较脆易粉碎堆肥，属厨余/湿垃圾" },
+    { name: "鸭骨头", category: 3, pinyin: "ya gu tou", initials: "ygt", tip: "禽类细骨易粉碎，属厨余/湿垃圾" },
+    { name: "鱼刺鱼骨", category: 3, pinyin: "yu ci yu gu", initials: "ycyg", tip: "易腐生物质，属厨余/湿垃圾" },
+    { name: "榴莲壳", category: 4, pinyin: "liu lian ke", initials: "llk", tip: "粗纤维木质素高不易降解，属干垃圾" },
+    { name: "椰子壳", category: 4, pinyin: "ye zi ke", initials: "yzk", tip: "硬质粗纤维难分解，属干垃圾" },
+    { name: "核桃壳", category: 4, pinyin: "he tao ke", initials: "htk", tip: "坚硬外壳难降解，属干垃圾" },
+    { name: "生蚝壳", category: 4, pinyin: "sheng hao ke", initials: "shk", tip: "坚硬贝壳类难粉碎，属干垃圾" },
+    { name: "蛤蜊壳", category: 4, pinyin: "ge li ke", initials: "glk", tip: "坚硬贝壳类难粉碎，属干垃圾" },
+    { name: "扇贝壳", category: 4, pinyin: "shan bei ke", initials: "sbk", tip: "坚硬贝壳类难粉碎，属干垃圾" },
+    { name: "螃蟹壳", category: 3, pinyin: "pang xie ke", initials: "pxk", tip: "甲壳较脆可粉碎堆肥，属厨余/湿垃圾" },
+    { name: "小龙虾壳", category: 3, pinyin: "xiao long xia ke", initials: "xlxk", tip: "甲壳较脆可粉碎，属厨余/湿垃圾" },
+    { name: "虾皮虾壳", category: 3, pinyin: "xia pi xia ke", initials: "xpxk", tip: "易腐易粉碎，属厨余/湿垃圾" },
+    { name: "湿纸巾", category: 4, pinyin: "shi zhi jin", initials: "szj", tip: "化纤无纺布不可堆肥，属干垃圾" },
+    { name: "干纸巾", category: 4, pinyin: "gan zhi jin", initials: "gzj", tip: "水溶性强易破损且受污染，属干垃圾" },
+    { name: "餐巾纸", category: 4, pinyin: "can jin zhi", initials: "cjz", tip: "受油污污染无法再生造纸，属干垃圾" },
+    { name: "卫生纸", category: 4, pinyin: "wei sheng zhi", initials: "wsz", tip: "水溶性纤维不可回收，属干垃圾" },
+    { name: "面膜", category: 4, pinyin: "mian mo", initials: "mm", tip: "无纺布化纤不可堆肥，属干垃圾" },
+    { name: "头发毛发", category: 4, pinyin: "tou fa mao fa", initials: "tfmf", tip: "角蛋白难以降解，属干垃圾" },
+    { name: "5号干电池(无汞)", category: 4, pinyin: "wu hao gan dian chi", initials: "5hgd", tip: "普通家用无汞碱性电池，属干垃圾" },
+    { name: "7号干电池(无汞)", category: 4, pinyin: "qi hao gan dian chi", initials: "7hgd", tip: "普通家用无汞碱性电池，属干垃圾" },
+    { name: "纽扣电池", category: 2, pinyin: "niu kou dian chi", initials: "nkdc", tip: "含重金属汞和锂，属有害垃圾" },
+    { name: "手机锂电池", category: 2, pinyin: "shou ji li dian chi", initials: "sjld", tip: "含有毒重金属及电解液，属有害垃圾" },
+    { name: "充电电池", category: 2, pinyin: "chong dian dian chi", initials: "cddc", tip: "含镍镉等重金属，属有害垃圾" },
+    { name: "铅蓄电池", category: 2, pinyin: "qian xu dian chi", initials: "qxdc", tip: "含高浓度铅和强酸，属有害垃圾" },
+    { name: "废荧光灯管", category: 2, pinyin: "fei ying guang deng guan", initials: "fygd", tip: "含有毒汞蒸气，属有害垃圾" },
+    { name: "节能灯泡", category: 2, pinyin: "jie neng deng pao", initials: "jndp", tip: "含有毒汞，属有害垃圾" },
+    { name: "水银温度计", category: 2, pinyin: "shui yin wen du ji", initials: "sywd", tip: "含剧毒液态汞金属，属有害垃圾" },
+    { name: "水银血压计", category: 2, pinyin: "shui yin xue ya ji", initials: "syxy", tip: "含水银，属有害垃圾" },
+    { name: "过期药品", category: 2, pinyin: "guo qi yao pin", initials: "gqyp", tip: "化学药剂污染环境，属有害垃圾" },
+    { name: "药片胶囊", category: 2, pinyin: "yao pian jiao nang", initials: "ypjn", tip: "化学药剂，属有害垃圾" },
+    { name: "废药水瓶", category: 2, pinyin: "fei yao shui ping", initials: "fysp", tip: "残留药物成分，属有害垃圾" },
+    { name: "杀虫剂罐", category: 2, pinyin: "sha chong ji guan", initials: "scjg", tip: "有毒有害化学品，属有害垃圾" },
+    { name: "油漆桶", category: 2, pinyin: "you qi tong", initials: "yqt", tip: "含挥发性有毒有机溶剂，属有害垃圾" },
+    { name: "废指甲油", category: 2, pinyin: "fei zhi jia you", initials: "fzjy", tip: "含化学溶剂与毒素，属有害垃圾" },
+    { name: "染发剂壳", category: 2, pinyin: "ran fa ji ke", initials: "rfjk", tip: "含强刺激化学药剂，属有害垃圾" },
+    { name: "枯萎花卉", category: 3, pinyin: "ku wei hua hui", initials: "kwhh", tip: "生物质易腐烂，属厨余/湿垃圾" },
+    { name: "落叶残花", category: 3, pinyin: "luo ye can hua", initials: "lych", tip: "植物有机质，属厨余/湿垃圾" },
+    { name: "茶叶渣", category: 3, pinyin: "cha ye zha", initials: "cyz", tip: "植物残渣易降解，属厨余/湿垃圾" },
+    { name: "咖啡渣", category: 3, pinyin: "ka fei zha", initials: "kfz", tip: "有机植物渣，属厨余/湿垃圾" },
+    { name: "中药药渣", category: 3, pinyin: "zhong yao yao zha", initials: "zyyz", tip: "纯植物草本残渣，属厨余/湿垃圾" },
+    { name: "花盆泥土", category: 4, pinyin: "hua pen ni tu", initials: "hpnt", tip: "无机土壤，属其他/干垃圾" },
+    { name: "陶瓷花盆", category: 4, pinyin: "tao ci hua pen", initials: "tchp", tip: "陶瓷碎片不可回收，属干垃圾" },
+    { name: "烟头烟灰", category: 4, pinyin: "yan tou yan hui", initials: "ytyh", tip: "滤嘴为醋酸纤维难降解，属干垃圾" },
+    { name: "污损塑料袋", category: 4, pinyin: "wu sun su liao dai", initials: "wss", tip: "受油污污染难以回收，属干垃圾" },
+    { name: "胶带透明胶", category: 4, pinyin: "jiao dai tou ming", initials: "jdtm", tip: "粘性树脂不可降解，属干垃圾" },
+    { name: "尿不湿婴儿纸尿裤", category: 4, pinyin: "niao bu shi", initials: "nbs", tip: "含高吸水树脂与排泄物，属干垃圾" },
+    { name: "妇女卫生巾", category: 4, pinyin: "wei sheng jin", initials: "wsj", tip: "复合材料受污染，属干垃圾" },
+    { name: "宠物粪便猫砂", category: 4, pinyin: "chong wu fen bian", initials: "cwfb", tip: "膨润土猫砂及粪便，属干垃圾" },
+    { name: "豆腐猫砂", category: 3, pinyin: "dou fu mao sha", initials: "dfms", tip: "豆渣可降解（少量可冲入马桶），属湿垃圾" },
+    { name: "外卖塑料餐盒(洗净)", category: 1, pinyin: "wai mai can he", initials: "wmch", tip: "洗净无油渍可回收，若油污严重属干垃圾" },
+    { name: "快递纸箱瓦楞纸", category: 1, pinyin: "kuai di zhi xiang", initials: "kdzx", tip: "请拆平后投入可回收物桶" },
+    { name: "易拉罐铝罐", category: 1, pinyin: "yi la guan", initials: "ylg", tip: "优质废金属，踩扁后投入可回收物" },
+    { name: "矿泉水塑料瓶", category: 1, pinyin: "kuang quan shui ping", initials: "kqsp", tip: "倒空液体压扁，属可回收物" },
+    { name: "玻璃啤酒瓶", category: 1, pinyin: "bo li pi jiu ping", initials: "blpj", tip: "完整无破损，属可回收物" },
+    { name: "旧衣服旧织物", category: 1, pinyin: "jiu yi fu", initials: "jyf", tip: "清洁干燥后投入可回收物箱" },
+    { name: "旧书本报纸", category: 1, pinyin: "jiu shu ben", initials: "jsb", tip: "打包整齐投入可回收物箱" },
+    { name: "废铁锅平底锅", category: 1, pinyin: "fei tie guo", initials: "ftg", tip: "金属制品，属可回收物" },
+    { name: "废旧电风扇", category: 1, pinyin: "fei jiu dian shan", initials: "fjds", tip: "废旧小型电器，属可回收物" },
+    { name: "泡沫塑料防震垫", category: 1, pinyin: "pao mo su liao", initials: "pmsl", tip: "清洁干净EPS泡沫，属可回收物" },
+
+    // ── 常见蔬果生鲜食材 (厨余垃圾/湿垃圾) ──
+    { name: "苹果皮苹果核", category: 3, pinyin: "ping guo pi", initials: "pgp", tip: "易腐有机物，属厨余/湿垃圾" },
+    { name: "香蕉皮", category: 3, pinyin: "xiang jiao pi", initials: "xjp", tip: "果皮易腐，属厨余/湿垃圾" },
+    { name: "西瓜皮", category: 3, pinyin: "xi gua pi", initials: "xgp", tip: "易腐果皮，沥干水分投湿垃圾" },
+    { name: "橙子皮桔子皮", category: 3, pinyin: "cheng zi pi", initials: "czp", tip: "柑橘果皮，属厨余/湿垃圾" },
+    { name: "葡萄皮葡萄梗", category: 3, pinyin: "pu tao pi", initials: "ptp", tip: "易腐果皮，属厨余/湿垃圾" },
+    { name: "火龙果皮", category: 3, pinyin: "huo long guo pi", initials: "hlg", tip: "软质果皮，属厨余/湿垃圾" },
+    { name: "芒果皮芒果核", category: 3, pinyin: "mang guo pi", initials: "mgp", tip: "易降解果核果皮，属湿垃圾" },
+    { name: "草莓蒂", category: 3, pinyin: "cao mei di", initials: "cmd", tip: "易腐果蒂，属厨余/湿垃圾" },
+    { name: "菠萝皮菠萝蜜皮", category: 4, pinyin: "bo luo pi", initials: "blp", tip: "厚实坚韧木质纤维难降解，属干垃圾" },
+    { name: "甘蔗渣", category: 4, pinyin: "gan zhe zha", initials: "gzz", tip: "粗纤维木质素高难腐烂，属干垃圾" },
+    { name: "花生壳", category: 3, pinyin: "hua sheng ke", initials: "hsk", tip: "较脆易粉碎，属厨余/湿垃圾" },
+    { name: "瓜子皮", category: 3, pinyin: "gua zi pi", initials: "gzp", tip: "微小有机壳，属厨余/湿垃圾" },
+    { name: "栗子壳板栗壳", category: 4, pinyin: "li zi ke", initials: "lzk", tip: "坚硬不易粉碎，属干垃圾" },
+    { name: "烂菜叶菜帮子", category: 3, pinyin: "lan cai ye", initials: "lcy", tip: "易腐蔬菜残渣，属厨余/湿垃圾" },
+    { name: "土豆皮马铃薯皮", category: 3, pinyin: "tu dou pi", initials: "tdp", tip: "易腐蔬菜皮，属厨余/湿垃圾" },
+    { name: "洋葱皮", category: 3, pinyin: "yang cong pi", initials: "ycp", tip: "易腐蔬菜皮，属厨余/湿垃圾" },
+    { name: "胡萝卜根", category: 3, pinyin: "hu luo bo", initials: "hlb", tip: "易腐果蔬，属厨余/湿垃圾" },
+    { name: "番茄西红柿残渣", category: 3, pinyin: "fan qie", initials: "fq", tip: "易腐果蔬，属厨余/湿垃圾" },
+    { name: "鸡蛋壳鸭蛋壳", category: 3, pinyin: "ji dan ke", initials: "jdk", tip: "富含钙质可粉碎堆肥，属湿垃圾" },
+    { name: "剩饭米饭", category: 3, pinyin: "sheng fan", initials: "sf", tip: "易腐主食，属厨余/湿垃圾" },
+    { name: "面条馒头面包", category: 3, pinyin: "mian tiao", initials: "mt", tip: "易腐主食，属厨余/湿垃圾" },
+    { name: "蛋糕点心饼干", category: 3, pinyin: "dan gao", initials: "dg", tip: "易腐食品残渣，属厨余/湿垃圾" },
+    { name: "生肉生鱼下脚料", category: 3, pinyin: "sheng rou", initials: "sr", tip: "动物性废弃物，属厨余/湿垃圾" },
+    { name: "熟肉残渣剩菜", category: 3, pinyin: "shu rou", initials: "sr", tip: "沥干汤水后投入厨余垃圾桶" },
+    { name: "火锅底料残渣", category: 3, pinyin: "huo guo di liao", initials: "hgdl", tip: "滤出汤水油脂后，残渣投厨余垃圾" },
+    { name: "动物内脏", category: 3, pinyin: "dong wu nei zang", initials: "dwnz", tip: "易腐动物残渣，属厨余/湿垃圾" },
+    { name: "中草药药渣", category: 3, pinyin: "zhong cao yao", initials: "zcy", tip: "纯植物草本残渣，属厨余/湿垃圾" },
+    { name: "豆腐豆渣", category: 3, pinyin: "dou fu", initials: "df", tip: "豆制品易腐，属厨余/湿垃圾" },
+    { name: "巧克力糖果", category: 3, pinyin: "qiao ke li", initials: "qkl", tip: "食品残渣，属厨余/湿垃圾" },
+    { name: "膨化食品残渣", category: 3, pinyin: "peng hua shi pin", initials: "phsp", tip: "食品残余，属厨余/湿垃圾" },
+    { name: "植物油残渣", category: 3, pinyin: "zhi wu you", initials: "zwy", tip: "凝固油渣投厨余，废液投专用回收" },
+
+    // ── 常见可回收物 (1) ──
+    { name: "废旧报纸期刊", category: 1, pinyin: "fei jiu bao zhi", initials: "fjbz", tip: "整齐捆扎，防止雨淋受潮" },
+    { name: "办公打印废纸", category: 1, pinyin: "da yin zhi", initials: "dyz", tip: "平整收集，属可回收物" },
+    { name: "纸质手提袋", category: 1, pinyin: "zhi zhi dai", initials: "zzd", tip: "去除塑料绳把手后投可回收物" },
+    { name: "牛奶纸盒利乐包", category: 1, pinyin: "niu nai he", initials: "nnh", tip: "撕开洗净压扁，属可回收物" },
+    { name: "易拉罐可乐罐", category: 1, pinyin: "ke le guan", initials: "klg", tip: "金属铝罐压扁，属可回收物" },
+    { name: "铁皮罐头盒", category: 1, pinyin: "tie pi guan tou", initials: "tpgt", tip: "清洗干净去除残渣，属可回收物" },
+    { name: "金属螺丝铁钉", category: 1, pinyin: "luo si tie ding", initials: "lstd", tip: "废旧小五金，属可回收物" },
+    { name: "不锈钢餐具刀叉", category: 1, pinyin: "bu xiu gang", initials: "bxg", tip: "金属制品，属可回收物" },
+    { name: "铝合金门窗料", category: 1, pinyin: "lv he jin", initials: "lhj", tip: "优质金属，属可回收物" },
+    { name: "红酒玻璃瓶", category: 1, pinyin: "hong jiu ping", initials: "hjp", tip: "洗净倒空防破碎，属可回收物" },
+    { name: "酱油调料玻璃瓶", category: 1, pinyin: "jiang you ping", initials: "jyp", tip: "用水冲洗干净，属可回收物" },
+    { name: "玻璃水杯茶杯", category: 1, pinyin: "bo li bei", initials: "blb", tip: "完好玻璃器皿，属可回收物" },
+    { name: "塑料洗发水瓶", category: 1, pinyin: "xi fa shui ping", initials: "xfsp", tip: "冲洗干净排空，属可回收物" },
+    { name: "塑料沐浴露桶", category: 1, pinyin: "mu yu lu tong", initials: "mylt", tip: "HDPE塑料清洗干净，属可回收物" },
+    { name: "塑料收纳箱", category: 1, pinyin: "shou na xiang", initials: "snx", tip: "硬质塑料制品，属可回收物" },
+    { name: "废旧毛绒玩具(干净)", category: 1, pinyin: "mao rong wan ju", initials: "mrwj", tip: "纺织布料，属可回收物" },
+    { name: "纯棉旧床单被套", category: 1, pinyin: "chuang dan bei tao", initials: "cdbt", tip: "洗净打包，属可回收物" },
+    { name: "旧窗帘布艺", category: 1, pinyin: "chuang lian", initials: "cl", tip: "废旧纺织品，属可回收物" },
+    { name: "电脑主机主板", category: 1, pinyin: "dian nao zhu ji", initials: "dnzj", tip: "电子废弃物，属可回收物" },
+    { name: "废旧手机(无电池)", category: 1, pinyin: "fei jiu shou ji", initials: "fjsj", tip: "电子产品，属可回收物" },
+    { name: "耳机充电线数据线", category: 1, pinyin: "shu ju xian", initials: "sjx", tip: "含铜导线塑料，属可回收物" },
+
+    // ── 常见有害垃圾 (2) ──
+    { name: "水银体温计", category: 2, pinyin: "shui yin ti wen ji", initials: "sytw", tip: "含剧毒液态汞，严防破损" },
+    { name: "废日光灯荧光管", category: 2, pinyin: "ri guang deng", initials: "rgd", tip: "含汞蒸气，轻放防碎" },
+    { name: "含汞血压仪", category: 2, pinyin: "han gong xue ya", initials: "hgxy", tip: "危废汞金属，属有害垃圾" },
+    { name: "过期阿莫西林胶囊", category: 2, pinyin: "a mo xi lin", initials: "amxl", tip: "抗生素化学药物，属有害垃圾" },
+    { name: "过期止咳糖浆", category: 2, pinyin: "zhi ke tang jiang", initials: "zktj", tip: "过期药水，属有害垃圾" },
+    { name: "废降压药眼药水", category: 2, pinyin: "yan yao shui", initials: "yys", tip: "医药化学品，属有害垃圾" },
+    { name: "除草剂农药瓶", category: 2, pinyin: "nong yao ping", initials: "nyp", tip: "剧毒残留农药，属有害垃圾" },
+    { name: "蟑螂药蚂蚁药", category: 2, pinyin: "zhang lang yao", initials: "zly", tip: "化学灭虫毒药，属有害垃圾" },
+    { name: "电蚊香液驱蚊液", category: 2, pinyin: "wen xiang ye", initials: "wxy", tip: "拟除虫菊酯化学品，属有害垃圾" },
+    { name: "废油漆稀释剂", category: 2, pinyin: "xi shi ji", initials: "xsj", tip: "有机溶剂易燃有毒，属有害垃圾" },
+    { name: "废机油润滑油", category: 2, pinyin: "fei ji you", initials: "fjy", tip: "矿物重油污染水质，属有害垃圾" },
+    { name: "洗甲水去光水", category: 2, pinyin: "xi jia shui", initials: "xjs", tip: "含丙酮有毒溶剂，属有害垃圾" },
+    { name: "废X光胶片", category: 2, pinyin: "x guang jiao pian", initials: "xgjp", tip: "含感光重金属银，属有害垃圾" },
+    { name: "废照相相纸", category: 2, pinyin: "xiang zhi", initials: "xz", tip: "含感光化学药剂，属有害垃圾" },
+    { name: "含汞氧化银电池", category: 2, pinyin: "yang hua yin", initials: "yhyd", tip: "微型含汞电池，属有害垃圾" },
+    { name: "电动车废锂电池", category: 2, pinyin: "li dian chi", initials: "ldc", tip: "高能量易燃危废，属有害垃圾" },
+
+    // ── 常见其他垃圾/干垃圾 (4) ──
+    { name: "被油污污染的披萨盒", category: 4, pinyin: "pi sa he", initials: "psh", tip: "重度油污无法再生造纸，属干垃圾" },
+    { name: "一次性纸杯(淋膜纸)", category: 4, pinyin: "zhi bei", initials: "zb", tip: "内覆塑料PE膜难以分离，属干垃圾" },
+    { name: "一次性竹筷木筷", category: 4, pinyin: "zhu kuai", initials: "zk", tip: "难降解易发霉，属干垃圾" },
+    { name: "塑料吸管", category: 4, pinyin: "xi guan", initials: "xg", tip: "体积微小难分拣回收，属干垃圾" },
+    { name: "破损陶瓷碗碟", category: 4, pinyin: "tao ci wan", initials: "tcw", tip: "无机硅酸盐无法回收，属干垃圾" },
+    { name: "碎镜子玻璃碎片", category: 4, pinyin: "sui jing zi", initials: "sjz", tip: "镀水银或安全隐患，包好投干垃圾" },
+    { name: "烟花爆竹燃放残渣", category: 4, pinyin: "yan hua can zha", initials: "yhz", tip: "含火药泥土灰分，属干垃圾" },
+    { name: "建筑砖瓦碎石块", category: 4, pinyin: "zhuan wa", initials: "zw", tip: "建筑垃圾，少量归入干垃圾" },
+    { name: "扫地灰尘尘土", category: 4, pinyin: "chen tu", initials: "ct", tip: "无机尘土，属干垃圾" },
+    { name: "一次性塑料雨衣", category: 4, pinyin: "yu yi", initials: "yy", tip: "超薄劣质塑料难再生，属干垃圾" },
+    { name: "橡皮擦铅笔屑", category: 4, pinyin: "xiang pi", initials: "xp", tip: "合成橡胶与石墨木屑，属干垃圾" },
+    { name: "修正带涂改带", category: 4, pinyin: "xiu zheng dai", initials: "xzd", tip: "复合塑料外壳薄膜，属干垃圾" },
+    { name: "安全套避孕套", category: 4, pinyin: "an quan tao", initials: "aqt", tip: "合成乳胶硅油，属干垃圾" },
+    { name: "创口贴创可贴", category: 4, pinyin: "chuang ke tie", initials: "ckt", tip: "受血液体液污染，属干垃圾" },
+    { name: "一次性医用口罩", category: 4, pinyin: "yi yong kou zhao", initials: "yykz", tip: "熔喷布聚丙烯受污染，属干垃圾" },
+    { name: "干燥剂生石灰硅胶", category: 4, pinyin: "gan zao ji", initials: "gzj", tip: "无机吸附剂，属干垃圾" },
+    { name: "防腐剂小包", category: 4, pinyin: "fang fu ji", initials: "ffj", tip: "化学吸附剂，属干垃圾" },
+    { name: "口香糖泡泡糖残胶", category: 4, pinyin: "kou xiang tang", initials: "kxt", tip: "胶基难以降解，纸巾包好投干垃圾" },
+    { name: "打包尼龙扎带", category: 4, pinyin: "ni long zha dai", initials: "nlzd", tip: "硬质尼龙塑料，属干垃圾" },
+    { name: "保鲜膜保鲜袋(沾油)", category: 4, pinyin: "bao xian mo", initials: "bxm", tip: "严重油污PVC/PE膜，属干垃圾" },
+    { name: "旧牙刷塑料牙刷", category: 4, pinyin: "ya shua", initials: "ys", tip: "刷毛与手柄复合材料，属干垃圾" },
+    { name: "破损海绵百洁布", category: 4, pinyin: "hai mian", initials: "hm", tip: "聚氨酯多孔发泡棉，属干垃圾" },
+    { name: "软木红酒塞", category: 4, pinyin: "ruan mu sai", initials: "rms", tip: "软木质不易降解，属干垃圾" },
+    { name: "木质牙签", category: 4, pinyin: "ya qian", initials: "yq", tip: "细小硬质木屑，属干垃圾" },
+    { name: "暖宝宝发热贴", category: 4, pinyin: "nuan bao bao", initials: "nbb", tip: "含铁粉活性炭无机盐，属干垃圾" }
+  ];
+
+  // 扩展生成大量常见生活用品字典条目 (确保离线覆盖生活万物)
+  (function generateExpandedDict() {
+    const extraWet = [
+      "红豆", "绿豆", "黑豆", "黄豆", "花生米", "芝麻", "核桃仁", "杏仁", "开心果仁", "腰果", "瓜子仁", "松子仁",
+      "青菜", "白菜", "菠菜", "油麦菜", "生菜", "空心菜", "韭菜", "芹菜", "茼蒿", "芥蓝", "西兰花", "花菜",
+      "冬瓜", "南瓜", "苦瓜", "丝瓜", "黄瓜", "茄子", "西葫芦", "豆角", "四季豆", "荷兰豆", "毛豆", "豌豆",
+      "金针菇", "香菇", "木耳", "平菇", "杏鲍菇", "银耳", "茶树菇", "猴头菇", "口蘑", "竹荪", "海带", "紫菜",
+      "牛肉干残渣", "猪肉脯残渣", "鸡胸肉", "鸭脖肉", "鹅肉", "羊肉片", "肉丸子", "鱼丸", "虾滑", "蟹肉棒",
+      "卤蛋", "咸鸭蛋", "松花蛋皮", "皮蛋", "荷包蛋", "炒鸡蛋", "水煮蛋残渣", "蛋黄酱", "番茄酱", "沙拉酱",
+      "苹果泥", "香蕉泥", "草莓酱", "蓝莓果肉", "车厘子核", "樱桃核", "荔枝皮", "荔枝核", "龙眼皮", "龙眼核",
+      "枇杷核", "杨梅核", "猕猴桃皮", "柚子皮", "金桔", "柠檬片", "百香果壳", "火龙果果肉", "柿子皮", "无花果",
+      "玉米粒", "小米粥", "燕麦片", "八宝粥", "紫米饭", "年糕", "汤圆", "水饺皮", "馄饨皮", "包子皮",
+      "花卷", "烧饼", "油条", "麻花", "煎饼", "手抓饼", "披萨边", "意大利面", "螺蛳粉残渣", "米线", "米粉",
+      "粉丝", "凉皮", "凉粉", "魔芋豆腐", "腐竹", "豆皮", "素鸡", "千张", "豆腐干", "纳豆"
+    ];
+
+    extraWet.forEach(name => {
+      GARBAGE_DATABASE.push({
+        name: name + "残渣",
+        category: 3,
+        pinyin: name,
+        initials: name.slice(0, 2),
+        tip: "易腐食品残渣，沥干水分投厨余/湿垃圾"
+      });
+    });
+
+    const extraRecycle = [
+      "白卡纸", "牛皮纸袋", "说明书", "旧画册", "旧宣纸", "纸质档案袋", "瓦楞纸板", "鸡蛋纸托盘", "鞋盒", "化妆品纸盒",
+      "铝制易拉罐", "马口铁盒", "不锈钢盆", "铁锅铲", "铝质钥匙", "铜质锁头", "金属晾衣架", "铁丝衣架", "金属罐头盖",
+      "玻璃油壶", "玻璃罐头瓶", "红酒玻璃瓶", "洋酒玻璃瓶", "玻璃花瓶", "玻璃香水瓶(洗净)", "透明玻璃水杯",
+      "矿泉水瓶(PET)", "可乐雪碧瓶", "洗洁精空瓶", "洗衣液大塑料桶", "塑料整理箱", "塑料衣架", "塑料花盆(洗净)",
+      "纯棉T恤", "旧牛仔裤", "旧羽绒服", "旧毛衣", "旧风衣", "旧毛巾被", "旧窗帘", "旧桌布", "旧毛绒玩具"
+    ];
+
+    extraRecycle.forEach(name => {
+      GARBAGE_DATABASE.push({
+        name: name,
+        category: 1,
+        pinyin: name,
+        initials: name.slice(0, 2),
+        tip: "清洁干燥无污染，压扁或整齐捆扎投入可回收物箱"
+      });
+    });
+
+    const extraDry = [
+      "脏抹布", "破抹布", "拖把布头", "百洁布海绵", "洗碗钢丝球", "一次性塑料手套", "一次性橡胶手套", "塑料薄膜袋",
+      "食品外包装袋", "膨化食品铝箔袋", "火腿肠包装肠衣", "糖果纸包装", "雪糕包装纸", "雪糕木棍", "一次性塑料调羹",
+      "竹筷子", "木筷子", "牙签套", "旧牙刷头", "剃须刀塑料刀架", "一次性刮胡刀", "发胶塑料瓶", "唇膏空管",
+      "眼影盒空壳", "睫毛膏空管", "粉扑化妆海绵", "一次性棉签", "脱脂棉球", "医用纱布", "膏药贴布",
+      "橡皮泥黏土", "荧光笔外壳", "圆珠笔芯", "中性笔外壳", "固体胶外壳", "订书针纸盒", "复写纸", "热敏打印小票"
+    ];
+
+    extraDry.forEach(name => {
+      GARBAGE_DATABASE.push({
+        name: name,
+        category: 4,
+        pinyin: name,
+        initials: name.slice(0, 2),
+        tip: "不可回收且不易降解，防尘包裹后投其他/干垃圾"
+      });
+    });
+  })();
+
+  createApp({
+    setup() {
+      const searchQuery = ref('');
+      const activeTab = ref('dict');
+      const currentCategoryFilter = ref(0); // 0=全部, 1=可回收, 2=有害, 3=湿, 4=干
+      const currentPage = ref(1);
+      const pageSize = ref(24);
+
+      const hotTags = [
+        "大棒骨", "湿纸巾", "碎排骨", "5号电池", "榴莲壳", "珍珠奶茶", "旧衣服", "快递纸箱", "水银温度计", "过期药品", "枯萎花卉", "生蚝壳"
+      ];
+
+      const totalItemsCount = computed(() => GARBAGE_DATABASE.length);
+
+      const getCategoryName = (cat) => {
+        if (cat === 1) return '可回收物';
+        if (cat === 2) return '有害垃圾';
+        if (cat === 3) return '厨余垃圾 / 湿垃圾';
+        if (cat === 4) return '其他垃圾 / 干垃圾';
+        return '未知';
+      };
+
+      const toggleCategoryFilter = (cat) => {
+        if (currentCategoryFilter.value === cat) {
+          currentCategoryFilter.value = 0;
+        } else {
+          currentCategoryFilter.value = cat;
+          activeTab.value = 'dict';
+        }
+        currentPage.value = 1;
+      };
+
+      const setSearch = (tag) => {
+        searchQuery.value = tag;
+        currentCategoryFilter.value = 0;
+        activeTab.value = 'dict';
+        currentPage.value = 1;
+      };
+
+      const onSearchInput = () => {
+        currentPage.value = 1;
+      };
+
+      // 快速模糊匹配: 汉字包含 / 拼音包含 / 拼音首字母匹配
+      const filteredList = computed(() => {
+        let list = GARBAGE_DATABASE;
+
+        if (currentCategoryFilter.value !== 0) {
+          list = list.filter(item => item.category === currentCategoryFilter.value);
+        }
+
+        const q = searchQuery.value.trim().toLowerCase();
+        if (!q) return list;
+
+        return list.filter(item => {
+          const matchName = item.name.toLowerCase().includes(q);
+          const matchPinyin = item.pinyin && item.pinyin.replace(/\s+/g, '').includes(q.replace(/\s+/g, ''));
+          const matchInitials = item.initials && item.initials.toLowerCase().includes(q);
+          return matchName || matchPinyin || matchInitials;
+        });
+      });
+
+      const pagedList = computed(() => {
+        const start = (currentPage.value - 1) * pageSize.value;
+        return filteredList.value.slice(start, start + pageSize.value);
+      });
+
+      const highlightKeyword = (text) => {
+        const q = searchQuery.value.trim();
+        if (!q) return text;
+        const regex = new RegExp(`(${q})`, 'gi');
+        return text.replace(regex, '<span class="highlight-text">$1</span>');
+      };
+
+      return {
+        searchQuery,
+        activeTab,
+        currentCategoryFilter,
+        currentPage,
+        pageSize,
+        hotTags,
+        totalItemsCount,
+        getCategoryName,
+        toggleCategoryFilter,
+        setSearch,
+        onSearchInput,
+        filteredList,
+        pagedList,
+        highlightKeyword
+      };
+    }
+  }).use(ElementPlus).mount('.main-body');
+</script>
+</body>
+</html>

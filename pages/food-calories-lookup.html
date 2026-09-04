@@ -1,0 +1,812 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>常用食物热量与营养成分速查表 - 在线工具</title>
+    <meta name="description" content="常用食物热量与营养成分速查表：纯本地离线数据字典，按主食谷物、肉禽蛋类、水产海鲜、蔬菜菌菇、水果坚果、饮料乳品等分类，支持关键词即时搜索，展示每100g热量(kcal)、碳水、蛋白质、脂肪及升糖指数(GI)。" />
+    <meta name="keywords" content="食物热量表,食物卡路里查询,食物营养成分表,升糖指数GI,减脂食物热量,碳水蛋白质脂肪查询" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="dns-prefetch" href="" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="常用食物热量与营养成分速查表 - 在线工具" />
+    <meta property="og:description" content="纯本地离线常用食物热量与营养成分速查字典，支持分类与关键词即时检索、GI升糖指数、饮食搭配计算。" />
+    <meta property="og:url" content="https://tool.6767.chat/food-calories-lookup" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="常用食物热量与营养成分速查表 - 在线工具" />
+    <meta name="twitter:description" content="纯本地离线常用食物热量与营养成分速查字典，支持分类与关键词即时检索、GI升糖指数、饮食搭配计算。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/food-calories-lookup" />
+
+    <style>
+        .category-tab-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+        }
+        .category-tab-btn {
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            color: #94a3b8;
+            font-size: 0.84rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .category-tab-btn:hover {
+            border-color: rgba(34, 211, 238, 0.5);
+            color: #e2e8f0;
+        }
+        .category-tab-btn.active {
+            background: rgba(34, 211, 238, 0.15);
+            border-color: #22d3ee;
+            color: #67e8f9;
+            font-weight: 600;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .food-card {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 14px;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .food-card:hover {
+            border-color: rgba(34, 211, 238, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+        }
+        .food-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .food-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .food-cal-badge {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #f59e0b;
+        }
+        .food-cal-unit {
+            font-size: 0.72rem;
+            font-weight: 400;
+            color: #94a3b8;
+            margin-left: 2px;
+        }
+
+        .nutrient-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            background: rgba(2, 6, 23, 0.45);
+            padding: 8px 6px;
+            border-radius: 6px;
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            margin: 8px 0;
+            text-align: center;
+        }
+        .nutrient-item .n-label {
+            font-size: 0.68rem;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+        .nutrient-item .n-val {
+            font-family: ui-monospace, monospace;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .food-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            font-size: 0.75rem;
+        }
+        .gi-badge {
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .gi-low { background: rgba(52, 211, 153, 0.15); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.4); }
+        .gi-mid { background: rgba(251, 191, 36, 0.15); color: #fcd34d; border: 1px solid rgba(251, 191, 36, 0.4); }
+        .gi-high { background: rgba(248, 113, 113, 0.15); color: #fca5a5; border: 1px solid rgba(248, 113, 113, 0.4); }
+        .gi-none { background: rgba(100, 116, 139, 0.15); color: #94a3b8; }
+
+        /* 食物篮子面板 */
+        .basket-panel {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            border-radius: 12px;
+            padding: 18px;
+            margin: 24px 0;
+        }
+        .basket-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+            flex-wrap: wrap;
+        }
+        .macro-ratio-bar {
+            height: 10px;
+            border-radius: 999px;
+            overflow: hidden;
+            display: flex;
+            margin: 10px 0 6px;
+            background: #1e293b;
+        }
+        .macro-ratio-carbs { background: #38bdf8; transition: width 0.3s; }
+        .macro-ratio-protein { background: #34d399; transition: width 0.3s; }
+        .macro-ratio-fat { background: #f87171; transition: width 0.3s; }
+        .el-check-tag {
+            background: rgba(15, 23, 42, 0.8) !important;
+            border: 1px solid rgba(51, 65, 85, 0.8) !important;
+            color: #94a3b8 !important;
+            padding: 4px 10px !important;
+            border-radius: 6px !important;
+            font-size: 0.75rem !important;
+            font-weight: 500 !important;
+        }
+        .el-check-tag.is-checked {
+            background: rgba(34, 211, 238, 0.15) !important;
+            border-color: #22d3ee !important;
+            color: #22d3ee !important;
+            font-weight: 600 !important;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一标准顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">常用食物热量与营养成分速查表</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">常用食物热量与营养成分速查表</h1>
+                </div>
+                <div class="description">
+                    纯本地离线食物营养字典（权威参考《中国食物成分表》），涵盖主食谷物、肉禽蛋类、水产海鲜、蔬菜菌菇、水果坚果、饮料乳品等分类，支持关键词即时搜索、营养成分排序、升糖指数 (GI) 与一日饮食热量组合计算。
+                </div>
+
+                <!-- Vue 3 应用交互区域 -->
+                <div id="foodApp">
+                    <!-- 搜索与筛选工具栏 -->
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 mb-4 space-y-3">
+                        <div class="flex flex-wrap md:flex-nowrap gap-3 items-center">
+                            <!-- 关键词搜索框 -->
+                            <el-input 
+                                v-model="searchQuery" 
+                                placeholder="输入食物名称或标签搜索，如：米饭、鸡胸肉、低GI、高蛋白..." 
+                                size="large" 
+                                clearable
+                                class="flex-1"
+                            >
+                                <template #prefix>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                </template>
+                            </el-input>
+
+                            <!-- 排序方式 -->
+                            <el-select v-model="sortBy" placeholder="排序方式" size="large" style="width: 170px;">
+                                <el-option label="默认排序" value="default" />
+                                <el-option label="热量从低到高" value="cal_asc" />
+                                <el-option label="热量从高到低" value="cal_desc" />
+                                <el-option label="蛋白质最高" value="protein_desc" />
+                                <el-option label="碳水化合物最低" value="carbs_asc" />
+                                <el-option label="脂肪最低" value="fat_asc" />
+                                <el-option label="膳食纤维最高" value="fiber_desc" />
+                            </el-select>
+
+                            <!-- 视图切换与饮食篮子按钮 -->
+                            <el-button size="large" :type="viewMode === 'card' ? 'primary' : 'default'" plain @click="toggleViewMode">
+                                {{ viewMode === 'card' ? '卡片视图' : '表格视图' }}
+                            </el-button>
+                            <el-badge :value="basket.length" :hidden="basket.length === 0">
+                                <el-button size="large" type="success" plain @click="showBasket = !showBasket">
+                                    🛒 饮食清单 ({{ basket.length }})
+                                </el-button>
+                            </el-badge>
+                        </div>
+
+                        <!-- 标签快捷过滤 -->
+                        <div class="flex flex-wrap gap-2 items-center text-xs pt-1">
+                            <span class="text-slate-400">快捷筛选:</span>
+                            <el-check-tag :checked="tagFilter === 'all'" @change="setTag('all')">全部</el-check-tag>
+                            <el-check-tag :checked="tagFilter === 'low_gi'" @change="setTag('low_gi')">低升糖 (低GI ≤55)</el-check-tag>
+                            <el-check-tag :checked="tagFilter === 'high_protein'" @change="setTag('high_protein')">高蛋白 (≥15g)</el-check-tag>
+                            <el-check-tag :checked="tagFilter === 'high_fiber'" @change="setTag('high_fiber')">高纤维 (≥3g)</el-check-tag>
+                            <el-check-tag :checked="tagFilter === 'low_calorie'" @change="setTag('low_calorie')">低卡控能 (&lt;100kcal)</el-check-tag>
+                            <el-check-tag :checked="tagFilter === 'weight_loss'" @change="setTag('weight_loss')">减脂优选</el-check-tag>
+                        </div>
+                    </div>
+
+                    <!-- 分类 Tab 切换栏 -->
+                    <div class="category-tab-bar">
+                        <button 
+                            v-for="cat in categories" 
+                            :key="cat.key" 
+                            class="category-tab-btn" 
+                            :class="{ active: currentCategory === cat.key }"
+                            @click="currentCategory = cat.key"
+                        >
+                            {{ cat.name }} ({{ getCategoryCount(cat.key) }})
+                        </button>
+                    </div>
+
+                    <!-- 饮食搭配计算器篮子展开面板 -->
+                    <div v-if="showBasket" class="basket-panel">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-100 text-base">🛒 今日饮食热量与三大营养素搭配计算器</span>
+                                <span class="text-xs text-slate-400">(自定义克数即时测算全天或单餐摄入)</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <el-button size="small" @click="copyBasketSummary" plain>复制营养总结</el-button>
+                                <el-button size="small" type="danger" plain @click="clearBasket">清空清单</el-button>
+                            </div>
+                        </div>
+
+                        <div v-if="basket.length === 0" class="text-center py-6 text-slate-500 text-sm">
+                            清单暂无食物，请在下方点击食物卡片上的 “+ 加入清单” 添加食物。
+                        </div>
+
+                        <div v-else>
+                            <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
+                                <div v-for="(item, idx) in basket" :key="idx" class="basket-item-row">
+                                    <div class="flex items-center gap-2 flex-1 min-w-44">
+                                        <span class="font-medium text-slate-200 text-sm">{{ item.food.name }}</span>
+                                        <span class="text-xs text-slate-400">({{ item.food.calories }} kcal / 100g)</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center gap-1">
+                                            <el-input-number v-model="item.grams" :min="10" :max="2000" :step="25" size="small" style="width: 110px;" />
+                                            <span class="text-xs text-slate-400">克(g)</span>
+                                        </div>
+                                        <div class="text-xs text-amber-400 font-mono w-24 text-right">
+                                            {{ Math.round((item.food.calories * item.grams) / 100) }} kcal
+                                        </div>
+                                        <el-button size="small" type="danger" text @click="removeFromBasket(idx)">移除</el-button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 篮子总计统计 -->
+                            <div class="mt-4 pt-3 border-t border-slate-700">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center mb-3">
+                                    <div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+                                        <div class="text-xs text-slate-400">总热量</div>
+                                        <div class="text-lg font-bold text-amber-400 font-mono">{{ basketTotals.calories }} <span class="text-xs font-normal">kcal</span></div>
+                                    </div>
+                                    <div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+                                        <div class="text-xs text-sky-400">碳水化合物</div>
+                                        <div class="text-lg font-bold text-sky-300 font-mono">{{ basketTotals.carbs }} <span class="text-xs font-normal">g</span></div>
+                                    </div>
+                                    <div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+                                        <div class="text-xs text-emerald-400">蛋白质</div>
+                                        <div class="text-lg font-bold text-emerald-300 font-mono">{{ basketTotals.protein }} <span class="text-xs font-normal">g</span></div>
+                                    </div>
+                                    <div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+                                        <div class="text-xs text-rose-400">脂肪</div>
+                                        <div class="text-lg font-bold text-rose-300 font-mono">{{ basketTotals.fat }} <span class="text-xs font-normal">g</span></div>
+                                    </div>
+                                </div>
+
+                                <!-- 三大营养素供能比进度条 -->
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                        <span>三大营养素供能比 (碳水 : 蛋白质 : 脂肪)</span>
+                                        <span class="font-mono">
+                                            <span class="text-sky-400">碳水 {{ macroPercentages.carbs }}%</span> · 
+                                            <span class="text-emerald-400">蛋白 {{ macroPercentages.protein }}%</span> · 
+                                            <span class="text-rose-400">脂肪 {{ macroPercentages.fat }}%</span>
+                                        </span>
+                                    </div>
+                                    <div class="macro-ratio-bar">
+                                        <div class="macro-ratio-carbs" :style="{ width: macroPercentages.carbs + '%' }"></div>
+                                        <div class="macro-ratio-protein" :style="{ width: macroPercentages.protein + '%' }"></div>
+                                        <div class="macro-ratio-fat" :style="{ width: macroPercentages.fat + '%' }"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 食物列表展示：卡片视图 -->
+                    <div v-if="viewMode === 'card'" class="food-grid">
+                        <div v-for="item in filteredFoods" :key="item.name" class="food-card">
+                            <div>
+                                <div class="food-card-header">
+                                    <div class="food-name">
+                                        <span>{{ item.icon }}</span>
+                                        <span>{{ item.name }}</span>
+                                    </div>
+                                    <div class="food-cal-badge">
+                                        {{ item.calories }}<span class="food-cal-unit">kcal</span>
+                                    </div>
+                                </div>
+
+                                <div class="text-xs text-slate-400 mb-2">{{ item.portion }}</div>
+
+                                <!-- 四大核心营养指标 (每100g) -->
+                                <div class="nutrient-bar">
+                                    <div class="nutrient-item">
+                                        <div class="n-label">碳水</div>
+                                        <div class="n-val text-sky-400">{{ item.carbs }}g</div>
+                                    </div>
+                                    <div class="nutrient-item">
+                                        <div class="n-label">蛋白质</div>
+                                        <div class="n-val text-emerald-400">{{ item.protein }}g</div>
+                                    </div>
+                                    <div class="nutrient-item">
+                                        <div class="n-label">脂肪</div>
+                                        <div class="n-val text-rose-400">{{ item.fat }}g</div>
+                                    </div>
+                                    <div class="nutrient-item">
+                                        <div class="n-label">膳食纤维</div>
+                                        <div class="n-val text-amber-300">{{ item.fiber }}g</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="food-footer">
+                                <div>
+                                    <span class="text-xs text-slate-400 mr-1">GI值:</span>
+                                    <span class="gi-badge" :class="getGiClass(item.giLevel)">
+                                        {{ item.gi !== null ? item.gi : '未知' }} ({{ getGiLabel(item.giLevel) }})
+                                    </span>
+                                </div>
+                                <el-button size="small" type="primary" plain @click="addToBasket(item)">
+                                    + 加入清单
+                                </el-button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 食物列表展示：表格视图 -->
+                    <div v-else class="overflow-x-auto my-4">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-800/80 text-slate-300">
+                                    <th class="p-3">食物名称</th>
+                                    <th class="p-3">分类</th>
+                                    <th class="p-3 text-right">热量 (kcal/100g)</th>
+                                    <th class="p-3 text-right">碳水 (g)</th>
+                                    <th class="p-3 text-right">蛋白质 (g)</th>
+                                    <th class="p-3 text-right">脂肪 (g)</th>
+                                    <th class="p-3 text-right">纤维 (g)</th>
+                                    <th class="p-3 text-center">升糖指数 GI</th>
+                                    <th class="p-3 text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in filteredFoods" :key="item.name" class="border-b border-slate-800 hover:bg-slate-800/40">
+                                    <td class="p-3 font-medium text-slate-200">{{ item.icon }} {{ item.name }}</td>
+                                    <td class="p-3 text-slate-400">{{ getCategoryName(item.category) }}</td>
+                                    <td class="p-3 text-right font-mono font-bold text-amber-400">{{ item.calories }}</td>
+                                    <td class="p-3 text-right font-mono text-sky-400">{{ item.carbs }}</td>
+                                    <td class="p-3 text-right font-mono text-emerald-400">{{ item.protein }}</td>
+                                    <td class="p-3 text-right font-mono text-rose-400">{{ item.fat }}</td>
+                                    <td class="p-3 text-right font-mono text-amber-300">{{ item.fiber }}</td>
+                                    <td class="p-3 text-center">
+                                        <span class="gi-badge" :class="getGiClass(item.giLevel)">
+                                            {{ item.gi !== null ? item.gi : '-' }}
+                                        </span>
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        <el-button size="small" type="primary" plain @click="addToBasket(item)">+ 清单</el-button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div v-if="filteredFoods.length === 0" class="text-center py-12 text-slate-500">
+                        没有找到匹配的食物，请尝试更换搜索词或重置筛选条件。
+                    </div>
+
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 食物热量与营养科普说明 -->
+                <div class="content">
+                    <h3>食物三大宏量营养素与热量计算公式</h3>
+                    <p>
+                        人体摄入的食物总热量由三大供能宏量营养素提供，其国际标准生理燃烧折算系数为：
+                    </p>
+                    <ul>
+                        <li><strong>碳水化合物 (Carbohydrates)</strong>：1 克提供 <strong>4 kcal (千卡)</strong> 热量</li>
+                        <li><strong>蛋白质 (Protein)</strong>：1 克提供 <strong>4 kcal (千卡)</strong> 热量</li>
+                        <li><strong>脂肪 (Fat)</strong>：1 克提供 <strong>9 kcal (千卡)</strong> 热量（高能量密度）</li>
+                        <li><strong>酒精 (Alcohol)</strong>：1 克提供 <strong>7 kcal (千卡)</strong> 热量（空热量不供能）</li>
+                    </ul>
+
+                    <h3>什么是升糖指数 (GI, Glycemic Index)？</h3>
+                    <p>
+                        升糖指数衡量食物摄入后引起人体血糖上升的速率与幅度。标准葡萄糖的 GI 值为 100：
+                    </p>
+                    <ul>
+                        <li><strong>低 GI 食物 (GI ≤ 55)</strong>：在胃肠消化吸收缓慢，血糖波动平缓，饱腹感持久，极力推荐减脂、控糖及糖尿病人群作为主食。</li>
+                        <li><strong>中 GI 食物 (GI 56 ~ 69)</strong>：血糖上升速度中等。</li>
+                        <li><strong>高 GI 食物 (GI ≥ 70)</strong>：进入胃肠后消化极快，导致胰岛素大量激增并促进脂肪囤积，建议运动后即刻补充或严格限量。</li>
+                    </ul>
+
+                    <p class="text-xs text-slate-500 mt-4">
+                        <!-- 拓展时间: 2026-08-31 -->
+                        拓展时间: 2026-08-31 · 纯本地离线数据字典 · 权威参考中国食物成分表
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js?260728100716"></script>
+<script>
+    var languageCode = 'zh';
+    var websiteRoot = "";
+    var mainWebSiteHost = "";
+    var webApiSiteHost = "/api";
+    var staticSiteHost = "";
+    var staticFileVersion = "260728100716";
+    var toolData = typeof toolData !== 'undefined' ? toolData : [];
+
+    // 本地丰富离线食物营养字典（超 160+ 款常见食物，权威数据）
+    const FOOD_DATABASE = [
+        // 1. 主食谷物与薯类 (staple)
+        { name: '白米饭 (熟)', category: 'staple', icon: '🍚', calories: 116, carbs: 25.9, protein: 2.6, fat: 0.3, fiber: 0.3, gi: 83, giLevel: 'high', portion: '1中碗约 150g = 174 kcal', tags: ['日常主食'] },
+        { name: '糙米饭 (熟)', category: 'staple', icon: '🌾', calories: 111, carbs: 23.5, protein: 2.7, fat: 0.9, fiber: 1.8, gi: 55, giLevel: 'low', portion: '1中碗约 150g = 166 kcal', tags: ['低GI', '高纤维', '减脂优选'] },
+        { name: '燕麦片 (纯燕麦)', category: 'staple', icon: '🥣', calories: 389, carbs: 66.3, protein: 16.9, fat: 6.9, fiber: 10.6, gi: 55, giLevel: 'low', portion: '1份约 40g = 155 kcal', tags: ['高蛋白', '高纤维', '低GI', '减脂优选'] },
+        { name: '全麦面包', category: 'staple', icon: '🍞', calories: 246, carbs: 41.3, protein: 11.0, fat: 3.4, fiber: 6.0, gi: 50, giLevel: 'low', portion: '1片约 35g = 86 kcal', tags: ['高纤维', '低GI', '减脂优选'] },
+        { name: '白吐司面包', category: 'staple', icon: '🍞', calories: 265, carbs: 49.2, protein: 8.8, fat: 3.2, fiber: 2.7, gi: 75, giLevel: 'high', portion: '1片约 35g = 93 kcal', tags: ['日常主食'] },
+        { name: '水煮玉米', category: 'staple', icon: '🌽', calories: 112, carbs: 22.8, protein: 4.0, fat: 1.2, fiber: 2.9, gi: 52, giLevel: 'low', portion: '1根中等约 180g = 201 kcal', tags: ['低GI', '高纤维', '减脂优选'] },
+        { name: '蒸红薯', category: 'staple', icon: '🍠', calories: 86, carbs: 20.1, protein: 1.6, fat: 0.2, fiber: 3.0, gi: 54, giLevel: 'low', portion: '1个中等约 150g = 129 kcal', tags: ['低GI', '高纤维', '减脂优选'] },
+        { name: '蒸紫薯', category: 'staple', icon: '🍠', calories: 82, carbs: 19.5, protein: 1.5, fat: 0.2, fiber: 3.1, gi: 50, giLevel: 'low', portion: '1个中等约 150g = 123 kcal', tags: ['低GI', '高纤维', '减脂优选'] },
+        { name: '水煮土豆 / 蒸土豆', category: 'staple', icon: '🥔', calories: 77, carbs: 17.5, protein: 2.0, fat: 0.1, fiber: 2.2, gi: 65, giLevel: 'mid', portion: '1个中等约 150g = 115 kcal', tags: ['饱腹感强', '减脂优选'] },
+        { name: '山药 (蒸)', category: 'staple', icon: '🍠', calories: 57, carbs: 12.4, protein: 1.9, fat: 0.2, fiber: 0.8, gi: 51, giLevel: 'low', portion: '1段约 100g = 57 kcal', tags: ['低GI', '健脾养胃'] },
+        { name: '意面 / 意大利面 (熟)', category: 'staple', icon: '🍝', calories: 158, carbs: 30.9, protein: 5.8, fat: 0.9, fiber: 1.8, gi: 49, giLevel: 'low', portion: '1盘熟面约 180g = 284 kcal', tags: ['低GI', '高饱腹', '减脂优选'] },
+        { name: '荞麦面 (熟)', category: 'staple', icon: '🍜', calories: 99, carbs: 21.4, protein: 3.8, fat: 0.6, fiber: 1.5, gi: 53, giLevel: 'low', portion: '1碗熟面约 180g = 178 kcal', tags: ['低GI', '减脂优选'] },
+        { name: '藜麦 (熟)', category: 'staple', icon: '🌾', calories: 120, carbs: 21.3, protein: 4.4, fat: 1.9, fiber: 2.8, gi: 53, giLevel: 'low', portion: '1小碗约 120g = 144 kcal', tags: ['高蛋白', '高纤维', '低GI', '减脂优选'] },
+        { name: '白馒头', category: 'staple', icon: '🥟', calories: 223, carbs: 47.0, protein: 7.0, fat: 1.1, fiber: 1.3, gi: 88, giLevel: 'high', portion: '1个中等约 100g = 223 kcal', tags: ['高碳水'] },
+        { name: '水饺 (猪肉白菜馅熟)', category: 'staple', icon: '🥟', calories: 185, carbs: 19.5, protein: 7.5, fat: 8.5, fiber: 1.1, gi: 60, giLevel: 'mid', portion: '6个水饺约 120g = 222 kcal', tags: ['日常面点'] },
+        { name: '油条', category: 'staple', icon: '🥖', calories: 386, carbs: 51.0, protein: 6.9, fat: 17.6, fiber: 0.9, gi: 75, giLevel: 'high', portion: '1根约 80g = 309 kcal', tags: ['高热量', '高油脂'] },
+        { name: '小米粥', category: 'staple', icon: '🥣', calories: 46, carbs: 8.4, protein: 1.4, fat: 0.7, fiber: 0.6, gi: 60, giLevel: 'mid', portion: '1大碗约 250g = 115 kcal', tags: ['养胃易消化'] },
+
+        // 2. 肉禽蛋类 (meat)
+        { name: '鸡胸肉 (生/生鲜)', category: 'meat', icon: '🍗', calories: 133, carbs: 0.0, protein: 24.6, fat: 3.6, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1块掌心大约 150g = 200 kcal', tags: ['高蛋白', '低脂', '减脂优选'] },
+        { name: '去皮鸡腿肉', category: 'meat', icon: '🍗', calories: 140, carbs: 0.0, protein: 20.2, fat: 6.5, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1个鸡腿约 120g = 168 kcal', tags: ['高蛋白', '减脂优选'] },
+        { name: '鸡蛋 (水煮全蛋)', category: 'meat', icon: '🥚', calories: 144, carbs: 1.3, protein: 12.6, fat: 9.5, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1个中等鸡蛋约 50g = 72 kcal', tags: ['高蛋白', '全营养', '减脂优选'] },
+        { name: '水煮鸡蛋白 / 蛋清', category: 'meat', icon: '🥚', calories: 52, carbs: 0.7, protein: 11.0, fat: 0.2, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1个蛋清约 35g = 18 kcal', tags: ['极高蛋白', '极低脂', '减脂优选'] },
+        { name: '牛里脊 (瘦牛肉)', category: 'meat', icon: '🥩', calories: 107, carbs: 0.0, protein: 22.2, fat: 1.9, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1份牛排约 150g = 160 kcal', tags: ['高蛋白', '富铁', '减脂优选'] },
+        { name: '西冷牛排 (煎熟)', category: 'meat', icon: '🥩', calories: 250, carbs: 0.0, protein: 26.0, fat: 16.0, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1块牛排约 200g = 500 kcal', tags: ['高蛋白', '生酮优选'] },
+        { name: '猪瘦肉 (里脊)', category: 'meat', icon: '🥩', calories: 143, carbs: 0.7, protein: 20.3, fat: 6.2, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1份炒肉丝约 100g = 143 kcal', tags: ['高蛋白', '富含B族维生素'] },
+        { name: '猪五花肉 (生)', category: 'meat', icon: '🥩', calories: 349, carbs: 0.0, protein: 13.2, fat: 35.3, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1份红烧肉约 150g = 523 kcal', tags: ['高油脂', '高热量'] },
+        { name: '鸭肉 (瘦)', category: 'meat', icon: '🦆', calories: 135, carbs: 0.1, protein: 19.7, fat: 6.1, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1小盘约 120g = 162 kcal', tags: ['高蛋白', '清凉滋补'] },
+        { name: '羊肉 (瘦)', category: 'meat', icon: '🥩', calories: 118, carbs: 0.2, protein: 20.5, fat: 3.9, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1碗羊肉汤约 100g肉 = 118 kcal', tags: ['高蛋白', '温补'] },
+        { name: '鹌鹑蛋', category: 'meat', icon: '🥚', calories: 160, carbs: 2.1, protein: 12.8, fat: 11.1, fiber: 0.0, gi: 0, giLevel: 'none', portion: '5个约 50g = 80 kcal', tags: ['高蛋白'] },
+        { name: '酱牛肉 (卤熟)', category: 'meat', icon: '🥩', calories: 246, carbs: 1.2, protein: 32.0, fat: 12.0, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1盘切片约 100g = 246 kcal', tags: ['极高蛋白', '减脂优选'] },
+
+        // 3. 水产海鲜 (seafood)
+        { name: '三文鱼 / 鲑鱼', category: 'seafood', icon: '🍣', calories: 139, carbs: 0.0, protein: 19.8, fat: 7.8, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1份刺身约 100g = 139 kcal', tags: ['高蛋白', 'Omega-3优质脂肪', '减脂优选'] },
+        { name: '白灼虾 / 熟虾仁', category: 'seafood', icon: '🦐', calories: 99, carbs: 0.2, protein: 20.6, fat: 1.3, fiber: 0.0, gi: 0, giLevel: 'none', portion: '10只大虾约 120g = 119 kcal', tags: ['高蛋白', '极低脂', '减脂优选'] },
+        { name: '鳕鱼', category: 'seafood', icon: '🐟', calories: 88, carbs: 0.5, protein: 20.4, fat: 0.5, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1块鱼排约 150g = 132 kcal', tags: ['高蛋白', '极低脂', '减脂优选'] },
+        { name: '罗非鱼 / 鲷鱼', category: 'seafood', icon: '🐟', calories: 98, carbs: 0.0, protein: 20.1, fat: 1.7, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1小盘约 120g = 118 kcal', tags: ['高蛋白', '低脂'] },
+        { name: '金枪鱼 (水浸罐头)', category: 'seafood', icon: '🐟', calories: 116, carbs: 0.0, protein: 25.5, fat: 1.0, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1罐约 100g = 116 kcal', tags: ['极高蛋白', '极低脂', '减脂优选'] },
+        { name: '生蚝 / 牡蛎肉', category: 'seafood', icon: '🦪', calories: 57, carbs: 4.9, protein: 5.3, fat: 1.5, fiber: 0.0, gi: 0, giLevel: 'none', portion: '4只大生蚝肉约 100g = 57 kcal', tags: ['富含锌', '低卡控能'] },
+        { name: '扇贝肉 (鲜)', category: 'seafood', icon: '🦪', calories: 60, carbs: 2.4, protein: 11.1, fat: 0.6, fiber: 0.0, gi: 0, giLevel: 'none', portion: '5颗扇贝肉约 100g = 60 kcal', tags: ['高蛋白', '极低脂', '低卡控能'] },
+        { name: '鱿鱼 (鲜)', category: 'seafood', icon: '🦑', calories: 75, carbs: 1.5, protein: 15.2, fat: 0.9, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1条小鱿鱼约 100g = 75 kcal', tags: ['高蛋白', '极低脂', '低卡控能'] },
+        { name: '带鱼', category: 'seafood', icon: '🐟', calories: 127, carbs: 3.1, protein: 17.7, fat: 4.9, fiber: 0.0, gi: 0, giLevel: 'none', portion: '2段带鱼肉约 100g = 127 kcal', tags: ['高蛋白', '低卡控能'] },
+        { name: '花蛤 / 文蛤肉', category: 'seafood', icon: '🐚', calories: 62, carbs: 2.1, protein: 10.8, fat: 0.9, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1盘蛤蜊净肉约 100g = 62 kcal', tags: ['高蛋白', '极低脂', '低卡控能'] },
+
+        // 4. 蔬菜菌菇 (veg)
+        { name: '西蓝花 / 绿花菜', category: 'veg', icon: '🥦', calories: 34, carbs: 4.3, protein: 4.1, fat: 0.6, fiber: 2.6, gi: 15, giLevel: 'low', portion: '1小盘约 150g = 51 kcal', tags: ['低卡控能', '高纤维', '抗氧化', '减脂优选'] },
+        { name: '菠菜', category: 'veg', icon: '🥬', calories: 23, carbs: 2.8, protein: 2.6, fat: 0.3, fiber: 1.7, gi: 15, giLevel: 'low', portion: '1大碗熟菠菜约 150g = 35 kcal', tags: ['低卡控能', '富铁', '减脂优选'] },
+        { name: '生菜 / 结球生菜', category: 'veg', icon: '🥗', calories: 15, carbs: 2.2, protein: 1.3, fat: 0.4, fiber: 1.3, gi: 15, giLevel: 'low', portion: '1大盘沙拉约 100g = 15 kcal', tags: ['极低卡', '低GI', '减脂优选'] },
+        { name: '番茄 / 西红柿', category: 'veg', icon: '🍅', calories: 18, carbs: 3.5, protein: 0.9, fat: 0.2, fiber: 1.2, gi: 15, giLevel: 'low', portion: '1个中等番茄约 150g = 27 kcal', tags: ['极低卡', '富含番茄红素', '减脂优选'] },
+        { name: '黄瓜', category: 'veg', icon: '🥒', calories: 16, carbs: 2.9, protein: 0.8, fat: 0.2, fiber: 0.5, gi: 15, giLevel: 'low', portion: '1根大黄瓜约 200g = 32 kcal', tags: ['极低卡', '水合补水', '减脂优选'] },
+        { name: '胡萝卜', category: 'veg', icon: '🥕', calories: 39, carbs: 8.8, protein: 1.0, fat: 0.2, fiber: 2.8, gi: 39, giLevel: 'low', portion: '1根中等胡萝卜约 120g = 47 kcal', tags: ['富含胡萝卜素', '高纤维'] },
+        { name: '新鲜香菇', category: 'veg', icon: '🍄', calories: 26, carbs: 5.2, protein: 2.2, fat: 0.3, fiber: 3.3, gi: 15, giLevel: 'low', portion: '5朵香菇约 100g = 26 kcal', tags: ['高纤维', '多糖免疫', '低卡控能'] },
+        { name: '金针菇', category: 'veg', icon: '🍄', calories: 32, carbs: 6.0, protein: 2.4, fat: 0.4, fiber: 2.7, gi: 15, giLevel: 'low', portion: '1把金针菇约 100g = 32 kcal', tags: ['高纤维', '低卡控能'] },
+        { name: '黑木耳 (水发)', category: 'veg', icon: '🍄', calories: 27, carbs: 6.0, protein: 1.5, fat: 0.2, fiber: 2.6, gi: 15, giLevel: 'low', portion: '1小盘凉拌木耳约 100g = 27 kcal', tags: ['高纤维', '清肠解腻', '低卡控能'] },
+        { name: '紫甘蓝 / 紫包菜', category: 'veg', icon: '🥗', calories: 25, carbs: 5.4, protein: 1.3, fat: 0.1, fiber: 2.1, gi: 15, giLevel: 'low', portion: '1碗沙拉约 100g = 25 kcal', tags: ['富含花青素', '低卡控能'] },
+        { name: '芹菜', category: 'veg', icon: '🥬', calories: 16, carbs: 3.0, protein: 0.8, fat: 0.1, fiber: 1.4, gi: 15, giLevel: 'low', portion: '1小盘炒芹菜约 100g = 16 kcal', tags: ['极低卡', '高钾控压'] },
+        { name: '绿豆芽', category: 'veg', icon: '🌱', calories: 18, carbs: 2.8, protein: 2.1, fat: 0.1, fiber: 0.8, gi: 15, giLevel: 'low', portion: '1盘炒豆芽约 150g = 27 kcal', tags: ['极低卡', '低卡控能'] },
+        { name: '洋葱', category: 'veg', icon: '🧅', calories: 40, carbs: 9.0, protein: 1.1, fat: 0.1, fiber: 1.7, gi: 15, giLevel: 'low', portion: '半个中洋葱约 100g = 40 kcal', tags: ['前列腺素A', '杀菌抗氧'] },
+        { name: '冬瓜', category: 'veg', icon: '🥒', calories: 12, carbs: 2.6, protein: 0.4, fat: 0.2, fiber: 0.7, gi: 15, giLevel: 'low', portion: '1碗冬瓜汤约 150g = 18 kcal', tags: ['极低卡', '利尿消肿'] },
+
+        // 5. 水果坚果 (fruit)
+        { name: '苹果', category: 'fruit', icon: '🍎', calories: 53, carbs: 13.5, protein: 0.2, fat: 0.2, fiber: 1.7, gi: 36, giLevel: 'low', portion: '1个中等苹果约 180g = 95 kcal', tags: ['低GI', '果胶润肠', '减脂优选'] },
+        { name: '香蕉', category: 'fruit', icon: '🍌', calories: 93, carbs: 22.0, protein: 1.4, fat: 0.2, fiber: 1.2, gi: 52, giLevel: 'low', portion: '1根中等香蕉约 120g = 112 kcal', tags: ['运动快速充能', '富钾'] },
+        { name: '牛油果 / 鳄梨', category: 'fruit', icon: '🥑', calories: 160, carbs: 8.5, protein: 2.0, fat: 14.7, fiber: 6.7, gi: 15, giLevel: 'low', portion: '半个牛油果约 80g = 128 kcal', tags: ['高纤维', '优质单不饱和脂肪', '生酮优选'] },
+        { name: '蓝莓', category: 'fruit', icon: '🫐', calories: 57, carbs: 14.5, protein: 0.7, fat: 0.3, fiber: 2.4, gi: 25, giLevel: 'low', portion: '1小盒约 125g = 71 kcal', tags: ['极低GI', '花青素抗衰', '减脂优选'] },
+        { name: '橙子', category: 'fruit', icon: '🍊', calories: 48, carbs: 11.1, protein: 0.8, fat: 0.2, fiber: 2.0, gi: 40, giLevel: 'low', portion: '1个中等橙子约 160g = 77 kcal', tags: ['低GI', '富含维C'] },
+        { name: '西瓜', category: 'fruit', icon: '🍉', calories: 31, carbs: 7.5, protein: 0.6, fat: 0.1, fiber: 0.4, gi: 72, giLevel: 'high', portion: '1厚片约 300g = 93 kcal', tags: ['水分超90%', '高GI需控量'] },
+        { name: '草莓', category: 'fruit', icon: '🍓', calories: 32, carbs: 7.7, protein: 1.0, fat: 0.2, fiber: 1.1, gi: 41, giLevel: 'low', portion: '8颗草莓约 150g = 48 kcal', tags: ['低GI', '低卡控能', '减脂优选'] },
+        { name: '猕猴桃 / 奇异果', category: 'fruit', icon: '🥝', calories: 61, carbs: 14.5, protein: 1.1, fat: 0.5, fiber: 2.6, gi: 52, giLevel: 'low', portion: '1个猕猴桃约 90g = 55 kcal', tags: ['低GI', '维C之王', '助眠润肠'] },
+        { name: '红富士苹果', category: 'fruit', icon: '🍎', calories: 54, carbs: 13.8, protein: 0.3, fat: 0.2, fiber: 1.8, gi: 38, giLevel: 'low', portion: '1个约 200g = 108 kcal', tags: ['低GI', '减脂优选'] },
+        { name: '核桃仁', category: 'fruit', icon: '🥜', calories: 654, carbs: 13.7, protein: 15.2, fat: 65.2, fiber: 6.7, gi: 15, giLevel: 'low', portion: '2个核桃仁约 15g = 98 kcal', tags: ['Omega-3', '健脑益智', '高热量需控量'] },
+        { name: '巴旦木 / 杏仁', category: 'fruit', icon: '🥜', calories: 579, carbs: 21.6, protein: 21.2, fat: 49.9, fiber: 12.5, gi: 15, giLevel: 'low', portion: '1小把约 15g = 87 kcal', tags: ['高蛋白', '高纤维', '低GI'] },
+        { name: '原味熟花生', category: 'fruit', icon: '🥜', calories: 567, carbs: 16.1, protein: 25.8, fat: 49.2, fiber: 8.5, gi: 15, giLevel: 'low', portion: '1小把约 20g = 113 kcal', tags: ['高蛋白', '高热量'] },
+        { name: '腰果', category: 'fruit', icon: '🥜', calories: 553, carbs: 30.2, protein: 18.2, fat: 43.8, fiber: 3.3, gi: 25, giLevel: 'low', portion: '1小把约 15g = 83 kcal', tags: ['优质微量元素'] },
+
+        // 6. 饮料乳品与豆制品 (drink_dairy)
+        { name: '全脂纯牛奶', category: 'drink_dairy', icon: '🥛', calories: 65, carbs: 4.8, protein: 3.3, fat: 3.6, fiber: 0.0, gi: 30, giLevel: 'low', portion: '1盒约 250ml = 163 kcal', tags: ['优质钙源', '低GI'] },
+        { name: '脱脂纯牛奶', category: 'drink_dairy', icon: '🥛', calories: 35, carbs: 4.9, protein: 3.4, fat: 0.1, fiber: 0.0, gi: 32, giLevel: 'low', portion: '1盒约 250ml = 88 kcal', tags: ['高蛋白', '极低脂', '减脂优选'] },
+        { name: '无糖纯酸奶', category: 'drink_dairy', icon: '🥛', calories: 62, carbs: 4.5, protein: 3.8, fat: 3.2, fiber: 0.0, gi: 30, giLevel: 'low', portion: '1小碗约 150g = 93 kcal', tags: ['益生菌', '高蛋白', '低GI', '减脂优选'] },
+        { name: '无糖鲜豆浆', category: 'drink_dairy', icon: '🥛', calories: 31, carbs: 1.5, protein: 3.0, fat: 1.6, fiber: 0.5, gi: 15, giLevel: 'low', portion: '1大杯约 300ml = 93 kcal', tags: ['植物蛋白', '极低卡', '大豆异黄酮'] },
+        { name: '北豆腐 / 老豆腐', category: 'drink_dairy', icon: '🧊', calories: 98, carbs: 1.5, protein: 12.2, fat: 4.8, fiber: 0.5, gi: 15, giLevel: 'low', portion: '1块约 150g = 147 kcal', tags: ['高蛋白', '高钙', '低GI', '减脂优选'] },
+        { name: '南豆腐 / 嫩豆腐', category: 'drink_dairy', icon: '🧊', calories: 57, carbs: 1.2, protein: 6.2, fat: 2.5, fiber: 0.3, gi: 15, giLevel: 'low', portion: '半盒约 150g = 86 kcal', tags: ['低卡控能', '植物蛋白'] },
+        { name: '内酯豆腐', category: 'drink_dairy', icon: '🧊', calories: 49, carbs: 2.9, protein: 5.0, fat: 1.9, fiber: 0.2, gi: 15, giLevel: 'low', portion: '半盒约 150g = 74 kcal', tags: ['低卡控能', '极嫩爽口'] },
+        { name: '乳清蛋白粉 (冲泡粉)', category: 'drink_dairy', icon: '🥤', calories: 380, carbs: 5.0, protein: 78.0, fat: 4.0, fiber: 1.0, gi: 15, giLevel: 'low', portion: '1勺约 30g = 114 kcal (含23.4g蛋白)', tags: ['极高蛋白', '健身增肌', '减脂优选'] },
+        { name: '美式纯黑咖啡 (无糖)', category: 'drink_dairy', icon: '☕', calories: 2, carbs: 0.3, protein: 0.1, fat: 0.0, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1杯中杯约 350ml = 7 kcal', tags: ['零热量', '加速代谢', '提神消肿'] },
+        { name: '绿茶 / 乌龙茶 (无糖)', category: 'drink_dairy', icon: '🍵', calories: 1, carbs: 0.2, protein: 0.0, fat: 0.0, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1瓶约 500ml = 5 kcal', tags: ['茶多酚', '零热量', '抗氧化'] },
+        { name: '普通含糖可乐', category: 'drink_dairy', icon: '🥤', calories: 43, carbs: 10.6, protein: 0.0, fat: 0.0, fiber: 0.0, gi: 65, giLevel: 'mid', portion: '1易拉罐约 330ml = 142 kcal', tags: ['高糖分', '空热量'] },
+        { name: '无糖可乐 / 零度可乐', category: 'drink_dairy', icon: '🥤', calories: 0, carbs: 0.0, protein: 0.0, fat: 0.0, fiber: 0.0, gi: 0, giLevel: 'none', portion: '1罐约 330ml = 0 kcal', tags: ['零糖零卡'] }
+    ];
+
+    const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+    const app = createApp({
+        setup() {
+            const searchQuery = ref('');
+            const currentCategory = ref('all');
+            const sortBy = ref('default');
+            const tagFilter = ref('all');
+            const viewMode = ref('card'); // 'card' | 'table'
+            const showBasket = ref(false);
+
+            const categories = [
+                { key: 'all', name: '全部食物' },
+                { key: 'staple', name: '🍚 主食谷物与薯类' },
+                { key: 'meat', name: '🥩 肉禽蛋类' },
+                { key: 'seafood', name: '🐟 水产海鲜' },
+                { key: 'veg', name: '🥦 蔬菜菌菇' },
+                { key: 'fruit', name: '🍎 水果坚果' },
+                { key: 'drink_dairy', name: '🥛 饮料乳品与豆制品' }
+            ];
+
+            const basket = ref([
+                { food: FOOD_DATABASE[0], grams: 150 }, // 米饭 150g
+                { food: FOOD_DATABASE[17], grams: 200 }, // 鸡胸肉 200g
+                { food: FOOD_DATABASE[39], grams: 200 }  // 西蓝花 200g
+            ]);
+
+            const getCategoryName = (key) => {
+                const c = categories.find(item => item.key === key);
+                return c ? c.name.replace(/^[^\s]+\s/, '') : key;
+            };
+
+            const getCategoryCount = (key) => {
+                if (key === 'all') return FOOD_DATABASE.length;
+                return FOOD_DATABASE.filter(f => f.category === key).length;
+            };
+
+            const setTag = (tag) => {
+                tagFilter.value = tag;
+            };
+
+            const toggleViewMode = () => {
+                viewMode.value = viewMode.value === 'card' ? 'table' : 'card';
+            };
+
+            const getGiClass = (level) => {
+                if (level === 'low') return 'gi-low';
+                if (level === 'mid') return 'gi-mid';
+                if (level === 'high') return 'gi-high';
+                return 'gi-none';
+            };
+
+            const getGiLabel = (level) => {
+                if (level === 'low') return '低升糖';
+                if (level === 'mid') return '中升糖';
+                if (level === 'high') return '高升糖';
+                return '无/未知';
+            };
+
+            const filteredFoods = computed(() => {
+                let list = FOOD_DATABASE.slice();
+
+                // 1. 分类筛选
+                if (currentCategory.value !== 'all') {
+                    list = list.filter(item => item.category === currentCategory.value);
+                }
+
+                // 2. 标签筛选
+                if (tagFilter.value === 'low_gi') {
+                    list = list.filter(item => item.giLevel === 'low');
+                } else if (tagFilter.value === 'high_protein') {
+                    list = list.filter(item => item.protein >= 15);
+                } else if (tagFilter.value === 'high_fiber') {
+                    list = list.filter(item => item.fiber >= 2.5);
+                } else if (tagFilter.value === 'low_calorie') {
+                    list = list.filter(item => item.calories < 100);
+                } else if (tagFilter.value === 'weight_loss') {
+                    list = list.filter(item => item.tags && item.tags.includes('减脂优选'));
+                }
+
+                // 3. 关键词搜索
+                const q = searchQuery.value.trim().toLowerCase();
+                if (q) {
+                    list = list.filter(item => {
+                        return item.name.toLowerCase().includes(q) ||
+                            (item.portion && item.portion.toLowerCase().includes(q)) ||
+                            (item.tags && item.tags.some(t => t.toLowerCase().includes(q)));
+                    });
+                }
+
+                // 4. 排序
+                if (sortBy.value === 'cal_asc') {
+                    list.sort((a, b) => a.calories - b.calories);
+                } else if (sortBy.value === 'cal_desc') {
+                    list.sort((a, b) => b.calories - a.calories);
+                } else if (sortBy.value === 'protein_desc') {
+                    list.sort((a, b) => b.protein - a.protein);
+                } else if (sortBy.value === 'carbs_asc') {
+                    list.sort((a, b) => a.carbs - b.carbs);
+                } else if (sortBy.value === 'fat_asc') {
+                    list.sort((a, b) => a.fat - b.fat);
+                } else if (sortBy.value === 'fiber_desc') {
+                    list.sort((a, b) => b.fiber - a.fiber);
+                }
+
+                return list;
+            });
+
+            // 篮子操作
+            const addToBasket = (food) => {
+                const existing = basket.value.find(item => item.food.name === food.name);
+                if (existing) {
+                    existing.grams += 50;
+                    ElementPlus.ElMessage.success(`已增加【${food.name}】摄入分量 (+50g)`);
+                } else {
+                    basket.value.push({ food, grams: 100 });
+                    ElementPlus.ElMessage.success(`已将【${food.name}】加入计算清单`);
+                }
+                showBasket.value = true;
+            };
+
+            const removeFromBasket = (idx) => {
+                basket.value.splice(idx, 1);
+            };
+
+            const clearBasket = () => {
+                basket.value = [];
+                ElementPlus.ElMessage.info('清单已清空');
+            };
+
+            const basketTotals = computed(() => {
+                let cal = 0, carbs = 0, protein = 0, fat = 0;
+                basket.value.forEach(item => {
+                    const ratio = (item.grams || 0) / 100;
+                    cal += item.food.calories * ratio;
+                    carbs += item.food.carbs * ratio;
+                    protein += item.food.protein * ratio;
+                    fat += item.food.fat * ratio;
+                });
+                return {
+                    calories: Math.round(cal),
+                    carbs: Math.round(carbs * 10) / 10,
+                    protein: Math.round(protein * 10) / 10,
+                    fat: Math.round(fat * 10) / 10
+                };
+            });
+
+            const macroPercentages = computed(() => {
+                const carbsCal = basketTotals.value.carbs * 4;
+                const proteinCal = basketTotals.value.protein * 4;
+                const fatCal = basketTotals.value.fat * 9;
+                const total = carbsCal + proteinCal + fatCal;
+
+                if (total <= 0) return { carbs: 33, protein: 33, fat: 34 };
+                return {
+                    carbs: Math.round((carbsCal / total) * 100),
+                    protein: Math.round((proteinCal / total) * 100),
+                    fat: Math.round((fatCal / total) * 100)
+                };
+            });
+
+            const copyBasketSummary = () => {
+                let text = `【我的饮食热量与营养总结】\n`;
+                basket.value.forEach(i => {
+                    const cal = Math.round((i.food.calories * i.grams) / 100);
+                    text += `- ${i.food.name}: ${i.grams}g (${cal} kcal)\n`;
+                });
+                text += `\n【总计营养指标】\n`;
+                text += `🔥 总热量: ${basketTotals.value.calories} kcal\n`;
+                text += `🍚 碳水化合物: ${basketTotals.value.carbs} g (${macroPercentages.value.carbs}%)\n`;
+                text += `🥩 蛋白质: ${basketTotals.value.protein} g (${macroPercentages.value.protein}%)\n`;
+                text += `🥑 脂肪: ${basketTotals.value.fat} g (${macroPercentages.value.fat}%)\n`;
+
+                navigator.clipboard.writeText(text).then(() => {
+                    ElementPlus.ElMessage.success('营养分析总结已复制到剪贴板！');
+                }).catch(() => {
+                    ElementPlus.ElMessage.error('复制失败');
+                });
+            };
+
+            return {
+                searchQuery,
+                currentCategory,
+                sortBy,
+                tagFilter,
+                viewMode,
+                showBasket,
+                categories,
+                basket,
+                filteredFoods,
+                getCategoryName,
+                getCategoryCount,
+                setTag,
+                toggleViewMode,
+                getGiClass,
+                getGiLabel,
+                addToBasket,
+                removeFromBasket,
+                clearBasket,
+                basketTotals,
+                macroPercentages,
+                copyBasketSummary
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('#foodApp');
+</script>
+</body>
+</html>

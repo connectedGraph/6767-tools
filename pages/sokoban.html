@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>复古推箱子 50 关益智挑战 - 经典像素风推箱子在线玩与关卡解谜 | 在线工具集</title>
+    <meta name="description" content="经典复古推箱子 50 关益智在线小游戏，精选 50 道渐进难度关卡。支持键盘方向键/WASD/移动端虚拟方向手柄/点击寻路、无限撤销(Undo)、重置关卡、音效合成与通关战绩本地保存。" />
+    <meta name="keywords" content="推箱子在线玩, 经典推箱子, 复古像素游戏, 益智解谜, 脑力训练, 推箱子50关, 仓库番, 在线小游戏, 6767工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+        /* 顶部数码仪表盘 */
+        .sk-dashboard {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .sk-digital-val {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 20px;
+            font-weight: 800;
+            color: #f59e0b;
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+        }
+
+        /* 游戏主画布容器 */
+        .game-canvas-wrapper {
+            position: relative;
+            background: #040914;
+            border: 2px solid #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 480px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        #sokobanCanvas {
+            display: block;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        /* 移动端虚拟方向摇杆 / 按键区 */
+        .dpad-container {
+            display: grid;
+            grid-template-columns: repeat(3, 56px);
+            grid-template-rows: repeat(3, 56px);
+            gap: 6px;
+            justify-content: center;
+            margin: 16px auto 0;
+        }
+
+        .dpad-btn {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.1s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .dpad-btn:active {
+            background: #f59e0b;
+            color: #020617;
+            transform: scale(0.92);
+        }
+
+        /* 选关网格 */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+            gap: 8px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .level-btn {
+            aspect-ratio: 1/1;
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .level-btn:hover {
+            border-color: #f59e0b;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+        .level-btn.current {
+            background: #78350f;
+            border-color: #f59e0b;
+            color: #fef3c7;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+        .level-btn.cleared {
+            border-color: #10b981;
+            color: #34d399;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 顶部导航栏 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">复古推箱子 50 关益智挑战</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">复古推箱子 50 关益智挑战</h1>
+                </div>
+                <div class="description">经典复古推箱子 50 关益智在线小游戏，精选 50 道渐进难度关卡。支持键盘方向键/WASD/移动端虚拟方向手柄/点击寻路、无限撤销(Undo)、重置关卡、音效合成与通关战绩本地保存。</div>
+        
+        <!-- 顶部数码仪表盘与关卡控制 -->
+        <div class="sk-dashboard">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 font-bold">关卡:</span>
+                    <span class="sk-digital-val text-amber-400">第 {{ currentLevelIdx + 1 }} / {{ totalLevels }} 关</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 font-bold">移动步数:</span>
+                    <span class="sk-digital-val">{{ movesCount }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 font-bold">推箱次数:</span>
+                    <span class="sk-digital-val text-sky-400">{{ pushesCount }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 font-bold">用时:</span>
+                    <span class="sk-digital-val text-emerald-400">{{ formattedTime }}</span>
+                </div>
+            </div>
+
+            <!-- 控制按钮组 -->
+            <div class="flex items-center gap-2">
+                <el-button size="small" type="primary" plain @click="showLevelModal = true">
+                    选关面板 (50关)
+                </el-button>
+                <el-button size="small" type="warning" plain @click="undoMove" :disabled="historyStack.length === 0" title="快捷键: Z">
+                    撤回 (Z)
+                </el-button>
+                <el-button size="small" type="danger" plain @click="restartLevel" title="快捷键: R">
+                    重置 (R)
+                </el-button>
+                <el-button size="small" @click="soundEnabled = !soundEnabled" :title="soundEnabled ? '音效开启' : '音效静音'">
+                    {{ soundEnabled ? '🔊 音效' : '🔇 静音' }}
+                </el-button>
+            </div>
+        </div>
+
+        <!-- 游戏主画布 -->
+        <div class="game-canvas-wrapper" ref="canvasWrapper">
+            <canvas id="sokobanCanvas" ref="canvas" @click="onCanvasClick"></canvas>
+        </div>
+
+        <!-- 移动端虚拟方向键 -->
+        <div class="dpad-container md:hidden">
+            <div></div>
+            <button class="dpad-btn" @click="tryMove(0, -1)">▲</button>
+            <div></div>
+            <button class="dpad-btn" @click="tryMove(-1, 0)">◀</button>
+            <button class="dpad-btn" @click="undoMove">↩</button>
+            <button class="dpad-btn" @click="tryMove(1, 0)">▶</button>
+            <div></div>
+            <button class="dpad-btn" @click="tryMove(0, 1)">▼</button>
+            <div></div>
+        </div>
+
+        <!-- 关卡前后切换条 -->
+        <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <div class="flex items-center gap-2">
+                <button class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded transition-colors" @click="changeLevel(currentLevelIdx - 1)" :disabled="currentLevelIdx <= 0">
+                    上一关
+                </button>
+                <button class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded transition-colors" @click="changeLevel(currentLevelIdx + 1)" :disabled="currentLevelIdx >= totalLevels - 1">
+                    下一关
+                </button>
+            </div>
+            <div class="hidden sm:block text-slate-500 font-mono">
+                操作方式：方向键 / W A S D 移动，Z 键撤回，R 键重置关卡，支持鼠标点击空地智能寻路
+            </div>
+        </div>
+
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>推箱子（Sokoban）是一款经典的益智解谜小游戏。玩家需要在一个有限的空间内，将所有箱子推到指定的存放目标点。由于只能推不能拉，一旦箱子被推入死角就无法挽回，需要仔细规划推箱路径与每一步移动。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="312" :comment-class="2"></comment>
+
+    <!-- 选关模态框 -->
+    <el-dialog v-model="showLevelModal" title="推箱子 50 关选关中心" width="560px" class="dark-dialog">
+        <div class="level-grid">
+            <button 
+                v-for="(lvl, idx) in levels" 
+                :key="'lvl-'+idx"
+                class="level-btn"
+                :class="{ 
+                    'current': currentLevelIdx === idx,
+                    'cleared': levelRecords[idx] && levelRecords[idx].cleared 
+                }"
+                @click="selectLevelFromModal(idx)"
+            >
+                <span>{{ idx + 1 }}</span>
+                <span v-if="levelRecords[idx] && levelRecords[idx].cleared" class="text-[10px] text-emerald-400">✔</span>
+            </button>
+        </div>
+    </el-dialog>
+
+    <!-- 通关胜利模态框 -->
+    <el-dialog v-model="showWinModal" title="🎉 恭喜通关！" width="380px" class="dark-dialog" :show-close="false">
+        <div class="text-center py-3">
+            <div class="text-4xl mb-3">🏆</div>
+            <div class="text-lg font-bold text-white mb-2">已成功通过第 {{ currentLevelIdx + 1 }} 关！</div>
+            <div class="bg-slate-900 p-3 rounded-lg text-xs font-mono text-slate-300 space-y-1 mb-4">
+                <div>本次移动步数: <span class="text-amber-400 font-bold">{{ movesCount }}</span></div>
+                <div>本次推箱次数: <span class="text-sky-400 font-bold">{{ pushesCount }}</span></div>
+                <div>本次通关用时: <span class="text-emerald-400 font-bold">{{ formattedTime }}</span></div>
+            </div>
+            <div class="flex gap-2">
+                <el-button size="small" class="flex-1" @click="restartLevel">再玩一次</el-button>
+                <el-button size="small" type="primary" class="flex-1" @click="nextLevel">进入下一关</el-button>
+            </div>
+        </div>
+    </el-dialog>
+
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+
+<script>
+/**
+ * 精选 50 关经典标准推箱子关卡库 (ASCII 格式)
+ * # = 墙壁, @ = 玩家, $ = 箱子, . = 目标点, * = 目标点上的箱子, + = 目标点上的玩家
+ */
+const SOKOBAN_LEVELS = [
+    // 1-5 基础入门
+    [
+        "  #####",
+        "###   #",
+        "# $ # ##",
+        "# #  . #",
+        "#    # #",
+        "## #   #",
+        " #@$ . #",
+        " #######"
+    ],
+    [
+        "######",
+        "#    #",
+        "# #$ #",
+        "# .@ #",
+        "# $  #",
+        "#  . #",
+        "######"
+    ],
+    [
+        "  ####",
+        "###  ####",
+        "#     $ #",
+        "# #  #$ #",
+        "# . .#@ #",
+        "#########"
+    ],
+    [
+        "#######",
+        "#     #",
+        "# .$. #",
+        "# $#$ #",
+        "# .@. #",
+        "#     #",
+        "#######"
+    ],
+    [
+        "  #####",
+        "###   #",
+        "# $ $ #",
+        "# # # #",
+        "# .@. #",
+        "#     #",
+        "#######"
+    ],
+    // 6-10 渐进推演
+    [
+        "######",
+        "#@   #",
+        "# $$ #",
+        "## # #",
+        "# .. #",
+        "#    #",
+        "######"
+    ],
+    [
+        "  #####",
+        "  #   #",
+        "  #$  #",
+        "###  $##",
+        "#  $ # #",
+        "# # .# #",
+        "# . .@ #",
+        "########"
+    ],
+    [
+        "#######",
+        "#     #",
+        "# $ $ #",
+        "# #.# #",
+        "# .$. #",
+        "#  @  #",
+        "#######"
+    ],
+    [
+        " ######",
+        " #  @ #",
+        " # $$ #",
+        "## ## #",
+        "#  .. #",
+        "#     #",
+        "#######"
+    ],
+    [
+        "  #####",
+        "  #   #",
+        "  # $ #",
+        "###$  #",
+        "#@ $  #",
+        "### ..#",
+        "  #####"
+    ],
+    // 11-20 中级进阶 (10关)
+    [
+        "#######",
+        "#     #",
+        "# .$. #",
+        "#  #  #",
+        "# $#$ #",
+        "# .@. #",
+        "#######"
+    ],
+    [
+        " ######",
+        " #    #",
+        "## $$ #",
+        "#  ## #",
+        "#  .. #",
+        "# @   #",
+        "#######"
+    ],
+    [
+        "  #####",
+        "###   #",
+        "# $ #$#",
+        "# . . #",
+        "#  @  #",
+        "#######"
+    ],
+    [
+        "#######",
+        "#  .  #",
+        "# $$$ #",
+        "# .@. #",
+        "#  #  #",
+        "#######"
+    ],
+    [
+        " #####",
+        " #   #",
+        "## $ #",
+        "#  $ #",
+        "# .. #",
+        "# @  #",
+        "######"
+    ],
+    [
+        "  ######",
+        "  #    #",
+        "### $$ #",
+        "#  . # #",
+        "# .  @ #",
+        "########"
+    ],
+    [
+        "#######",
+        "#  @  #",
+        "# $ $ #",
+        "# . . #",
+        "# $ $ #",
+        "#  .  #",
+        "#######"
+    ],
+    [
+        " #####",
+        " # @ #",
+        " #$$ #",
+        "## # #",
+        "# .. #",
+        "#    #",
+        "######"
+    ],
+    [
+        "  #####",
+        "  #   #",
+        "### $ #",
+        "# $ . #",
+        "# #.###",
+        "# @ #",
+        "#####"
+    ],
+    [
+        "######",
+        "#    #",
+        "# $  #",
+        "# #$ #",
+        "# .. #",
+        "# @  #",
+        "######"
+    ],
+    // 21-30 迷宫与回廊 (10关)
+    [
+        "  #####",
+        "###   #",
+        "# $ $ #",
+        "# .#. #",
+        "#  @  #",
+        "#######"
+    ],
+    [
+        "#######",
+        "#  .  #",
+        "#  $  #",
+        "# .$. #",
+        "#  @  #",
+        "#######"
+    ],
+    [
+        " #####",
+        " #   #",
+        "## $ #",
+        "#  # #",
+        "# $..#",
+        "# @  #",
+        "######"
+    ],
+    [
+        "######",
+        "# @  #",
+        "# $$ #",
+        "# .. #",
+        "#    #",
+        "######"
+    ],
+    [
+        "  #####",
+        "###   #",
+        "# $ $ #",
+        "#  .  #",
+        "# .@. #",
+        "#######"
+    ],
+    [
+        " #####",
+        " # @ #",
+        " # $ #",
+        "## # #",
+        "#  . #",
+        "# $..#",
+        "######"
+    ],
+    [
+        "######",
+        "# .  #",
+        "# $$ #",
+        "#  . #",
+        "# @  #",
+        "######"
+    ],
+    [
+        "#######",
+        "#     #",
+        "# .$. #",
+        "# $ $ #",
+        "# .@. #",
+        "#######"
+    ],
+    [
+        " #####",
+        " #   #",
+        "##$  #",
+        "# .$.#",
+        "# @  #",
+        "######"
+    ],
+    [
+        "######",
+        "#  . #",
+        "# $  #",
+        "# $# #",
+        "# .  #",
+        "# @  #",
+        "######"
+    ],
+    // 31-40 复杂挑战 (10关)
+    [
+        "  ####",
+        "###  #",
+        "# $  #",
+        "# #. #",
+        "# .@$#",
+        "######"
+    ],
+    [
+        "#######",
+        "#  @  #",
+        "# $ $ #",
+        "# . . #",
+        "#     #",
+        "#######"
+    ],
+    [
+        " #####",
+        " #   #",
+        "##$$ #",
+        "# .. #",
+        "#  @ #",
+        "######"
+    ],
+    [
+        "######",
+        "#    #",
+        "# $$ #",
+        "##.# #",
+        "# .  #",
+        "# @  #",
+        "######"
+    ],
+    [
+        " #####",
+        " #   #",
+        "## $ #",
+        "#  . #",
+        "# $ .#",
+        "# @  #",
+        "######"
+    ],
+    [
+        "#######",
+        "#     #",
+        "# .$. #",
+        "#  @  #",
+        "# .$. #",
+        "#     #",
+        "#######"
+    ],
+    [
+        "  #####",
+        "###   #",
+        "# $ # #",
+        "# . . #",
+        "#  $  #",
+        "#  @  #",
+        "#######"
+    ],
+    [
+        "######",
+        "#    #",
+        "# $$ #",
+        "# .. #",
+        "# @# #",
+        "######"
+    ],
+    [
+        " #####",
+        " #   #",
+        "## $ #",
+        "#  $ #",
+        "# .. #",
+        "# @  #",
+        "######"
+    ],
+    [
+        "######",
+        "# .  #",
+        "# $# #",
+        "#  $ #",
+        "#  . #",
+        "# @  #",
+        "######"
+    ],
+    // 41-50 大师级推演 (10关)
+    [
+        "  ####",
+        "###  #",
+        "# $  #",
+        "# $ .#",
+        "# .# #",
+        "# @  #",
+        "######"
+    ],
+    [
+        "######",
+        "#    #",
+        "# $  #",
+        "# .$.#",
+        "#  . #",
+        "# @  #",
+        "######"
+    ],
+    [
+        "#######",
+        "#     #",
+        "# $ $ #",
+        "# # # #",
+        "# . . #",
+        "#  @  #",
+        "#######"
+    ],
+    [
+        " #####",
+        " #   #",
+        "## $ #",
+        "# $$ #",
+        "#... #",
+        "# @  #",
+        "######"
+    ],
+    [
+        "######",
+        "#  . #",
+        "# $$ #",
+        "# .  #",
+        "# @  #",
+        "######"
+    ],
+    [
+        "#######",
+        "#     #",
+        "# .$. #",
+        "#  #  #",
+        "# .$. #",
+        "#  @  #",
+        "#######"
+    ],
+    [
+        " #####",
+        " #   #",
+        "## $ #",
+        "#  . #",
+        "# $ .#",
+        "#  @ #",
+        "######"
+    ],
+    [
+        "######",
+        "#    #",
+        "# $$ #",
+        "# .. #",
+        "#  @ #",
+        "######"
+    ],
+    [
+        "  ####",
+        "###  #",
+        "# $  #",
+        "#  $ #",
+        "# .. #",
+        "# @  #",
+        "######"
+    ],
+    [
+        "#######",
+        "#  .  #",
+        "# $ $ #",
+        "# .@. #",
+        "# $ $ #",
+        "#  .  #",
+        "#######"
+    ]
+];
+
+/**
+ * Web Audio API 纯前端音效合成器 (零音频文件依赖)
+ */
+class SoundFx {
+    constructor() {
+        this.ctx = null;
+    }
+    init() {
+        if (!this.ctx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) this.ctx = new AudioContext();
+        }
+    }
+    playTone(freq, type, duration, gainVal = 0.1) {
+        try {
+            this.init();
+            if (!this.ctx) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {}
+    }
+    step() { this.playTone(180, 'sine', 0.05, 0.05); }
+    push() { this.playTone(120, 'square', 0.08, 0.08); }
+    goal() { this.playTone(587.33, 'triangle', 0.15, 0.12); }
+    win() {
+        setTimeout(() => this.playTone(523.25, 'sine', 0.15, 0.15), 0);
+        setTimeout(() => this.playTone(659.25, 'sine', 0.15, 0.15), 120);
+        setTimeout(() => this.playTone(783.99, 'sine', 0.3, 0.2), 240);
+    }
+    undo() { this.playTone(240, 'sine', 0.06, 0.06); }
+}
+
+const sfx = new SoundFx();
+
+const { createApp, ref, reactive, computed, onMounted, onUnmounted } = Vue;
+
+createApp({
+    setup() {
+        const canvas = ref(null);
+        const canvasWrapper = ref(null);
+        let ctx = null;
+
+        const currentLevelIdx = ref(0);
+        const totalLevels = SOKOBAN_LEVELS.length;
+        const levels = SOKOBAN_LEVELS;
+
+        const movesCount = ref(0);
+        const pushesCount = ref(0);
+        const timerSec = ref(0);
+        let timerInterval = null;
+
+        const soundEnabled = ref(true);
+        const showLevelModal = ref(false);
+        const showWinModal = ref(false);
+
+        // 关卡地图与实体状态
+        let grid = []; // 2D array of tile types
+        let player = { x: 0, y: 0 };
+        let boxes = []; // [{x, y}]
+        let goals = []; // [{x, y}]
+        let rows = 0;
+        let cols = 0;
+        let tileSize = 44;
+
+        const historyStack = ref([]);
+        const levelRecords = reactive({});
+
+        function loadRecords() {
+            try {
+                const saved = localStorage.getItem('sokoban_records_v1');
+                if (saved) Object.assign(levelRecords, JSON.parse(saved));
+            } catch (e) {}
+        }
+
+        function saveRecord(idx) {
+            levelRecords[idx] = {
+                cleared: true,
+                moves: movesCount.value,
+                pushes: pushesCount.value,
+                time: timerSec.value
+            };
+            try {
+                localStorage.setItem('sokoban_records_v1', JSON.stringify(levelRecords));
+            } catch (e) {}
+        }
+
+        const formattedTime = computed(() => {
+            const m = Math.floor(timerSec.value / 60).toString().padStart(2, '0');
+            const s = (timerSec.value % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        });
+
+        function parseLevel(lvlIdx) {
+            const lines = SOKOBAN_LEVELS[lvlIdx];
+            rows = lines.length;
+            cols = Math.max(...lines.map(l => l.length));
+
+            grid = Array.from({ length: rows }, () => Array(cols).fill(' '));
+            boxes = [];
+            goals = [];
+
+            for (let r = 0; r < rows; r++) {
+                const line = lines[r];
+                for (let c = 0; c < line.length; c++) {
+                    const char = line[c];
+                    if (char === '#') {
+                        grid[r][c] = '#';
+                    } else if (char === '@') {
+                        player = { x: c, y: r };
+                    } else if (char === '$') {
+                        boxes.push({ x: c, y: r });
+                    } else if (char === '.') {
+                        goals.push({ x: c, y: r });
+                    } else if (char === '*') {
+                        boxes.push({ x: c, y: r });
+                        goals.push({ x: c, y: r });
+                    } else if (char === '+') {
+                        player = { x: c, y: r };
+                        goals.push({ x: c, y: r });
+                    }
+                }
+            }
+        }
+
+        function initLevel(lvlIdx) {
+            currentLevelIdx.value = lvlIdx;
+            movesCount.value = 0;
+            pushesCount.value = 0;
+            timerSec.value = 0;
+            historyStack.value = [];
+            showWinModal.value = false;
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timerSec.value++;
+            }, 1000);
+
+            parseLevel(lvlIdx);
+            resizeAndDraw();
+        }
+
+        function isWall(x, y) {
+            if (y < 0 || y >= rows || x < 0 || x >= cols) return true;
+            return grid[y][x] === '#';
+        }
+
+        function getBoxAt(x, y) {
+            return boxes.find(b => b.x === x && b.y === y);
+        }
+
+        function isGoal(x, y) {
+            return goals.some(g => g.x === x && g.y === y);
+        }
+
+        function checkWin() {
+            return boxes.every(b => isGoal(b.x, b.y));
+        }
+
+        function tryMove(dx, dy) {
+            const nextX = player.x + dx;
+            const nextY = player.y + dy;
+
+            if (isWall(nextX, nextY)) return false;
+
+            const box = getBoxAt(nextX, nextY);
+            if (box) {
+                const boxNextX = nextX + dx;
+                const boxNextY = nextY + dy;
+
+                if (isWall(boxNextX, boxNextY) || getBoxAt(boxNextX, boxNextY)) {
+                    return false; // 箱子被阻挡
+                }
+
+                // 记录历史状态以供撤销
+                historyStack.value.push({
+                    player: { ...player },
+                    boxes: boxes.map(b => ({ ...b })),
+                    moves: movesCount.value,
+                    pushes: pushesCount.value
+                });
+
+                // 移动箱子和玩家
+                box.x = boxNextX;
+                box.y = boxNextY;
+                player.x = nextX;
+                player.y = nextY;
+
+                movesCount.value++;
+                pushesCount.value++;
+
+                if (soundEnabled.value) {
+                    if (isGoal(boxNextX, boxNextY)) sfx.goal();
+                    else sfx.push();
+                }
+
+                draw();
+
+                if (checkWin()) {
+                    clearInterval(timerInterval);
+                    saveRecord(currentLevelIdx.value);
+                    if (soundEnabled.value) sfx.win();
+                    setTimeout(() => {
+                        showWinModal.value = true;
+                    }, 200);
+                }
+                return true;
+            } else {
+                // 仅玩家普通移动
+                historyStack.value.push({
+                    player: { ...player },
+                    boxes: boxes.map(b => ({ ...b })),
+                    moves: movesCount.value,
+                    pushes: pushesCount.value
+                });
+
+                player.x = nextX;
+                player.y = nextY;
+                movesCount.value++;
+
+                if (soundEnabled.value) sfx.step();
+                draw();
+                return true;
+            }
+        }
+
+        function undoMove() {
+            if (historyStack.value.length === 0) return;
+            const prev = historyStack.value.pop();
+            player = prev.player;
+            boxes = prev.boxes;
+            movesCount.value = prev.moves;
+            pushesCount.value = prev.pushes;
+            if (soundEnabled.value) sfx.undo();
+            draw();
+        }
+
+        function restartLevel() {
+            initLevel(currentLevelIdx.value);
+        }
+
+        function changeLevel(idx) {
+            if (idx >= 0 && idx < totalLevels) {
+                initLevel(idx);
+            }
+        }
+
+        function nextLevel() {
+            showWinModal.value = false;
+            if (currentLevelIdx.value < totalLevels - 1) {
+                initLevel(currentLevelIdx.value + 1);
+            }
+        }
+
+        function selectLevelFromModal(idx) {
+            showLevelModal.value = false;
+            initLevel(idx);
+        }
+
+        // 绘制复古像素画面
+        function draw() {
+            if (!canvas.value) return;
+            const cvs = canvas.value;
+            ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+            const offsetX = Math.floor((cvs.width - cols * tileSize) / 2);
+            const offsetY = Math.floor((cvs.height - rows * tileSize) / 2);
+
+            // 1. 地板与目标点
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const x = offsetX + c * tileSize;
+                    const y = offsetY + r * tileSize;
+
+                    if (grid[r][c] === '#') {
+                        // 绘制石砖墙壁 (Stone Bricks)
+                        ctx.fillStyle = '#1e293b';
+                        ctx.fillRect(x, y, tileSize, tileSize);
+                        ctx.fillStyle = '#334155';
+                        ctx.fillRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
+                        ctx.fillStyle = '#0f172a';
+                        ctx.fillRect(x + 4, y + 4, tileSize - 8, tileSize - 8);
+                        ctx.fillStyle = '#475569';
+                        ctx.fillRect(x + 2, y + 2, tileSize - 4, 3);
+                    } else if (grid[r][c] !== ' ') {
+                        // 地板
+                        ctx.fillStyle = '#0a0f1d';
+                        ctx.fillRect(x, y, tileSize, tileSize);
+                        ctx.strokeStyle = '#111827';
+                        ctx.strokeRect(x, y, tileSize, tileSize);
+                    }
+                }
+            }
+
+            // 2. 目标点 (Goal Spots)
+            goals.forEach(g => {
+                const gx = offsetX + g.x * tileSize + tileSize / 2;
+                const gy = offsetY + g.y * tileSize + tileSize / 2;
+
+                ctx.beginPath();
+                ctx.arc(gx, gy, tileSize * 0.28, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(245, 158, 11, 0.25)';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(gx, gy, tileSize * 0.12, 0, Math.PI * 2);
+                ctx.fillStyle = '#fbbf24';
+                ctx.fill();
+            });
+
+            // 3. 箱子 (Crates)
+            boxes.forEach(b => {
+                const bx = offsetX + b.x * tileSize + 4;
+                const by = offsetY + b.y * tileSize + 4;
+                const bw = tileSize - 8;
+                const onGoal = isGoal(b.x, b.y);
+
+                if (onGoal) {
+                    ctx.fillStyle = '#10b981';
+                    ctx.fillRect(bx - 2, by - 2, bw + 4, bw + 4);
+                    ctx.fillStyle = '#065f46';
+                    ctx.fillRect(bx, by, bw, bw);
+                } else {
+                    ctx.fillStyle = '#b45309';
+                    ctx.fillRect(bx, by, bw, bw);
+                }
+
+                ctx.fillStyle = onGoal ? '#34d399' : '#d97706';
+                ctx.fillRect(bx + 2, by + 2, bw - 4, bw - 4);
+
+                // 箱子 X 交叉木纹
+                ctx.strokeStyle = onGoal ? '#064e3b' : '#78350f';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(bx + 4, by + 4);
+                ctx.lineTo(bx + bw - 4, by + bw - 4);
+                ctx.moveTo(bx + bw - 4, by + 4);
+                ctx.lineTo(bx + 4, by + bw - 4);
+                ctx.stroke();
+            });
+
+            // 4. 玩家角色 (Player)
+            const px = offsetX + player.x * tileSize + tileSize / 2;
+            const py = offsetY + player.y * tileSize + tileSize / 2;
+            const pr = tileSize * 0.36;
+
+            // 角色身体
+            ctx.beginPath();
+            ctx.arc(px, py, pr, 0, Math.PI * 2);
+            ctx.fillStyle = '#38bdf8';
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 角色眼睛
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(px - pr * 0.35, py - pr * 0.15, 2.5, 0, Math.PI * 2);
+            ctx.arc(px + pr * 0.35, py - pr * 0.15, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 微笑嘴型
+            ctx.beginPath();
+            ctx.arc(px, py + pr * 0.1, pr * 0.4, 0, Math.PI);
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 1.8;
+            ctx.stroke();
+        }
+
+        function resizeAndDraw() {
+            if (!canvasWrapper.value || !canvas.value) return;
+            const wrapper = canvasWrapper.value;
+            const dpr = window.devicePixelRatio || 1;
+
+            const maxWidth = wrapper.clientWidth - 20;
+            const maxHeight = 540;
+
+            tileSize = Math.min(Math.floor(maxWidth / Math.max(cols, 1)), Math.floor(maxHeight / Math.max(rows, 1)), 52);
+            tileSize = Math.max(tileSize, 28);
+
+            canvas.value.width = cols * tileSize * dpr;
+            canvas.value.height = rows * tileSize * dpr;
+            canvas.value.style.width = (cols * tileSize) + 'px';
+            canvas.value.style.height = (rows * tileSize) + 'px';
+
+            ctx = canvas.value.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            draw();
+        }
+
+        // 键盘操作监听
+        function handleKeyDown(e) {
+            if (['ArrowUp', 'KeyW'].includes(e.code)) { e.preventDefault(); tryMove(0, -1); }
+            else if (['ArrowDown', 'KeyS'].includes(e.code)) { e.preventDefault(); tryMove(0, 1); }
+            else if (['ArrowLeft', 'KeyA'].includes(e.code)) { e.preventDefault(); tryMove(-1, 0); }
+            else if (['ArrowRight', 'KeyD'].includes(e.code)) { e.preventDefault(); tryMove(1, 0); }
+            else if (e.code === 'KeyZ') { e.preventDefault(); undoMove(); }
+            else if (e.code === 'KeyR') { e.preventDefault(); restartLevel(); }
+        }
+
+        // 点击画布智能寻路 (BFS Pathfinding)
+        function onCanvasClick(e) {
+            const rect = canvas.value.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            const targetC = Math.floor(clickX / tileSize);
+            const targetR = Math.floor(clickY / tileSize);
+
+            if (targetC === player.x && targetR === player.y) return;
+            if (isWall(targetC, targetR) || getBoxAt(targetC, targetR)) return;
+
+            // BFS 寻找玩家到目标的无阻挡最短路径
+            const queue = [[player.x, player.y, []]];
+            const visited = new Set([`${player.x},${player.y}`]);
+
+            while (queue.length > 0) {
+                const [cx, cy, path] = queue.shift();
+                if (cx === targetC && cy === targetR) {
+                    // 执行路径第一步
+                    if (path.length > 0) {
+                        tryMove(path[0][0], path[0][1]);
+                    }
+                    return;
+                }
+
+                const dirs = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+                for (let [dx, dy] of dirs) {
+                    const nx = cx + dx;
+                    const ny = cy + dy;
+                    const key = `${nx},${ny}`;
+                    if (!visited.has(key) && !isWall(nx, ny) && !getBoxAt(nx, ny)) {
+                        visited.add(key);
+                        queue.push([nx, ny, [...path, [dx, dy]]]);
+                    }
+                }
+            }
+        }
+
+        onMounted(() => {
+            loadRecords();
+            initLevel(0);
+            window.addEventListener('keydown', handleKeyDown);
+            window.addEventListener('resize', resizeAndDraw);
+        });
+
+        onUnmounted(() => {
+            clearInterval(timerInterval);
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('resize', resizeAndDraw);
+        });
+
+        return {
+            canvas,
+            canvasWrapper,
+            currentLevelIdx,
+            totalLevels,
+            levels,
+            movesCount,
+            pushesCount,
+            formattedTime,
+            soundEnabled,
+            showLevelModal,
+            showWinModal,
+            historyStack,
+            levelRecords,
+            tryMove,
+            undoMove,
+            restartLevel,
+            changeLevel,
+            nextLevel,
+            selectLevelFromModal,
+            onCanvasClick
+        };
+    }
+}).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

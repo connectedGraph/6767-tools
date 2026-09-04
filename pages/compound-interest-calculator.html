@@ -1,0 +1,1490 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>复利定投与理财收益计算器 - 在线工具</title>
+    <meta name="description" content="专业级在线复利定投与理财收益精算器：深度接入 finance.js 算法库，全面支持初始本金、定期定投（月/季/年/期初/期末）、预期年化复合收益率、投资年限与复利频次自定义；精确测算期末总资产、累计本金、复利利息、CAGR、资金加权IRR、通胀折现实际购买力及4%安全提款养老金；内置 Canvas 分层堆叠柱状图与多维增长走势曲线，提供逐年明细与一键导出 CSV。" />
+    <meta name="keywords" content="复利计算器,定投收益计算器,理财收益计算器,finance.js,单利复利对比,CAGR计算,IRR内部收益率,通胀折现,FIRE财务自由,资产配置,在线工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+
+        /* 顶部看板网格 */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 12px;
+            padding: 16px 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+        .kpi-card:hover {
+            border-color: rgba(56, 189, 248, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+        .kpi-card.cyan::before { background: #38bdf8; }
+        .kpi-card.emerald::before { background: #10b981; }
+        .kpi-card.amber::before { background: #f59e0b; }
+        .kpi-card.purple::before { background: #a855f7; }
+        .kpi-card.sky::before { background: #0284c7; }
+        .kpi-card.rose::before { background: #f43f5e; }
+
+        .kpi-card .label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .kpi-card .value {
+            font-size: 1.65rem;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            color: #f1f5f9;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        .kpi-card .sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        /* 预设策略标签组 */
+        .preset-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .preset-btn {
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .preset-btn:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+        }
+        .preset-btn.active {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            font-weight: 600;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+        }
+
+        /* 快捷填充标签 */
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .chip-item {
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .chip-item:hover {
+            border-color: #38bdf8;
+            color: #e2e8f0;
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        /* 图表容器 */
+        .chart-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 18px 20px;
+            position: relative;
+            margin-top: 16px;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .chart-canvas-wrap {
+            position: relative;
+            width: 100%;
+            height: 400px;
+        }
+        canvas.calc-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: crosshair;
+        }
+
+        /* 自定义 Legend */
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        .badge-cyan {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+        .badge-emerald {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+        .badge-purple {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+
+        /* 资产结构与比例条 */
+        .ratio-bar-wrap {
+            width: 100%;
+            height: 14px;
+            background: #1e293b;
+            border-radius: 7px;
+            overflow: hidden;
+            display: flex;
+            margin: 10px 0;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .ratio-bar-principal {
+            background: linear-gradient(90deg, #0284c7, #38bdf8);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        .ratio-bar-interest {
+            background: linear-gradient(90deg, #f59e0b, #10b981);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        /* FIRE 财务自由卡片 */
+        .fire-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.6));
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-top: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .fire-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .fire-stat .num {
+            font-size: 1.35rem;
+            font-weight: 700;
+            font-family: ui-monospace, monospace;
+            color: #38bdf8;
+        }
+
+        /* 表单分组样式 */
+        .form-section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            background: #38bdf8;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./life" class="tool-topbar-cat">生活实用</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">复利定投与理财收益计算器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+  <div class="tool-body calc-container">
+    <div class="card-model">
+      <div class="card-body">
+        
+        <!-- 头部说明 -->
+        <div class="tool-head">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h1 class="title" style="margin-bottom: 0;">复利定投与理财收益计算器</h1>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <span class="badge-cyan">finance.js 算法引擎</span>
+              <span class="badge-emerald">CAGR / IRR 双核精算</span>
+              <span class="badge-purple">离线本地计算</span>
+            </div>
+          </div>
+        </div>
+        <div class="description" style="margin-top: 8px;">
+          深度融合国际标准金融库 <code style="color: #38bdf8; font-family: monospace;">finance.js</code>，精准测算单笔本金与定期定投在复利增值下的远期财富规模。支持月/季/年定投、期初/期末时点、按月/季/年/日复利频次、通胀现值折现、FIRE退休安全提款（4%法则）及 Canvas 堆叠动态图表与 CSV 明细导出。
+        </div>
+
+        <!-- 预设快速策略 -->
+        <div style="margin-top: 18px;">
+          <div class="form-section-title">典型投资与定投场景预设</div>
+          <div class="preset-group">
+            <button class="preset-btn" :class="{ active: currentPreset === 'pension' }" @click="applyPreset('pension')">
+              工薪族稳健养老 (月投¥2,000, 6%, 25年)
+            </button>
+            <button class="preset-btn" :class="{ active: currentPreset === 'edu' }" @click="applyPreset('edu')">
+              子女教育金储备 (月投¥1,500, 5%, 15年)
+            </button>
+            <button class="preset-btn" :class="{ active: currentPreset === 'index_fund' }" @click="applyPreset('index_fund')">
+              宽基指数基金定投 (月投¥3,000, 8%, 20年)
+            </button>
+            <button class="preset-btn" :class="{ active: currentPreset === 'lump_sum' }" @click="applyPreset('lump_sum')">
+              单笔大额固收存单 (本金¥30万, 3.5%, 10年)
+            </button>
+            <button class="preset-btn" :class="{ active: currentPreset === 'fire' }" @click="applyPreset('fire')">
+              FIRE财务自由跃升 (初始¥10万, 月投¥8,000, 9%, 18年)
+            </button>
+            <button class="preset-btn" :class="{ active: currentPreset === 'aggressive' }" @click="applyPreset('aggressive')">
+              激进科技权益组合 (初始¥5万, 月投¥5,000, 12%, 15年)
+            </button>
+          </div>
+        </div>
+
+        <!-- 参数配置表单 -->
+        <el-form :model="form" label-position="top" class="tool-form" style="margin-top: 10px;">
+          <div class="form-section-title">投资参数与现金流设定</div>
+          
+          <el-row :gutter="18">
+            <!-- 初始本金 -->
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item label="初始投资本金 (元)">
+                <el-input-number v-model="form.initialPrincipal" :min="0" :max="100000000" :step="10000" class="w100" @change="recalculate" />
+                <div class="chip-group">
+                  <span class="chip-item" @click="form.initialPrincipal = 0; recalculate()">0元 (纯定投)</span>
+                  <span class="chip-item" @click="form.initialPrincipal = 20000; recalculate()">2万元</span>
+                  <span class="chip-item" @click="form.initialPrincipal = 50000; recalculate()">5万元</span>
+                  <span class="chip-item" @click="form.initialPrincipal = 100000; recalculate()">10万元</span>
+                  <span class="chip-item" @click="form.initialPrincipal = 500000; recalculate()">50万元</span>
+                </div>
+              </el-form-item>
+            </el-col>
+
+            <!-- 定投金额 -->
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item label="定期定投金额 (元)">
+                <el-input-number v-model="form.regularAmount" :min="0" :max="10000000" :step="500" class="w100" @change="recalculate" />
+                <div class="chip-group">
+                  <span class="chip-item" @click="form.regularAmount = 500; recalculate()">¥500</span>
+                  <span class="chip-item" @click="form.regularAmount = 1000; recalculate()">¥1,000</span>
+                  <span class="chip-item" @click="form.regularAmount = 2000; recalculate()">¥2,000</span>
+                  <span class="chip-item" @click="form.regularAmount = 5000; recalculate()">¥5,000</span>
+                  <span class="chip-item" @click="form.regularAmount = 10000; recalculate()">¥10,000</span>
+                </div>
+              </el-form-item>
+            </el-col>
+
+            <!-- 定投频次与时点 -->
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item label="定投频次与扣款时点">
+                <div style="display: flex; gap: 8px;">
+                  <el-select v-model="form.investFrequency" style="flex: 1.3;" @change="recalculate">
+                    <el-option label="每月定投 (12次/年)" value="month"></el-option>
+                    <el-option label="每季度定投 (4次/年)" value="quarter"></el-option>
+                    <el-option label="每年定投 (1次/年)" value="year"></el-option>
+                    <el-option label="不定投 (单笔)" value="none"></el-option>
+                  </el-select>
+                  <el-select v-model="form.investTiming" style="flex: 1;" :disabled="form.investFrequency === 'none'" @change="recalculate">
+                    <el-option label="期初投入" value="begin"></el-option>
+                    <el-option label="期末投入" value="end"></el-option>
+                  </el-select>
+                </div>
+                <div class="chip-group">
+                  <span style="font-size: 0.72rem; color: #64748b;">
+                    {{ form.investTiming === 'begin' ? '期初投入（Annuity Due，利息滚存更充分）' : '期末投入（Ordinary Annuity，周期末结算）' }}
+                  </span>
+                </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="18" style="margin-top: 6px;">
+            <!-- 年化收益率 -->
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item>
+                <template #label>
+                  <div style="display: flex; justify-content: space-between; width: 100%;">
+                    <span>预期年化收益率 (%)</span>
+                    <span style="color: #38bdf8; font-weight: 700; font-family: monospace;">{{ form.annualRate }} %</span>
+                  </div>
+                </template>
+                <el-slider v-model="form.annualRate" :min="0.1" :max="30" :step="0.1" @input="recalculate" />
+                <div class="chip-group">
+                  <span class="chip-item" @click="form.annualRate = 2.0; recalculate()">货币/存单 (2.0%)</span>
+                  <span class="chip-item" @click="form.annualRate = 3.5; recalculate()">固收理财 (3.5%)</span>
+                  <span class="chip-item" @click="form.annualRate = 6.0; recalculate()">平衡基金 (6.0%)</span>
+                  <span class="chip-item" @click="form.annualRate = 8.0; recalculate()">宽基指数 (8.0%)</span>
+                  <span class="chip-item" @click="form.annualRate = 12.0; recalculate()">核心权益 (12.0%)</span>
+                </div>
+              </el-form-item>
+            </el-col>
+
+            <!-- 投资年限 -->
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item>
+                <template #label>
+                  <div style="display: flex; justify-content: space-between; width: 100%;">
+                    <span>投资期限 (年)</span>
+                    <span style="color: #10b981; font-weight: 700; font-family: monospace;">{{ form.years }} 年 ({{ form.years * 12 }} 个月)</span>
+                  </div>
+                </template>
+                <el-slider v-model="form.years" :min="1" :max="50" :step="1" @input="recalculate" />
+                <div class="chip-group">
+                  <span class="chip-item" @click="form.years = 3; recalculate()">3年</span>
+                  <span class="chip-item" @click="form.years = 5; recalculate()">5年</span>
+                  <span class="chip-item" @click="form.years = 10; recalculate()">10年</span>
+                  <span class="chip-item" @click="form.years = 20; recalculate()">20年</span>
+                  <span class="chip-item" @click="form.years = 30; recalculate()">30年</span>
+                  <span class="chip-item" @click="form.years = 40; recalculate()">40年</span>
+                </div>
+              </el-form-item>
+            </el-col>
+
+            <!-- 复利频次 & 通胀折现 -->
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item label="复利计息频次与通胀折现率">
+                <el-select v-model="form.compoundFrequency" class="w100" @change="recalculate">
+                  <el-option label="按月复利 (每月滚存结息，标准推荐)" value="12"></el-option>
+                  <el-option label="按季度复利 (每季度结息)" value="4"></el-option>
+                  <el-option label="按年复利 (每年结息一次)" value="1"></el-option>
+                  <el-option label="按日复利 (高频日计息)" value="365"></el-option>
+                </el-select>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+                  <span style="font-size: 0.78rem; color: #94a3b8;">通胀折现率 (%)</span>
+                  <el-input-number v-model="form.inflationRate" :min="0" :max="10" :step="0.5" size="small" style="width: 120px;" @change="recalculate" />
+                </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+
+        <!-- KPI 核心指标精算看板 -->
+        <div style="margin-top: 24px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div class="form-section-title" style="margin-bottom: 0;">期末资产精算结果看板</div>
+          <span style="font-size: 0.75rem; color: #64748b; font-family: monospace;">算法核算基于 finance.js 核心金融数学模型</span>
+        </div>
+
+        <div class="kpi-grid">
+          <!-- 期末总资产 -->
+          <div class="kpi-card cyan">
+            <div class="label">
+              <span>期末总资产 (本息合计)</span>
+              <span class="badge-cyan">{{ form.years }} 年后终值</span>
+            </div>
+            <div class="value">¥ {{ formatMoney(summary.finalAssets) }}</div>
+            <div class="sub">
+              <span>本金放大 <strong style="color: #38bdf8;">{{ summary.assetMultiple }}</strong> 倍</span>
+              <span style="color: #38bdf8;">总ROI: +{{ summary.totalRoi }}%</span>
+            </div>
+          </div>
+
+          <!-- 累计本金投入 -->
+          <div class="kpi-card emerald">
+            <div class="label">
+              <span>累计投入本金总额</span>
+              <span>占比 {{ summary.principalRatio }}%</span>
+            </div>
+            <div class="value" style="color: #34d399;">¥ {{ formatMoney(summary.totalPrincipal) }}</div>
+            <div class="sub">
+              <span>初始: ¥{{ formatMoney(form.initialPrincipal) }}</span>
+              <span>定投: ¥{{ formatMoney(summary.regularTotalPrincipal) }}</span>
+            </div>
+          </div>
+
+          <!-- 累计利息收益 -->
+          <div class="kpi-card amber">
+            <div class="label">
+              <span>累计复合利息收益</span>
+              <span>占比 {{ summary.interestRatio }}%</span>
+            </div>
+            <div class="value" style="color: #fbbf24;">¥ {{ formatMoney(summary.totalInterest) }}</div>
+            <div class="sub">
+              <span>利息是本金的 {{ summary.interestOverPrincipal }} 倍</span>
+              <span style="color: #f59e0b;">年均复利收益 ¥{{ formatMoney(summary.totalInterest / form.years) }}</span>
+            </div>
+          </div>
+
+          <!-- 实际购买力现值 -->
+          <div class="kpi-card purple">
+            <div class="label">
+              <span>扣除通胀实际购买力现值</span>
+              <span>通胀率 {{ form.inflationRate }}%</span>
+            </div>
+            <div class="value" style="color: #c084fc;">¥ {{ formatMoney(summary.realPV) }}</div>
+            <div class="sub">
+              <span>通胀购买力折损:</span>
+              <span style="color: #f43f5e; font-weight: 600;">-¥{{ formatMoney(summary.inflationDiscountAmount) }} ({{ summary.inflationLossRatio }}%)</span>
+            </div>
+          </div>
+
+          <!-- 年化复合回报 CAGR & IRR -->
+          <div class="kpi-card sky">
+            <div class="label">
+              <span>年化复合增长率 (CAGR / IRR)</span>
+              <span class="badge-cyan">真实资金回报率</span>
+            </div>
+            <div class="value" style="color: #38bdf8;">{{ summary.annualizedIRR }}% <span style="font-size: 0.9rem; font-weight: normal; color: #94a3b8;">(IRR)</span></div>
+            <div class="sub">
+              <span>累计投入CAGR: <strong style="color: #38bdf8;">{{ summary.cagr }}%</strong></span>
+              <span>有效年利率(EAR): {{ summary.ear }}%</span>
+            </div>
+          </div>
+
+          <!-- 复利增益与翻倍定律 -->
+          <div class="kpi-card rose">
+            <div class="label">
+              <span>复利利滚利额外增益</span>
+              <span>72定律周期</span>
+            </div>
+            <div class="value" style="color: #f43f5e;">+¥ {{ formatMoney(summary.compoundBonus) }}</div>
+            <div class="sub">
+              <span>资产翻倍约 <strong style="color: #34d399;">{{ summary.doubleYears }}</strong> 年</span>
+              <span>翻3倍约 <strong style="color: #38bdf8;">{{ summary.tripleYears }}</strong> 年</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 资产结构比例条 -->
+        <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(51, 65, 85, 0.5); border-radius: 10px; padding: 14px 18px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.82rem; color: #94a3b8; margin-bottom: 4px;">
+            <span><span style="display: inline-block; width: 8px; height: 8px; background: #0284c7; border-radius: 2px; margin-right: 4px;"></span>累计本金投入: <strong style="color: #38bdf8;">{{ summary.principalRatio }}%</strong> (¥{{ formatMoney(summary.totalPrincipal) }})</span>
+            <span><span style="display: inline-block; width: 8px; height: 8px; background: #10b981; border-radius: 2px; margin-right: 4px;"></span>复利利息收益: <strong style="color: #10b981;">{{ summary.interestRatio }}%</strong> (¥{{ formatMoney(summary.totalInterest) }})</span>
+          </div>
+          <div class="ratio-bar-wrap">
+            <div class="ratio-bar-principal" :style="{ width: summary.principalRatio + '%' }"></div>
+            <div class="ratio-bar-interest" :style="{ width: summary.interestRatio + '%' }"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748b; flex-wrap: wrap; gap: 8px;">
+            <span>在 {{ form.annualRate }}% 年化回报下，利息积累速度将随时间指数级超越本金投入</span>
+            <span>单利对比总额: ¥{{ formatMoney(summary.simpleInterestTotalAssets) }} (复利增益倍数: <strong style="color: #10b981;">{{ summary.compoundMultiplier }}x</strong>)</span>
+          </div>
+        </div>
+
+        <!-- FIRE 退休财务自由测算卡片 (4% 安全提款率) -->
+        <div class="fire-card">
+          <div style="max-width: 450px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="font-weight: 700; color: #f1f5f9; font-size: 0.95rem;">FIRE 财务自由测算 (4% 安全提款法则)</span>
+              <span class="badge-cyan">Trinity 经验模型</span>
+            </div>
+            <div style="font-size: 0.78rem; color: #94a3b8; line-height: 1.5;">
+              假设达到期末资产后停止追加并按 4% 永续安全提款率 (SWR) 提取退休生活费，本金将大概率维持永续增长不枯竭。
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+            <div class="fire-stat">
+              <span style="font-size: 0.75rem; color: #94a3b8;">年均可持续被动提款额</span>
+              <span class="num">¥ {{ formatMoney(summary.fireAnnualWithdrawal) }}</span>
+            </div>
+            <div class="fire-stat">
+              <span style="font-size: 0.75rem; color: #94a3b8;">名义月均可支配养老金</span>
+              <span class="num" style="color: #34d399;">¥ {{ formatMoney(summary.fireMonthlyCashFlow) }}</span>
+            </div>
+            <div class="fire-stat">
+              <span style="font-size: 0.75rem; color: #94a3b8;">扣除通胀实际月购买力</span>
+              <span class="num" style="color: #c084fc;">¥ {{ formatMoney(summary.fireRealMonthlyCashFlow) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 动态 Canvas 图表展示 -->
+        <div class="chart-box">
+          <div class="chart-header">
+            <div style="font-weight: 700; color: #f1f5f9; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+              <span>资产全周期演进与多维走势图</span>
+              <span class="badge-cyan">
+                {{ chartMode === 'stacked' ? '分层堆叠柱状图 (本金 vs 累计收益)' : chartMode === 'line' ? '资产净值增长曲线 (复利 vs 单利)' : '抗通胀实际购买力走势' }}
+              </span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+              <!-- 图表类型切换 -->
+              <el-radio-group v-model="chartMode" size="small" @change="renderChart">
+                <el-radio-button label="stacked">分层堆叠柱状图</el-radio-button>
+                <el-radio-button label="line">净值增长折线图</el-radio-button>
+                <el-radio-button label="inflation">通胀购买力对比</el-radio-button>
+              </el-radio-group>
+
+              <!-- 图例 -->
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <div class="legend-dot" style="background: #0284c7;"></div>
+                  <span>累计投入本金</span>
+                </div>
+                <div v-if="chartMode === 'stacked'" class="legend-item">
+                  <div class="legend-dot" style="background: #10b981;"></div>
+                  <span>累计复利收益</span>
+                </div>
+                <div v-if="chartMode === 'line'" class="legend-item">
+                  <div class="legend-dot" style="background: #10b981;"></div>
+                  <span>复利期末总资产</span>
+                </div>
+                <div v-if="chartMode === 'line'" class="legend-item">
+                  <div class="legend-dot" style="background: #f59e0b;"></div>
+                  <span>单利对照线</span>
+                </div>
+                <div v-if="chartMode === 'inflation'" class="legend-item">
+                  <div class="legend-dot" style="background: #10b981;"></div>
+                  <span>名义总资产</span>
+                </div>
+                <div v-if="chartMode === 'inflation'" class="legend-item">
+                  <div class="legend-dot" style="background: #a855f7;"></div>
+                  <span>通胀折现现值</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-canvas-wrap">
+            <canvas ref="chartCanvas" class="calc-canvas" 
+                    @mousemove="onCanvasMouseMove" 
+                    @mouseleave="onCanvasMouseLeave"
+                    @touchstart="onCanvasTouch"
+                    @touchmove="onCanvasTouch"
+                    @touchend="onCanvasMouseLeave"></canvas>
+          </div>
+        </div>
+
+        <!-- 逐年明细数据表格 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 28px; margin-bottom: 12px;">
+          <div style="font-weight: 700; color: #f1f5f9; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+            <span>逐年投资收益与资产明细表</span>
+            <span class="badge-cyan">全周期 {{ form.years }} 年数据</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <el-button size="small" type="primary" plain @click="copyReport">
+              复制精算摘要报告
+            </el-button>
+            <el-button size="small" type="success" plain @click="exportCSV">
+              一键导出 CSV 明细表
+            </el-button>
+          </div>
+        </div>
+
+        <el-table :data="yearList" style="width: 100%" class="tool-table" stripe border size="small" max-height="520">
+          <el-table-column prop="year" label="年份" width="80" align="center" fixed>
+            <template #default="scope">第 {{ scope.row.year }} 年</template>
+          </el-table-column>
+          <el-table-column prop="startAssets" label="年初总资产" min-width="120" align="right">
+            <template #default="scope">¥ {{ formatMoney(scope.row.startAssets) }}</template>
+          </el-table-column>
+          <el-table-column prop="yearPrincipal" label="当年新增定投" min-width="110" align="right">
+            <template #default="scope">¥ {{ formatMoney(scope.row.yearPrincipal) }}</template>
+          </el-table-column>
+          <el-table-column prop="cumPrincipal" label="累计本金投入" min-width="120" align="right">
+            <template #default="scope">¥ {{ formatMoney(scope.row.cumPrincipal) }}</template>
+          </el-table-column>
+          <el-table-column prop="yearInterest" label="当年产生利息" min-width="110" align="right">
+            <template #default="scope">
+              <span style="color: #34d399;">+¥ {{ formatMoney(scope.row.yearInterest) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="cumInterest" label="累计利息总额" min-width="120" align="right">
+            <template #default="scope">
+              <span style="color: #fbbf24; font-weight: 600;">¥ {{ formatMoney(scope.row.cumInterest) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="endAssets" label="期末总资产" min-width="130" align="right">
+            <template #default="scope">
+              <span style="color: #38bdf8; font-weight: 700;">¥ {{ formatMoney(scope.row.endAssets) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="roi" label="累计收益率" width="100" align="right">
+            <template #default="scope">
+              <span :style="{ color: scope.row.roi >= 100 ? '#f43f5e' : '#38bdf8', fontWeight: 600 }">
+                +{{ scope.row.roi }}%
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="realPV" label="扣除通胀实际价值" min-width="130" align="right">
+            <template #default="scope">
+              <span style="color: #c084fc;">¥ {{ formatMoney(scope.row.realPV) }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <div class="divider"></div>
+
+        <!-- 财经知识与计算原理说明 -->
+        <div class="content">
+          <h3>复利定投核心计算原理与理财常识 (finance.js 金融模型)</h3>
+          <p>
+            <strong>1. 复利与年金终值数学模型 (<code style="color: #38bdf8;">finance.CI</code> & <code style="color: #38bdf8;">finance.FV</code>)：</strong><br />
+            - 单笔初始本金复利公式：$F_0 = P \times (1 + r/n)^{n \times t}$，其中 $P$ 为初始本金，$r$ 为名义年化收益率，$n$ 为每年复利频次，$t$ 为投资年限。<br />
+            - 期初定投年金终值公式（Annuity Due）：$F_A = PMT \times (1 + i) \times \frac{(1 + i)^m - 1}{i}$，其中 $PMT$ 为每期定投金额，$i$ 为每期有效利率，$m$ 为总定投期数。<br />
+            - 期末资产总额 = 初始本金终值 + 定投年金终值。
+          </p>
+          <p>
+            <strong>2. 年化复合增长率 (CAGR) 与 资金加权内部收益率 (IRR)：</strong><br />
+            - 复合年均增长率（Compound Annual Growth Rate, CAGR）：衡量总投资在投资期限内的几何平均年增长速度，计算公式为 $\text{CAGR} = (\frac{\text{期末资产}}{\text{累计本金}})^{1/t} - 1$。<br />
+            - 内部收益率（Internal Rate of Return, IRR）：考虑了每期定投资金进入的具体时间价值，使全周期所有现金流净现值（NPV）恰好为零的折现率，是衡量定投最真实的资金加权年化回报率指标。
+          </p>
+          <p>
+            <strong>3. 通货膨胀折现与实际购买力现值 (<code style="color: #38bdf8;">finance.PV</code>)：</strong><br />
+            通胀会侵蚀未来的货币购买力。设预期年通胀率为 $inf$，则 $t$ 年后名义资产 $F$ 的实际购买力现值公式为 $\text{Real PV} = \frac{F}{(1 + inf)^t}$。该指标直观揭示了抵抗通胀后的财富真实增值水平。
+          </p>
+          <p>
+            <strong>4. 72法则与115法则快速估算法：</strong><br />
+            - 资产实现<strong>翻倍</strong>（2倍）所需年限 $\approx 72 \div \text{年化收益率(\%)}$。<br />
+            - 资产实现<strong>翻3倍</strong>（3倍）所需年限 $\approx 115 \div \text{年化收益率(\%)}$。
+          </p>
+          <p>
+            <strong>5. FIRE 财务自由与 4% 安全提款率原则 (Trinity Study)：</strong><br />
+            根据著名的 Trinity 研究，当积累的生息资产达到一定规模后，每年按总资产的 4% 提取生活费（后续按通胀微调），在 30 年以上的周期内投资组合有超过 95% 的概率永续增长且不发生枯竭。
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/finance/finance.min.js"></script>
+<script>
+  const { createApp, ref, reactive, computed, onMounted, onUnmounted, nextTick } = Vue;
+
+  createApp({
+    setup() {
+      // 实例化 finance.js 库
+      const finance = typeof Finance !== 'undefined' ? new Finance() : null;
+
+      const currentPreset = ref('pension');
+      const chartMode = ref('stacked');
+      const chartCanvas = ref(null);
+
+      const form = reactive({
+        initialPrincipal: 10000,
+        regularAmount: 2000,
+        investFrequency: 'month',
+        investTiming: 'begin',
+        annualRate: 6.0,
+        years: 25,
+        compoundFrequency: '12',
+        inflationRate: 2.0
+      });
+
+      const summary = reactive({
+        finalAssets: 0,
+        totalPrincipal: 0,
+        regularTotalPrincipal: 0,
+        totalInterest: 0,
+        totalRoi: '0.00',
+        principalRatio: '0.0',
+        interestRatio: '0.0',
+        assetMultiple: '0.00',
+        interestOverPrincipal: '0.00',
+        cagr: '0.00',
+        annualizedIRR: '0.00',
+        ear: '0.00',
+        realPV: 0,
+        inflationDiscountAmount: 0,
+        inflationLossRatio: '0.00',
+        simpleInterestTotalAssets: 0,
+        compoundBonus: 0,
+        compoundMultiplier: '1.00',
+        doubleYears: '0.0',
+        tripleYears: '0.0',
+        fireAnnualWithdrawal: 0,
+        fireMonthlyCashFlow: 0,
+        fireRealMonthlyCashFlow: 0,
+        yearlyAvgInterest: 0
+      });
+
+      const yearList = ref([]);
+      let hoverIndex = -1;
+
+      // 预设投资策略
+      const applyPreset = (type) => {
+        currentPreset.value = type;
+        if (type === 'pension') {
+          form.initialPrincipal = 10000;
+          form.regularAmount = 2000;
+          form.investFrequency = 'month';
+          form.investTiming = 'begin';
+          form.annualRate = 6.0;
+          form.years = 25;
+          form.compoundFrequency = '12';
+          form.inflationRate = 2.0;
+        } else if (type === 'edu') {
+          form.initialPrincipal = 20000;
+          form.regularAmount = 1500;
+          form.investFrequency = 'month';
+          form.investTiming = 'begin';
+          form.annualRate = 5.0;
+          form.years = 15;
+          form.compoundFrequency = '12';
+          form.inflationRate = 2.0;
+        } else if (type === 'index_fund') {
+          form.initialPrincipal = 0;
+          form.regularAmount = 3000;
+          form.investFrequency = 'month';
+          form.investTiming = 'begin';
+          form.annualRate = 8.0;
+          form.years = 20;
+          form.compoundFrequency = '12';
+          form.inflationRate = 2.5;
+        } else if (type === 'lump_sum') {
+          form.initialPrincipal = 300000;
+          form.regularAmount = 0;
+          form.investFrequency = 'none';
+          form.investTiming = 'begin';
+          form.annualRate = 3.5;
+          form.years = 10;
+          form.compoundFrequency = '1';
+          form.inflationRate = 2.0;
+        } else if (type === 'fire') {
+          form.initialPrincipal = 100000;
+          form.regularAmount = 8000;
+          form.investFrequency = 'month';
+          form.investTiming = 'begin';
+          form.annualRate = 9.0;
+          form.years = 18;
+          form.compoundFrequency = '12';
+          form.inflationRate = 2.5;
+        } else if (type === 'aggressive') {
+          form.initialPrincipal = 50000;
+          form.regularAmount = 5000;
+          form.investFrequency = 'month';
+          form.investTiming = 'begin';
+          form.annualRate = 12.0;
+          form.years = 15;
+          form.compoundFrequency = '12';
+          form.inflationRate = 3.0;
+        }
+        recalculate();
+      };
+
+      // 核心复利运算逻辑
+      const recalculate = () => {
+        const p0 = Math.max(0, Number(form.initialPrincipal) || 0);
+        const pmt = form.investFrequency === 'none' ? 0 : Math.max(0, Number(form.regularAmount) || 0);
+        const r = Math.max(0, Number(form.annualRate) || 0) / 100;
+        const years = Math.max(1, Math.min(50, Number(form.years) || 1));
+        const k = Math.max(1, Number(form.compoundFrequency) || 12);
+        const inflation = Math.max(0, Number(form.inflationRate) || 0) / 100;
+        const timing = form.investTiming || 'begin';
+
+        // 有效年利率 EAR = (1 + r/k)^k - 1
+        const ear = r > 0 ? (Math.pow(1 + r / k, k) - 1) : 0;
+
+        // 定投年频次
+        let f_pmt = 12;
+        if (form.investFrequency === 'quarter') f_pmt = 4;
+        else if (form.investFrequency === 'year') f_pmt = 1;
+        else if (form.investFrequency === 'none') f_pmt = 0;
+
+        // 每期定投对应的有效利率
+        const i_pmt = (f_pmt > 0 && r > 0) ? (Math.pow(1 + ear, 1 / f_pmt) - 1) : 0;
+        const totalPeriods = years * (f_pmt || 1);
+
+        // 构造现金流数组用于 finance.IRR 计算
+        const cfs = [];
+        if (f_pmt > 0 && pmt > 0) {
+          let t0 = -p0;
+          if (timing === 'begin') t0 -= pmt;
+          cfs.push(t0);
+          for (let p = 1; p < totalPeriods; p++) {
+            cfs.push(-pmt);
+          }
+        } else {
+          cfs.push(-p0);
+          for (let p = 1; p < years; p++) cfs.push(0);
+        }
+
+        const table = [];
+        let curBalance = p0;
+        let cumulativePrincipal = p0;
+        let cumInterest = 0;
+
+        // 逐年模拟
+        for (let y = 1; y <= years; y++) {
+          const startYearAssets = curBalance;
+          let yearAddedPrincipal = 0;
+          const subPeriods = f_pmt > 0 ? f_pmt : 1;
+
+          for (let s = 1; s <= subPeriods; s++) {
+            if (f_pmt > 0 && pmt > 0) {
+              if (timing === 'begin') {
+                curBalance += pmt;
+                yearAddedPrincipal += pmt;
+                cumulativePrincipal += pmt;
+                curBalance *= (1 + i_pmt);
+              } else {
+                curBalance *= (1 + i_pmt);
+                curBalance += pmt;
+                yearAddedPrincipal += pmt;
+                cumulativePrincipal += pmt;
+              }
+            } else {
+              curBalance *= (1 + ear);
+            }
+          }
+
+          const endYearAssets = curBalance;
+          const yearInterest = Math.max(0, endYearAssets - startYearAssets - yearAddedPrincipal);
+          cumInterest += yearInterest;
+          const roi = cumulativePrincipal > 0 ? ((endYearAssets - cumulativePrincipal) / cumulativePrincipal * 100).toFixed(2) : '0.00';
+          
+          // 逐年通胀现值
+          let yearRealPV = endYearAssets;
+          if (finance && typeof finance.PV === 'function') {
+            yearRealPV = Math.abs(finance.PV(form.inflationRate, y, 0, -endYearAssets, 0));
+          } else {
+            yearRealPV = endYearAssets / Math.pow(1 + inflation, y);
+          }
+
+          table.push({
+            year: y,
+            startAssets: startYearAssets,
+            yearPrincipal: yearAddedPrincipal,
+            cumPrincipal: cumulativePrincipal,
+            yearInterest: yearInterest,
+            cumInterest: cumInterest,
+            endAssets: endYearAssets,
+            roi: roi,
+            realPV: yearRealPV
+          });
+        }
+
+        yearList.value = table;
+
+        const finalAssets = curBalance;
+        const totalPrincipal = cumulativePrincipal;
+        const totalInterest = Math.max(0, finalAssets - totalPrincipal);
+        const regularTotal = Math.max(0, totalPrincipal - p0);
+
+        // 完善现金流末尾注入期末总资产，计算 IRR
+        if (f_pmt > 0 && pmt > 0) {
+          if (timing === 'begin') {
+            cfs.push(finalAssets);
+          } else {
+            cfs[cfs.length - 1] += finalAssets;
+          }
+        } else {
+          cfs.push(finalAssets);
+        }
+
+        let calculatedIRR = 0;
+        let annualizedIRR = 0;
+        if (finance && typeof finance.IRR === 'function' && totalPrincipal > 0 && finalAssets > 0) {
+          try {
+            const rawIrr = finance.IRR(cfs);
+            if (!isNaN(rawIrr) && isFinite(rawIrr)) {
+              calculatedIRR = rawIrr;
+              if (f_pmt > 1) {
+                annualizedIRR = (Math.pow(1 + calculatedIRR / 100, f_pmt) - 1) * 100;
+              } else {
+                annualizedIRR = calculatedIRR;
+              }
+            }
+          } catch (e) {
+            annualizedIRR = (ear * 100);
+          }
+        }
+        if (annualizedIRR === 0 || isNaN(annualizedIRR) || !isFinite(annualizedIRR)) {
+          annualizedIRR = (ear * 100);
+        }
+
+        // 计算 CAGR (复合年均增长率)
+        let calculatedCAGR = 0;
+        if (finance && typeof finance.CAGR === 'function' && totalPrincipal > 0 && finalAssets > 0) {
+          try {
+            calculatedCAGR = finance.CAGR(totalPrincipal, finalAssets, years);
+          } catch (e) {
+            calculatedCAGR = (Math.pow(finalAssets / totalPrincipal, 1 / years) - 1) * 100;
+          }
+        } else if (totalPrincipal > 0 && finalAssets > 0) {
+          calculatedCAGR = (Math.pow(finalAssets / totalPrincipal, 1 / years) - 1) * 100;
+        }
+
+        // 通胀折现现值 Real PV
+        let realPV = finalAssets;
+        if (finance && typeof finance.PV === 'function') {
+          realPV = Math.abs(finance.PV(form.inflationRate, years, 0, -finalAssets, 0));
+        } else {
+          realPV = finalAssets / Math.pow(1 + inflation, years);
+        }
+        const inflationDiscountAmount = Math.max(0, finalAssets - realPV);
+        const inflationLossRatio = finalAssets > 0 ? ((inflationDiscountAmount / finalAssets) * 100).toFixed(2) : '0.00';
+
+        // 单利对照估算:
+        let simpleTotalInterest = p0 * r * years;
+        if (pmt > 0 && f_pmt > 0) {
+          const totalPmtTimes = years * f_pmt;
+          for (let kStep = 0; kStep < totalPmtTimes; kStep++) {
+            const holdingYears = (totalPmtTimes - kStep + (timing === 'begin' ? 1 : 0)) / f_pmt;
+            simpleTotalInterest += pmt * r * holdingYears;
+          }
+        }
+        const simpleInterestTotalAssets = totalPrincipal + simpleTotalInterest;
+        const compoundBonus = Math.max(0, finalAssets - simpleInterestTotalAssets);
+        const compoundMultiplier = simpleTotalInterest > 0 ? (totalInterest / simpleTotalInterest).toFixed(2) : '1.00';
+
+        // 72法则与115法则
+        const doubleYears = form.annualRate > 0 ? (72 / form.annualRate).toFixed(1) : '∞';
+        const tripleYears = form.annualRate > 0 ? (115 / form.annualRate).toFixed(1) : '∞';
+
+        // FIRE 4% 永续安全提款率
+        const fireAnnualWithdrawal = finalAssets * 0.04;
+        const fireMonthlyCashFlow = fireAnnualWithdrawal / 12;
+        const fireRealMonthlyCashFlow = (realPV * 0.04) / 12;
+
+        summary.finalAssets = finalAssets;
+        summary.totalPrincipal = totalPrincipal;
+        summary.regularTotalPrincipal = regularTotal;
+        summary.totalInterest = totalInterest;
+        summary.totalRoi = totalPrincipal > 0 ? ((totalInterest / totalPrincipal) * 100).toFixed(2) : '0.00';
+        summary.principalRatio = finalAssets > 0 ? ((totalPrincipal / finalAssets) * 100).toFixed(1) : '0.0';
+        summary.interestRatio = finalAssets > 0 ? ((totalInterest / finalAssets) * 100).toFixed(1) : '0.0';
+        summary.assetMultiple = totalPrincipal > 0 ? (finalAssets / totalPrincipal).toFixed(2) : '1.00';
+        summary.interestOverPrincipal = totalPrincipal > 0 ? (totalInterest / totalPrincipal).toFixed(2) : '0.00';
+        summary.cagr = (Number(calculatedCAGR) || 0).toFixed(2);
+        summary.annualizedIRR = (Number(annualizedIRR) || 0).toFixed(2);
+        summary.ear = (ear * 100).toFixed(2);
+        summary.realPV = realPV;
+        summary.inflationDiscountAmount = inflationDiscountAmount;
+        summary.inflationLossRatio = inflationLossRatio;
+        summary.simpleInterestTotalAssets = simpleInterestTotalAssets;
+        summary.compoundBonus = compoundBonus;
+        summary.compoundMultiplier = compoundMultiplier;
+        summary.doubleYears = doubleYears;
+        summary.tripleYears = tripleYears;
+        summary.fireAnnualWithdrawal = fireAnnualWithdrawal;
+        summary.fireMonthlyCashFlow = fireMonthlyCashFlow;
+        summary.fireRealMonthlyCashFlow = fireRealMonthlyCashFlow;
+        summary.yearlyAvgInterest = totalInterest / years;
+
+        nextTick(() => {
+          renderChart();
+        });
+      };
+
+      // 格式化金额
+      const formatMoney = (val) => {
+        const num = Number(val);
+        if (isNaN(num)) return '0.00';
+        return num.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      };
+
+      // Canvas 动态渲染引擎
+      const renderChart = () => {
+        const canvas = chartCanvas.value;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+
+        const w = rect.width;
+        const h = rect.height;
+        ctx.clearRect(0, 0, w, h);
+
+        const padding = { top: 32, right: 30, bottom: 45, left: 78 };
+        const plotW = w - padding.left - padding.right;
+        const plotH = h - padding.top - padding.bottom;
+
+        if (yearList.value.length === 0 || plotW <= 0 || plotH <= 0) return;
+
+        const data = yearList.value;
+        const maxVal = Math.max(...data.map(d => Math.max(d.endAssets, d.cumPrincipal))) * 1.12 || 10000;
+
+        // 绘制 Y 轴虚线网格
+        ctx.strokeStyle = 'rgba(51, 65, 85, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.fillStyle = '#64748b';
+        ctx.font = '11px ui-monospace, SFMono-Regular, monospace';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+
+        const yTicks = 5;
+        for (let i = 0; i <= yTicks; i++) {
+          const val = (maxVal / yTicks) * i;
+          const y = padding.top + plotH - (plotH / yTicks) * i;
+          ctx.beginPath();
+          ctx.setLineDash([4, 4]);
+          ctx.moveTo(padding.left, y);
+          ctx.lineTo(padding.left + plotW, y);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          let text = val >= 100000000 ? (val / 100000000).toFixed(1) + '亿'
+                   : val >= 10000 ? (val / 10000).toFixed(0) + '万'
+                   : val.toFixed(0);
+          ctx.fillText('¥' + text, padding.left - 8, y);
+        }
+
+        const count = data.length;
+        const colW = Math.max(6, Math.min(48, (plotW / count) * 0.65));
+
+        if (chartMode.value === 'stacked') {
+          // 分层堆叠柱状图 (本金在下，利息在上)
+          data.forEach((d, i) => {
+            const xCenter = padding.left + (plotW / count) * (i + 0.5);
+            const x = xCenter - colW / 2;
+
+            const pHeight = (d.cumPrincipal / maxVal) * plotH;
+            const iHeight = (d.cumInterest / maxVal) * plotH;
+
+            // 绘制本金部分 (底部蓝色渐变)
+            const pY = padding.top + plotH - pHeight;
+            const gradP = ctx.createLinearGradient(0, pY, 0, padding.top + plotH);
+            gradP.addColorStop(0, '#38bdf8');
+            gradP.addColorStop(1, '#0284c7');
+            ctx.fillStyle = gradP;
+            ctx.beginPath();
+            ctx.rect(x, pY, colW, pHeight);
+            ctx.fill();
+
+            // 绘制利息部分 (顶部翠绿渐变)
+            if (iHeight > 0) {
+              const iY = pY - iHeight;
+              const gradI = ctx.createLinearGradient(0, iY, 0, pY);
+              gradI.addColorStop(0, '#10b981');
+              gradI.addColorStop(1, '#059669');
+              ctx.fillStyle = gradI;
+              ctx.beginPath();
+              ctx.rect(x, iY, colW, iHeight);
+              ctx.fill();
+            }
+
+            // X 轴标签
+            if (count <= 15 || (i + 1) % Math.ceil(count / 10) === 0 || i === 0 || i === count - 1) {
+              ctx.fillStyle = '#94a3b8';
+              ctx.textAlign = 'center';
+              ctx.font = '11px sans-serif';
+              ctx.fillText(`${d.year}年`, xCenter, padding.top + plotH + 18);
+            }
+          });
+        } else if (chartMode.value === 'line') {
+          // 资产净值走势折线图 (复利曲线 vs 单利对照线 vs 累计本金)
+          const getPoints = (valGetter) => {
+            return data.map((d, i) => {
+              const x = padding.left + (plotW / count) * (i + 0.5);
+              const val = valGetter(d);
+              const y = padding.top + plotH - (val / maxVal) * plotH;
+              return { x, y, val };
+            });
+          };
+
+          const assetPts = getPoints(d => d.endAssets);
+          const principalPts = getPoints(d => d.cumPrincipal);
+
+          // 计算单利对照点
+          const r = (Number(form.annualRate) || 0) / 100;
+          const p0 = Number(form.initialPrincipal) || 0;
+          const pmt = form.investFrequency === 'none' ? 0 : (Number(form.regularAmount) || 0);
+          let f_pmt = 12;
+          if (form.investFrequency === 'quarter') f_pmt = 4;
+          else if (form.investFrequency === 'year') f_pmt = 1;
+          else if (form.investFrequency === 'none') f_pmt = 0;
+
+          const simplePts = data.map((d, i) => {
+            const x = padding.left + (plotW / count) * (i + 0.5);
+            let sInterest = p0 * r * d.year;
+            if (pmt > 0 && f_pmt > 0) {
+              const totalPmtTimes = d.year * f_pmt;
+              for (let kStep = 0; kStep < totalPmtTimes; kStep++) {
+                const holdingYears = (totalPmtTimes - kStep + (form.investTiming === 'begin' ? 1 : 0)) / f_pmt;
+                sInterest += pmt * r * holdingYears;
+              }
+            }
+            const sVal = d.cumPrincipal + sInterest;
+            const y = padding.top + plotH - (sVal / maxVal) * plotH;
+            return { x, y, val: sVal };
+          });
+
+          // 1. 绘制复利总资产渐变填充区域
+          ctx.beginPath();
+          assetPts.forEach((pt, i) => {
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          });
+          ctx.lineTo(assetPts[assetPts.length - 1].x, padding.top + plotH);
+          ctx.lineTo(assetPts[0].x, padding.top + plotH);
+          ctx.closePath();
+          const areaGrad = ctx.createLinearGradient(0, padding.top, 0, padding.top + plotH);
+          areaGrad.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
+          areaGrad.addColorStop(1, 'rgba(16, 185, 129, 0.01)');
+          ctx.fillStyle = areaGrad;
+          ctx.fill();
+
+          // 2. 绘制累计本金线
+          ctx.beginPath();
+          principalPts.forEach((pt, i) => {
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          });
+          ctx.strokeStyle = '#0284c7';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          // 3. 绘制单利对照线 (虚线 Amber)
+          ctx.beginPath();
+          ctx.setLineDash([5, 5]);
+          simplePts.forEach((pt, i) => {
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          });
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // 4. 绘制复利总资产实线 (Emerald)
+          ctx.beginPath();
+          assetPts.forEach((pt, i) => {
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          });
+          ctx.strokeStyle = '#10b981';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+
+          // X 轴标签
+          data.forEach((d, i) => {
+            const x = padding.left + (plotW / count) * (i + 0.5);
+            if (count <= 15 || (i + 1) % Math.ceil(count / 10) === 0 || i === 0 || i === count - 1) {
+              ctx.fillStyle = '#94a3b8';
+              ctx.textAlign = 'center';
+              ctx.font = '11px sans-serif';
+              ctx.fillText(`${d.year}年`, x, padding.top + plotH + 18);
+            }
+          });
+        } else if (chartMode.value === 'inflation') {
+          // 抗通胀购买力对比 (名义资产 vs 通胀折现现值 vs 累计本金)
+          const getPoints = (valGetter) => {
+            return data.map((d, i) => {
+              const x = padding.left + (plotW / count) * (i + 0.5);
+              const val = valGetter(d);
+              const y = padding.top + plotH - (val / maxVal) * plotH;
+              return { x, y, val };
+            });
+          };
+
+          const assetPts = getPoints(d => d.endAssets);
+          const realPts = getPoints(d => d.realPV);
+          const principalPts = getPoints(d => d.cumPrincipal);
+
+          // 1. 名义资产线 (Green)
+          ctx.beginPath();
+          assetPts.forEach((pt, i) => {
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          });
+          ctx.strokeStyle = '#10b981';
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+
+          // 2. 通胀折现现值线 (Purple)
+          ctx.beginPath();
+          realPts.forEach((pt, i) => {
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          });
+          ctx.strokeStyle = '#a855f7';
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+
+          // 3. 累计本金线 (Cyan)
+          ctx.beginPath();
+          principalPts.forEach((pt, i) => {
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          });
+          ctx.strokeStyle = '#0284c7';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          // X 轴标签
+          data.forEach((d, i) => {
+            const x = padding.left + (plotW / count) * (i + 0.5);
+            if (count <= 15 || (i + 1) % Math.ceil(count / 10) === 0 || i === 0 || i === count - 1) {
+              ctx.fillStyle = '#94a3b8';
+              ctx.textAlign = 'center';
+              ctx.font = '11px sans-serif';
+              ctx.fillText(`${d.year}年`, x, padding.top + plotH + 18);
+            }
+          });
+        }
+
+        // 绘制悬浮十字线与气泡 Tooltip
+        if (hoverIndex >= 0 && hoverIndex < data.length) {
+          const d = data[hoverIndex];
+          const xCenter = padding.left + (plotW / count) * (hoverIndex + 0.5);
+
+          // 垂直高亮指示虚线
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(248, 250, 252, 0.5)';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([3, 3]);
+          ctx.moveTo(xCenter, padding.top);
+          ctx.lineTo(xCenter, padding.top + plotH);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // 绘制 Tooltip 浮窗
+          const tipW = 210;
+          const tipH = 110;
+          let tipX = xCenter + 14;
+          if (tipX + tipW > w - 10) tipX = xCenter - tipW - 14;
+          const tipY = padding.top + 15;
+
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.roundRect(tipX, tipY, tipW, tipH, 8);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.fillText(`第 ${d.year} 年资产精算快照`, tipX + 12, tipY + 20);
+
+          ctx.font = '11px ui-monospace, SFMono-Regular, monospace';
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillText(`累计本金: ¥${Number(d.cumPrincipal).toLocaleString('zh-CN', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`, tipX + 12, tipY + 40);
+
+          ctx.fillStyle = '#34d399';
+          ctx.fillText(`累计利息: +¥${Number(d.cumInterest).toLocaleString('zh-CN', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`, tipX + 12, tipY + 58);
+
+          ctx.fillStyle = '#38bdf8';
+          ctx.font = 'bold 11px ui-monospace, SFMono-Regular, monospace';
+          ctx.fillText(`期末总资产: ¥${Number(d.endAssets).toLocaleString('zh-CN', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`, tipX + 12, tipY + 76);
+
+          ctx.fillStyle = '#c084fc';
+          ctx.font = '11px ui-monospace, SFMono-Regular, monospace';
+          ctx.fillText(`实际购买力: ¥${Number(d.realPV).toLocaleString('zh-CN', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`, tipX + 12, tipY + 94);
+        }
+      };
+
+      const handleCanvasHover = (clientX) => {
+        const canvas = chartCanvas.value;
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = clientX - rect.left;
+        const padding = { left: 78, right: 30 };
+        const plotW = rect.width - padding.left - padding.right;
+        const count = yearList.value.length;
+        if (count === 0 || plotW <= 0) return;
+
+        if (mouseX >= padding.left && mouseX <= padding.left + plotW) {
+          const idx = Math.floor(((mouseX - padding.left) / plotW) * count);
+          if (idx >= 0 && idx < count && idx !== hoverIndex) {
+            hoverIndex = idx;
+            renderChart();
+          }
+        } else if (hoverIndex !== -1) {
+          hoverIndex = -1;
+          renderChart();
+        }
+      };
+
+      const onCanvasMouseMove = (e) => {
+        handleCanvasHover(e.clientX);
+      };
+
+      const onCanvasTouch = (e) => {
+        if (e.touches && e.touches.length > 0) {
+          handleCanvasHover(e.touches[0].clientX);
+        }
+      };
+
+      const onCanvasMouseLeave = () => {
+        if (hoverIndex !== -1) {
+          hoverIndex = -1;
+          renderChart();
+        }
+      };
+
+      // 导出完整 CSV 明细表
+      const exportCSV = () => {
+        if (!yearList.value.length) return;
+        let csvContent = '\uFEFF年份,年初总资产(元),当年新增定投(元),累计投入本金(元),当年利息收益(元),累计利息总额(元),期末总资产(元),累计收益率(%),扣除通胀实际价值(元)\n';
+        yearList.value.forEach(row => {
+          csvContent += `${row.year},${row.startAssets.toFixed(2)},${row.yearPrincipal.toFixed(2)},${row.cumPrincipal.toFixed(2)},${row.yearInterest.toFixed(2)},${row.cumInterest.toFixed(2)},${row.endAssets.toFixed(2)},${row.roi}%,${row.realPV.toFixed(2)}\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `复利定投收益测算明细表_${form.years}年_${form.annualRate}%年化.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        ElementPlus.ElMessage.success('已成功导出 CSV 明细文件');
+      };
+
+      // 复制精算摘要报告
+      const copyReport = () => {
+        const text = `【复利定投收益精算报告】
+- 投资周期: ${form.years} 年 (${form.years * 12} 个月)
+- 初始本金: ¥${formatMoney(form.initialPrincipal)}
+- 定投设置: 每${form.investFrequency === 'month' ? '月' : form.investFrequency === 'quarter' ? '季' : '年'} ¥${formatMoney(form.regularAmount)} (${form.investTiming === 'begin' ? '期初投入' : '期末投入'})
+- 预期年化回报率: ${form.annualRate}% (按${form.compoundFrequency === '12' ? '月' : form.compoundFrequency === '4' ? '季' : form.compoundFrequency === '1' ? '年' : '日'}复利)
+- 累计本金投入: ¥${formatMoney(summary.totalPrincipal)} (占比 ${summary.principalRatio}%)
+- 累计利息收益: ¥${formatMoney(summary.totalInterest)} (占比 ${summary.interestRatio}%, 本金 ${summary.interestOverPrincipal} 倍)
+- 期末资产总额: ¥${formatMoney(summary.finalAssets)} (本金翻 ${summary.assetMultiple} 倍, 总ROI +${summary.totalRoi}%)
+- 内部收益率 (IRR): ${summary.annualizedIRR}% | 复合年均增长率 (CAGR): ${summary.cagr}%
+- 单利对比总额: ¥${formatMoney(summary.simpleInterestTotalAssets)} (复利额外多赚: +¥${formatMoney(summary.compoundBonus)})
+- 扣除通胀 (${form.inflationRate}%) 实际购买力现值: ¥${formatMoney(summary.realPV)} (折损 ${summary.inflationLossRatio}%)
+- FIRE 4% 退休提款测算: 每年可提取 ¥${formatMoney(summary.fireAnnualWithdrawal)}, 月均现金流 ¥${formatMoney(summary.fireMonthlyCashFlow)}
+来源: 在线工具集 · 复利定投与理财收益计算器 (finance.js 引擎)`;
+
+        navigator.clipboard.writeText(text).then(() => {
+          ElementPlus.ElMessage.success('精算报告已复制至剪贴板');
+        }).catch(() => {
+          ElementPlus.ElMessage.error('复制失败，请手动选择复制');
+        });
+      };
+
+      let resizeObserver = null;
+
+      onMounted(() => {
+        applyPreset('pension');
+        if (chartCanvas.value && window.ResizeObserver) {
+          resizeObserver = new ResizeObserver(() => {
+            renderChart();
+          });
+          resizeObserver.observe(chartCanvas.value);
+        }
+        window.addEventListener('resize', renderChart);
+      });
+
+      onUnmounted(() => {
+        if (resizeObserver) resizeObserver.disconnect();
+        window.removeEventListener('resize', renderChart);
+      });
+
+      return {
+        form,
+        summary,
+        yearList,
+        currentPreset,
+        chartMode,
+        chartCanvas,
+        applyPreset,
+        recalculate,
+        formatMoney,
+        exportCSV,
+        copyReport,
+        onCanvasMouseMove,
+        onCanvasTouch,
+        onCanvasMouseLeave,
+        renderChart
+      };
+    }
+  }).use(ElementPlus).mount('.main-body');
+</script>
+</body>
+</html>

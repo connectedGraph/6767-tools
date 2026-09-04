@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-weight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <linearGradient id="scale-body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="plate-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-weight)"/>
+  <rect width="46" height="46" x="1" y="1" rx="11" fill="none" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1"/>
+  
+  <!-- Scale Platform -->
+  <rect x="10" y="10" width="28" height="28" rx="5" fill="url(#scale-body)" stroke="#38bdf8" stroke-width="1.8"/>
+  
+  <!-- 4 Metallic Electrodes -->
+  <rect x="13" y="13" width="5" height="8" rx="1.5" fill="url(#plate-grad)" opacity="0.7"/>
+  <rect x="30" y="13" width="5" height="8" rx="1.5" fill="url(#plate-grad)" opacity="0.7"/>
+  <rect x="13" y="27" width="5" height="8" rx="1.5" fill="url(#plate-grad)" opacity="0.7"/>
+  <rect x="30" y="27" width="5" height="8" rx="1.5" fill="url(#plate-grad)" opacity="0.7"/>
+  
+  <!-- Digital LED Display -->
+  <rect x="18.5" y="12.5" width="11" height="6.5" rx="1.5" fill="#020617" stroke="#0ea5e9" stroke-width="1"/>
+  
+  <!-- Digital Readout "60.0" -->
+  <text x="24" y="17.2" font-family="monospace" font-size="4" font-weight="bold" fill="#38bdf8" text-anchor="middle">60.0</text>
+  
+  <!-- Precision Center Ring -->
+  <circle cx="24" cy="27" r="3" fill="none" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1"/>
+  <circle cx="24" cy="27" r="0.8" fill="#38bdf8"/>
+</svg>

@@ -1,0 +1,657 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>科学每日饮水量计算器 - 在线工具</title>
+    <meta name="description" content="科学每日饮水量计算器：根据体重、日常运动量强度、环境气温与出汗程度，依据科学补水模型精准计算每日推荐摄水量（毫升），并自动生成一天8杯水分时段健康喝水时间表与打卡提醒。" />
+    <meta name="keywords" content="饮水量计算器,每日饮水量,喝水计算器,8杯水时间表,科学补水,健康饮水,喝水打卡" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="dns-prefetch" href="" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="科学每日饮水量计算器 - 在线工具" />
+    <meta property="og:description" content="科学每日饮水量计算器：依据科学补水模型计算每日推荐摄水量，生成8杯水时间表与打卡建议。" />
+    <meta property="og:url" content="https://tool.6767.chat/water-intake-calculator" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="科学每日饮水量计算器 - 在线工具" />
+    <meta name="twitter:description" content="科学每日饮水量计算器：依据科学补水模型计算每日推荐摄水量，生成8杯水时间表与打卡建议。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/water-intake-calculator" />
+
+    <style>
+        .water-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+        .stat-box:hover {
+            border-color: rgba(34, 211, 238, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+        .stat-box .stat-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .stat-box .stat-value {
+            font-size: 1.85rem;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            color: #22d3ee;
+            line-height: 1.2;
+        }
+        .stat-box .stat-unit {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: #64748b;
+            margin-left: 4px;
+        }
+        .stat-box .stat-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* 8 杯水时间表 */
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .time-slot-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            user-select: none;
+        }
+        .time-slot-card:hover {
+            border-color: rgba(34, 211, 238, 0.4);
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .time-slot-card.done {
+            background: rgba(34, 211, 238, 0.08);
+            border-color: rgba(34, 211, 238, 0.7);
+        }
+        .time-slot-card.done .slot-title {
+            color: #67e8f9;
+        }
+        .slot-checkbox {
+            margin-top: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid rgba(51, 65, 85, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            background: rgba(2, 6, 23, 0.4);
+        }
+        .time-slot-card.done .slot-checkbox {
+            background: #22d3ee;
+            border-color: #22d3ee;
+            color: #050a14;
+        }
+        .slot-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .slot-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        .slot-time {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.8rem;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .slot-amount {
+            font-size: 0.8rem;
+            color: #a5f3fc;
+            font-family: ui-monospace, monospace;
+            font-weight: 600;
+        }
+        .slot-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+        }
+        .slot-benefit {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            line-height: 1.45;
+        }
+
+        /* 尿液颜色水合色卡 */
+        .urine-chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .urine-item {
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            font-size: 0.75rem;
+            background: rgba(15, 23, 42, 0.5);
+        }
+        .urine-color-bar {
+            width: 100%;
+            height: 24px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .urine-label {
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: #e2e8f0;
+        }
+        .urine-status {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        /* 进度条定制 */
+        .progress-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 16px;
+            margin: 18px 0;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4, #22d3ee, #67e8f9);
+            border-radius: 999px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .el-select, .el-input-number {
+            width: 100% !important;
+            display: block !important;
+        }
+        .el-form-item__content {
+            display: block !important;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一标准顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">科学每日饮水量计算器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">科学每日饮水量计算器</h1>
+                </div>
+                <div class="description">
+                    依据国际人体水合科学模型（WHO / 中国居民膳食指南），结合体重、运动耗损、环境气温与排汗生理状态，精准计算每日推荐摄水量（毫升），并智能生成一天 8 杯水分时段喝水时间表与打卡追踪建议。
+                </div>
+
+                <!-- Vue 3 应用交互区域 -->
+                <div id="waterApp">
+                    <el-form label-position="top" class="w-full">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- 体重 -->
+                            <el-form-item label="您的体重 (kg)">
+                                <el-input-number v-model="form.weight" :min="20" :max="200" :step="1" class="w-full" size="large" @change="calculate" />
+                                <div class="text-xs text-slate-400 mt-1">基础人体水分代谢依据体重大致按 30~35 ml/kg 测算</div>
+                            </el-form-item>
+
+                            <!-- 运动量 -->
+                            <el-form-item label="每日运动强度与时长">
+                                <el-select v-model="form.exercise" class="w-full" size="large" @change="calculate">
+                                    <el-option label="久坐日常 / 无额外运动 (+0 ml)" value="none" />
+                                    <el-option label="轻度运动 (散步 / 瑜伽约 30分钟, +300 ml)" value="light" />
+                                    <el-option label="中度运动 (慢跑 / 骑行 / 健身约 45~60分钟, +600 ml)" value="moderate" />
+                                    <el-option label="剧烈/高强度耐力 (长跑/球类/HIIT >60分钟, +1000 ml)" value="heavy" />
+                                </el-select>
+                                <div class="text-xs text-slate-400 mt-1">运动过程中呼吸及排汗加速，需额外足量补水</div>
+                            </el-form-item>
+
+                            <!-- 环境气温 -->
+                            <el-form-item label="环境温度与气候">
+                                <el-select v-model="form.climate" class="w-full" size="large" @change="calculate">
+                                    <el-option label="寒冷 / 舒适空调房 (15℃ ~ 22℃, +0 ml)" value="cool" />
+                                    <el-option label="温暖微热 (23℃ ~ 28℃, +250 ml)" value="warm" />
+                                    <el-option label="炎热夏日 (29℃ ~ 35℃, +500 ml)" value="hot" />
+                                    <el-option label="酷暑极端高温 (>35℃ 或干燥荒漠, +800 ml)" value="extreme" />
+                                </el-select>
+                                <div class="text-xs text-slate-400 mt-1">气温升高使皮肤不显性蒸发显著增加</div>
+                            </el-form-item>
+
+                            <!-- 出汗程度 -->
+                            <el-form-item label="日常出汗与工作环境">
+                                <el-select v-model="form.sweat" class="w-full" size="large" @change="calculate">
+                                    <el-option label="几乎不出汗 / 恒温室内 (+0 ml)" value="none" />
+                                    <el-option label="轻度微汗 / 日常通勤走动 (+150 ml)" value="light" />
+                                    <el-option label="中度出汗 / 经常走动或轻体力 (+350 ml)" value="moderate" />
+                                    <el-option label="大汗淋漓 / 户外重体力工作 (+700 ml)" value="heavy" />
+                                </el-select>
+                                <div class="text-xs text-slate-400 mt-1">大量出汗建议适当补充电解质水</div>
+                            </el-form-item>
+
+                            <!-- 生理特殊状态 -->
+                            <el-form-item label="生理与健康状态">
+                                <el-select v-model="form.condition" class="w-full" size="large" @change="calculate">
+                                    <el-option label="一般健康成年人 (+0 ml)" value="normal" />
+                                    <el-option label="孕期女性 (羊水与循环血容量扩充, +300 ml)" value="pregnant" />
+                                    <el-option label="哺乳期女性 (促进乳汁分泌, +700 ml)" value="lactating" />
+                                    <el-option label="感冒发热 / 轻度腹泻 (补充体液流失, +450 ml)" value="fever" />
+                                    <el-option label="减脂控糖期 (促进脂肪氧化分解, +300 ml)" value="weightloss" />
+                                </el-select>
+                                <div class="text-xs text-slate-400 mt-1">特殊生理阶段需个性化调整液体摄入</div>
+                            </el-form-item>
+
+                            <!-- 杯子容量 -->
+                            <el-form-item label="常用水杯容量预设">
+                                <el-select v-model="form.cupSize" class="w-full" size="large" @change="calculate">
+                                    <el-option label="200 ml (标准小玻璃杯)" :value="200" />
+                                    <el-option label="250 ml (标准马克杯/纸杯, 推荐)" :value="250" />
+                                    <el-option label="300 ml (中号咖啡杯)" :value="300" />
+                                    <el-option label="350 ml (大号保温杯)" :value="350" />
+                                    <el-option label="500 ml (运动水壶 / 矿泉水瓶)" :value="500" />
+                                </el-select>
+                                <div class="text-xs text-slate-400 mt-1">自动将全天需水量折算为您手头杯子的杯数</div>
+                            </el-form-item>
+                        </div>
+                    </el-form>
+
+                    <div class="divider"></div>
+
+                    <!-- 计算结果卡片 -->
+                    <div class="water-card-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                                推荐每日纯饮水量
+                            </div>
+                            <div class="stat-value">{{ result.drinkWater }}<span class="stat-unit">ml</span></div>
+                            <div class="stat-sub">直接饮水目标 (约占总需水 80%)</div>
+                        </div>
+
+                        <div class="stat-box">
+                            <div class="stat-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+                                每日总水分需求
+                            </div>
+                            <div class="stat-value" style="color: #38bdf8;">{{ result.totalWater }}<span class="stat-unit">ml</span></div>
+                            <div class="stat-sub">含饮食食物中水分 (~{{ result.foodWater }} ml)</div>
+                        </div>
+
+                        <div class="stat-box">
+                            <div class="stat-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a7f3d0" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>
+                                折合杯数 ({{ form.cupSize }}ml/杯)
+                            </div>
+                            <div class="stat-value" style="color: #6ee7b7;">{{ result.cups }}<span class="stat-unit">杯</span></div>
+                            <div class="stat-sub">按您的专属杯型科学分装</div>
+                        </div>
+
+                        <div class="stat-box">
+                            <div class="stat-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fcd34d" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                白昼每小时补水速率
+                            </div>
+                            <div class="stat-value" style="color: #fcd34d;">{{ result.hourlyRate }}<span class="stat-unit">ml/h</span></div>
+                            <div class="stat-sub">建议 14 小时活跃期少量多次慢饮</div>
+                        </div>
+                    </div>
+
+                    <!-- 今日打卡进度面板 -->
+                    <div class="progress-box">
+                        <div class="progress-header">
+                            <div>
+                                <span class="font-bold text-slate-200">今日喝水打卡进度</span>
+                                <span class="text-slate-400 text-xs ml-2">({{ checkedCount }} / 8 杯 · 已喝 {{ currentDrunkAmount }} ml / 目标 {{ result.drinkWater }} ml)</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-mono font-bold text-cyan-400 text-sm">{{ progressPercent }}%</span>
+                                <el-button size="small" @click="resetChecks" plain>重置打卡</el-button>
+                            </div>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" :style="{ width: progressPercent + '%' }"></div>
+                        </div>
+                    </div>
+
+                    <!-- 8 杯水时间表 -->
+                    <div class="mt-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-base font-bold text-slate-200 m-0">一天 8 杯水黄金分时段喝水时间表</h3>
+                            <el-button size="small" type="primary" plain @click="copyPlan">一键复制喝水计划</el-button>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-3">点击卡片即可快速打卡，数据自动保存在本地浏览器中，零网络依赖。</p>
+
+                        <div class="timeline-grid">
+                            <div 
+                                v-for="(slot, index) in schedule" 
+                                :key="index"
+                                class="time-slot-card"
+                                :class="{ done: checks[index] }"
+                                @click="toggleCheck(index)"
+                            >
+                                <div class="slot-checkbox">
+                                    <svg v-if="checks[index]" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                </div>
+                                <div class="slot-body">
+                                    <div class="slot-header">
+                                        <span class="slot-time">{{ slot.time }}</span>
+                                        <span class="slot-amount">{{ Math.round(result.drinkWater * slot.ratio) }} ml</span>
+                                    </div>
+                                    <div class="slot-title">{{ slot.name }}</div>
+                                    <div class="slot-benefit">{{ slot.desc }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 尿液颜色自测水合状态 -->
+                    <div class="mt-8">
+                        <h3 class="text-base font-bold text-slate-200 mb-2">尿液颜色与身体水合自测对照表 (Armstrong 临床色卡)</h3>
+                        <div class="urine-chart-grid">
+                            <div class="urine-item">
+                                <div class="urine-color-bar" style="background: #fdfbf7;"></div>
+                                <div class="urine-label">1级 · 无色透明</div>
+                                <div class="urine-status text-emerald-400">水合极佳/略过量</div>
+                            </div>
+                            <div class="urine-item">
+                                <div class="urine-color-bar" style="background: #fef08a;"></div>
+                                <div class="urine-label">2-3级 · 淡柠檬黄</div>
+                                <div class="urine-status text-cyan-400">最理想水合状态</div>
+                            </div>
+                            <div class="urine-item">
+                                <div class="urine-color-bar" style="background: #fde047;"></div>
+                                <div class="urine-label">4-5级 · 明黄色</div>
+                                <div class="urine-status text-yellow-400">轻微缺水 · 补充250ml</div>
+                            </div>
+                            <div class="urine-item">
+                                <div class="urine-color-bar" style="background: #ca8a04;"></div>
+                                <div class="urine-label">6-7级 · 浓茶/琥珀色</div>
+                                <div class="urine-status text-amber-500">明显缺水 · 立即补水</div>
+                            </div>
+                            <div class="urine-item">
+                                <div class="urine-color-bar" style="background: #78350f;"></div>
+                                <div class="urine-label">8级 · 红褐深茶色</div>
+                                <div class="urine-status text-rose-500">严重缺水 / 就医排查</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 科学饮水说明与误区解答 -->
+                <div class="content">
+                    <h3>科学饮水量计算原理</h3>
+                    <p>
+                        1. <strong>基础代谢水分消耗</strong>：健康成年人每日基础水分需求约为体重的 30~35 ml/kg。例如 60kg 体重的人，基础水分需求约为 1,800~2,100 毫升。
+                    </p>
+                    <p>
+                        2. <strong>膳食食物含水与纯饮水比例</strong>：根据《中国居民膳食指南》，我们每日三餐摄入的水果、蔬菜、米饭、汤粥中约含有 20%~25% 的食物水分，剩余约 75%~80% 需通过纯水、淡茶等直接饮品补充。
+                    </p>
+                    <p>
+                        3. <strong>动态修正因子</strong>：在高温环境下（气温超过 28℃）人体不显性排汗增加，运动时呼吸耗损与排汗量显著提升（中强度运动每小时增加约 500~700ml），本工具依据综合多变量算法动态实时测算。
+                    </p>
+
+                    <h3>健康饮水四大黄金准则</h3>
+                    <ul>
+                        <li><strong>小口慢饮，切忌狂饮</strong>：单次饮水量建议控制在 200~300ml，短时间暴饮超过 1500ml 会导致血钠稀释，诱发急性“水中毒（低钠血症）”。</li>
+                        <li><strong>不以“口渴”为唯一起始信号</strong>：当大脑感知到口渴时，身体细胞已流失约 2% 的水分并处于轻度脱水状态，应定时主动补水。</li>
+                        <li><strong>水温以 20℃~40℃ 温开水为宜</strong>：过烫的水（>65℃）会损伤食道黏膜，过冰的水容易刺激胃肠平滑肌痉挛。</li>
+                        <li><strong>茶、黑咖啡与无糖苏打水如何折算？</strong>：清淡无糖茶水完全可计入每日饮水量；适量纯黑咖啡可计入 70% 水分（高剂量咖啡因有轻度利尿效果）；含糖碳酸饮料与高糖奶茶不建议作为补水来源。</li>
+                    </ul>
+
+                    <p class="text-xs text-slate-500 mt-4">
+                        <!-- 拓展时间: 2026-08-31 -->
+                        拓展时间: 2026-08-31 · 纯前端离线算法 · 数据仅保存在本地
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js?260728100716"></script>
+<script>
+    var languageCode = 'zh';
+    var websiteRoot = "";
+    var mainWebSiteHost = "";
+    var webApiSiteHost = "/api";
+    var staticSiteHost = "";
+    var staticFileVersion = "260728100716";
+    var toolData = typeof toolData !== 'undefined' ? toolData : [];
+
+    const { createApp, reactive, ref, computed, onMounted } = Vue;
+
+    const app = createApp({
+        setup() {
+            const form = reactive({
+                weight: 60,
+                exercise: 'none',
+                climate: 'cool',
+                sweat: 'none',
+                condition: 'normal',
+                cupSize: 250
+            });
+
+            const result = reactive({
+                totalWater: 2400,
+                drinkWater: 1900,
+                foodWater: 500,
+                cups: 8,
+                hourlyRate: 135
+            });
+
+            const schedule = [
+                { time: '07:00', name: '晨起第 1 杯 · 唤醒排毒', ratio: 0.13, desc: '排空夜间肠道蓄积，稀释浓缩血液，唤醒全身新陈代谢。' },
+                { time: '08:30', name: '晨工第 2 杯 · 活力启航', ratio: 0.13, desc: '补充通勤途中流失的水分，提升工作专注度与思维清晰度。' },
+                { time: '10:30', name: '工间第 3 杯 · 舒缓抗疲', ratio: 0.13, desc: '起身远眺活动身体，缓解久坐疲劳及眼部干涩。' },
+                { time: '11:45', name: '餐前第 4 杯 · 垫胃助消化', ratio: 0.11, desc: '午餐前半小时适量饮水，滋润消化道黏膜，避免暴饮暴食。' },
+                { time: '13:30', name: '午起第 5 杯 · 提神醒脑', ratio: 0.13, desc: '午休醒后小口慢饮，促进循环代谢，赶走午后昏沉感。' },
+                { time: '15:30', name: '下午茶第 6 杯 · 代谢加速', ratio: 0.13, desc: '对抗下午身体能量低谷，替代高糖奶茶，促进毒素排出。' },
+                { time: '18:00', name: '下班前第 7 杯 · 卸乏归途', ratio: 0.11, desc: '补充归家路上体力消耗，增加饱腹感，减轻晚餐过度摄入。' },
+                { time: '20:30', name: '睡前第 8 杯 · 护心安眠', ratio: 0.13, desc: '睡前1小时小口饮用，预防夜间血液粘稠（不宜过量避免夜尿）。' }
+            ];
+
+            const checks = ref([false, false, false, false, false, false, false, false]);
+
+            const calculate = () => {
+                // 1. 基础代谢需水：约 32ml / kg
+                let base = (form.weight || 60) * 32;
+
+                // 2. 运动增量
+                const exerciseMap = { none: 0, light: 300, moderate: 600, heavy: 1000 };
+                base += (exerciseMap[form.exercise] || 0);
+
+                // 3. 气温增量
+                const climateMap = { cool: 0, warm: 250, hot: 500, extreme: 800 };
+                base += (climateMap[form.climate] || 0);
+
+                // 4. 出汗程度
+                const sweatMap = { none: 0, light: 150, moderate: 350, heavy: 700 };
+                base += (sweatMap[form.sweat] || 0);
+
+                // 5. 生理状态
+                const condMap = { normal: 0, pregnant: 300, lactating: 700, fever: 450, weightloss: 300 };
+                base += (condMap[form.condition] || 0);
+
+                // 总水分需求 (round to 50)
+                const total = Math.round(base / 50) * 50;
+                // 纯饮水量占约 78%
+                const drink = Math.round((total * 0.78) / 50) * 50;
+                const food = total - drink;
+                const cups = Math.ceil(drink / (form.cupSize || 250));
+                const hourly = Math.round(drink / 14);
+
+                result.totalWater = total;
+                result.drinkWater = drink;
+                result.foodWater = food;
+                result.cups = cups;
+                result.hourlyRate = hourly;
+            };
+
+            const toggleCheck = (idx) => {
+                checks.value[idx] = !checks.value[idx];
+                saveChecks();
+            };
+
+            const resetChecks = () => {
+                checks.value = [false, false, false, false, false, false, false, false];
+                saveChecks();
+                ElementPlus.ElMessage.info('今日打卡记录已重置');
+            };
+
+            const checkedCount = computed(() => {
+                return checks.value.filter(Boolean).length;
+            });
+
+            const currentDrunkAmount = computed(() => {
+                let sum = 0;
+                schedule.forEach((slot, idx) => {
+                    if (checks.value[idx]) {
+                        sum += Math.round(result.drinkWater * slot.ratio);
+                    }
+                });
+                return sum;
+            });
+
+            const progressPercent = computed(() => {
+                return Math.round((checkedCount.value / 8) * 100);
+            });
+
+            const saveChecks = () => {
+                try {
+                    const todayKey = 'water_intake_' + new Date().toISOString().slice(0, 10);
+                    localStorage.setItem(todayKey, JSON.stringify(checks.value));
+                } catch(e) {}
+            };
+
+            const loadChecks = () => {
+                try {
+                    const todayKey = 'water_intake_' + new Date().toISOString().slice(0, 10);
+                    const saved = localStorage.getItem(todayKey);
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        if (Array.isArray(parsed) && parsed.length === 8) {
+                            checks.value = parsed;
+                        }
+                    }
+                } catch(e) {}
+            };
+
+            const copyPlan = () => {
+                let text = `【我的科学每日饮水计划】\n- 推荐每日纯饮水量: ${result.drinkWater} ml (总需水量 ${result.totalWater} ml)\n- 折合杯数: ${result.cups} 杯 (${form.cupSize}ml/杯)\n\n【分时段喝水时间表】\n`;
+                schedule.forEach((s) => {
+                    const amt = Math.round(result.drinkWater * s.ratio);
+                    text += `${s.time} | ${s.name} (${amt}ml) - ${s.desc}\n`;
+                });
+                navigator.clipboard.writeText(text).then(() => {
+                    ElementPlus.ElMessage.success('喝水计划已成功复制到剪贴板！');
+                }).catch(() => {
+                    ElementPlus.ElMessage.error('复制失败，请手动选取');
+                });
+            };
+
+            onMounted(() => {
+                calculate();
+                loadChecks();
+            });
+
+            return {
+                form,
+                result,
+                schedule,
+                checks,
+                calculate,
+                toggleCheck,
+                resetChecks,
+                checkedCount,
+                currentDrunkAmount,
+                progressPercent,
+                copyPlan
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('#waterApp');
+</script>
+</body>
+</html>

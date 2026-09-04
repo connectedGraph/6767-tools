@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-py" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e103a"/>
+      <stop offset="50%" stop-color="#2e1065"/>
+      <stop offset="100%" stop-color="#0f0728"/>
+    </linearGradient>
+    <linearGradient id="char-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-py)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(192,132,252,0.25)" stroke-width="1"/>
+
+  <!-- Ruby Pinyin Tone Header "pīn" -->
+  <rect x="9" y="8" width="30" height="9" rx="3" fill="rgba(168,85,247,0.18)" stroke="#a855f7" stroke-width="0.9"/>
+  <text x="24" y="14.8" text-anchor="middle" font-family="'JetBrains Mono', Consolas, sans-serif" font-size="6" font-weight="800" fill="#c084fc" letter-spacing="1">pīn yīn</text>
+  
+  <!-- Accent Tone mark highlight on top -->
+  <path d="M14 9.5 L17.5 9.5" stroke="#f472b6" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Divider Arrow Down -->
+  <path d="M24 18 V20" stroke="#7e22ce" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Chinese Character "拼" / "汉" -->
+  <rect x="11" y="21" width="26" height="20" rx="4" fill="#090514" stroke="#4c1d95" stroke-width="1"/>
+  <text x="24" y="36.5" text-anchor="middle" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="900" fill="url(#char-grad)">拼</text>
+
+  <!-- Accent Tone badge icon in bottom right -->
+  <circle cx="36" cy="37" r="4.5" fill="#ec4899" stroke="#ffffff" stroke-width="1"/>
+  <text x="36" y="39" text-anchor="middle" font-family="'JetBrains Mono', sans-serif" font-size="4.5" font-weight="900" fill="#ffffff">ā</text>
+</svg>

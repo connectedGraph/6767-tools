@@ -1,0 +1,927 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>ASCII 艺术字与极客字符 Logo 生成器 - 在线工具</title>
+    <meta name="description" content="极客风格的字符 Logo 与 ASCII 艺术字生成器，内置 50+ 款经典终端 FIGlet 字体，支持多风格画廊对比、代码注释包装、终端框线美化、PNG图片与SVG矢量导出。" />
+    <meta name="keywords" content="ASCII艺术字,字符Logo,FIGlet,极客字体,终端Logo,ASCII Art,代码注释Logo,Banner生成器" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+        /* ══════ 核心控制台面板 ══════ */
+        .control-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            backdrop-filter: blur(16px);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        @media (min-width: 768px) {
+            .input-row {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        .geek-input {
+            width: 100%;
+            height: 48px;
+            background: #090f1d !important;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 10px;
+            padding: 0 18px;
+            color: #38bdf8 !important;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 17px;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+            box-sizing: border-box;
+        }
+        .geek-input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18), inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+        .geek-input::placeholder {
+            color: #475569;
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        /* 快捷标签 */
+        .pills-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        .pill-btn {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .pill-btn:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.08);
+            transform: translateY(-1px);
+        }
+        .pill-btn.active {
+            border-color: #38bdf8;
+            color: #0f172a;
+            background: #38bdf8;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+        }
+
+        /* 选项工具条 */
+        .toolbar-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        .mode-toggle-group {
+            display: flex;
+            background: #090f1d;
+            padding: 3px;
+            border-radius: 8px;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+        }
+        .mode-btn {
+            padding: 7px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            color: #94a3b8;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .mode-btn.active {
+            background: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+        }
+
+        .select-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+        }
+        .select-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .select-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .geek-select {
+            background: #090f1d !important;
+            border: 1px solid rgba(51, 65, 85, 0.8) !important;
+            color: #e2e8f0 !important;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            border-radius: 6px;
+            padding: 6px 12px;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .geek-select:focus {
+            border-color: #38bdf8 !important;
+        }
+        .geek-select option {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        /* ══════ 终端展示屏幕 ══════ */
+        .terminal-window {
+            background: #070b14;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.08);
+            margin-bottom: 24px;
+        }
+        .terminal-topbar {
+            background: #0f172a;
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mac-dots {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .mac-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .mac-dot-red { background: #ef4444; }
+        .mac-dot-yellow { background: #f59e0b; }
+        .mac-dot-green { background: #10b981; }
+
+        .terminal-meta {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .terminal-meta span {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .theme-swatches {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .swatch-btn {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .swatch-btn:hover {
+            transform: scale(1.2);
+        }
+        .swatch-btn.active {
+            border-color: #ffffff;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        .terminal-body {
+            padding: 24px 20px;
+            min-height: 200px;
+            max-height: 520px;
+            overflow: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace;
+            font-size: 13px;
+            line-height: 1.15;
+            white-space: pre;
+            user-select: all;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        /* 终端色彩主题 */
+        .terminal-body.theme-cyan {
+            color: #00f0ff;
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.45);
+        }
+        .terminal-body.theme-matrix {
+            color: #10b981;
+            text-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+        }
+        .terminal-body.theme-amber {
+            color: #f59e0b;
+            text-shadow: 0 0 12px rgba(245, 158, 11, 0.45);
+        }
+        .terminal-body.theme-purple {
+            color: #ec4899;
+            text-shadow: 0 0 12px rgba(236, 72, 153, 0.45);
+        }
+        .terminal-body.theme-white {
+            color: #f8fafc;
+            text-shadow: none;
+        }
+
+        /* ══════ 工作台操作按钮组 ══════ */
+        .action-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 12px;
+            padding: 18px 20px;
+        }
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            background: #0f172a;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+        .action-btn-primary {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+        }
+        .action-btn-primary:hover {
+            background: #0369a1;
+        }
+        .action-btn-success {
+            background: #059669;
+            border-color: #34d399;
+            color: #ffffff;
+        }
+        .action-btn-success:hover {
+            background: #047857;
+        }
+        .action-btn-purple {
+            background: #7c3aed;
+            border-color: #c084fc;
+            color: #ffffff;
+        }
+        .action-btn-purple:hover {
+            background: #6d28d9;
+        }
+
+        /* ══════ 字体选择抽屉/列表 ══════ */
+        .font-panel {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+        .font-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .font-search-input {
+            width: 200px;
+            height: 32px;
+            background: #090f1d !important;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 6px;
+            padding: 0 10px;
+            color: #f1f5f9 !important;
+            font-size: 12px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .font-search-input:focus {
+            border-color: #38bdf8;
+        }
+
+        .font-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+            max-height: 240px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .font-item-btn {
+            text-align: left;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            background: #090f1d;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .font-item-btn:hover {
+            border-color: #38bdf8;
+            color: #e2e8f0;
+            background: #0f172a;
+        }
+        .font-item-btn.active {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        /* ══════ 画廊模式卡片流 ══════ */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 16px;
+        }
+        .gallery-card {
+            background: #070b14;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 14px 16px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .gallery-card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 15px rgba(56, 189, 248, 0.12);
+        }
+        .gallery-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed rgba(51, 65, 85, 0.5);
+        }
+        .gallery-card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+        .gallery-card-preview {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 10px;
+            line-height: 1.1;
+            white-space: pre;
+            overflow-x: auto;
+            color: #38bdf8;
+            padding: 8px 0;
+            min-height: 60px;
+        }
+        .gallery-card-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mini-btn {
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 4px;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            background: #0f172a;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .mini-btn:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+        .mini-btn-primary {
+            background: rgba(2, 132, 199, 0.2);
+            border-color: rgba(56, 189, 248, 0.4);
+            color: #38bdf8;
+        }
+        .mini-btn-primary:hover {
+            background: #0284c7;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./generate" class="text-slate-400 hover:text-cyan-400 text-sm">生成工具</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">ASCII 艺术字与字符 Logo 生成器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">ASCII 艺术字与字符 Logo 生成器</h1>
+                </div>
+                <div class="description">极客风格的字符 Logo 与 ASCII 艺术字生成器，内置 50+ 款经典终端 FIGlet 字体，支持多风格画廊对比、代码注释包装、终端框线美化、PNG图片与SVG矢量导出。</div>
+
+    <!-- Main Control Console -->
+    <div class="control-card">
+        <div class="input-row">
+            <div class="input-wrapper">
+                <input type="text" v-model="inputText" @input="handleInput" placeholder="输入英文单词或项目名，如 DEV, GEEK, LINUX..." class="geek-input" />
+            </div>
+            <div class="pills-container">
+                <span class="text-xs text-slate-500 font-mono">灵感标签:</span>
+                <button v-for="tag in quickTags" :key="tag" @click="inputText = tag; handleInput()" class="pill-btn" :class="{'active': inputText === tag}">{{ tag }}</button>
+            </div>
+        </div>
+
+        <!-- Options Toolbar -->
+        <div class="toolbar-row">
+            <!-- Mode Switcher -->
+            <div class="mode-toggle-group">
+                <button @click="viewMode = 'studio'" class="mode-btn" :class="{'active': viewMode === 'studio'}">
+                    <span>定制工作台 (Studio)</span>
+                </button>
+                <button @click="viewMode = 'gallery'" class="mode-btn" :class="{'active': viewMode === 'gallery'}">
+                    <span>画廊多风格对比 ({{ allFonts.length }})</span>
+                </button>
+            </div>
+
+            <!-- Global Selectors -->
+            <div class="select-group">
+                <div class="select-item">
+                    <span class="select-label">大小写:</span>
+                    <select v-model="letterCase" @change="handleInput" class="geek-select">
+                        <option value="original">保持原样</option>
+                        <option value="uppercase">大写 UPPER</option>
+                        <option value="lowercase">小写 lower</option>
+                    </select>
+                </div>
+
+                <div class="select-item">
+                    <span class="select-label">装饰边框:</span>
+                    <select v-model="borderStyle" @change="handleInput" class="geek-select">
+                        <option value="none">无边框</option>
+                        <option value="single">单线终端框 ┌─┐</option>
+                        <option value="double">双线极客框 ╔═╗</option>
+                        <option value="classic">经典 ASCII框 +--+</option>
+                        <option value="stars">星空矩阵框 * *</option>
+                        <option value="cyber">赛博斜线框 //==//</option>
+                    </select>
+                </div>
+
+                <div class="select-item">
+                    <span class="select-label">代码注释:</span>
+                    <select v-model="commentWrapper" @change="handleInput" class="geek-select">
+                        <option value="none">无包裹</option>
+                        <option value="slash_star">C / JS 块注释 (/* */)</option>
+                        <option value="double_slash">JS / C++ 行注释 (// )</option>
+                        <option value="hash">Python / Shell (# )</option>
+                        <option value="sql">SQL 行注释 (-- )</option>
+                        <option value="html">HTML 注释 (&lt;!-- --&gt;)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 1: STUDIO WORKBENCH -->
+    <div v-if="viewMode === 'studio'">
+        <!-- Terminal Display -->
+        <div class="terminal-window">
+            <div class="terminal-topbar">
+                <div class="flex items-center gap-3">
+                    <div class="mac-dots">
+                        <span class="mac-dot mac-dot-red"></span>
+                        <span class="mac-dot mac-dot-yellow"></span>
+                        <span class="mac-dot mac-dot-green"></span>
+                    </div>
+                    <div class="terminal-meta">font: <span>{{ selectedFont }}</span> · chars: {{ (inputText||'').length }}</div>
+                </div>
+
+                <!-- Theme Palette Selector -->
+                <div class="theme-swatches">
+                    <span class="text-xs text-slate-500 font-mono hidden sm:inline">Theme:</span>
+                    <button v-for="th in colorThemes" :key="th.id" @click="activeTheme = th.id" 
+                            :title="th.name"
+                            class="swatch-btn"
+                            :class="{'active': activeTheme === th.id}"
+                            :style="{backgroundColor: th.color, color: th.color}">
+                    </button>
+                </div>
+            </div>
+
+            <div class="terminal-body" :class="'theme-' + activeTheme">{{ studioRenderedText }}</div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-card">
+            <div class="btn-grid">
+                <button @click="copyText(studioRenderedText)" class="action-btn action-btn-primary">
+                    <span>📋 复制字符画</span>
+                </button>
+                <button @click="copyAsComment" class="action-btn">
+                    <span>💻 复制为注释</span>
+                </button>
+                <button @click="downloadTxt" class="action-btn">
+                    <span>💾 下载 .txt</span>
+                </button>
+                <button @click="exportPng" class="action-btn action-btn-success">
+                    <span>🖼️ 导出 PNG 图片</span>
+                </button>
+                <button @click="exportSvg" class="action-btn action-btn-purple">
+                    <span>📐 导出 SVG 矢量</span>
+                </button>
+                <button @click="randomFont" class="action-btn">
+                    <span>🎲 随机切字体</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Font Quick Picker Panel -->
+        <div class="font-panel">
+            <div class="font-panel-header">
+                <span class="text-xs font-bold text-slate-300 font-mono uppercase tracking-wider">切换当前字体 (共 {{ allFonts.length }} 款)</span>
+                <input type="text" v-model="fontSearch" placeholder="搜索字体名称..." class="font-search-input" />
+            </div>
+
+            <div class="font-grid">
+                <button v-for="f in filteredFonts" :key="f" @click="selectedFont = f; handleInput()"
+                        class="font-item-btn" :class="{'active': selectedFont === f}">
+                    <span>{{ f }}</span>
+                    <span v-if="selectedFont === f">●</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 2: MULTI-FONT COMPARISON GALLERY -->
+    <div v-if="viewMode === 'gallery'">
+        <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono text-slate-400">正在实时渲染全部 {{ galleryItems.length }} 种字体风格：</span>
+            <span class="text-xs text-slate-500 font-mono">点击任意卡片即可直接复制或载入 Studio 细调</span>
+        </div>
+
+        <div class="gallery-grid">
+            <div v-for="item in galleryItems" :key="item.font" class="gallery-card">
+                <div class="gallery-card-header">
+                    <span class="gallery-card-title">{{ item.font }}</span>
+                    <div class="gallery-card-actions">
+                        <button @click="selectAndStudio(item.font)" class="mini-btn mini-btn-primary">载入 Studio</button>
+                        <button @click="copyText(item.text)" class="mini-btn">复制</button>
+                    </div>
+                </div>
+                <div class="gallery-card-preview">{{ item.text }}</div>
+            </div>
+        </div>
+    </div>
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>ASCII Art（字符艺术）是一种利用可打印字符组合成图形或艺术字的表达方式。本工具内置 50+ 款经典 FIGlet 极客字体，支持实时渲染、单行/多行代码注释包装、终端边框美化以及 SVG / PNG 高清无损导出，适合用于代码注释 Banner、终端 CLI 启动界面及技术博客封面设计。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="301" :comment-class="2"></comment>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/figlet/figlet.bundle.js"></script>
+<script>
+    const { createApp, ref, computed } = Vue;
+
+    createApp({
+        setup() {
+            const inputText = ref('GEEK');
+            const viewMode = ref('studio');
+            const selectedFont = ref('Slant');
+            const fontSearch = ref('');
+            const letterCase = ref('original');
+            const borderStyle = ref('none');
+            const commentWrapper = ref('none');
+            const activeTheme = ref('cyan');
+
+            const quickTags = ['GEEK', 'DEV', 'HACKER', 'LINUX', 'CYBER', 'TERMINAL', 'MATRIX', 'ROOT', 'API', '6767'];
+
+            const colorThemes = [
+                { id: 'cyan', name: '赛博青蓝', color: '#00f0ff' },
+                { id: 'matrix', name: '黑客矩阵绿', color: '#10b981' },
+                { id: 'amber', name: '日落琥珀', color: '#f59e0b' },
+                { id: 'purple', name: '霓虹粉紫', color: '#ec4899' },
+                { id: 'white', name: '极简冷白', color: '#f8fafc' },
+            ];
+
+            const allFonts = Figlet.fonts();
+
+            const filteredFonts = computed(() => {
+                if (!fontSearch.value) return allFonts;
+                return allFonts.filter(f => f.toLowerCase().includes(fontSearch.value.toLowerCase()));
+            });
+
+            function transformText(raw) {
+                let t = raw || 'GEEK';
+                if (letterCase.value === 'uppercase') t = t.toUpperCase();
+                if (letterCase.value === 'lowercase') t = t.toLowerCase();
+                return t;
+            }
+
+            function applyBorders(text, style) {
+                if (!style || style === 'none') return text;
+                const lines = text.split('\n');
+                const maxLen = Math.max(...lines.map(l => l.length), 0);
+                const padded = lines.map(l => l + ' '.repeat(Math.max(0, maxLen - l.length)));
+
+                if (style === 'single') {
+                    const top = '┌' + '─'.repeat(maxLen + 2) + '┐';
+                    const mid = padded.map(l => '│ ' + l + ' │');
+                    const bot = '└' + '─'.repeat(maxLen + 2) + '┘';
+                    return [top, ...mid, bot].join('\n');
+                }
+                if (style === 'double') {
+                    const top = '╔' + '═'.repeat(maxLen + 2) + '╗';
+                    const mid = padded.map(l => '║ ' + l + ' ║');
+                    const bot = '╚' + '═'.repeat(maxLen + 2) + '╝';
+                    return [top, ...mid, bot].join('\n');
+                }
+                if (style === 'classic') {
+                    const top = '+' + '-'.repeat(maxLen + 2) + '+';
+                    const mid = padded.map(l => '| ' + l + ' |');
+                    const bot = '+' + '-'.repeat(maxLen + 2) + '+';
+                    return [top, ...mid, bot].join('\n');
+                }
+                if (style === 'stars') {
+                    const top = '*' + '*'.repeat(maxLen + 4) + '*';
+                    const mid = padded.map(l => '*  ' + l + '  *');
+                    const bot = '*' + '*'.repeat(maxLen + 4) + '*';
+                    return [top, ...mid, bot].join('\n');
+                }
+                if (style === 'cyber') {
+                    const top = '//' + '='.repeat(maxLen + 2) + '\\\\';
+                    const mid = padded.map(l => '|| ' + l + ' ||');
+                    const bot = '\\\\' + '='.repeat(maxLen + 2) + '//';
+                    return [top, ...mid, bot].join('\n');
+                }
+                return text;
+            }
+
+            function applyComment(text, wrapper) {
+                if (!wrapper || wrapper === 'none') return text;
+                const lines = text.split('\n');
+                if (wrapper === 'slash_star') {
+                    return ['/**', ...lines.map(l => ' * ' + l), ' */'].join('\n');
+                }
+                if (wrapper === 'double_slash') {
+                    return lines.map(l => '// ' + l).join('\n');
+                }
+                if (wrapper === 'hash') {
+                    return lines.map(l => '# ' + l).join('\n');
+                }
+                if (wrapper === 'sql') {
+                    return lines.map(l => '-- ' + l).join('\n');
+                }
+                if (wrapper === 'html') {
+                    return ['<!--', ...lines, '-->'].join('\n');
+                }
+                return text;
+            }
+
+            function renderAscii(text, font) {
+                const processed = transformText(text);
+                let rendered = Figlet.render(processed, font);
+                rendered = applyBorders(rendered, borderStyle.value);
+                rendered = applyComment(rendered, commentWrapper.value);
+                return rendered;
+            }
+
+            const studioRenderedText = computed(() => {
+                return renderAscii(inputText.value, selectedFont.value);
+            });
+
+            const galleryItems = computed(() => {
+                return allFonts.map(font => ({
+                    font: font,
+                    text: renderAscii(inputText.value, font)
+                }));
+            });
+
+            function handleInput() {}
+
+            function selectAndStudio(font) {
+                selectedFont.value = font;
+                viewMode.value = 'studio';
+            }
+
+            function copyText(txt) {
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(txt).then(() => {
+                        ElementPlus.ElMessage.success('已复制 ASCII 字符画！');
+                    });
+                } else {
+                    const ta = document.createElement('textarea');
+                    ta.value = txt;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    ElementPlus.ElMessage.success('已复制到剪贴板！');
+                }
+            }
+
+            function copyAsComment() {
+                const commented = applyComment(Figlet.render(transformText(inputText.value), selectedFont.value), 'slash_star');
+                copyText(commented);
+            }
+
+            function downloadTxt() {
+                const blob = new Blob([studioRenderedText.value], { type: 'text/plain;charset=utf-8' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'ascii-' + (inputText.value || 'art') + '.txt';
+                a.click();
+                URL.revokeObjectURL(a.href);
+            }
+
+            function exportPng() {
+                const lines = studioRenderedText.value.split('\n');
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const fontSize = 16;
+                const lineHeight = 20;
+                ctx.font = 'bold ' + fontSize + 'px "JetBrains Mono", Consolas, Monaco, monospace';
+
+                let maxW = 0;
+                lines.forEach(l => {
+                    const w = ctx.measureText(l).width;
+                    if (w > maxW) maxW = w;
+                });
+
+                const padX = 32;
+                const padY = 32;
+                canvas.width = Math.max(maxW + padX * 2, 360);
+                canvas.height = lines.length * lineHeight + padY * 2;
+
+                // Background
+                ctx.fillStyle = '#070b14';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Border
+                ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(6, 6, canvas.width - 12, canvas.height - 12);
+
+                // Text
+                ctx.font = 'bold ' + fontSize + 'px "JetBrains Mono", Consolas, Monaco, monospace';
+                const themeColors = { cyan: '#00f0ff', matrix: '#10b981', amber: '#f59e0b', purple: '#ec4899', white: '#f8fafc' };
+                ctx.fillStyle = themeColors[activeTheme.value] || '#00f0ff';
+                ctx.shadowColor = ctx.fillStyle;
+                ctx.shadowBlur = 10;
+
+                lines.forEach((l, idx) => {
+                    ctx.fillText(l, padX, padY + (idx + 1) * lineHeight - 4);
+                });
+
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = 'ascii-' + (inputText.value || 'logo') + '.png';
+                a.click();
+            }
+
+            function exportSvg() {
+                const lines = studioRenderedText.value.split('\n');
+                const themeColors = { cyan: '#00f0ff', matrix: '#10b981', amber: '#f59e0b', purple: '#ec4899', white: '#f8fafc' };
+                const color = themeColors[activeTheme.value] || '#00f0ff';
+                const maxLen = Math.max(...lines.map(l => l.length), 1);
+                const width = maxLen * 10 + 60;
+                const height = lines.length * 18 + 60;
+
+                let textNodes = '';
+                lines.forEach((l, idx) => {
+                    const escaped = l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    textNodes += '<tspan x="30" dy="' + (idx === 0 ? 0 : 18) + '">' + escaped + '</tspan>';
+                });
+
+                const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '">'
+                    + '<rect width="100%" height="100%" rx="12" fill="#070b14" stroke="' + color + '" stroke-opacity="0.3" stroke-width="2"/>'
+                    + '<text x="30" y="40" font-family="Consolas, Monaco, monospace" font-size="14" font-weight="bold" fill="' + color + '" xml:space="preserve">'
+                    + textNodes
+                    + '</text></svg>';
+
+                const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'ascii-' + (inputText.value || 'logo') + '.svg';
+                a.click();
+                URL.revokeObjectURL(a.href);
+            }
+
+            function randomFont() {
+                const r = allFonts[Math.floor(Math.random() * allFonts.length)];
+                selectedFont.value = r;
+            }
+
+            return {
+                inputText,
+                viewMode,
+                selectedFont,
+                fontSearch,
+                letterCase,
+                borderStyle,
+                commentWrapper,
+                activeTheme,
+                quickTags,
+                colorThemes,
+                allFonts,
+                filteredFonts,
+                studioRenderedText,
+                galleryItems,
+                handleInput,
+                selectAndStudio,
+                copyText,
+                copyAsComment,
+                downloadTxt,
+                exportPng,
+                exportSvg,
+                randomFont
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

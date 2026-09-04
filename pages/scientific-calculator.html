@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>科学高级计算器 - 在线工具</title>
+    <meta name="description" content="全功能科学高级计算器：支持三角函数 (sin/cos/tan/cot)、反三角函数、双曲函数、对数 (log/ln/log2)、幂运算 (x^y, x², x³)、开根号 (√, ∛, ʸ√x)、阶乘 n!、常数 (π, e, φ)、度数与弧度切换 (DEG/RAD)、括号优先级运算与历史计算记录展示。" />
+    <meta name="keywords" content="科学计算器,高级计算器,三角函数计算器,对数计算器,阶乘计算器,弧度制切换,在线科学计算器" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .calc-wrapper {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .calc-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 20px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .calc-layout { grid-template-columns: 1fr; }
+        }
+
+        /* ── 终端显示屏 ── */
+        .calc-screen {
+            background: #060b14;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 16px rgba(34, 211, 238, 0.1);
+        }
+        .calc-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            color: #64748b;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed rgba(51, 65, 85, 0.6);
+        }
+        .calc-status-tags {
+            display: flex;
+            gap: 6px;
+        }
+        .status-tag {
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: rgba(30, 41, 59, 0.8);
+            color: #94a3b8;
+        }
+        .status-tag.active {
+            color: #38bdf8;
+            background: rgba(8, 47, 73, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+        }
+
+        .calc-expr-line {
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            font-size: 0.95rem;
+            color: #94a3b8;
+            min-height: 24px;
+            text-align: right;
+            overflow-x: auto;
+            white-space: nowrap;
+            letter-spacing: 0.05em;
+        }
+        .calc-result-line {
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f8fafc;
+            text-align: right;
+            overflow-x: auto;
+            white-space: nowrap;
+            line-height: 1.2;
+            margin-top: 4px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+        }
+
+        /* ── 键盘网格矩阵 ── */
+        .calc-keypad {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        @media (max-width: 540px) {
+            .calc-keypad { gap: 5px; }
+        }
+
+        .calc-btn {
+            height: 48px;
+            border-radius: 8px;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            background: rgba(15, 23, 42, 0.7);
+            color: #cbd5e1;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            user-select: none;
+            outline: none;
+        }
+        .calc-btn:hover {
+            border-color: rgba(56, 189, 248, 0.6);
+            color: #f8fafc;
+            background: rgba(30, 41, 59, 0.9);
+            transform: translateY(-1px);
+        }
+        .calc-btn:active {
+            transform: translateY(1px);
+            background: rgba(8, 47, 73, 0.8);
+        }
+
+        /* 按钮类型主题色 */
+        .btn-func {
+            background: rgba(15, 23, 42, 0.9);
+            color: #38bdf8;
+            font-size: 0.82rem;
+        }
+        .btn-func:hover {
+            background: rgba(8, 47, 73, 0.6);
+            border-color: #38bdf8;
+        }
+        .btn-mode {
+            background: rgba(30, 41, 59, 0.5);
+            color: #a855f7;
+            font-size: 0.78rem;
+        }
+        .btn-mode.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            color: #c084fc;
+        }
+        .btn-op {
+            background: rgba(15, 23, 42, 0.8);
+            color: #f59e0b;
+            font-size: 1.1rem;
+        }
+        .btn-num {
+            background: rgba(30, 41, 59, 0.4);
+            color: #f1f5f9;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+        .btn-clear {
+            background: rgba(127, 29, 29, 0.3);
+            color: #f87171;
+            border-color: rgba(248, 113, 113, 0.4);
+        }
+        .btn-clear:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #f87171;
+        }
+        .btn-equal {
+            background: rgba(6, 78, 59, 0.6);
+            color: #34d399;
+            border-color: rgba(52, 211, 153, 0.6);
+            font-size: 1.3rem;
+            box-shadow: 0 0 10px rgba(52, 211, 153, 0.2);
+        }
+        .btn-equal:hover {
+            background: rgba(16, 185, 129, 0.4);
+            border-color: #34d399;
+            color: #ecfdf5;
+        }
+
+        /* ── 历史记录面板 ── */
+        .history-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 16px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .history-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 440px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 4px;
+        }
+        .history-list::-webkit-scrollbar { width: 6px; }
+        .history-list::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.6); border-radius: 3px; }
+
+        .history-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            border-radius: 8px;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .history-item:hover {
+            border-color: rgba(56, 189, 248, 0.5);
+            background: rgba(30, 41, 59, 0.6);
+        }
+        .history-item-time {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-family: monospace;
+            margin-bottom: 2px;
+        }
+        .history-item-expr {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-family: monospace;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .history-item-res {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #38bdf8;
+            font-family: monospace;
+            text-align: right;
+        }
+
+        /* 物理常数速查标签 */
+        .const-chip {
+            font-size: 0.72rem;
+            font-family: monospace;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .const-chip:hover {
+            border-color: #38bdf8;
+            color: #f1f5f9;
+            background: rgba(56, 189, 248, 0.15);
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">科学高级计算器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body calc-wrapper">
+    <div class="card-model" style="margin-bottom: 20px;">
+        <div class="card-body">
+            <div class="tool-head">
+                <h1 class="title">科学高级计算器</h1>
+            </div>
+            <div class="description">
+                全功能科学级计算控制台：支持三角函数、反三角函数、双曲函数、对数（log/ln/log₂）、高阶乘方与开方、阶乘运算、物理数学常数快捷输入、角度与弧度自由切换（DEG/RAD）、括号优先级解析及历史计算记录回溯与导出。
+                <span class="text-xs text-slate-500 font-mono ml-2">拓展时间: 2026-08-31</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="calc-layout">
+        <!-- ══ 左侧：计算器主控面板 ══ -->
+        <div>
+            <!-- LED 终端风格显示屏 -->
+            <div class="calc-screen">
+                <div class="calc-status-bar">
+                    <div class="calc-status-tags">
+                        <span class="status-tag" :class="{ active: angleMode === 'DEG' }">DEG</span>
+                        <span class="status-tag" :class="{ active: angleMode === 'RAD' }">RAD</span>
+                        <span class="status-tag" :class="{ active: isInverse }">2nd</span>
+                        <span class="status-tag" :class="{ active: isHyp }">HYP</span>
+                        <span v-if="memoryVal !== null" class="status-tag active">M ({{ formatNum(memoryVal) }})</span>
+                    </div>
+                    <span class="text-xs text-slate-500">科学计算终端</span>
+                </div>
+
+                <div class="calc-expr-line" :title="expression">
+                    {{ expression || ' ' }}
+                </div>
+
+                <div class="calc-result-line">
+                    {{ currentDisplay }}
+                </div>
+            </div>
+
+            <!-- 科学计算器按键阵列 (5列布局) -->
+            <div class="calc-keypad">
+                <!-- 第一行：模式与内存管理 -->
+                <button class="calc-btn btn-mode" :class="{ active: isInverse }" @click="toggleInverse">2nd</button>
+                <button class="calc-btn btn-mode" :class="{ active: angleMode === 'RAD' }" @click="toggleAngleMode">{{ angleMode }}</button>
+                <button class="calc-btn btn-mode" :class="{ active: isHyp }" @click="toggleHyp">hyp</button>
+                <button class="calc-btn btn-func" @click="memClear" title="清除记忆值">MC</button>
+                <button class="calc-btn btn-func" @click="memRecall" title="读取记忆值">MR</button>
+
+                <!-- 第二行：三角函数与对数 -->
+                <button class="calc-btn btn-func" @click="memAdd" title="记忆值累加">M+</button>
+                <button class="calc-btn btn-func" @click="memSub" title="记忆值递减">M-</button>
+                <button class="calc-btn btn-func" @click="memStore" title="存储为记忆值">MS</button>
+                <button class="calc-btn btn-clear" @click="clearAll" title="清空全部 (Esc)">C</button>
+                <button class="calc-btn btn-clear" @click="backspace" title="退格删除 (Backspace)">⌫</button>
+
+                <!-- 第三行：三角与幂运算 -->
+                <button class="calc-btn btn-func" @click="insertTrig('sin')">{{ isInverse ? 'asin' : (isHyp ? 'sinh' : 'sin') }}</button>
+                <button class="calc-btn btn-func" @click="insertTrig('cos')">{{ isInverse ? 'acos' : (isHyp ? 'cosh' : 'cos') }}</button>
+                <button class="calc-btn btn-func" @click="insertTrig('tan')">{{ isInverse ? 'atan' : (isHyp ? 'tanh' : 'tan') }}</button>
+                <button class="calc-btn btn-func" @click="insertFunc('ln')">{{ isInverse ? 'eˣ' : 'ln' }}</button>
+                <button class="calc-btn btn-func" @click="insertFunc('log')">{{ isInverse ? '10ˣ' : 'log' }}</button>
+
+                <!-- 第四行：根号与常数 -->
+                <button class="calc-btn btn-func" @click="insertPower">{{ isInverse ? 'ʸ√x' : 'xʸ' }}</button>
+                <button class="calc-btn btn-func" @click="insertSqrt">{{ isInverse ? 'x²' : '√x' }}</button>
+                <button class="calc-btn btn-func" @click="insertCbrt">{{ isInverse ? 'x³' : '∛x' }}</button>
+                <button class="calc-btn btn-func" @click="insertReciprocal">1/x</button>
+                <button class="calc-btn btn-func" @click="insertFactorial">n!</button>
+
+                <!-- 第五行：数字 7 8 9 与 括号 运算符 -->
+                <button class="calc-btn btn-func" @click="insertConst('π')">π</button>
+                <button class="calc-btn btn-func" @click="insertConst('e')">e</button>
+                <button class="calc-btn btn-func" @click="insertSymbol('(')">(</button>
+                <button class="calc-btn btn-func" @click="insertSymbol(')')">)</button>
+                <button class="calc-btn btn-op" @click="insertOp('÷')">÷</button>
+
+                <!-- 第六行：数字 7 8 9 与 乘法 -->
+                <button class="calc-btn btn-num" @click="insertDigit('7')">7</button>
+                <button class="calc-btn btn-num" @click="insertDigit('8')">8</button>
+                <button class="calc-btn btn-num" @click="insertDigit('9')">9</button>
+                <button class="calc-btn btn-func" @click="insertSymbol('%')">%</button>
+                <button class="calc-btn btn-op" @click="insertOp('×')">×</button>
+
+                <!-- 第七行：数字 4 5 6 与 减法 -->
+                <button class="calc-btn btn-num" @click="insertDigit('4')">4</button>
+                <button class="calc-btn btn-num" @click="insertDigit('5')">5</button>
+                <button class="calc-btn btn-num" @click="insertDigit('6')">6</button>
+                <button class="calc-btn btn-func" @click="insertAbs">|x|</button>
+                <button class="calc-btn btn-op" @click="insertOp('-')">-</button>
+
+                <!-- 第八行：数字 1 2 3 与 加法 -->
+                <button class="calc-btn btn-num" @click="insertDigit('1')">1</button>
+                <button class="calc-btn btn-num" @click="insertDigit('2')">2</button>
+                <button class="calc-btn btn-num" @click="insertDigit('3')">3</button>
+                <button class="calc-btn btn-func" @click="toggleSign">±</button>
+                <button class="calc-btn btn-op" @click="insertOp('+')">+</button>
+
+                <!-- 第九行：0 . 00 与 等号 -->
+                <button class="calc-btn btn-num" @click="insertDigit('0')">0</button>
+                <button class="calc-btn btn-num" @click="insertDigit('.')">.</button>
+                <button class="calc-btn btn-num" @click="insertDigit('00')">00</button>
+                <button class="calc-btn btn-func" @click="insertSymbol(' mod ')">mod</button>
+                <button class="calc-btn btn-equal" @click="calculateResult" title="计算结果 (Enter)">=</button>
+            </div>
+
+            <!-- 常用物理/数学常数速查 -->
+            <div class="assistant-box" style="margin-top: 16px; padding: 12px 16px;">
+                <div class="text-xs font-bold text-slate-400 mb-2">⚡ 科学常数快捷输入 (点击插入)：</div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="const-chip" @click="insertConstVal(299792458)" title="真空光速 c">光速 c (2.998e8)</button>
+                    <button class="const-chip" @click="insertConstVal(6.62607015e-34)" title="普朗克常数 h">普朗克 h (6.626e-34)</button>
+                    <button class="const-chip" @click="insertConstVal(6.02214076e23)" title="阿伏伽德罗常数 NA">阿伏伽德罗 NA</button>
+                    <button class="const-chip" @click="insertConstVal(1.380649e-23)" title="玻尔兹曼常数 kB">玻尔兹曼 kB</button>
+                    <button class="const-chip" @click="insertConstVal(6.67430e-11)" title="万有引力常数 G">引力常数 G</button>
+                    <button class="const-chip" @click="insertConstVal(1.6180339887)" title="黄金分割比 φ">黄金分割 φ (1.618)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ 右侧：计算历史记录管理 ══ -->
+        <div>
+            <div class="history-card">
+                <div class="history-header">
+                    <div class="history-title">
+                        <span>📜 计算历史记录</span>
+                        <span class="text-xs text-slate-500 font-mono">({{ historyList.length }})</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <el-button size="small" text @click="exportHistory" :disabled="historyList.length === 0">导出</el-button>
+                        <el-button size="small" text @click="clearHistory" :disabled="historyList.length === 0">清空</el-button>
+                    </div>
+                </div>
+
+                <div v-if="historyList.length === 0" class="flex-1 flex flex-col items-center justify-center text-xs text-slate-500 py-12">
+                    <span>暂无计算记录</span>
+                    <span class="text-slate-600 mt-1">每次按下 "=" 后的记录将保留在此</span>
+                </div>
+
+                <div v-else class="history-list">
+                    <div 
+                        v-for="(item, idx) in historyList" 
+                        :key="idx"
+                        class="history-item"
+                        @click="recallHistory(item)"
+                        title="点击回填表达式与结果"
+                    >
+                        <div class="flex justify-between items-center">
+                            <span class="history-item-time">{{ item.time }}</span>
+                            <span class="text-xs text-cyan-500 hover:text-cyan-300" @click.stop="copyText(item.res)">复制</span>
+                        </div>
+                        <div class="history-item-expr">{{ item.expr }} =</div>
+                        <div class="history-item-res">{{ item.res }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+<script src="./js/tools/study/scientific-calculator.js"></script>
+
+<script>
+const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
+
+const app = createApp({
+    setup() {
+        const engine = new ScientificMathEngine();
+
+        const expression = ref('');
+        const currentDisplay = ref('0');
+        const angleMode = ref('DEG'); // 'DEG' or 'RAD'
+        const isInverse = ref(false);
+        const isHyp = ref(false);
+        const memoryVal = ref(null);
+        const isCalculated = ref(false);
+
+        const historyList = ref([]);
+
+        // 格式化输出数字
+        const formatNum = (val) => {
+            if (val === null || val === undefined || isNaN(val)) return '0';
+            if (val === 0) return '0';
+            const abs = Math.abs(val);
+            if (abs >= 1e12 || (abs < 1e-6 && abs > 0)) {
+                return val.toPrecision(8);
+            }
+            let str = String(val);
+            if (str.includes('.')) {
+                str = Number(val.toFixed(10)).toString();
+            }
+            return str;
+        };
+
+        const toggleAngleMode = () => {
+            angleMode.value = angleMode.value === 'DEG' ? 'RAD' : 'DEG';
+            engine.setAngleMode(angleMode.value);
+        };
+
+        const toggleInverse = () => {
+            isInverse.value = !isInverse.value;
+        };
+
+        const toggleHyp = () => {
+            isHyp.value = !isHyp.value;
+        };
+
+        const clearAll = () => {
+            expression.value = '';
+            currentDisplay.value = '0';
+            isCalculated.value = false;
+        };
+
+        const backspace = () => {
+            if (isCalculated.value) {
+                clearAll();
+                return;
+            }
+            if (currentDisplay.value.length > 1) {
+                currentDisplay.value = currentDisplay.value.slice(0, -1);
+            } else {
+                currentDisplay.value = '0';
+            }
+        };
+
+        const insertDigit = (d) => {
+            if (isCalculated.value) {
+                currentDisplay.value = d === '.' ? '0.' : d;
+                expression.value = '';
+                isCalculated.value = false;
+                return;
+            }
+
+            if (currentDisplay.value === '0' && d !== '.') {
+                currentDisplay.value = d;
+            } else {
+                if (d === '.' && currentDisplay.value.includes('.')) return;
+                currentDisplay.value += d;
+            }
+        };
+
+        const insertOp = (op) => {
+            if (isCalculated.value) {
+                expression.value = currentDisplay.value + ' ' + op + ' ';
+                currentDisplay.value = '0';
+                isCalculated.value = false;
+                return;
+            }
+
+            if (currentDisplay.value !== '0') {
+                expression.value += currentDisplay.value + ' ' + op + ' ';
+                currentDisplay.value = '0';
+            } else if (expression.value) {
+                // 替换末尾运算符
+                expression.value = expression.value.replace(/ [+\-×÷] $/, ` ${op} `);
+            }
+        };
+
+        const insertSymbol = (sym) => {
+            if (isCalculated.value) {
+                expression.value = '';
+                currentDisplay.value = '0';
+                isCalculated.value = false;
+            }
+            if (sym === '(' || sym === ')') {
+                if (currentDisplay.value !== '0') {
+                    expression.value += currentDisplay.value + sym;
+                    currentDisplay.value = '0';
+                } else {
+                    expression.value += sym;
+                }
+            } else if (sym === '%') {
+                currentDisplay.value = String(Number(currentDisplay.value) / 100);
+            } else if (sym.includes('mod')) {
+                insertOp('mod');
+            }
+        };
+
+        const insertConst = (c) => {
+            if (isCalculated.value) {
+                clearAll();
+            }
+            currentDisplay.value = c;
+        };
+
+        const insertConstVal = (val) => {
+            if (isCalculated.value) {
+                clearAll();
+            }
+            currentDisplay.value = String(val);
+        };
+
+        const toggleSign = () => {
+            if (currentDisplay.value === '0') return;
+            if (currentDisplay.value.startsWith('-')) {
+                currentDisplay.value = currentDisplay.value.slice(1);
+            } else {
+                currentDisplay.value = '-' + currentDisplay.value;
+            }
+        };
+
+        const insertAbs = () => {
+            const num = Number(currentDisplay.value);
+            if (!isNaN(num)) {
+                currentDisplay.value = String(Math.abs(num));
+            }
+        };
+
+        const insertReciprocal = () => {
+            const num = Number(currentDisplay.value);
+            if (num === 0) {
+                ElementPlus.ElMessage.error('除数不能为零');
+                return;
+            }
+            currentDisplay.value = formatNum(1 / num);
+        };
+
+        const insertFactorial = () => {
+            try {
+                const num = Number(currentDisplay.value);
+                const res = engine.factorial(num);
+                currentDisplay.value = formatNum(res);
+            } catch (err) {
+                ElementPlus.ElMessage.error(err.message);
+            }
+        };
+
+        const insertTrig = (baseFunc) => {
+            let funcName = baseFunc;
+            if (isInverse.value) {
+                funcName = 'a' + baseFunc;
+            } else if (isHyp.value) {
+                funcName = baseFunc + 'h';
+            }
+            try {
+                const arg = Number(currentDisplay.value);
+                let res;
+                if (funcName === 'sin') res = engine.sin(arg);
+                else if (funcName === 'cos') res = engine.cos(arg);
+                else if (funcName === 'tan') res = engine.tan(arg);
+                else if (funcName === 'asin') res = engine.asin(arg);
+                else if (funcName === 'acos') res = engine.acos(arg);
+                else if (funcName === 'atan') res = engine.atan(arg);
+                else if (funcName === 'sinh') res = Math.sinh(arg);
+                else if (funcName === 'cosh') res = Math.cosh(arg);
+                else if (funcName === 'tanh') res = Math.tanh(arg);
+
+                currentDisplay.value = formatNum(res);
+                isCalculated.value = true;
+            } catch (err) {
+                ElementPlus.ElMessage.error(err.message);
+            }
+        };
+
+        const insertFunc = (func) => {
+            try {
+                const arg = Number(currentDisplay.value);
+                let res;
+                if (func === 'ln') {
+                    if (isInverse.value) res = Math.exp(arg);
+                    else res = engine.ln(arg);
+                } else if (func === 'log') {
+                    if (isInverse.value) res = Math.pow(10, arg);
+                    else res = engine.log(arg);
+                }
+                currentDisplay.value = formatNum(res);
+                isCalculated.value = true;
+            } catch (err) {
+                ElementPlus.ElMessage.error(err.message);
+            }
+        };
+
+        const insertSqrt = () => {
+            try {
+                const arg = Number(currentDisplay.value);
+                if (isInverse.value) {
+                    currentDisplay.value = formatNum(arg * arg);
+                } else {
+                    currentDisplay.value = formatNum(engine.sqrt(arg));
+                }
+                isCalculated.value = true;
+            } catch (err) {
+                ElementPlus.ElMessage.error(err.message);
+            }
+        };
+
+        const insertCbrt = () => {
+            const arg = Number(currentDisplay.value);
+            if (isInverse.value) {
+                currentDisplay.value = formatNum(arg * arg * arg);
+            } else {
+                currentDisplay.value = formatNum(engine.cbrt(arg));
+            }
+            isCalculated.value = true;
+        };
+
+        const insertPower = () => {
+            if (isInverse.value) {
+                // y-th root of x
+                expression.value += currentDisplay.value + ' ^ (1 / ';
+                currentDisplay.value = '0';
+            } else {
+                insertOp('^');
+            }
+        };
+
+        // 计算总结果
+        const calculateResult = () => {
+            let fullExpr = expression.value;
+            if (currentDisplay.value !== '0' || !fullExpr) {
+                fullExpr += currentDisplay.value;
+            }
+
+            // 自动补齐未闭合的括号
+            const openCount = (fullExpr.match(/\(/g) || []).length;
+            const closeCount = (fullExpr.match(/\)/g) || []).length;
+            if (openCount > closeCount) {
+                fullExpr += ')'.repeat(openCount - closeCount);
+            }
+
+            try {
+                const res = engine.evaluate(fullExpr);
+                const formattedRes = formatNum(res);
+
+                // 添加至历史记录
+                const now = new Date();
+                const timeStr = now.toTimeString().slice(0, 8);
+                historyList.value.unshift({
+                    time: timeStr,
+                    expr: fullExpr,
+                    res: formattedRes
+                });
+
+                expression.value = fullExpr + ' =';
+                currentDisplay.value = formattedRes;
+                isCalculated.value = true;
+            } catch (err) {
+                ElementPlus.ElMessage.error(err.message || '计算失败');
+            }
+        };
+
+        // ══ 内存操作 ══
+        const memClear = () => {
+            memoryVal.value = null;
+            ElementPlus.ElMessage.info('记忆已清空');
+        };
+        const memRecall = () => {
+            if (memoryVal.value !== null) {
+                currentDisplay.value = formatNum(memoryVal.value);
+            }
+        };
+        const memStore = () => {
+            const val = Number(currentDisplay.value);
+            if (!isNaN(val)) {
+                memoryVal.value = val;
+                ElementPlus.ElMessage.success('已存入记忆值: ' + formatNum(val));
+            }
+        };
+        const memAdd = () => {
+            const val = Number(currentDisplay.value);
+            if (!isNaN(val)) {
+                memoryVal.value = (memoryVal.value || 0) + val;
+                ElementPlus.ElMessage.success('记忆值增加: ' + formatNum(val));
+            }
+        };
+        const memSub = () => {
+            const val = Number(currentDisplay.value);
+            if (!isNaN(val)) {
+                memoryVal.value = (memoryVal.value || 0) - val;
+                ElementPlus.ElMessage.success('记忆值减少: ' + formatNum(val));
+            }
+        };
+
+        // ══ 历史记录管理 ══
+        const recallHistory = (item) => {
+            expression.value = item.expr;
+            currentDisplay.value = item.res;
+            isCalculated.value = true;
+        };
+
+        const clearHistory = () => {
+            historyList.value = [];
+            ElementPlus.ElMessage.info('计算历史已清空');
+        };
+
+        const copyText = (txt) => {
+            navigator.clipboard.writeText(String(txt)).then(() => {
+                ElementPlus.ElMessage.success('复制成功: ' + txt);
+            });
+        };
+
+        const exportHistory = () => {
+            if (historyList.value.length === 0) return;
+            const content = historyList.value.map(h => `[${h.time}] ${h.expr} = ${h.res}`).join('\n');
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `scientific_calculator_history_${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            ElementPlus.ElMessage.success('历史记录已导出');
+        };
+
+        // 键盘监听
+        const handleKeyDown = (e) => {
+            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+
+            if (e.key >= '0' && e.key <= '9') {
+                insertDigit(e.key);
+            } else if (e.key === '.') {
+                insertDigit('.');
+            } else if (e.key === '+') {
+                insertOp('+');
+            } else if (e.key === '-') {
+                insertOp('-');
+            } else if (e.key === '*') {
+                insertOp('×');
+            } else if (e.key === '/') {
+                e.preventDefault();
+                insertOp('÷');
+            } else if (e.key === '^') {
+                insertOp('^');
+            } else if (e.key === '(' || e.key === ')') {
+                insertSymbol(e.key);
+            } else if (e.key === 'Enter' || e.key === '=') {
+                e.preventDefault();
+                calculateResult();
+            } else if (e.key === 'Backspace') {
+                backspace();
+            } else if (e.key === 'Escape') {
+                clearAll();
+            }
+        };
+
+        onMounted(() => {
+            window.addEventListener('keydown', handleKeyDown);
+        });
+
+        onUnmounted(() => {
+            window.removeEventListener('keydown', handleKeyDown);
+        });
+
+        return {
+            expression,
+            currentDisplay,
+            angleMode,
+            isInverse,
+            isHyp,
+            memoryVal,
+            historyList,
+            formatNum,
+            toggleAngleMode,
+            toggleInverse,
+            toggleHyp,
+            clearAll,
+            backspace,
+            insertDigit,
+            insertOp,
+            insertSymbol,
+            insertConst,
+            insertConstVal,
+            toggleSign,
+            insertAbs,
+            insertReciprocal,
+            insertFactorial,
+            insertTrig,
+            insertFunc,
+            insertSqrt,
+            insertCbrt,
+            insertPower,
+            calculateResult,
+            memClear,
+            memRecall,
+            memStore,
+            memAdd,
+            memSub,
+            recallHistory,
+            clearHistory,
+            copyText,
+            exportHistory
+        };
+    }
+});
+
+app.use(ElementPlus);
+app.mount('.main-body');
+</script>
+</body>
+</html>

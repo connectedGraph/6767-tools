@@ -1,0 +1,1013 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>全款与车贷落地费用精算器 - 在线工具</title>
+    <meta name="description" content="专业级全款与汽车贷款落地总费用精算器：支持裸车价格、燃油/新能源免税政策、排量车船税档位、交强险与商业险自由定制，精准测算落地首付、等额本息/等额本金月供、利息明细与全周期落地成本。" />
+    <meta name="keywords" content="车贷计算器,购车落地价计算器,汽车购置税计算,车船税排量标准,车险商业险计算器,车贷月供明细,等额本息还款表,在线工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .car-calc-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 12px;
+            padding: 16px 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+        .kpi-card:hover {
+            border-color: rgba(56, 189, 248, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+        .kpi-card.cyan::before { background: #38bdf8; }
+        .kpi-card.emerald::before { background: #10b981; }
+        .kpi-card.amber::before { background: #f59e0b; }
+        .kpi-card.rose::before { background: #f43f5e; }
+
+        .kpi-card .label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .kpi-card .value {
+            font-size: 1.65rem;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            color: #f1f5f9;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        .kpi-card .sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+        }
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .section-title-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title-left::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 14px;
+            background: #38bdf8;
+            border-radius: 2px;
+        }
+
+        .cost-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+            font-size: 0.88rem;
+        }
+        .cost-row:last-child {
+            border-bottom: none;
+        }
+        .cost-name {
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cost-val {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .preset-chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .preset-chip {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .preset-chip:hover {
+            border-color: #38bdf8;
+            color: #e2e8f0;
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .badge-cyan {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+        .badge-amber {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+
+        .diff-tag-green {
+            color: #34d399;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.72rem;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./life" class="tool-topbar-cat">生活实用</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">全款与车贷落地费用精算器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+  <div class="tool-body car-calc-container">
+    <div class="card-model">
+      <div class="card-body">
+        
+        <!-- 头部标题 -->
+        <div class="tool-head">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h1 class="title" style="margin-bottom: 0;">全款与车贷落地费用精算器</h1>
+            <span class="badge-cyan">2026年现行税费标准 · 全流程费用精算</span>
+          </div>
+        </div>
+        <div class="description" style="margin-top: 8px;">
+          精确测算购车全款落地总额与汽车贷款分期月供、落地首付及总利息支出。全面覆盖购置税、车船税、交强险、商业险精选方案与等额本息/等额本金还款计划表。
+        </div>
+
+        <!-- 购车模式切换 (全款 vs 贷款) -->
+        <div style="margin: 18px 0 14px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <el-radio-group v-model="form.buyMode" size="default" @change="calculateAll">
+            <el-radio-button label="loan">汽车贷款分期模式 (精准测算首付与月供)</el-radio-button>
+            <el-radio-button label="full">全款一次性购车模式</el-radio-button>
+          </el-radio-group>
+
+          <div class="preset-chip-group">
+            <span class="preset-chip" @click="setCarPreset(10, 'gas', '1.5')">10万经济代步 (燃油1.5L)</span>
+            <span class="preset-chip" @click="setCarPreset(16, 'nev', '0')">16万热门新能源 (EV/混动免税)</span>
+            <span class="preset-chip" @click="setCarPreset(25, 'gas', '2.0')">25万中型轿车/SUV (2.0T)</span>
+            <span class="preset-chip" @click="setCarPreset(45, 'gas', '2.5')">45万豪华座驾 (2.5L)</span>
+          </div>
+        </div>
+
+        <!-- KPI 核心精算看板 -->
+        <div class="kpi-grid">
+          <!-- 落地总支出 -->
+          <div class="kpi-card cyan">
+            <div class="label">
+              <span>{{ form.buyMode === 'loan' ? '贷款最终落地总成本' : '全款落地总花费' }}</span>
+              <span class="badge-cyan">{{ form.buyMode === 'loan' ? form.loanMonths + '期分期' : '一次性付清' }}</span>
+            </div>
+            <div class="value">¥ {{ formatMoney(summary.totalCost) }}</div>
+            <div class="sub">
+              <span>裸车价: ¥{{ formatMoney(form.carPrice * 10000) }}</span>
+              <span v-if="form.buyMode === 'loan'" style="color: #f43f5e;">多花利息: ¥{{ formatMoney(summary.totalInterest) }}</span>
+              <span v-else class="diff-tag-green">全款无金融利息</span>
+            </div>
+          </div>
+
+          <!-- 首付落地花费 (贷款模式) 或 必要税费 (全款模式) -->
+          <div class="kpi-card emerald">
+            <div class="label">
+              <span>{{ form.buyMode === 'loan' ? '首次提车落地支出 (首付)' : '必要税费与上牌杂费' }}</span>
+              <span>{{ form.buyMode === 'loan' ? '首付比例 ' + form.downPaymentRate + '%' : '税费合计' }}</span>
+            </div>
+            <div class="value" style="color: #34d399;">¥ {{ formatMoney(form.buyMode === 'loan' ? summary.downPaymentLanding : summary.necessaryExpenses) }}</div>
+            <div class="sub">
+              <span v-if="form.buyMode === 'loan'">裸车首付: ¥{{ formatMoney(summary.carDownPayment) }} + 税费保险</span>
+              <span v-else>购置税 + 车船税 + 交强险 + 牌照</span>
+            </div>
+          </div>
+
+          <!-- 月供明细 (贷款模式) 或 商业险首年 (全款模式) -->
+          <div class="kpi-card amber">
+            <div class="label">
+              <span>{{ form.buyMode === 'loan' ? '月供还款额' : '首年商业保险费用' }}</span>
+              <span>{{ form.buyMode === 'loan' ? (form.repayMethod === 'equal_pi' ? '等额本息固定' : '首月月供') : '方案自主勾选' }}</span>
+            </div>
+            <div class="value" style="color: #fbbf24;">¥ {{ formatMoney(form.buyMode === 'loan' ? summary.monthlyPayment : summary.commercialInsurance) }}</div>
+            <div class="sub">
+              <span v-if="form.buyMode === 'loan' && form.repayMethod === 'equal_p'">末月月供: ¥{{ formatMoney(summary.lastMonthPayment) }} (递减)</span>
+              <span v-else-if="form.buyMode === 'loan'">共需还款 {{ form.loanMonths }} 个月</span>
+              <span v-else>涵盖三者险、车损险及座位险</span>
+            </div>
+          </div>
+
+          <!-- 贷款总额与利息对比 -->
+          <div class="kpi-card rose">
+            <div class="label">
+              <span>{{ form.buyMode === 'loan' ? '贷款本金与利息总计' : '全款省下金融成本' }}</span>
+              <span>{{ form.buyMode === 'loan' ? '年化 ' + form.loanAnnualRate + '%' : '全款优势' }}</span>
+            </div>
+            <div class="value" style="color: #f43f5e;">¥ {{ formatMoney(form.buyMode === 'loan' ? summary.loanAmount : summary.loanComparisonSave) }}</div>
+            <div class="sub">
+              <span v-if="form.buyMode === 'loan'">总利息 ¥{{ formatMoney(summary.totalInterest) }}</span>
+              <span v-else style="color: #34d399;">免除分期利息与金融综合费</span>
+            </div>
+          </div>
+        </div>
+
+        <el-row :gutter="20">
+          <!-- 左侧：参数输入面板 -->
+          <el-col :xs="24" :lg="13">
+            
+            <!-- 模块 1: 购车基础信息 -->
+            <div class="section-box">
+              <div class="section-title">
+                <div class="section-title-left">
+                  <span>1. 车辆基础信息</span>
+                </div>
+              </div>
+
+              <el-form :model="form" label-position="top" class="tool-form">
+                <el-row :gutter="14">
+                  <el-col :xs="24" :sm="12">
+                    <el-form-item label="裸车开票价格 (万元)">
+                      <el-input-number v-model="form.carPrice" :min="1" :max="5000" :step="0.5" :precision="2" class="w100" @change="calculateAll" />
+                      <div class="preset-chip-group">
+                        <span class="preset-chip" @click="form.carPrice = 8; calculateAll()">8万</span>
+                        <span class="preset-chip" @click="form.carPrice = 12; calculateAll()">12万</span>
+                        <span class="preset-chip" @click="form.carPrice = 18; calculateAll()">18万</span>
+                        <span class="preset-chip" @click="form.carPrice = 28; calculateAll()">28万</span>
+                        <span class="preset-chip" @click="form.carPrice = 50; calculateAll()">50万</span>
+                      </div>
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col :xs="24" :sm="12">
+                    <el-form-item label="动力类型 / 税收政策">
+                      <el-select v-model="form.carType" class="w100" @change="calculateAll">
+                        <el-option label="传统燃油车 (正常征收购置税/车船税)" value="gas"></el-option>
+                        <el-option label="纯电动 / 插电混动 (新能源免征/减免)" value="nev"></el-option>
+                      </el-select>
+                      <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">
+                        {{ form.carType === 'nev' ? '新能源汽车享受车辆购置税与车船税减免优惠' : '燃油车购置税税率 10% (以不含税价计算)' }}
+                      </div>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="14" style="margin-top: 6px;">
+                  <el-col :xs="24" :sm="12">
+                    <el-form-item label="发动机排量 (对应车船使用税)">
+                      <el-select v-model="form.displacementTier" class="w100" :disabled="form.carType === 'nev'" @change="calculateAll">
+                        <el-option label="1.0L 及以下 (180元/年)" value="1.0"></el-option>
+                        <el-option label="1.0L ~ 1.6L 含1.6L (360元/年)" value="1.5"></el-option>
+                        <el-option label="1.6L ~ 2.0L 含2.0L (420元/年)" value="2.0"></el-option>
+                        <el-option label="2.0L ~ 2.5L 含2.5L (720元/年)" value="2.5"></el-option>
+                        <el-option label="2.5L ~ 3.0L 含3.0L (1800元/年)" value="3.0"></el-option>
+                        <el-option label="3.0L ~ 4.0L 含4.0L (3000元/年)" value="4.0"></el-option>
+                        <el-option label="4.0L 以上 (4500元/年)" value="5.0"></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col :xs="24" :sm="12">
+                    <el-form-item label="核定载客座位数 (对应交强险)">
+                      <el-select v-model="form.seatCount" class="w100" @change="calculateAll">
+                        <el-option label="6座以下家用轿车/SUV (950元/年)" :value="5"></el-option>
+                        <el-option label="6座及以上家用MPV/大SUV (1100元/年)" :value="7"></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="14" style="margin-top: 6px;">
+                  <el-col :xs="24" :sm="12">
+                    <el-form-item label="上牌与验车服务费 (元)">
+                      <el-input-number v-model="form.registrationFee" :min="0" :max="10000" :step="100" class="w100" @change="calculateAll" />
+                      <div class="preset-chip-group">
+                        <span class="preset-chip" @click="form.registrationFee = 130; calculateAll()">自行车管所上牌 (约¥130)</span>
+                        <span class="preset-chip" @click="form.registrationFee = 500; calculateAll()">4S店代办 (约¥500)</span>
+                      </div>
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col :xs="24" :sm="12">
+                    <el-form-item label="金融/提车综合服务费 (元)">
+                      <el-input-number v-model="form.serviceFee" :min="0" :max="50000" :step="500" class="w100" @change="calculateAll" />
+                      <div class="preset-chip-group">
+                        <span class="preset-chip" @click="form.serviceFee = 0; calculateAll()">无额外收费 (¥0)</span>
+                        <span class="preset-chip" @click="form.serviceFee = 2000; calculateAll()">常见出库/管理费 (¥2,000)</span>
+                      </div>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>
+
+            <!-- 模块 2: 贷款分期参数 (当为贷款模式时显示) -->
+            <div v-if="form.buyMode === 'loan'" class="section-box">
+              <div class="section-title">
+                <div class="section-title-left">
+                  <span>2. 汽车贷款分期方案精算</span>
+                </div>
+                <span class="badge-amber">贷款总额: ¥{{ formatMoney(summary.loanAmount) }}</span>
+              </div>
+
+              <el-form :model="form" label-position="top" class="tool-form">
+                <el-row :gutter="14">
+                  <el-col :xs="24" :sm="12">
+                    <el-form-item>
+                      <template #label>
+                        <div style="display: flex; justify-content: space-between; width: 100%;">
+                          <span>首付比例 (%)</span>
+                          <span style="color: #38bdf8; font-weight: 700; font-family: monospace;">{{ form.downPaymentRate }}% (¥{{ formatMoney(summary.carDownPayment) }})</span>
+                        </div>
+                      </template>
+                      <el-slider v-model="form.downPaymentRate" :min="0" :max="80" :step="5" @input="calculateAll" />
+                      <div class="preset-chip-group">
+                        <span class="preset-chip" @click="form.downPaymentRate = 0; calculateAll()">0% (零首付)</span>
+                        <span class="preset-chip" @click="form.downPaymentRate = 20; calculateAll()">20%</span>
+                        <span class="preset-chip" @click="form.downPaymentRate = 30; calculateAll()">30% (主流)</span>
+                        <span class="preset-chip" @click="form.downPaymentRate = 50; calculateAll()">50%</span>
+                      </div>
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col :xs="24" :sm="12">
+                    <el-form-item label="贷款分期期限">
+                      <el-select v-model="form.loanMonths" class="w100" @change="calculateAll">
+                        <el-option label="12期 (1年期)" :value="12"></el-option>
+                        <el-option label="24期 (2年期)" :value="24"></el-option>
+                        <el-option label="36期 (3年期 · 最常见)" :value="36"></el-option>
+                        <el-option label="48期 (4年期)" :value="48"></el-option>
+                        <el-option label="60期 (5年期 · 长期)" :value="60"></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row :gutter="14" style="margin-top: 6px;">
+                  <el-col :xs="24" :sm="12">
+                    <el-form-item label="还款方式">
+                      <el-select v-model="form.repayMethod" class="w100" @change="calculateAll">
+                        <el-option label="等额本息 (每月还款额固定，省心)" value="equal_pi"></el-option>
+                        <el-option label="等额本金 (每月本金相同，月供逐月递减)" value="equal_p"></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col :xs="24" :sm="12">
+                    <el-form-item>
+                      <template #label>
+                        <div style="display: flex; justify-content: space-between; width: 100%;">
+                          <span>实际年化利率 APR (%)</span>
+                          <span style="color: #f43f5e; font-weight: 700; font-family: monospace;">{{ form.loanAnnualRate }}%</span>
+                        </div>
+                      </template>
+                      <el-input-number v-model="form.loanAnnualRate" :min="0" :max="25" :step="0.1" :precision="2" class="w100" @change="calculateAll" />
+                      <div class="preset-chip-group">
+                        <span class="preset-chip" @click="form.loanAnnualRate = 0; calculateAll()">0% (免息贴息)</span>
+                        <span class="preset-chip" @click="form.loanAnnualRate = 3.2; calculateAll()">3.2% (银行低息)</span>
+                        <span class="preset-chip" @click="form.loanAnnualRate = 4.5; calculateAll()">4.5% (常规车贷)</span>
+                        <span class="preset-chip" @click="form.loanAnnualRate = 6.0; calculateAll()">6.0% (厂商金融)</span>
+                      </div>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>
+
+            <!-- 模块 3: 商业保险方案定制 -->
+            <div class="section-box">
+              <div class="section-title">
+                <div class="section-title-left">
+                  <span>{{ form.buyMode === 'loan' ? '3' : '2' }}. 首年商业保险精选与自定义</span>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <button class="preset-chip" @click="applyInsurancePreset('full')">全险精选</button>
+                  <button class="preset-chip" @click="applyInsurancePreset('standard')">主流实用(推荐)</button>
+                  <button class="preset-chip" @click="applyInsurancePreset('basic')">基础三者</button>
+                </div>
+              </div>
+
+              <div style="display: grid; gap: 10px;">
+                <!-- 三者险 -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0;">
+                  <el-checkbox v-model="ins.thirdPartyEnabled" @change="calculateAll">
+                    <span style="font-weight: 600; color: #f1f5f9;">第三者责任险</span>
+                  </el-checkbox>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <el-select v-model="ins.thirdPartyCoverage" size="small" style="width: 130px;" :disabled="!ins.thirdPartyEnabled" @change="calculateAll">
+                      <el-option label="100 万保额" :value="100"></el-option>
+                      <el-option label="200 万保额" :value="200"></el-option>
+                      <el-option label="300 万保额(推荐)" :value="300"></el-option>
+                      <el-option label="500 万保额" :value="500"></el-option>
+                    </el-select>
+                    <span class="cost-val" style="min-width: 80px; text-align: right;">¥ {{ formatMoney(summary.insThirdPartyFee) }}</span>
+                  </div>
+                </div>
+
+                <!-- 车损险 -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0;">
+                  <el-checkbox v-model="ins.damageEnabled" @change="calculateAll">
+                    <span style="font-weight: 600; color: #f1f5f9;">车辆损失险</span>
+                    <span style="font-size: 0.75rem; color: #64748b; margin-left: 6px;">(含自燃/涉水/盗抢/无法找到第三方)</span>
+                  </el-checkbox>
+                  <span class="cost-val">¥ {{ formatMoney(summary.insDamageFee) }}</span>
+                </div>
+
+                <!-- 车上人员座位险 -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0;">
+                  <el-checkbox v-model="ins.passengerEnabled" @change="calculateAll">
+                    <span style="font-weight: 600; color: #f1f5f9;">车上人员责任险 (司乘各1-5万/座)</span>
+                  </el-checkbox>
+                  <span class="cost-val">¥ {{ formatMoney(summary.insPassengerFee) }}</span>
+                </div>
+
+                <!-- 医保外用药责任险 -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0;">
+                  <el-checkbox v-model="ins.medicalOutOfPocketEnabled" @change="calculateAll">
+                    <span style="color: #cbd5e1;">附加医保外医疗费用责任险</span>
+                  </el-checkbox>
+                  <span class="cost-val">¥ {{ formatMoney(summary.insMedicalFee) }}</span>
+                </div>
+
+                <!-- 车身划痕险 -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0;">
+                  <el-checkbox v-model="ins.scratchEnabled" @change="calculateAll">
+                    <span style="color: #cbd5e1;">车身划痕险 (2000元档)</span>
+                  </el-checkbox>
+                  <span class="cost-val">¥ {{ formatMoney(summary.insScratchFee) }}</span>
+                </div>
+              </div>
+            </div>
+
+          </el-col>
+
+          <!-- 右侧：费用精算明细清单卡片 -->
+          <el-col :xs="24" :lg="11">
+            <div class="section-box" style="background: rgba(15, 23, 42, 0.85); border-color: rgba(56, 189, 248, 0.4);">
+              <div class="section-title">
+                <div class="section-title-left">
+                  <span style="color: #38bdf8;">购车落地全费用清单与核算明细</span>
+                </div>
+                <el-button size="small" type="primary" plain @click="copyPriceSummary">
+                  复制报价清单
+                </el-button>
+              </div>
+
+              <!-- 费用分类项 -->
+              <div style="margin-top: 8px;">
+                <div style="font-size: 0.8rem; color: #94a3b8; font-weight: 700; margin-bottom: 6px;">一、车价与金融支出</div>
+                
+                <div class="cost-row">
+                  <span class="cost-name">裸车开票总价</span>
+                  <span class="cost-val">¥ {{ formatMoney(form.carPrice * 10000) }}</span>
+                </div>
+
+                <div v-if="form.buyMode === 'loan'" class="cost-row">
+                  <span class="cost-name">其中：首付款 ({{ form.downPaymentRate }}%)</span>
+                  <span class="cost-val" style="color: #38bdf8;">¥ {{ formatMoney(summary.carDownPayment) }}</span>
+                </div>
+
+                <div v-if="form.buyMode === 'loan'" class="cost-row">
+                  <span class="cost-name">其中：贷款总额 ({{ 100 - form.downPaymentRate }}%)</span>
+                  <span class="cost-val">¥ {{ formatMoney(summary.loanAmount) }}</span>
+                </div>
+
+                <div v-if="form.buyMode === 'loan'" class="cost-row">
+                  <span class="cost-name">贷款总利息 ({{ form.loanMonths }}期, {{ form.loanAnnualRate }}%)</span>
+                  <span class="cost-val" style="color: #f43f5e;">+¥ {{ formatMoney(summary.totalInterest) }}</span>
+                </div>
+
+                <div v-if="form.serviceFee > 0" class="cost-row">
+                  <span class="cost-name">金融/综合服务费</span>
+                  <span class="cost-val">¥ {{ formatMoney(form.serviceFee) }}</span>
+                </div>
+
+                <!-- 二、必要法定税费 -->
+                <div style="font-size: 0.8rem; color: #94a3b8; font-weight: 700; margin-top: 14px; margin-bottom: 6px;">二、法定必要税费小计 (¥{{ formatMoney(summary.necessaryExpenses) }})</div>
+
+                <div class="cost-row">
+                  <span class="cost-name">
+                    <span>车辆购置税</span>
+                    <span v-if="form.carType === 'nev'" class="diff-tag-green">新能源免征</span>
+                    <span v-else style="font-size: 0.72rem; color: #64748b;">(车价/1.13*10%)</span>
+                  </span>
+                  <span class="cost-val">¥ {{ formatMoney(summary.purchaseTax) }}</span>
+                </div>
+
+                <div class="cost-row">
+                  <span class="cost-name">
+                    <span>车船使用税</span>
+                    <span style="font-size: 0.72rem; color: #64748b;">({{ form.carType === 'nev' ? '免征' : form.displacementTier + 'L档位' }})</span>
+                  </span>
+                  <span class="cost-val">¥ {{ formatMoney(summary.vehicleTax) }}</span>
+                </div>
+
+                <div class="cost-row">
+                  <span class="cost-name">
+                    <span>交强险 (国家法定强制险)</span>
+                    <span style="font-size: 0.72rem; color: #64748b;">({{ form.seatCount }}座)</span>
+                  </span>
+                  <span class="cost-val">¥ {{ formatMoney(summary.compulsoryInsurance) }}</span>
+                </div>
+
+                <div class="cost-row">
+                  <span class="cost-name">上牌及验车服务费</span>
+                  <span class="cost-val">¥ {{ formatMoney(form.registrationFee) }}</span>
+                </div>
+
+                <!-- 三、商业保险 -->
+                <div style="font-size: 0.8rem; color: #94a3b8; font-weight: 700; margin-top: 14px; margin-bottom: 6px;">三、首年商业保险小计 (¥{{ formatMoney(summary.commercialInsurance) }})</div>
+
+                <div class="cost-row">
+                  <span class="cost-name">商业险合计 (三者+车损+座位等)</span>
+                  <span class="cost-val">¥ {{ formatMoney(summary.commercialInsurance) }}</span>
+                </div>
+
+                <div class="divider" style="margin: 14px 0 10px 0;"></div>
+
+                <!-- 落地总结核算 -->
+                <div style="background: rgba(8, 47, 73, 0.4); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 8px; padding: 12px 14px;">
+                  <div v-if="form.buyMode === 'loan'" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="color: #cbd5e1; font-weight: 600;">首付提车落地花费：</span>
+                    <span style="font-size: 1.3rem; font-weight: 800; color: #34d399; font-family: monospace;">¥ {{ formatMoney(summary.downPaymentLanding) }}</span>
+                  </div>
+                  
+                  <div v-if="form.buyMode === 'loan'" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="color: #cbd5e1; font-weight: 600;">每月月供支出：</span>
+                    <span style="font-size: 1.25rem; font-weight: 800; color: #fbbf24; font-family: monospace;">¥ {{ formatMoney(summary.monthlyPayment) }}</span>
+                  </div>
+
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; padding-top: 6px; border-top: 1px dashed rgba(56, 189, 248, 0.3);">
+                    <span style="color: #f8fafc; font-weight: 700;">{{ form.buyMode === 'loan' ? '贷款全周期落地总额：' : '全款落地总金额：' }}</span>
+                    <span style="font-size: 1.45rem; font-weight: 800; color: #38bdf8; font-family: monospace;">¥ {{ formatMoney(summary.totalCost) }}</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+
+        <!-- 还款计划表 (贷款模式显示) -->
+        <div v-if="form.buyMode === 'loan'" style="margin-top: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+            <div style="font-weight: 700; color: #f1f5f9; font-size: 1.05rem;">
+              贷款分期每期还款计划表 ({{ form.repayMethod === 'equal_pi' ? '等额本息' : '等额本金' }} · 共 {{ form.loanMonths }} 期)
+            </div>
+            <el-button size="small" type="success" plain @click="exportScheduleCSV">
+              导出还款计划表 CSV
+            </el-button>
+          </div>
+
+          <el-table :data="amortizationSchedule" style="width: 100%" class="tool-table" stripe border size="small" max-height="420">
+            <el-table-column prop="month" label="期数" width="70" align="center">
+              <template #default="scope">第 {{ scope.row.month }} 期</template>
+            </el-table-column>
+            <el-table-column prop="monthlyPayment" label="本期还款额 (月供)" min-width="120" align="right">
+              <template #default="scope">
+                <span style="color: #fbbf24; font-weight: 600;">¥ {{ formatMoney(scope.row.monthlyPayment) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="principal" label="偿还本金" min-width="110" align="right">
+              <template #default="scope">¥ {{ formatMoney(scope.row.principal) }}</template>
+            </el-table-column>
+            <el-table-column prop="interest" label="偿还利息" min-width="110" align="right">
+              <template #default="scope">
+                <span style="color: #f43f5e;">¥ {{ formatMoney(scope.row.interest) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="remainingPrincipal" label="剩余未还本金" min-width="120" align="right">
+              <template #default="scope">¥ {{ formatMoney(scope.row.remainingPrincipal) }}</template>
+            </el-table-column>
+          </el-table>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 购车避坑指南与常识说明 -->
+        <div class="content">
+          <h3>汽车全款与贷款落地费用精算规则与避坑指南</h3>
+          <p>
+            <strong>1. 车辆购置税计算标准：</strong><br />
+            车辆购置税 = 计税价格 $\times 10\%$ = $\text{发票开票价} \div 1.13 \times 10\%$（因为汽车售价发票中已包含 $13\%$ 增值税）。纯电动汽车与插电式混合动力新能源汽车享受国家免征或阶段性减免购置税政策。
+          </p>
+          <p>
+            <strong>2. 车船税排量分档标准：</strong><br />
+            根据中国现行税法，乘用车车船税按发动机气缸容量（排量）阶梯式计征：$\le 1.0\text{L}$ 为 $180$ 元/年；$1.0\sim 1.6\text{L}$ 为 $360$ 元/年；$1.6\sim 2.0\text{L}$ 为 $420$ 元/年；$2.0\sim 2.5\text{L}$ 为 $720$ 元/年；$2.5\sim 3.0\text{L}$ 为 $1800$ 元/年；$3.0\sim 4.0\text{L}$ 为 $3000$ 元/年；$>4.0\text{L}$ 为 $4500$ 元/年；纯电动车免征。
+          </p>
+          <p>
+            <strong>3. 等额本息 vs 等额本金：</strong><br />
+            - <strong>等额本息：</strong>每月还款总金额固定，前期利息占比高、本金占比低，适合收入稳定、追求每月预算明确的购车群体。<br />
+            - <strong>等额本金：</strong>每月偿还本金固定，利息随剩余本金逐月递减，首月还款压力最大但全周期总利息支出低于等额本息。
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script>
+  const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+  createApp({
+    setup() {
+      const form = reactive({
+        buyMode: 'loan',
+        carPrice: 15.0, // 万元
+        carType: 'gas', // gas or nev
+        displacementTier: '1.5',
+        seatCount: 5,
+        registrationFee: 500,
+        serviceFee: 0,
+        downPaymentRate: 30, // 30%
+        loanMonths: 36, // 36期
+        loanAnnualRate: 4.5, // 4.5%
+        repayMethod: 'equal_pi'
+      });
+
+      const ins = reactive({
+        thirdPartyEnabled: true,
+        thirdPartyCoverage: 300, // 300万
+        damageEnabled: true,
+        passengerEnabled: true,
+        medicalOutOfPocketEnabled: true,
+        scratchEnabled: false
+      });
+
+      const summary = reactive({
+        carPriceYuan: 0,
+        carDownPayment: 0,
+        loanAmount: 0,
+        totalInterest: 0,
+        monthlyPayment: 0,
+        lastMonthPayment: 0,
+        purchaseTax: 0,
+        vehicleTax: 0,
+        compulsoryInsurance: 0,
+        necessaryExpenses: 0,
+        insThirdPartyFee: 0,
+        insDamageFee: 0,
+        insPassengerFee: 0,
+        insMedicalFee: 0,
+        insScratchFee: 0,
+        commercialInsurance: 0,
+        downPaymentLanding: 0,
+        totalCost: 0,
+        loanComparisonSave: 0
+      });
+
+      const amortizationSchedule = ref([]);
+
+      const setCarPreset = (price, type, disp) => {
+        form.carPrice = price;
+        form.carType = type;
+        form.displacementTier = disp;
+        calculateAll();
+      };
+
+      const applyInsurancePreset = (mode) => {
+        if (mode === 'full') {
+          ins.thirdPartyEnabled = true;
+          ins.thirdPartyCoverage = 300;
+          ins.damageEnabled = true;
+          ins.passengerEnabled = true;
+          ins.medicalOutOfPocketEnabled = true;
+          ins.scratchEnabled = true;
+        } else if (mode === 'standard') {
+          ins.thirdPartyEnabled = true;
+          ins.thirdPartyCoverage = 300;
+          ins.damageEnabled = true;
+          ins.passengerEnabled = true;
+          ins.medicalOutOfPocketEnabled = true;
+          ins.scratchEnabled = false;
+        } else if (mode === 'basic') {
+          ins.thirdPartyEnabled = true;
+          ins.thirdPartyCoverage = 200;
+          ins.damageEnabled = false;
+          ins.passengerEnabled = false;
+          ins.medicalOutOfPocketEnabled = false;
+          ins.scratchEnabled = false;
+        }
+        calculateAll();
+      };
+
+      const calculateAll = () => {
+        const carPriceYuan = (Number(form.carPrice) || 0) * 10000;
+        summary.carPriceYuan = carPriceYuan;
+
+        // 1. 必要税费
+        // 购置税: 裸车价 / 1.13 * 10%
+        let purchaseTax = 0;
+        if (form.carType !== 'nev') {
+          purchaseTax = (carPriceYuan / 1.13) * 0.1;
+        }
+        summary.purchaseTax = Math.round(purchaseTax);
+
+        // 车船税
+        let vehicleTax = 0;
+        if (form.carType === 'gas') {
+          const tier = form.displacementTier;
+          if (tier === '1.0') vehicleTax = 180;
+          else if (tier === '1.5') vehicleTax = 360;
+          else if (tier === '2.0') vehicleTax = 420;
+          else if (tier === '2.5') vehicleTax = 720;
+          else if (tier === '3.0') vehicleTax = 1800;
+          else if (tier === '4.0') vehicleTax = 3000;
+          else vehicleTax = 4500;
+        }
+        summary.vehicleTax = vehicleTax;
+
+        // 交强险
+        const compulsoryInsurance = form.seatCount >= 6 ? 1100 : 950;
+        summary.compulsoryInsurance = compulsoryInsurance;
+
+        const regFee = Number(form.registrationFee) || 0;
+        const servFee = Number(form.serviceFee) || 0;
+        summary.necessaryExpenses = summary.purchaseTax + summary.vehicleTax + summary.compulsoryInsurance + regFee;
+
+        // 2. 商业保险估算
+        // 三者险保费估算
+        let thirdFee = 0;
+        if (ins.thirdPartyEnabled) {
+          const cov = ins.thirdPartyCoverage;
+          if (cov === 100) thirdFee = 1100;
+          else if (cov === 200) thirdFee = 1350;
+          else if (cov === 300) thirdFee = 1580;
+          else if (cov === 500) thirdFee = 2050;
+        }
+        summary.insThirdPartyFee = thirdFee;
+
+        // 车损险: 基础保费 + 车价 * 费率
+        let damageFee = 0;
+        if (ins.damageEnabled) {
+          damageFee = 530 + carPriceYuan * 0.0125;
+        }
+        summary.insDamageFee = Math.round(damageFee);
+
+        // 座位险 (司乘 5座约180，7座约260)
+        let passengerFee = 0;
+        if (ins.passengerEnabled) {
+          passengerFee = form.seatCount >= 6 ? 260 : 180;
+        }
+        summary.insPassengerFee = passengerFee;
+
+        // 医保外
+        let medicalFee = 0;
+        if (ins.medicalOutOfPocketEnabled) {
+          medicalFee = 85;
+        }
+        summary.insMedicalFee = medicalFee;
+
+        // 划痕险
+        let scratchFee = 0;
+        if (ins.scratchEnabled) {
+          scratchFee = 350;
+        }
+        summary.insScratchFee = scratchFee;
+
+        summary.commercialInsurance = thirdFee + summary.insDamageFee + passengerFee + medicalFee + scratchFee;
+
+        // 3. 贷款分期与还款计划
+        const downRate = (Number(form.downPaymentRate) || 0) / 100;
+        const carDownPayment = carPriceYuan * downRate;
+        const loanAmount = Math.max(0, carPriceYuan - carDownPayment);
+        const months = Number(form.loanMonths) || 36;
+        const annualRate = (Number(form.loanAnnualRate) || 0) / 100;
+        const monthlyRate = annualRate / 12;
+
+        summary.carDownPayment = carDownPayment;
+        summary.loanAmount = loanAmount;
+
+        const schedule = [];
+        let totalInterest = 0;
+
+        if (form.buyMode === 'loan' && loanAmount > 0 && months > 0) {
+          if (form.repayMethod === 'equal_pi') {
+            // 等额本息
+            let monthlyPay = 0;
+            if (monthlyRate > 0) {
+              monthlyPay = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+            } else {
+              monthlyPay = loanAmount / months;
+            }
+
+            summary.monthlyPayment = monthlyPay;
+            summary.lastMonthPayment = monthlyPay;
+
+            let remaining = loanAmount;
+            for (let m = 1; m <= months; m++) {
+              const curInterest = remaining * monthlyRate;
+              const curPrincipal = monthlyPay - curInterest;
+              remaining = Math.max(0, remaining - curPrincipal);
+              totalInterest += curInterest;
+
+              schedule.push({
+                month: m,
+                monthlyPayment: monthlyPay,
+                principal: curPrincipal,
+                interest: curInterest,
+                remainingPrincipal: remaining
+              });
+            }
+          } else {
+            // 等额本金
+            const fixedPrincipal = loanAmount / months;
+            let remaining = loanAmount;
+
+            for (let m = 1; m <= months; m++) {
+              const curInterest = remaining * monthlyRate;
+              const curMonthPay = fixedPrincipal + curInterest;
+              remaining = Math.max(0, remaining - fixedPrincipal);
+              totalInterest += curInterest;
+
+              if (m === 1) summary.monthlyPayment = curMonthPay;
+              if (m === months) summary.lastMonthPayment = curMonthPay;
+
+              schedule.push({
+                month: m,
+                monthlyPayment: curMonthPay,
+                principal: fixedPrincipal,
+                interest: curInterest,
+                remainingPrincipal: remaining
+              });
+            }
+          }
+        } else {
+          summary.monthlyPayment = 0;
+          summary.lastMonthPayment = 0;
+        }
+
+        summary.totalInterest = Math.round(totalInterest);
+        amortizationSchedule.value = schedule;
+
+        // 4. 汇总落地总价与首付
+        if (form.buyMode === 'loan') {
+          // 首付落地 = 裸车首付款 + 必要税费 + 商业险 + 金融服务费
+          summary.downPaymentLanding = carDownPayment + summary.necessaryExpenses + summary.commercialInsurance + servFee;
+          // 贷款总花费 = 首付落地 + 贷款总额 + 总利息
+          summary.totalCost = summary.downPaymentLanding + loanAmount + summary.totalInterest;
+          summary.loanComparisonSave = 0;
+        } else {
+          summary.downPaymentLanding = 0;
+          summary.totalCost = carPriceYuan + summary.necessaryExpenses + summary.commercialInsurance + servFee;
+          // 假设贷款同等额度会多付多少利息
+          const hypotheticalLoan = carPriceYuan * 0.7;
+          summary.loanComparisonSave = Math.round((hypotheticalLoan * annualRate * 3));
+        }
+      };
+
+      const formatMoney = (val) => {
+        const num = Number(val);
+        if (isNaN(num)) return '0.00';
+        return num.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      };
+
+      // 导出还款计划表 CSV
+      const exportScheduleCSV = () => {
+        if (!amortizationSchedule.value.length) return;
+        let csv = '\uFEFF期数,月供总额(元),偿还本金(元),偿还利息(元),剩余未还本金(元)\n';
+        amortizationSchedule.value.forEach(row => {
+          csv += `${row.month},${row.monthlyPayment.toFixed(2)},${row.principal.toFixed(2)},${row.interest.toFixed(2)},${row.remainingPrincipal.toFixed(2)}\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `车贷分期还款明细_${form.carPrice}万_${form.loanMonths}期_${form.repayMethod === 'equal_pi' ? '等额本息' : '等额本金'}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        ElementPlus.ElMessage.success('还款计划表已成功导出');
+      };
+
+      // 复制购车报价清单
+      const copyPriceSummary = () => {
+        const modeDesc = form.buyMode === 'loan' ? `贷款分期 (${form.downPaymentRate}% 首付, ${form.loanMonths} 期, 年化 ${form.loanAnnualRate}%)` : '全款一次性支付';
+        const text = `【汽车购车落地费用精算清单】
+- 车辆价格: ¥${formatMoney(form.carPrice * 10000)} (${form.carPrice} 万元)
+- 动力与排量: ${form.carType === 'nev' ? '新能源(免税)' : '燃油车 ' + form.displacementTier + 'L'} (${form.seatCount} 座)
+- 购车模式: ${modeDesc}
+----------------------------------------
+【必要法定税费】: ¥${formatMoney(summary.necessaryExpenses)}
+  · 车辆购置税: ¥${formatMoney(summary.purchaseTax)}
+  · 车船使用税: ¥${formatMoney(summary.vehicleTax)}
+  · 交强险: ¥${formatMoney(summary.compulsoryInsurance)}
+  · 上牌服务费: ¥${formatMoney(form.registrationFee)}
+【首年商业保险】: ¥${formatMoney(summary.commercialInsurance)}
+  · 三者险(${ins.thirdPartyCoverage}万) + 车损险 + 座位险等
+【金融服务费】: ¥${formatMoney(form.serviceFee)}
+----------------------------------------
+${form.buyMode === 'loan' ? `★ 提车首付落地总额: ¥${formatMoney(summary.downPaymentLanding)}
+★ 每月月供还款: ¥${formatMoney(summary.monthlyPayment)} (共 ${form.loanMonths} 期)
+★ 贷款总利息支出: ¥${formatMoney(summary.totalInterest)}
+★ 最终落地总成本: ¥${formatMoney(summary.totalCost)}` : `★ 全款最终落地总价: ¥${formatMoney(summary.totalCost)}`}
+来源: 在线工具集 · 全款与车贷落地费用精算器`;
+
+        navigator.clipboard.writeText(text).then(() => {
+          ElementPlus.ElMessage.success('报价清单已复制至剪贴板');
+        }).catch(() => {
+          ElementPlus.ElMessage.error('复制失败，请手动选择复制');
+        });
+      };
+
+      onMounted(() => {
+        calculateAll();
+      });
+
+      return {
+        form,
+        ins,
+        summary,
+        amortizationSchedule,
+        setCarPreset,
+        applyInsurancePreset,
+        calculateAll,
+        formatMoney,
+        exportScheduleCSV,
+        copyPriceSummary
+      };
+    }
+  }).use(ElementPlus).mount('.main-body');
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-sk" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a1505"/>
+      <stop offset="50%" stop-color="#3d1e08"/>
+      <stop offset="100%" stop-color="#180c03"/>
+    </linearGradient>
+    <linearGradient id="crate-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="50%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+    <radialGradient id="target-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="60%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-sk)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(245,158,11,0.25)" stroke-width="1"/>
+
+  <!-- Warehouse Grid Background Tiles -->
+  <rect x="8" y="8" width="14" height="14" rx="2" fill="#1f130b" stroke="#3d2414" stroke-width="0.8"/>
+  <rect x="26" y="8" width="14" height="14" rx="2" fill="#1f130b" stroke="#3d2414" stroke-width="0.8"/>
+  <rect x="8" y="26" width="14" height="14" rx="2" fill="#1f130b" stroke="#3d2414" stroke-width="0.8"/>
+  <rect x="26" y="26" width="14" height="14" rx="2" fill="#1f130b" stroke="#3d2414" stroke-width="0.8"/>
+
+  <!-- Target Goal Spot on bottom right (Glowing) -->
+  <circle cx="33" cy="33" r="5" fill="url(#target-glow)" opacity="0.8"/>
+  <circle cx="33" cy="33" r="2.2" fill="#fbbf24"/>
+  <path d="M33 29 V37 M29 33 H37" stroke="#fef3c7" stroke-width="0.8" stroke-linecap="round"/>
+
+  <!-- Sokoban Crate on top-left shifting toward bottom-right -->
+  <g transform="translate(11, 11)">
+    <rect x="0" y="0" width="16" height="16" rx="2.5" fill="url(#crate-grad)" stroke="#fcd34d" stroke-width="1.2"/>
+    <!-- Crate Diagonal Bracing -->
+    <line x1="2" y1="2" x2="14" y2="14" stroke="#78350f" stroke-width="1.2"/>
+    <line x1="2" y1="14" x2="14" y2="2" stroke="#78350f" stroke-width="1.2"/>
+    <!-- Inner border -->
+    <rect x="2.5" y="2.5" width="11" height="11" fill="none" stroke="#fde68a" stroke-width="0.7" opacity="0.6"/>
+  </g>
+
+  <!-- Player Directional Push Arrow -->
+  <g transform="translate(4, 25)">
+    <path d="M5 5 L11 5 M9 3 L12 5 L9 7" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="3" cy="5" r="2" fill="#38bdf8"/>
+  </g>
+</svg>

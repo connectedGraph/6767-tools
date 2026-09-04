@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-uuid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B"/>
+      <stop offset="50%" stop-color="#4338CA"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-uuid)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- GUID / UUID Key Tag Card -->
+  <rect x="7" y="10" width="34" height="28" rx="4" fill="rgba(15,23,42,0.78)" stroke="#38BDF8" stroke-width="1.8"/>
+  <!-- Smart Chip Security Contact -->
+  <rect x="11" y="14" width="7" height="6.5" rx="1.5" fill="#FDE047" stroke="#FFFFFF" stroke-width="0.8"/>
+  <!-- UUID Format 8-4-4-4-12 Blocks -->
+  <!-- Block 1 -->
+  <line x1="21" y1="17.2" x2="36" y2="17.2" stroke="#38BDF8" stroke-width="2.6" stroke-linecap="round"/>
+  <!-- Block 2, 3, 4 -->
+  <line x1="11" y1="24" x2="17" y2="24" stroke="#A78BFA" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="19.5" cy="24" r="0.8" fill="#94A3B8"/>
+  <line x1="22" y1="24" x2="28" y2="24" stroke="#F43F5E" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="30.5" cy="24" r="0.8" fill="#94A3B8"/>
+  <line x1="33" y1="24" x2="36" y2="24" stroke="#34D399" stroke-width="2.6" stroke-linecap="round"/>
+  <!-- Block 5 -->
+  <line x1="11" y1="30.8" x2="26" y2="30.8" stroke="#FDE047" stroke-width="2.6" stroke-linecap="round"/>
+  <!-- Random Hash Bit Badge in bottom-right -->
+  <circle cx="33.5" cy="30.8" r="4.2" fill="#38BDF8" stroke="#FFFFFF" stroke-width="1"/>
+  <text x="33.5" y="32.6" fill="#0F172A" font-family="monospace" font-weight="900" font-size="5" text-anchor="middle">#</text>
+</svg>

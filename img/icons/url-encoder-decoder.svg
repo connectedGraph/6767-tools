@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-url" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#042a2b"/>
+      <stop offset="100%" stop-color="#021314"/>
+    </linearGradient>
+    <linearGradient id="link-grad" x1="10" y1="14" x2="24" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="pct-grad" x1="24" y1="20" x2="38" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-url)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#2dd4bf" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Link Chain Icon -->
+  <path d="M19 16h3a4 4 0 0 1 4 4 4 4 0 0 1-4 4h-3" stroke="url(#link-grad)" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M17 22h-3a4 4 0 0 1-4-4 4 4 0 0 1 4-4h3" stroke="url(#link-grad)" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="14" y1="19" x2="22" y2="19" stroke="url(#link-grad)" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- Transforming Arrow -->
+  <path d="M22 27l3 3-3 3" stroke="#a5f3fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- '%20' Encoded Tile -->
+  <rect x="24" y="24" width="15" height="13" rx="3" fill="#0f172a" stroke="url(#pct-grad)" stroke-width="1.8"/>
+  <text x="31.5" y="33" font-family="monospace" font-weight="900" font-size="6.5" fill="#38bdf8" text-anchor="middle">%20</text>
+  
+  <circle cx="36" cy="14" r="1.5" fill="#2dd4bf"/>
+</svg>

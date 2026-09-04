@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-cgif" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E11D48"/>
+      <stop offset="50%" stop-color="#F43F5E"/>
+      <stop offset="100%" stop-color="#FB923C"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-cgif)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Film Reel Frame -->
+  <rect x="7" y="11" width="34" height="26" rx="4" fill="rgba(15,23,42,0.75)" stroke="#FFFFFF" stroke-width="1.8"/>
+  <!-- Top Sprocket Holes -->
+  <rect x="10" y="13" width="3" height="3" rx="0.8" fill="#FFFFFF"/>
+  <rect x="17" y="13" width="3" height="3" rx="0.8" fill="#FFFFFF"/>
+  <rect x="24" y="13" width="3" height="3" rx="0.8" fill="#FFFFFF"/>
+  <rect x="31" y="13" width="3" height="3" rx="0.8" fill="#FFFFFF"/>
+  <!-- Bottom Sprocket Holes -->
+  <rect x="10" y="32" width="3" height="3" rx="0.8" fill="#FFFFFF"/>
+  <rect x="17" y="32" width="3" height="3" rx="0.8" fill="#FFFFFF"/>
+  <rect x="24" y="32" width="3" height="3" rx="0.8" fill="#FFFFFF"/>
+  <rect x="31" y="32" width="3" height="3" rx="0.8" fill="#FFFFFF"/>
+  <!-- Center GIF Typography & Play Motion -->
+  <rect x="14" y="18.5" width="20" height="11" rx="2.5" fill="#EF4444" stroke="#FFFFFF" stroke-width="1"/>
+  <text x="24" y="26.6" fill="#FFFFFF" font-family="system-ui, sans-serif" font-weight="900" font-size="7" text-anchor="middle" letter-spacing="0.5">GIF</text>
+  <!-- Motion Action Speed Lines -->
+  <path d="M4 20h2 M3 24h3 M4 28h2 M42 20h2 M42 24h3 M42 28h2" stroke="#FDE047" stroke-width="2" stroke-linecap="round"/>
+</svg>

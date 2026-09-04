@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-fitness" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#082f49"/>
+      <stop offset="50%" stop-color="#0f466b"/>
+      <stop offset="100%" stop-color="#051f33"/>
+    </linearGradient>
+    <linearGradient id="stopwatch-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="dumbbell-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-fitness)"/>
+  <rect width="46" height="46" x="1" y="1" rx="11" fill="none" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1"/>
+  
+  <!-- Stopwatch Top Crown & Buttons -->
+  <path d="M22 6 h4 v3 h-4 z" fill="#38bdf8"/>
+  <path d="M21 4 h6 v2 h-6 z" fill="#7dd3fc"/>
+  <path d="M33 11 l2.5 -2.5 l1.5 1.5 l-2.5 2.5 z" fill="#38bdf8"/>
+  
+  <!-- Stopwatch Dial -->
+  <circle cx="24" cy="26" r="14" fill="#0c1e30" stroke="url(#stopwatch-grad)" stroke-width="2.2"/>
+  <circle cx="24" cy="26" r="11.5" fill="none" stroke="rgba(56, 189, 248, 0.2)" stroke-width="1" stroke-dasharray="2 2"/>
+  
+  <!-- Dial Ticks -->
+  <line x1="24" y1="14" x2="24" y2="16.5" stroke="#38bdf8" stroke-width="1.5"/>
+  <line x1="34" y1="26" x2="31.5" y2="26" stroke="#38bdf8" stroke-width="1.5"/>
+  <line x1="24" y1="38" x2="24" y2="35.5" stroke="#38bdf8" stroke-width="1.5"/>
+  <line x1="14" y1="26" x2="16.5" y2="26" stroke="#38bdf8" stroke-width="1.5"/>
+  
+  <!-- Stopwatch Hands -->
+  <line x1="24" y1="26" x2="24" y2="18" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <line x1="24" y1="26" x2="30" y2="22" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="24" cy="26" r="2" fill="#ffffff"/>
+  
+  <!-- Dumbbell Overlay at bottom-left -->
+  <g transform="rotate(-30 18 33)">
+    <rect x="11" y="32" width="14" height="2" rx="1" fill="#ffffff"/>
+    <rect x="9" y="30" width="3" height="6" rx="1" fill="url(#dumbbell-grad)"/>
+    <rect x="7" y="31" width="2" height="4" rx="0.5" fill="url(#dumbbell-grad)"/>
+    <rect x="24" y="30" width="3" height="6" rx="1" fill="url(#dumbbell-grad)"/>
+    <rect x="27" y="31" width="2" height="4" rx="0.5" fill="url(#dumbbell-grad)"/>
+  </g>
+</svg>

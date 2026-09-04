@@ -1,0 +1,947 @@
+[
+  {
+    "code": "number-sequence-memory",
+    "name": "数字顺序记忆训练",
+    "cat": "记忆力"
+  },
+  {
+    "code": "sequence-memory",
+    "name": "顺序记忆训练",
+    "cat": "记忆力"
+  },
+  {
+    "code": "n-back",
+    "name": "N-Back 记忆力训练游戏",
+    "cat": "记忆力"
+  },
+  {
+    "code": "color-block-imprint",
+    "name": "色块印记",
+    "cat": "记忆力"
+  },
+  {
+    "code": "shult-grid",
+    "name": "舒尔特方格训练",
+    "cat": "注意力"
+  },
+  {
+    "code": "find-different-word",
+    "name": "找不同的字",
+    "cat": "注意力"
+  },
+  {
+    "code": "stroop-effect",
+    "name": "斯特鲁普效应",
+    "cat": "注意力"
+  },
+  {
+    "code": "coordinate-drift",
+    "name": "坐标迷航",
+    "cat": "注意力"
+  },
+  {
+    "code": "visual-tracking-training",
+    "name": "视觉追踪训练",
+    "cat": "注意力"
+  },
+  {
+    "code": "sokoban",
+    "name": "复古推箱子 50 关益智挑战",
+    "cat": "推演"
+  },
+  {
+    "code": "minesweeper",
+    "name": "经典扫雷游戏",
+    "cat": "推演"
+  },
+  {
+    "code": "sudoku",
+    "name": "在线数独游戏",
+    "cat": "推演"
+  },
+  {
+    "code": "lights-out",
+    "name": "熄灯解谜游戏",
+    "cat": "推演"
+  },
+  {
+    "code": "digital-huarong-road",
+    "name": "数字华容道",
+    "cat": "推演"
+  },
+  {
+    "code": "bottle-color-matching",
+    "name": "上下瓶色匹配",
+    "cat": "推演"
+  },
+  {
+    "code": "2048",
+    "name": "2048",
+    "cat": "推演"
+  },
+  {
+    "code": "react-speed-test",
+    "name": "反应速度测试",
+    "cat": "反应"
+  },
+  {
+    "code": "click-speed-test",
+    "name": "点击速度测试",
+    "cat": "反应"
+  },
+  {
+    "code": "right-click-test",
+    "name": "右键点击速度测试",
+    "cat": "反应"
+  },
+  {
+    "code": "spacebar-counter",
+    "name": "空格键计数器",
+    "cat": "反应"
+  },
+  {
+    "code": "dynamic-visual-acuity-test",
+    "name": "动态视力测试",
+    "cat": "反应"
+  },
+  {
+    "code": "jing-tai-se-cha",
+    "name": "静态色差感知",
+    "cat": "感知"
+  },
+  {
+    "code": "dong-tai-se-cha",
+    "name": "动态色差感知",
+    "cat": "感知"
+  },
+  {
+    "code": "time-perception-training",
+    "name": "时间感知训练",
+    "cat": "感知"
+  },
+  {
+    "code": "symmetry-blocks",
+    "name": "对称方块",
+    "cat": "空间"
+  },
+  {
+    "code": "text-dedup-sort",
+    "name": "文本去重与多维排序器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "text-autospace",
+    "name": "中英文排版规范美化器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "table-converter",
+    "name": "在线表格转换器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "rmb-capital-converter",
+    "name": "人民币大写金额转换器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "word-counter",
+    "name": "综合字数与阅读时长统计",
+    "cat": "办公助手"
+  },
+  {
+    "code": "resume-maker",
+    "name": "现代简历制作与排版器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "resume-template",
+    "name": "简历模板中心",
+    "cat": "办公助手"
+  },
+  {
+    "code": "paper-size",
+    "name": "A4纸张尺寸，各种纸张尺寸查询",
+    "cat": "办公助手"
+  },
+  {
+    "code": "convert-case",
+    "name": "转换大小写",
+    "cat": "办公助手"
+  },
+  {
+    "code": "title-case-converter",
+    "name": "标题大小写转换器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "sentence-case-converter",
+    "name": "句子大小写转换器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "bold-text-generator",
+    "name": "粗体文本生成器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "italic-text-generator",
+    "name": "斜体文本生成器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "strikethrough-text-generator",
+    "name": "删除线文本生成器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "underline-text",
+    "name": "下划线文本生成器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "upside-down-text-generator",
+    "name": "颠倒文本生成器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "mirror-text-generator",
+    "name": "镜像文本生成器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "reverse-text-generator",
+    "name": "反向文本生成器",
+    "cat": "办公助手"
+  },
+  {
+    "code": "replace-text",
+    "name": "文本替换工具",
+    "cat": "办公助手"
+  },
+  {
+    "code": "symbols",
+    "name": "符号大全",
+    "cat": "办公助手"
+  },
+  {
+    "code": "emoji",
+    "name": "emoji表情大全",
+    "cat": "办公助手"
+  },
+  {
+    "code": "emoticon",
+    "name": "颜文字表情大全",
+    "cat": "办公助手"
+  },
+  {
+    "code": "color-palette-extractor",
+    "name": "图片调色板提取器",
+    "cat": "图像"
+  },
+  {
+    "code": "image-stitcher",
+    "name": "多图无损拼接与长图生成器",
+    "cat": "图像"
+  },
+  {
+    "code": "image-mosaic-blur",
+    "name": "图片马赛克与局部隐私遮挡",
+    "cat": "图像"
+  },
+  {
+    "code": "convert-image",
+    "name": "图像格式转换器",
+    "cat": "图像"
+  },
+  {
+    "code": "compress-image",
+    "name": "压缩图像",
+    "cat": "图像"
+  },
+  {
+    "code": "resize-image",
+    "name": "调整图像大小",
+    "cat": "图像"
+  },
+  {
+    "code": "adjust-image-aspect-ratio",
+    "name": "调整图像宽高比例",
+    "cat": "图像"
+  },
+  {
+    "code": "watermark-image",
+    "name": "批量给图片加水印",
+    "cat": "图像"
+  },
+  {
+    "code": "rotate-image",
+    "name": "批量旋转图像",
+    "cat": "图像"
+  },
+  {
+    "code": "ico-generator",
+    "name": "在线生成透明ICO图标",
+    "cat": "图像"
+  },
+  {
+    "code": "round-image",
+    "name": "在线生成透明圆角图片",
+    "cat": "图像"
+  },
+  {
+    "code": "create-gif",
+    "name": "制作gif图片，编辑gif图片",
+    "cat": "图像"
+  },
+  {
+    "code": "video-to-gif",
+    "name": "视频转gif图片，视频转动图",
+    "cat": "图像"
+  },
+  {
+    "code": "decompose-gif",
+    "name": "分解gif图片",
+    "cat": "图像"
+  },
+  {
+    "code": "crop-image",
+    "name": "裁剪、编辑图像",
+    "cat": "图像"
+  },
+  {
+    "code": "generate-grid-image",
+    "name": "生成宫格图像，分割图片",
+    "cat": "图像"
+  },
+  {
+    "code": "image-processing-assistant-app",
+    "name": "图像处理助手桌面应用程序",
+    "cat": "图像"
+  },
+  {
+    "code": "image-compressor-app",
+    "name": "图像压缩器桌面应用程序",
+    "cat": "图像"
+  },
+  {
+    "code": "white-noise-player",
+    "name": "白噪音与专注助眠多轨混音器",
+    "cat": "音视频"
+  },
+  {
+    "code": "screen-recorder",
+    "name": "免插件屏幕与窗口录制工具",
+    "cat": "音视频"
+  },
+  {
+    "code": "voice-recorder",
+    "name": "在线波形录音机与音频剪辑",
+    "cat": "音视频"
+  },
+  {
+    "code": "metronome-tuner",
+    "name": "极简电子节拍器与乐器调音器",
+    "cat": "音视频"
+  },
+  {
+    "code": "video-processing-assistant-app",
+    "name": "视频处理助手桌面应用程序",
+    "cat": "音视频"
+  },
+  {
+    "code": "video-cut-merge-app",
+    "name": "视频剪切合并桌面应用程序",
+    "cat": "音视频"
+  },
+  {
+    "code": "video-compressor-app",
+    "name": "视频压缩器桌面应用程序",
+    "cat": "音视频"
+  },
+  {
+    "code": "video-format-converter-app",
+    "name": "视频格式转换器桌面应用程序",
+    "cat": "音视频"
+  },
+  {
+    "code": "audio-processing-assistant-app",
+    "name": "音频处理助手桌面应用程序",
+    "cat": "音视频"
+  },
+  {
+    "code": "audio-cut-merge-app",
+    "name": "音频剪切合并桌面应用程序",
+    "cat": "音视频"
+  },
+  {
+    "code": "audio-compressor-app",
+    "name": "音频压缩器桌面应用程序",
+    "cat": "音视频"
+  },
+  {
+    "code": "audio-format-convertor-app",
+    "name": "音频格式转换器桌面应用程序",
+    "cat": "音视频"
+  },
+  {
+    "code": "mock-data-generator",
+    "name": "测试模拟数据 (Mock Data) 批量生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "wifi-qrcode",
+    "name": "WiFi 扫码直连二维码生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "contrast-checker",
+    "name": "无障碍色彩对比度检测器 (WCAG)",
+    "cat": "生成"
+  },
+  {
+    "code": "css-glassmorphism",
+    "name": "CSS 玻璃拟态与毛玻璃生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "ascii-art-generator",
+    "name": "ASCII 艺术字与字符 Logo 生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "uuid-generator",
+    "name": "UUID / ULID / NanoID 批量生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "css-gradient-generator",
+    "name": "CSS 渐变色生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "css-shadow-generator",
+    "name": "CSS 盒子阴影生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "bar-code",
+    "name": "条形码生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "qrcode",
+    "name": "二维码生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "serial-number",
+    "name": "序列号生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "random-number",
+    "name": "随机数生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "random-password",
+    "name": "在线随机密码生成器",
+    "cat": "生成"
+  },
+  {
+    "code": "subnet-calculator",
+    "name": "IP 子网掩码与 CIDR 计算器",
+    "cat": "程序员"
+  },
+  {
+    "code": "data-format-converter",
+    "name": "多格式配置文件双向转换器",
+    "cat": "程序员"
+  },
+  {
+    "code": "http-status-codes",
+    "name": "HTTP 状态码速查与排错全书",
+    "cat": "程序员"
+  },
+  {
+    "code": "websocket-tester",
+    "name": "WebSocket / SSE 在线调试客户端",
+    "cat": "程序员"
+  },
+  {
+    "code": "curl-converter",
+    "name": "cURL 转换多语言代码工具",
+    "cat": "程序员"
+  },
+  {
+    "code": "sql-formatter",
+    "name": "SQL 格式化与美化器",
+    "cat": "程序员"
+  },
+  {
+    "code": "json-formatter",
+    "name": "JSON 格式化与高能工具箱",
+    "cat": "程序员"
+  },
+  {
+    "code": "jwt-debugger",
+    "name": "JWT 解码与调试器",
+    "cat": "程序员"
+  },
+  {
+    "code": "regex-tester",
+    "name": "正则表达式测试器",
+    "cat": "程序员"
+  },
+  {
+    "code": "cron-generator",
+    "name": "Cron 表达式生成与预测器",
+    "cat": "程序员"
+  },
+  {
+    "code": "port-scan",
+    "name": "端口扫描",
+    "cat": "程序员"
+  },
+  {
+    "code": "js-obfuscator",
+    "name": "JavaScript混淆加密",
+    "cat": "程序员"
+  },
+  {
+    "code": "markdown",
+    "name": "Markdown在线编辑器，Markdown转Word/Html/Pdf",
+    "cat": "程序员"
+  },
+  {
+    "code": "timestamp",
+    "name": "时间戳转换",
+    "cat": "程序员"
+  },
+  {
+    "code": "base-converter",
+    "name": "进制转换",
+    "cat": "程序员"
+  },
+  {
+    "code": "md5-encrypt",
+    "name": "MD5加密",
+    "cat": "程序员"
+  },
+  {
+    "code": "aes-encrypt",
+    "name": "AES加密/解密",
+    "cat": "程序员"
+  },
+  {
+    "code": "des-encrypt",
+    "name": "DES加密/解密",
+    "cat": "程序员"
+  },
+  {
+    "code": "sha-encrypt",
+    "name": "SHA加密",
+    "cat": "程序员"
+  },
+  {
+    "code": "ripemd160-encrypt",
+    "name": "RIPEMD160哈希加密",
+    "cat": "程序员"
+  },
+  {
+    "code": "hmac-encrypt",
+    "name": "HMAC哈希加密",
+    "cat": "程序员"
+  },
+  {
+    "code": "rabbit-encrypt",
+    "name": "Rabbit加密/解密",
+    "cat": "程序员"
+  },
+  {
+    "code": "rc4-encrypt",
+    "name": "RC4加密/解密",
+    "cat": "程序员"
+  },
+  {
+    "code": "image-to-base64",
+    "name": "图片转base64",
+    "cat": "程序员"
+  },
+  {
+    "code": "base64-encoder-decoder",
+    "name": "base64编码解码",
+    "cat": "程序员"
+  },
+  {
+    "code": "url-encoder-decoder",
+    "name": "URL编码解码",
+    "cat": "程序员"
+  },
+  {
+    "code": "text-to-ascll-converter",
+    "name": "文本与ASCLL转换器",
+    "cat": "程序员"
+  },
+  {
+    "code": "unicode-encoder-decoder",
+    "name": "Unicode编码器/解码器",
+    "cat": "程序员"
+  },
+  {
+    "code": "compare-text",
+    "name": "文本（代码）对比工具",
+    "cat": "程序员"
+  },
+  {
+    "code": "format-html",
+    "name": "html格式化、压缩",
+    "cat": "程序员"
+  },
+  {
+    "code": "format-css",
+    "name": "css格式化、压缩",
+    "cat": "程序员"
+  },
+  {
+    "code": "format-js",
+    "name": "js格式化、压缩",
+    "cat": "程序员"
+  },
+  {
+    "code": "function-grapher",
+    "name": "2D 数学函数图像绘制器",
+    "cat": "学习"
+  },
+  {
+    "code": "bitwise-visualizer",
+    "name": "计算机位运算与逻辑门实验室",
+    "cat": "学习"
+  },
+  {
+    "code": "pinyin-converter",
+    "name": "汉字转标准拼音与多音字排版",
+    "cat": "学习"
+  },
+  {
+    "code": "periodic-table",
+    "name": "化学元素周期表交互系统",
+    "cat": "学习"
+  },
+  {
+    "code": "data-unit-converter",
+    "name": "数据存储单位与进阶换算器",
+    "cat": "学习"
+  },
+  {
+    "code": "scientific-calculator",
+    "name": "科学高级计算器",
+    "cat": "学习"
+  },
+  {
+    "code": "length-converter",
+    "name": "长度单位转换器",
+    "cat": "学习"
+  },
+  {
+    "code": "area-converter",
+    "name": "面积单位转换器",
+    "cat": "学习"
+  },
+  {
+    "code": "volume-converter",
+    "name": "体积单位转换器",
+    "cat": "学习"
+  },
+  {
+    "code": "weight-converter",
+    "name": "重量转换器",
+    "cat": "学习"
+  },
+  {
+    "code": "temperature-converter",
+    "name": "温度转换器",
+    "cat": "学习"
+  },
+  {
+    "code": "proportion-calculator",
+    "name": "比例计算器",
+    "cat": "学习"
+  },
+  {
+    "code": "perimeter-calculator",
+    "name": "周长计算器",
+    "cat": "学习"
+  },
+  {
+    "code": "area-calculator",
+    "name": "面积计算器",
+    "cat": "学习"
+  },
+  {
+    "code": "surface-area-calculator",
+    "name": "表面积计算器",
+    "cat": "学习"
+  },
+  {
+    "code": "volume-calculator",
+    "name": "体积计算器",
+    "cat": "学习"
+  },
+  {
+    "code": "pi-query",
+    "name": "圆周率查询",
+    "cat": "学习"
+  },
+  {
+    "code": "compound-interest-calculator",
+    "name": "复利定投与理财收益计算器",
+    "cat": "生活"
+  },
+  {
+    "code": "car-loan-calculator",
+    "name": "全款与车贷落地费用精算器",
+    "cat": "生活"
+  },
+  {
+    "code": "world-clock-planner",
+    "name": "世界时钟与跨时区会议规划器",
+    "cat": "生活"
+  },
+  {
+    "code": "garbage-classification",
+    "name": "生活垃圾分类离线速查字典",
+    "cat": "生活"
+  },
+  {
+    "code": "kinship-calculator",
+    "name": "中国亲戚关系称谓换算器",
+    "cat": "生活"
+  },
+  {
+    "code": "salary-tax-calculator",
+    "name": "2026最新个税与五险一金计算器",
+    "cat": "生活"
+  },
+  {
+    "code": "mortgage-advanced-calculator",
+    "name": "房贷提前还款与省息对比器",
+    "cat": "生活"
+  },
+  {
+    "code": "date-calculator",
+    "name": "日期间隔与重要日子倒计时",
+    "cat": "生活"
+  },
+  {
+    "code": "age",
+    "name": "年龄计算器",
+    "cat": "生活"
+  },
+  {
+    "code": "retirement-time-query",
+    "name": "退休年龄查询",
+    "cat": "生活"
+  },
+  {
+    "code": "capital",
+    "name": "世界各国首都",
+    "cat": "生活"
+  },
+  {
+    "code": "flag",
+    "name": "世界各国国旗和区旗图案",
+    "cat": "生活"
+  },
+  {
+    "code": "loan-calculator",
+    "name": "贷款计算器",
+    "cat": "生活"
+  },
+  {
+    "code": "bra-size",
+    "name": "文胸尺码查询",
+    "cat": "生活"
+  },
+  {
+    "code": "underwear-size",
+    "name": "内裤尺码查询",
+    "cat": "生活"
+  },
+  {
+    "code": "woman-clothing-size",
+    "name": "女装尺码查询",
+    "cat": "生活"
+  },
+  {
+    "code": "woman-shirt-size",
+    "name": "女士衬衫尺码查询",
+    "cat": "生活"
+  },
+  {
+    "code": "dress-size",
+    "name": "连衣裙尺码查询",
+    "cat": "生活"
+  },
+  {
+    "code": "child-clothe-size",
+    "name": "小孩服装尺码查询",
+    "cat": "生活"
+  },
+  {
+    "code": "man-clothing-size",
+    "name": "男士服装尺码查询",
+    "cat": "生活"
+  },
+  {
+    "code": "man-pant-size",
+    "name": "男士裤子尺码查询",
+    "cat": "生活"
+  },
+  {
+    "code": "pixel-art-maker",
+    "name": "像素画 / 8-bit 图标在线编辑器",
+    "cat": "娱乐"
+  },
+  {
+    "code": "decision-maker",
+    "name": "今天吃什么 / 帮我做决定",
+    "cat": "娱乐"
+  },
+  {
+    "code": "led-banner",
+    "name": "手持全屏弹幕 / LED 滚动屏幕",
+    "cat": "娱乐"
+  },
+  {
+    "code": "morse-code-translator",
+    "name": "摩斯密码翻译器，摩斯密码音频播放器",
+    "cat": "娱乐"
+  },
+  {
+    "code": "lucky-wheel",
+    "name": "幸运大转盘抽奖",
+    "cat": "娱乐"
+  },
+  {
+    "code": "lottery",
+    "name": "在线抽奖工具",
+    "cat": "娱乐"
+  },
+  {
+    "code": "worth",
+    "name": "身价计算器",
+    "cat": "娱乐"
+  },
+  {
+    "code": "death-time",
+    "name": "死亡时间计算器",
+    "cat": "娱乐"
+  },
+  {
+    "code": "lucky-number",
+    "name": "幸运数字计算器",
+    "cat": "娱乐"
+  },
+  {
+    "code": "lucky-color",
+    "name": "星座幸运色",
+    "cat": "娱乐"
+  },
+  {
+    "code": "hash-avatar",
+    "name": "哈希头像生成器",
+    "cat": "娱乐"
+  },
+  {
+    "code": "water-intake-calculator",
+    "name": "科学每日饮水量计算器",
+    "cat": "健康"
+  },
+  {
+    "code": "sleep-cycle-calculator",
+    "name": "90分钟睡眠周期与起床时间计算器",
+    "cat": "健康"
+  },
+  {
+    "code": "food-calories-lookup",
+    "name": "常用食物热量与营养成分速查表",
+    "cat": "健康"
+  },
+  {
+    "code": "bmi",
+    "name": "BMI指数计算",
+    "cat": "健康"
+  },
+  {
+    "code": "bmr",
+    "name": "基础代谢率(BMR)计算器",
+    "cat": "健康"
+  },
+  {
+    "code": "bfr",
+    "name": "体脂率（BFR）计算器",
+    "cat": "健康"
+  },
+  {
+    "code": "weight",
+    "name": "标准体重计算器",
+    "cat": "健康"
+  },
+  {
+    "code": "burn-fat-heart-rate",
+    "name": "燃脂心率计算器",
+    "cat": "健康"
+  },
+  {
+    "code": "physical-fitness-test",
+    "name": "体质综合测试",
+    "cat": "健康"
+  },
+  {
+    "code": "protein-intake",
+    "name": "蛋白质摄入量计算器",
+    "cat": "健康"
+  },
+  {
+    "code": "energy-convert",
+    "name": "焦耳卡路里换算器",
+    "cat": "健康"
+  },
+  {
+    "code": "running-calorie",
+    "name": "跑步卡路里消耗计算器",
+    "cat": "健康"
+  },
+  {
+    "code": "best-figure",
+    "name": "女性最佳身材计算器",
+    "cat": "健康"
+  },
+  {
+    "code": "female-safe-period",
+    "name": "女性安全期计算器",
+    "cat": "健康"
+  },
+  {
+    "code": "child-height",
+    "name": "孩子身高预测",
+    "cat": "健康"
+  },
+  {
+    "code": "bood-type",
+    "name": "血型遗传规律和血型性格",
+    "cat": "健康"
+  },
+  {
+    "code": "color-blindness-test",
+    "name": "色盲色弱检测",
+    "cat": "健康"
+  },
+  {
+    "code": "vegetable-oil",
+    "name": "植物油脂肪含量查询",
+    "cat": "健康"
+  }
+]

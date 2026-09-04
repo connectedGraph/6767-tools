@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="cap-bg" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#042f2e"/>
+    </linearGradient>
+    <linearGradient id="cap-globe" x1="10" y1="12" x2="38" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#14b8a6"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="cap-pin" x1="18" y1="6" x2="30" y2="24" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="100%" stop-color="#be123c"/>
+    </linearGradient>
+    <filter id="cap-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#cap-bg)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="#2dd4bf" stroke-opacity="0.25" stroke-width="1.5"/>
+  <g filter="url(#cap-glow)">
+    <!-- Globe Sphere -->
+    <circle cx="24" cy="27" r="13.5" fill="url(#cap-globe)" stroke="#5eead4" stroke-width="1.5"/>
+    <!-- Latitude & Longitude Grids -->
+    <!-- Equator -->
+    <ellipse cx="24" cy="27" rx="13.5" ry="4" fill="none" stroke="#99f6e4" stroke-width="1" stroke-dasharray="2 2" opacity="0.8"/>
+    <!-- Prime Meridian -->
+    <ellipse cx="24" cy="27" rx="6" ry="13.5" fill="none" stroke="#99f6e4" stroke-width="1.2" opacity="0.8"/>
+    <line x1="10.5" y1="27" x2="37.5" y2="27" stroke="#99f6e4" stroke-width="1.2" opacity="0.7"/>
+
+    <!-- Capital City Landmark Pin -->
+    <!-- Pin shadow -->
+    <ellipse cx="24" cy="22" rx="3.5" ry="1.5" fill="#042f2e" opacity="0.6"/>
+    <!-- Pin body -->
+    <path d="M24 7 C19.5 7 16 10.5 16 15 C16 20.5 23 26 24 26.5 C25 26 32 20.5 32 15 C32 10.5 28.5 7 24 7 Z" fill="url(#cap-pin)" stroke="#ffffff" stroke-width="1.5"/>
+    <!-- Inner Capital Star -->
+    <polygon points="24,11 25.2,13.5 28,13.8 26,15.6 26.5,18.2 24,17 21.5,18.2 22,15.6 20,13.8 22.8,13.5" fill="#fde047"/>
+  </g>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-ripe" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#062e24"/>
+      <stop offset="100%" stop-color="#021410"/>
+    </linearGradient>
+    <linearGradient id="ripe-shield" x1="12" y1="10" x2="36" y2="38" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-ripe)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#2dd4bf" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Security Shield Outer -->
+  <path d="M24 10c7 2.5 11 3.5 11 3.5v9.5c0 8.5-5.5 14-11 15.5-5.5-1.5-11-7-11-15.5v-9.5s4-1 11-3.5z" 
+        stroke="url(#ripe-shield)" stroke-width="2.2" fill="#042f2e" fill-opacity="0.5" stroke-linejoin="round"/>
+
+  <!-- Parallel Dual Processing Lines -->
+  <path d="M18 16v14" stroke="#34d399" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 2"/>
+  <path d="M30 16v14" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 2"/>
+
+  <!-- Central 160 Stamp Badge -->
+  <rect x="15" y="21" width="18" height="8" rx="2" fill="#134e4a" stroke="#2dd4bf" stroke-width="1.2"/>
+  <text x="24" y="27" font-family="sans-serif" font-weight="900" font-size="5.5" fill="#f0fdfa" text-anchor="middle" letter-spacing="0.5">160</text>
+  
+  <circle cx="24" cy="33" r="1.2" fill="#34d399"/>
+</svg>

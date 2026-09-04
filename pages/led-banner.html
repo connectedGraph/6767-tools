@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>手持全屏弹幕 / LED滚动屏幕 - 演唱会打call、机场接机与荧光手幅 | 在线跑马灯 - 在线工具</title>
+    <meta name="description" content="全屏手机手持弹幕神器，支持输入任意文字，实时全屏横向或纵向滚动走字。可调节字体大小、滚动速度、文字颜色、背景颜色、闪烁发光效果、点阵LED效果与彩虹渐变色，自带防熄屏支持。" />
+    <meta name="keywords" content="手持弹幕, LED滚动屏幕, 手机全屏弹幕, 演唱会打call, 机场接机牌, 荧光手幅, 跑马灯, LED点阵屏" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        /* LED 弹幕专用样式 */
+        .led-preview-wrapper {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #334155;
+            background: #000000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 预览区内的视口 */
+        .led-viewport {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* LED 跑马灯文字容器 */
+        .led-marquee-track {
+            display: flex;
+            align-items: center;
+            white-space: pre;
+            will-change: transform;
+            line-height: 1.1;
+            font-weight: 900;
+        }
+
+        /* 点阵 LED 网格遮罩 */
+        .led-dot-grid {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 5;
+            background-image: radial-gradient(rgba(0, 0, 0, 0.75) 1.5px, transparent 1.5px);
+            background-size: 5px 5px;
+        }
+
+        /* 彩虹流光文字动画 */
+        .rainbow-text {
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowFlow 4s linear infinite;
+        }
+
+        @keyframes rainbowFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* 闪烁模式动画 */
+        .blink-strobe {
+            animation: strobeAnim 0.25s steps(2, start) infinite;
+        }
+        @keyframes strobeAnim {
+            to { visibility: hidden; }
+        }
+
+        .blink-breathe {
+            animation: breatheAnim 1.4s ease-in-out infinite alternate;
+        }
+        @keyframes breatheAnim {
+            0% { opacity: 0.15; filter: brightness(0.4); }
+            100% { opacity: 1; filter: brightness(1.3); }
+        }
+
+        .blink-heartbeat {
+            animation: heartbeatAnim 1s ease-in-out infinite;
+        }
+        @keyframes heartbeatAnim {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.1); }
+            30% { transform: scale(0.96); }
+            45% { transform: scale(1.06); }
+        }
+
+        /* 字体系列选择 */
+        .font-sans-heavy { font-family: "Impact", "Arial Black", system-ui, sans-serif; }
+        .font-mono-tech { font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+        .font-dot-matrix { font-family: "Courier New", Courier, monospace; letter-spacing: 2px; }
+
+        /* 全屏弹幕沉浸模式 */
+        .fullscreen-banner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 99999;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+            user-select: none;
+        }
+
+        /* 全屏浮动控制栏 */
+        .fs-floating-bar {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 30px;
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 100000;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .fs-floating-bar.hidden-bar {
+            opacity: 0;
+            transform: translate(-50%, 30px);
+            pointer-events: none;
+        }
+
+        /* 快捷调色盘圆点 */
+        .color-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #334155;
+            transition: all 0.15s ease;
+        }
+        .color-dot:hover, .color-dot.active {
+            transform: scale(1.2);
+            border-color: #ffffff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.6);
+        }
+
+        /* 预设卡片 */
+        .preset-chip {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+        .preset-chip:hover {
+            background: #334155;
+            color: #22d3ee;
+            border-color: #22d3ee;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="手持全屏弹幕 / LED滚动屏幕 - 演唱会打call、机场接机与荧光手幅 | 在线跑马灯 - 在线工具" />
+    <meta property="og:description" content="全屏手机手持弹幕神器，支持输入任意文字，实时全屏横向或纵向滚动走字。可调节字体大小、滚动速度、文字颜色、背景颜色、闪烁发光效果、点阵LED效果与彩虹渐变色，自带防熄屏支持。" />
+    <meta property="og:url" content="https://tool.6767.chat/led-banner" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://tool.6767.chat/led-banner" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">手持全屏弹幕</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+  <div class="tool-body">
+    <div class="card-model">
+      <div class="card-body">
+          <div class="tool-head flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h1 class="title">手持全屏弹幕 / LED 滚动屏幕 (LED Banner)</h1>
+              <div class="description mt-1">
+                演唱会打call、机场接机、地摊招牌、表白神器。支持全屏沉浸滚动、点阵LED、发光彩虹与防熄屏。
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <el-tag type="info" effect="dark">纯前端离线</el-tag>
+              <el-tag type="success" effect="dark">拓展时间: 2026-08-31</el-tag>
+            </div>
+          </div>
+
+          <div id="ledApp" v-cloak class="mt-4 flex flex-col gap-5">
+            <!-- 实时预览屏幕 -->
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-bold text-slate-300">📺 实时效果预览 (点击进入全屏手持模式)</span>
+                <el-button type="primary" size="small" @click="enterFullscreen">
+                  📱 一键进入全屏手持模式
+                </el-button>
+              </div>
+
+              <div 
+                class="led-preview-wrapper cursor-pointer" 
+                :style="{ backgroundColor: config.bgColor }"
+                @click="enterFullscreen"
+                title="点击进入全屏"
+              >
+                <!-- 点阵网格遮罩 -->
+                <div v-if="config.dotMatrix" class="led-dot-grid"></div>
+
+                <!-- 视口与跑马灯文字 -->
+                <div class="led-viewport" ref="previewViewport">
+                  <div 
+                    class="led-marquee-track"
+                    :class="[getFontClass(), getBlinkClass(), { 'rainbow-text': config.isRainbow }]"
+                    :style="getTextStyle(false)"
+                  >
+                    {{ bannerText || '请输入弹幕文字...' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 控制面板 (分块卡片) -->
+            <div class="flex flex-col gap-4">
+              <!-- 第一块：文字内容与常用预设 -->
+              <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-800 flex flex-col gap-3">
+                <div class="font-bold text-slate-200 flex items-center justify-between">
+                  <span class="text-sm">✍️ 弹幕文字内容</span>
+                  <el-button size="small" type="danger" plain @click="bannerText = ''">清空</el-button>
+                </div>
+
+                <el-input 
+                  v-model="bannerText" 
+                  type="textarea" 
+                  :rows="3" 
+                  placeholder="在此输入你想展示的文字，如：XX我爱你！/ 机场接机 / 全场10元"
+                  maxlength="200"
+                  show-word-limit
+                />
+
+                <!-- 常用符号与表情快速插入 -->
+                <div class="flex flex-wrap items-center gap-2 pt-1">
+                  <span class="text-xs text-slate-400 whitespace-nowrap">快捷符号:</span>
+                  <el-button v-for="sym in ['❤️', '✨', '🔥', '🎉', '🌟', '🚀', '📢', '👉', '🎂']" :key="sym" size="small" @click="insertSymbol(sym)">
+                    {{ sym }}
+                  </el-button>
+                </div>
+
+                <!-- 热门场景预设模板 -->
+                <div class="mt-2 pt-2 border-t border-slate-800/80">
+                  <div class="text-xs text-slate-400 mb-2">🔥 热门场景一键套用：</div>
+                  <div class="flex flex-wrap gap-2">
+                    <span v-for="preset in scenePresets" :key="preset.name" class="preset-chip" @click="applyPreset(preset)">
+                      {{ preset.name }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 第二块：排版与运动控制 -->
+              <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-800 flex flex-col gap-4">
+                <div class="font-bold text-slate-200 text-sm">🚀 滚动方向与排版调节</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <!-- 滚动方向 -->
+                  <div class="flex flex-col gap-2">
+                    <span class="text-xs text-slate-400">滚动方向：</span>
+                    <el-radio-group v-model="config.direction" size="small" class="flex flex-wrap gap-1">
+                      <el-radio-button label="left">从右向左 ←</el-radio-button>
+                      <el-radio-button label="right">从左向右 →</el-radio-button>
+                      <el-radio-button label="up">从下向上 ↑</el-radio-button>
+                      <el-radio-button label="down">从上向下 ↓</el-radio-button>
+                      <el-radio-button label="static">静止居中</el-radio-button>
+                    </el-radio-group>
+                  </div>
+
+                  <!-- 字体样式选择 -->
+                  <div class="flex flex-col gap-2">
+                    <span class="text-xs text-slate-400">字体样式：</span>
+                    <el-radio-group v-model="config.fontFamily" size="small">
+                      <el-radio-button label="heavy">粗黑体</el-radio-button>
+                      <el-radio-button label="dot">点阵体</el-radio-button>
+                      <el-radio-button label="mono">等宽体</el-radio-button>
+                    </el-radio-group>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-slate-800/80">
+                  <!-- 字体大小 -->
+                  <div class="flex items-center gap-3">
+                    <span class="text-xs text-slate-400 whitespace-nowrap" style="width: 70px;">字体大小:</span>
+                    <div class="flex-1"><el-slider v-model="config.fontSize" :min="20" :max="300" :step="2" /></div>
+                    <span class="text-xs text-slate-300 font-mono" style="width: 48px; text-align: right;">{{ config.fontSize }}px</span>
+                  </div>
+
+                  <!-- 滚动速度 -->
+                  <div class="flex items-center gap-3" v-if="config.direction !== 'static'">
+                    <span class="text-xs text-slate-400 whitespace-nowrap" style="width: 70px;">滚动速度:</span>
+                    <div class="flex-1"><el-slider v-model="config.speed" :min="1" :max="10" :step="1" /></div>
+                    <span class="text-xs text-slate-300 font-mono" style="width: 48px; text-align: right;">{{ speedLabels[config.speed] }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 第三块：色彩与发光视觉特效 -->
+              <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-800 flex flex-col gap-4">
+                <div class="font-bold text-slate-200 text-sm">🎨 炫彩配色与发光特效</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <!-- 文字颜色 -->
+                  <div class="flex items-center gap-3">
+                    <span class="text-xs text-slate-400 whitespace-nowrap" style="width: 70px;">文字颜色:</span>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <div 
+                        v-for="color in textColors" 
+                        :key="color" 
+                        class="color-dot" 
+                        :class="{ active: config.textColor === color && !config.isRainbow }"
+                        :style="{ backgroundColor: color }"
+                        @click="config.textColor = color; config.isRainbow = false"
+                      ></div>
+                      <el-color-picker v-model="config.textColor" size="small" @change="config.isRainbow = false" />
+                    </div>
+                  </div>
+
+                  <!-- 背景颜色 -->
+                  <div class="flex items-center gap-3">
+                    <span class="text-xs text-slate-400 whitespace-nowrap" style="width: 70px;">背景颜色:</span>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <div 
+                        v-for="color in bgColors" 
+                        :key="color" 
+                        class="color-dot" 
+                        :class="{ active: config.bgColor === color }"
+                        :style="{ backgroundColor: color }"
+                        @click="config.bgColor = color"
+                      ></div>
+                      <el-color-picker v-model="config.bgColor" size="small" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-slate-800/80 items-center">
+                  <!-- 视觉特效开关 -->
+                  <div class="flex flex-wrap items-center gap-4">
+                    <el-checkbox v-model="config.isRainbow" label="🌈 彩虹流光色" />
+                    <el-checkbox v-model="config.dotMatrix" label="💡 LED 点阵晶格" />
+                    <el-checkbox v-model="config.glowEffect" label="✨ 霓虹发光辉光" />
+                  </div>
+
+                  <!-- 闪烁发光效果 -->
+                  <div class="flex items-center gap-3">
+                    <span class="text-xs text-slate-400 whitespace-nowrap">闪烁模式:</span>
+                    <el-radio-group v-model="config.blinkMode" size="small">
+                      <el-radio-button label="none">常亮</el-radio-button>
+                      <el-radio-button label="breathe">呼吸灯</el-radio-button>
+                      <el-radio-button label="heartbeat">心跳脉冲</el-radio-button>
+                      <el-radio-button label="strobe">极速频闪</el-radio-button>
+                    </el-radio-group>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 全屏沉浸模式覆盖层 -->
+            <div 
+              v-show="isFullscreen" 
+              class="fullscreen-banner-overlay"
+              :style="{ backgroundColor: config.bgColor }"
+              @click="toggleFullscreenBar"
+            >
+              <!-- 全屏点阵遮罩 -->
+              <div v-if="config.dotMatrix" class="led-dot-grid"></div>
+
+              <!-- 全屏跑马灯文字 -->
+              <div class="led-viewport" ref="fullscreenViewport">
+                <div 
+                  class="led-marquee-track"
+                  :class="[getFontClass(), getBlinkClass(), { 'rainbow-text': config.isRainbow }]"
+                  :style="getTextStyle(true)"
+                >
+                  {{ bannerText || '请输入弹幕文字...' }}
+                </div>
+              </div>
+
+              <!-- 浮动快速控制条 -->
+              <div class="fs-floating-bar" :class="{ 'hidden-bar': !showFloatingBar }" @click.stop>
+                <el-button type="primary" size="small" circle @click="exitFullscreen">
+                  ✕
+                </el-button>
+                <span class="text-xs text-slate-300">速度:</span>
+                <el-slider v-model="config.speed" :min="1" :max="10" style="width: 100px;" />
+                <span class="text-xs text-slate-300">字号:</span>
+                <el-slider v-model="config.fontSize" :min="40" :max="400" style="width: 100px;" />
+                <el-button size="small" type="danger" plain @click="exitFullscreen">
+                  退出全屏
+                </el-button>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="divider my-6"></div>
+
+          <!-- 使用场景与常见技巧 -->
+          <div class="content">
+            <h3 class="text-lg font-bold text-slate-200 mb-3">LED 手持弹幕应用场景与技巧</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-400">
+              <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
+                <h4 class="font-bold text-cyan-300 mb-2">🎤 演唱会与粉丝应援</h4>
+                <p>开启「彩虹流光」与「LED 点阵」，把手机横过来高高举起，瞬间化身最耀眼的电子荧光灯牌！</p>
+              </div>
+              <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
+                <h4 class="font-bold text-cyan-300 mb-2">✈️ 机场与车站接机</h4>
+                <p>设置醒目亮黄色或绿色粗体大字，静止居中或从右向左匀速滚动，百米开外一眼就能认出你。</p>
+              </div>
+              <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
+                <h4 class="font-bold text-cyan-300 mb-2">🛍️ 夜市摆摊与店铺招牌</h4>
+                <p>用闲置平板或手机播放「全场 10 元」、「清仓特惠」，自带呼吸闪烁效果，吸引客流路人驻足。</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+  const { createApp, ref, reactive, computed, onMounted, onUnmounted, watch, nextTick } = Vue;
+
+  const app = createApp({
+    setup() {
+      const bannerText = ref('🌟 为你打 CALL！绝美神颜 🌟');
+      const isFullscreen = ref(false);
+      const showFloatingBar = ref(true);
+      let floatingBarTimer = null;
+      let wakeLock = null;
+
+      // 弹幕配置
+      const config = reactive({
+        direction: 'left', // 'left', 'right', 'up', 'down', 'static'
+        fontSize: 80,
+        speed: 5,
+        textColor: '#00ff66',
+        bgColor: '#000000',
+        fontFamily: 'heavy', // 'heavy', 'dot', 'mono'
+        isRainbow: false,
+        dotMatrix: true,
+        glowEffect: true,
+        blinkMode: 'none' // 'none', 'breathe', 'heartbeat', 'strobe'
+      });
+
+      // 速度描述
+      const speedLabels = {
+        1: '超慢', 2: '较慢', 3: '慢', 4: '标准', 5: '适中',
+        6: '较快', 7: '快', 8: '飞快', 9: '极速', 10: '光速'
+      };
+
+      // 预设高饱和荧光色彩
+      const textColors = [
+        '#00ff66', // 荧光绿
+        '#00f0ff', // 电光蓝
+        '#ff007f', // 魅惑粉
+        '#ffe600', // 激光黄
+        '#ff2d55', // 烈焰红
+        '#ffffff', // 纯白
+        '#ff6600'  // 赛博橙
+      ];
+
+      const bgColors = [
+        '#000000', // 纯黑
+        '#050a14', // 极夜蓝
+        '#1a1a1a', // 暗夜灰
+        '#2a0808', // 暗红
+        '#0f172a'  // 蓝黑
+      ];
+
+      // 场景预设
+      const scenePresets = [
+        { name: '追星打CALL', text: '❤️ XX 我爱你！绝美神颜 ✨', textColor: '#ff007f', bgColor: '#000000', direction: 'left', isRainbow: false, dotMatrix: true, glowEffect: true, blinkMode: 'breathe' },
+        { name: '机场接机', text: '✈️ 欢迎领导莅临指导 · 接机中', textColor: '#ffe600', bgColor: '#000000', direction: 'left', isRainbow: false, dotMatrix: true, glowEffect: true, blinkMode: 'none' },
+        { name: '表白求婚', text: '做我女朋友吧 ❤️ Marry Me 💍', textColor: '#ff2d55', bgColor: '#000000', direction: 'static', isRainbow: false, dotMatrix: false, glowEffect: true, blinkMode: 'heartbeat' },
+        { name: '摆摊夜市', text: '🔥 全场 10 元一件！买一送一 🔥', textColor: '#00ff66', bgColor: '#000000', direction: 'left', isRainbow: false, dotMatrix: true, glowEffect: true, blinkMode: 'none' },
+        { name: '聚会干杯', text: '🍻 祝生日快乐！今晚不醉不归 🎂', textColor: '#00f0ff', bgColor: '#000000', direction: 'left', isRainbow: true, dotMatrix: true, glowEffect: true, blinkMode: 'breathe' },
+        { name: '彩虹流光', text: '🌈 ANTIGRAVITY LED RUNNER 🚀', textColor: '#ffffff', bgColor: '#000000', direction: 'left', isRainbow: true, dotMatrix: true, glowEffect: true, blinkMode: 'none' }
+      ];
+
+      function applyPreset(preset) {
+        bannerText.value = preset.text;
+        config.textColor = preset.textColor;
+        config.bgColor = preset.bgColor;
+        config.direction = preset.direction;
+        config.isRainbow = preset.isRainbow;
+        config.dotMatrix = preset.dotMatrix;
+        config.glowEffect = preset.glowEffect;
+        config.blinkMode = preset.blinkMode;
+        ElementPlus.ElMessage.success(`已应用「${preset.name}」模板`);
+      }
+
+      function insertSymbol(sym) {
+        bannerText.value += sym;
+      }
+
+      function getFontClass() {
+        if (config.fontFamily === 'heavy') return 'font-sans-heavy';
+        if (config.fontFamily === 'dot') return 'font-dot-matrix';
+        if (config.fontFamily === 'mono') return 'font-mono-tech';
+        return '';
+      }
+
+      function getBlinkClass() {
+        if (config.blinkMode === 'strobe') return 'blink-strobe';
+        if (config.blinkMode === 'breathe') return 'blink-breathe';
+        if (config.blinkMode === 'heartbeat') return 'blink-heartbeat';
+        return '';
+      }
+
+      // 动态生成样式与发光
+      function getTextStyle(isFs) {
+        const size = isFs ? config.fontSize * 1.5 : config.fontSize;
+        const style = {
+          fontSize: `${size}px`,
+          color: config.isRainbow ? 'transparent' : config.textColor
+        };
+
+        if (config.glowEffect && !config.isRainbow) {
+          style.textShadow = `0 0 10px ${config.textColor}, 0 0 20px ${config.textColor}, 0 0 40px ${config.textColor}`;
+        }
+
+        return style;
+      }
+
+      // 动画引擎控制 (原生 requestAnimationFrame 循环平滑滚动)
+      let previewAnimId = null;
+      let fsAnimId = null;
+      let previewPos = 0;
+      let fsPos = 0;
+
+      function startAnimation() {
+        stopAnimation();
+
+        function renderPreview() {
+          const vp = document.querySelector('.led-preview-wrapper .led-viewport');
+          const track = document.querySelector('.led-preview-wrapper .led-marquee-track');
+          if (vp && track) {
+            const vpW = vp.clientWidth;
+            const vpH = vp.clientHeight;
+            const tW = track.clientWidth;
+            const tH = track.clientHeight;
+            const speedFactor = config.speed * 0.8;
+
+            if (config.direction === 'left') {
+              previewPos -= speedFactor;
+              if (previewPos < -tW) previewPos = vpW;
+              track.style.transform = `translateX(${previewPos}px)`;
+            } else if (config.direction === 'right') {
+              previewPos += speedFactor;
+              if (previewPos > vpW) previewPos = -tW;
+              track.style.transform = `translateX(${previewPos}px)`;
+            } else if (config.direction === 'up') {
+              previewPos -= speedFactor * 0.6;
+              if (previewPos < -tH) previewPos = vpH;
+              track.style.transform = `translateY(${previewPos}px)`;
+            } else if (config.direction === 'down') {
+              previewPos += speedFactor * 0.6;
+              if (previewPos > vpH) previewPos = -tH;
+              track.style.transform = `translateY(${previewPos}px)`;
+            } else {
+              track.style.transform = 'none';
+            }
+          }
+          previewAnimId = requestAnimationFrame(renderPreview);
+        }
+
+        function renderFullscreen() {
+          if (!isFullscreen.value) return;
+          const vp = document.querySelector('.fullscreen-banner-overlay .led-viewport');
+          const track = document.querySelector('.fullscreen-banner-overlay .led-marquee-track');
+          if (vp && track) {
+            const vpW = vp.clientWidth;
+            const vpH = vp.clientHeight;
+            const tW = track.clientWidth;
+            const tH = track.clientHeight;
+            const speedFactor = config.speed * 1.5;
+
+            if (config.direction === 'left') {
+              fsPos -= speedFactor;
+              if (fsPos < -tW) fsPos = vpW;
+              track.style.transform = `translateX(${fsPos}px)`;
+            } else if (config.direction === 'right') {
+              fsPos += speedFactor;
+              if (fsPos > vpW) fsPos = -tW;
+              track.style.transform = `translateX(${fsPos}px)`;
+            } else if (config.direction === 'up') {
+              fsPos -= speedFactor * 0.8;
+              if (fsPos < -tH) fsPos = vpH;
+              track.style.transform = `translateY(${fsPos}px)`;
+            } else if (config.direction === 'down') {
+              fsPos += speedFactor * 0.8;
+              if (fsPos > vpH) fsPos = -tH;
+              track.style.transform = `translateY(${fsPos}px)`;
+            } else {
+              track.style.transform = 'none';
+            }
+          }
+          fsAnimId = requestAnimationFrame(renderFullscreen);
+        }
+
+        previewAnimId = requestAnimationFrame(renderPreview);
+        if (isFullscreen.value) {
+          fsAnimId = requestAnimationFrame(renderFullscreen);
+        }
+      }
+
+      function stopAnimation() {
+        if (previewAnimId) cancelAnimationFrame(previewAnimId);
+        if (fsAnimId) cancelAnimationFrame(fsAnimId);
+      }
+
+      // 全屏模式控制与防熄屏
+      async function enterFullscreen() {
+        isFullscreen.value = true;
+        showFloatingBar.value = true;
+        hideFloatingBarWithDelay();
+
+        // 尝试请求浏览器原生全屏
+        try {
+          const docEl = document.documentElement;
+          if (docEl.requestFullscreen) {
+            await docEl.requestFullscreen();
+          } else if (docEl.webkitRequestFullscreen) {
+            await docEl.webkitRequestFullscreen();
+          }
+        } catch (e) {}
+
+        // 申请屏幕常亮唤醒锁 (Wake Lock API)
+        try {
+          if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+          }
+        } catch (e) {}
+
+        nextTick(() => {
+          fsPos = window.innerWidth;
+          startAnimation();
+        });
+      }
+
+      async function exitFullscreen() {
+        isFullscreen.value = false;
+        try {
+          if (document.fullscreenElement && document.exitFullscreen) {
+            await document.exitFullscreen();
+          }
+        } catch (e) {}
+
+        if (wakeLock !== null) {
+          try {
+            await wakeLock.release();
+            wakeLock = null;
+          } catch (e) {}
+        }
+      }
+
+      function toggleFullscreenBar() {
+        showFloatingBar.value = !showFloatingBar.value;
+        if (showFloatingBar.value) {
+          hideFloatingBarWithDelay();
+        }
+      }
+
+      function hideFloatingBarWithDelay() {
+        if (floatingBarTimer) clearTimeout(floatingBarTimer);
+        floatingBarTimer = setTimeout(() => {
+          showFloatingBar.value = false;
+        }, 3500);
+      }
+
+      // 监听全屏按键退出
+      function handleKeyDown(e) {
+        if (e.key === 'Escape' && isFullscreen.value) {
+          exitFullscreen();
+        }
+      }
+
+      // 持久化存储
+      const STORAGE_KEY = 'online_tools_led_banner_v1';
+      function saveStorage() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            bannerText: bannerText.value,
+            config
+          }));
+        } catch (e) {}
+      }
+
+      function loadStorage() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const data = JSON.parse(raw);
+            if (data.bannerText) bannerText.value = data.bannerText;
+            if (data.config) Object.assign(config, data.config);
+          }
+        } catch (e) {}
+      }
+
+      watch([bannerText, config], () => {
+        saveStorage();
+      }, { deep: true });
+
+      onMounted(() => {
+        loadStorage();
+        window.addEventListener('keydown', handleKeyDown);
+        nextTick(() => {
+          previewPos = 100;
+          startAnimation();
+        });
+      });
+
+      onUnmounted(() => {
+        stopAnimation();
+        window.removeEventListener('keydown', handleKeyDown);
+        if (wakeLock !== null) {
+          wakeLock.release().catch(() => {});
+        }
+      });
+
+      return {
+        bannerText,
+        isFullscreen,
+        showFloatingBar,
+        config,
+        speedLabels,
+        textColors,
+        bgColors,
+        scenePresets,
+        applyPreset,
+        insertSymbol,
+        getFontClass,
+        getBlinkClass,
+        getTextStyle,
+        enterFullscreen,
+        exitFullscreen,
+        toggleFullscreenBar
+      };
+    }
+  });
+
+  app.use(ElementPlus);
+  app.mount('#ledApp');
+</script>
+</body>
+</html>

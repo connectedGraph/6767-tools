@@ -1,0 +1,1238 @@
+/* ═══════════════════════════════════════════════════════════════
+   tool-dark.css  —  在线工具集 全局日间 / 夜间模式主题适配库
+   依赖顺序：element-plus/index.css → 6767-tailwind.css → 6767-site.css → tool-dark.css
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Element-Plus CSS 变量：日间模式 (默认/Light) ── */
+:root,
+html:not(.dark),
+html:not(.dark) body {
+    /* 基础背景 */
+    --el-bg-color:              #ffffff;
+    --el-bg-color-overlay:      #ffffff;
+    --el-bg-color-page:         #f8fafc;
+
+    /* 填充色 */
+    --el-fill-color:            #f1f5f9;
+    --el-fill-color-blank:      #ffffff;
+    --el-fill-color-light:      #f8fafc;
+    --el-fill-color-lighter:    #f1f5f9;
+    --el-fill-color-extra-light:#fafafa;
+    --el-fill-color-dark:       #e2e8f0;
+    --el-fill-color-darker:     #cbd5e1;
+
+    /* 边框 */
+    --el-border-color:          #cbd5e1;
+    --el-border-color-light:    #e2e8f0;
+    --el-border-color-lighter:  #f1f5f9;
+    --el-border-color-extra-light: #f8fafc;
+    --el-border-color-dark:     #94a3b8;
+    --el-border-color-darker:   #64748b;
+
+    /* 文字颜色 */
+    --el-text-color-primary:    #0f172a;
+    --el-text-color-regular:    #334155;
+    --el-text-color-secondary:  #64748b;
+    --el-text-color-placeholder:#94a3b8;
+    --el-text-color-disabled:   #cbd5e1;
+
+    /* 禁用态 */
+    --el-disabled-bg-color:     #f1f5f9;
+    --el-disabled-text-color:   #94a3b8;
+    --el-disabled-border-color: #e2e8f0;
+
+    /* 主色（sky-blue 品牌色）*/
+    --el-color-primary:         #0284c7;
+    --el-color-primary-light-3: #38bdf8;
+    --el-color-primary-light-5: #7dd3fc;
+    --el-color-primary-light-7: #bae6fd;
+    --el-color-primary-light-8: #e0f2fe;
+    --el-color-primary-light-9: #f0f9ff;
+    --el-color-primary-dark-2:  #0369a1;
+
+    /* 输入框 */
+    --el-input-bg-color:        #ffffff;
+    --el-input-border-color:    #cbd5e1;
+    --el-input-hover-border-color: #38bdf8;
+    --el-input-focus-border-color: #0284c7;
+    --el-input-text-color:      #0f172a;
+    --el-input-placeholder-color: #94a3b8;
+    --el-input-icon-color:      #64748b;
+
+    /* select */
+    --el-select-input-color:    #0f172a;
+    --el-select-input-focus-border-color: #0284c7;
+
+    /* 阴影 */
+    --el-box-shadow:            0 4px 20px rgba(0,0,0,0.08);
+    --el-box-shadow-light:      0 2px 10px rgba(0,0,0,0.05);
+    --el-box-shadow-lighter:    0 1px 4px rgba(0,0,0,0.03);
+    --el-box-shadow-dark:       0 8px 30px rgba(0,0,0,0.12);
+
+    /* 通用变量 (兼容 Search / Legacy 结构) */
+    --bg-color:                 #ffffff;
+    --bg-color-rgb:             255, 255, 255;
+    --bg-color-dark:            #f8fafc;
+    --bg-color-dark2:           #f1f5f9;
+    --text-color:               #0f172a;
+    --text-gray-color:          #64748b;
+    --border-color:             #e2e8f0;
+    --border-color-dark:        #cbd5e1;
+    --border-color-dark2:       #94a3b8;
+    --border-color-dark3:       #64748b;
+    --box-shadow-color:         rgba(15, 23, 42, 0.06);
+    --shadow-sm:                0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md:                0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-lg:                0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    --shadow-glow:              0 0 15px rgba(2, 132, 199, 0.2);
+    --radius-sm:                6px;
+    --radius-md:                10px;
+    --radius-lg:                14px;
+    --radius-pill:              9999px;
+    --primary-gradient:         linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    --card-hover-bg:            rgba(2, 132, 199, 0.06);
+    --transition-speed:         0.25s;
+}
+
+/* ── 2. Element-Plus CSS 变量：夜间模式覆盖 (Dark) ── */
+html.dark,
+html.dark body {
+    /* 基础背景 */
+    --el-bg-color:              #0f172a;
+    --el-bg-color-overlay:      #1e293b;
+    --el-bg-color-page:         #050a14;
+
+    /* 填充色 */
+    --el-fill-color:            #1e293b;
+    --el-fill-color-blank:      #0f172a;
+    --el-fill-color-light:      #1e293b;
+    --el-fill-color-lighter:    #162032;
+    --el-fill-color-extra-light:#0d1829;
+    --el-fill-color-dark:       #273549;
+    --el-fill-color-darker:     #2f3f55;
+
+    /* 边框 */
+    --el-border-color:          rgba(51,65,85,0.8);
+    --el-border-color-light:    rgba(51,65,85,0.6);
+    --el-border-color-lighter:  rgba(51,65,85,0.4);
+    --el-border-color-extra-light: rgba(51,65,85,0.25);
+    --el-border-color-dark:     rgba(71,85,105,0.9);
+    --el-border-color-darker:   rgba(100,116,139,0.6);
+
+    /* 文字颜色 */
+    --el-text-color-primary:    #e2e8f0;
+    --el-text-color-regular:    #cbd5e1;
+    --el-text-color-secondary:  #94a3b8;
+    --el-text-color-placeholder:#475569;
+    --el-text-color-disabled:   #334155;
+
+    /* 禁用态 */
+    --el-disabled-bg-color:     #1e293b;
+    --el-disabled-text-color:   #475569;
+    --el-disabled-border-color: rgba(51,65,85,0.5);
+
+    /* 主色（cyan，与 6767-site.css 一致）*/
+    --el-color-primary:         #22d3ee;
+    --el-color-primary-light-3: #67e8f9;
+    --el-color-primary-light-5: #a5f3fc;
+    --el-color-primary-light-7: #cffafe;
+    --el-color-primary-light-8: #e0f9fd;
+    --el-color-primary-light-9: #f0fdff;
+    --el-color-primary-dark-2:  #06b6d4;
+
+    /* 输入框 */
+    --el-input-bg-color:        rgba(15,23,42,0.8);
+    --el-input-border-color:    rgba(51,65,85,0.8);
+    --el-input-hover-border-color: rgba(34,211,238,0.5);
+    --el-input-focus-border-color: rgba(34,211,238,0.8);
+    --el-input-text-color:      #e2e8f0;
+    --el-input-placeholder-color: #475569;
+    --el-input-icon-color:      #64748b;
+
+    /* select */
+    --el-select-input-color:    #e2e8f0;
+    --el-select-input-focus-border-color: rgba(34,211,238,0.8);
+
+    /* 阴影 */
+    --el-box-shadow:            0 4px 16px rgba(0,0,0,0.5);
+    --el-box-shadow-light:      0 2px 8px rgba(0,0,0,0.4);
+    --el-box-shadow-lighter:    0 1px 4px rgba(0,0,0,0.3);
+    --el-box-shadow-dark:       0 8px 24px rgba(0,0,0,0.6);
+
+    /* dialog/popover */
+    --el-dialog-bg-color:       #0f172a;
+    --el-popover-bg-color:      #1e293b;
+    --el-popper-border-color:   rgba(51,65,85,0.8);
+
+    /* 通用变量：夜间覆盖 */
+    --bg-color:                 #0f172a;
+    --bg-color-rgb:             15, 23, 42;
+    --bg-color-dark:            #020617;
+    --bg-color-dark2:           #1e293b;
+    --text-color:               #f8fafc;
+    --text-gray-color:          #94a3b8;
+    --border-color:             rgba(51,65,85,0.8);
+    --border-color-dark:        #334155;
+    --border-color-dark2:       #475569;
+    --border-color-dark3:       #64748b;
+    --box-shadow-color:         rgba(0, 0, 0, 0.5);
+    --shadow-sm:                0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md:                0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg:                0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --shadow-glow:              0 0 15px rgba(34, 211, 238, 0.25);
+    --primary-gradient:         linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+    --card-hover-bg:            rgba(34, 211, 238, 0.1);
+}
+
+/* ── 3. 全局 body 样式 ── */
+body {
+    background: #f8fafc;
+    color: #334155;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+html.dark body {
+    background: #050a14;
+    color: #cbd5e1;
+}
+
+/* ── 4. 工具顶栏 ── */
+.tool-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 18px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.96), rgba(248,250,252,0.96));
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-size: 0.8rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: background 0.25s, border-color 0.25s;
+}
+
+html.dark .tool-topbar {
+    background: linear-gradient(90deg, rgba(5,10,20,0.96), rgba(15,23,42,0.96));
+    border-bottom: 1px solid rgba(51,65,85,0.5);
+    box-shadow: none;
+}
+
+.tool-topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #0284c7;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+.tool-topbar-logo:hover { color: #0369a1; }
+html.dark .tool-topbar-logo { color: #22d3ee; }
+html.dark .tool-topbar-logo:hover { color: #67e8f9; }
+.tool-topbar-logo img { width: 20px; height: 20px; border-radius: 4px; }
+
+.tool-topbar-sep {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+html.dark .tool-topbar-sep { color: #334155; }
+
+.tool-topbar-title {
+    color: #64748b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+html.dark .tool-topbar-title { color: #94a3b8; }
+
+.tool-topbar-home {
+    margin-left: 8px;
+    flex-shrink: 0;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.75rem;
+    transition: color 0.2s;
+    white-space: nowrap;
+}
+.tool-topbar-home:hover { color: #0284c7; }
+html.dark .tool-topbar-home { color: #475569; }
+html.dark .tool-topbar-home:hover { color: #94a3b8; }
+
+.theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    outline: none;
+}
+.theme-toggle-btn:hover {
+    border-color: var(--el-color-primary);
+    color: var(--el-color-primary);
+    transform: translateY(-1px) scale(1.06);
+    box-shadow: 0 4px 12px rgba(2,132,199,0.15);
+}
+html.dark .theme-toggle-btn:hover {
+    box-shadow: 0 0 12px rgba(34,211,238,0.25);
+}
+.theme-toggle-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.theme-toggle-btn:hover .theme-toggle-icon {
+    transform: rotate(18deg);
+}
+
+.topbar-theme-toggle {
+    margin-left: 0;
+    margin-right: 8px;
+}
+
+.topbar-lang-toggle {
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+.topbar-lang-toggle .lang-toggle-btn {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 0.76rem;
+    gap: 6px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(203, 213, 225, 0.8);
+    color: #334155;
+}
+html.dark .topbar-lang-toggle .lang-toggle-btn {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: rgba(56, 189, 248, 0.28);
+    color: #f1f5f9;
+}
+.topbar-lang-toggle .lang-toggle-btn:hover {
+    border-color: #0284c7;
+    color: #0284c7;
+}
+html.dark .topbar-lang-toggle .lang-toggle-btn:hover {
+    border-color: #38bdf8;
+    color: #38bdf8;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+}
+
+.lang-toggle-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #0284c7;
+}
+html.dark .lang-toggle-icon {
+    color: #38bdf8;
+}
+
+.lang-chevron {
+    transition: transform 0.2s ease;
+    opacity: 0.7;
+}
+.lang-toggle-wrap:has(.lang-dropdown-menu.is-open) .lang-chevron {
+    transform: rotate(180deg);
+}
+
+.lang-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 100000;
+    min-width: 140px;
+    background: #ffffff;
+    border: 1px solid rgba(203, 213, 225, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+    padding: 5px;
+    display: none;
+    flex-direction: column;
+    gap: 3px;
+    backdrop-filter: blur(16px);
+}
+html.dark .lang-dropdown-menu {
+    background: rgba(15, 23, 42, 0.96);
+    border-color: rgba(56, 189, 248, 0.3);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+.lang-dropdown-menu.is-open {
+    display: flex;
+    animation: lang-menu-in 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lang-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: #334155;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+}
+html.dark .lang-menu-item {
+    color: #cbd5e1;
+}
+.lang-item-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.lang-flag {
+    font-size: 1.1em;
+}
+.lang-menu-item:hover {
+    background: rgba(2, 132, 199, 0.1);
+    color: #0284c7;
+}
+html.dark .lang-menu-item:hover {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+}
+.lang-menu-item.is-active {
+    font-weight: 700;
+    color: #0284c7;
+    background: rgba(2, 132, 199, 0.12);
+}
+html.dark .lang-menu-item.is-active {
+    background: rgba(56, 189, 248, 0.2);
+    color: #38bdf8;
+}
+.lang-menu-item .lang-check {
+    font-size: 12px;
+    font-weight: bold;
+    opacity: 0;
+}
+.lang-menu-item.is-active .lang-check {
+    opacity: 1;
+}
+
+@media (max-width: 480px) {
+    .tool-topbar { padding: 0 12px; gap: 6px; }
+    .tool-topbar-home { display: none; }
+}
+
+/* ── 5. 工具页主体布局 ── */
+.tool-page-body {
+    padding: 32px 16px 64px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .tool-page-body { padding: 40px 24px 80px; }
+}
+
+/* ── 6. 工具卡片 ── */
+.card-model {
+    background: transparent;
+}
+
+.card-body {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+
+html.dark .card-body {
+    background: rgba(15,23,42,0.8);
+    border: 1px solid rgba(51,65,85,0.6);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+.tool-head .title,
+.tool-head h1 {
+    color: #0f172a;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+}
+html.dark .tool-head .title,
+html.dark .tool-head h1 {
+    color: #e2e8f0;
+}
+
+.description {
+    color: #475569;
+    font-size: 0.875rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+html.dark .description {
+    color: #64748b;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 24px 0;
+}
+html.dark .divider {
+    border-top: 1px solid rgba(51,65,85,0.5);
+}
+
+.content {
+    color: #334155;
+    font-size: 0.875rem;
+    line-height: 1.75;
+}
+html.dark .content {
+    color: #94a3b8;
+}
+
+.content h2,
+.content h3,
+.content h4 {
+    color: #0f172a;
+    margin-top: 1.4em;
+}
+html.dark .content h2,
+html.dark .content h3,
+html.dark .content h4 {
+    color: #cbd5e1;
+}
+
+.content a { color: #0284c7; }
+.content a:hover { color: #0369a1; }
+html.dark .content a { color: #22d3ee; }
+html.dark .content a:hover { color: #67e8f9; }
+
+.content p { margin: 0.75em 0; }
+
+.content table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.82rem;
+}
+.content table th {
+    background: #f8fafc;
+    color: #334155;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+}
+.content table td {
+    padding: 7px 12px;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+}
+.content table tr:nth-child(even) td {
+    background: #f8fafc;
+}
+html.dark .content table th {
+    background: rgba(30,41,59,0.8);
+    color: #94a3b8;
+    border: 1px solid rgba(51,65,85,0.5);
+}
+html.dark .content table td {
+    border: 1px solid rgba(51,65,85,0.4);
+    color: #cbd5e1;
+    background: transparent;
+}
+html.dark .content table tr:nth-child(even) td {
+    background: rgba(15,23,42,0.4);
+}
+
+/* ── 7. Element-Plus 组件适配 ── */
+
+/* 输入框 */
+.el-input__wrapper,
+.el-textarea__inner {
+    background: #ffffff !important;
+    box-shadow: 0 0 0 1px #cbd5e1 inset !important;
+    transition: box-shadow 0.2s, background 0.2s !important;
+}
+.el-input__wrapper:hover,
+.el-textarea__inner:hover {
+    box-shadow: 0 0 0 1px #38bdf8 inset !important;
+}
+.el-input__wrapper.is-focus,
+.el-textarea__inner:focus {
+    box-shadow: 0 0 0 1px #0284c7 inset, 0 0 0 3px rgba(2,132,199,0.15) !important;
+}
+.el-input__inner,
+.el-textarea__inner {
+    color: #0f172a !important;
+    background: transparent !important;
+}
+.el-input__inner::placeholder,
+.el-textarea__inner::placeholder {
+    color: #94a3b8 !important;
+}
+
+html.dark .el-input__wrapper,
+html.dark .el-textarea__inner {
+    background: rgba(15,23,42,0.8) !important;
+    box-shadow: 0 0 0 1px rgba(51,65,85,0.8) inset !important;
+}
+html.dark .el-input__wrapper:hover,
+html.dark .el-textarea__inner:hover {
+    box-shadow: 0 0 0 1px rgba(34,211,238,0.4) inset !important;
+}
+html.dark .el-input__wrapper.is-focus,
+html.dark .el-textarea__inner:focus {
+    box-shadow: 0 0 0 1px rgba(34,211,238,0.8) inset !important;
+}
+html.dark .el-input__inner,
+html.dark .el-textarea__inner {
+    color: #e2e8f0 !important;
+}
+html.dark .el-input__inner::placeholder,
+html.dark .el-textarea__inner::placeholder {
+    color: #475569 !important;
+}
+
+/* 按钮 */
+.el-button {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #334155;
+    font-weight: 500;
+}
+.el-button:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+.el-button--primary {
+    background: #0284c7;
+    border-color: #0284c7;
+    color: #ffffff;
+}
+.el-button--primary:hover {
+    background: #0369a1;
+    border-color: #0369a1;
+    color: #ffffff;
+}
+
+html.dark .el-button {
+    background: rgba(15,23,42,0.6);
+    border-color: rgba(51,65,85,0.8);
+    color: #94a3b8;
+}
+html.dark .el-button:hover {
+    background: rgba(30,41,59,0.8);
+    border-color: rgba(100,116,139,0.6);
+    color: #e2e8f0;
+}
+html.dark .el-button--primary {
+    background: rgba(34,211,238,0.15);
+    border-color: rgba(34,211,238,0.5);
+    color: #22d3ee;
+}
+html.dark .el-button--primary:hover {
+    background: rgba(34,211,238,0.25);
+    border-color: rgba(34,211,238,0.8);
+    color: #67e8f9;
+}
+
+/* 表单标签 */
+.el-form-item__label { color: #334155; font-weight: 500; }
+.el-form-item__error  { color: #ef4444; }
+html.dark .el-form-item__label { color: #94a3b8; }
+html.dark .el-form-item__error  { color: #f87171; }
+
+/* Switch */
+.el-switch__core {
+    background: #cbd5e1;
+    border-color: #cbd5e1;
+}
+.el-switch.is-checked .el-switch__core {
+    background: #0284c7;
+    border-color: #0284c7;
+}
+html.dark .el-switch__core {
+    background: rgba(51,65,85,0.8);
+    border-color: rgba(51,65,85,0.8);
+}
+html.dark .el-switch.is-checked .el-switch__core {
+    background: rgba(34,211,238,0.3);
+    border-color: rgba(34,211,238,0.6);
+}
+
+/* Radio / Checkbox */
+.el-radio__label,
+.el-checkbox__label { color: #334155; }
+.el-radio__inner,
+.el-checkbox__inner {
+    background: #ffffff;
+    border-color: #cbd5e1;
+}
+.el-radio.is-checked .el-radio__inner,
+.el-checkbox.is-checked .el-checkbox__inner {
+    background: #0284c7;
+    border-color: #0284c7;
+}
+
+html.dark .el-radio__label,
+html.dark .el-checkbox__label { color: #cbd5e1; }
+html.dark .el-radio__inner,
+html.dark .el-checkbox__inner {
+    background: rgba(15,23,42,0.8);
+    border-color: rgba(51,65,85,0.8);
+}
+html.dark .el-radio.is-checked .el-radio__inner,
+html.dark .el-checkbox.is-checked .el-checkbox__inner {
+    background: #22d3ee;
+    border-color: #22d3ee;
+}
+
+/* Select 下拉 */
+.el-select-dropdown {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+.el-select-dropdown__item { color: #334155; }
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover {
+    background: #f0f9ff;
+    color: #0284c7;
+}
+.el-select-dropdown__item.is-selected { color: #0284c7; font-weight: 600; }
+
+html.dark .el-select-dropdown {
+    background: #1e293b;
+    border-color: rgba(51,65,85,0.8);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+html.dark .el-select-dropdown__item { color: #94a3b8; }
+html.dark .el-select-dropdown__item.hover,
+html.dark .el-select-dropdown__item:hover {
+    background: rgba(34,211,238,0.08);
+    color: #e2e8f0;
+}
+html.dark .el-select-dropdown__item.is-selected { color: #22d3ee; }
+
+/* Popover / Dialog */
+.el-dialog {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+.el-dialog__header { border-bottom: 1px solid #e2e8f0; }
+.el-dialog__title { color: #0f172a; font-weight: 600; }
+.el-dialog__headerbtn .el-dialog__close { color: #94a3b8; }
+.el-dialog__headerbtn:hover .el-dialog__close { color: #0f172a; }
+
+html.dark .el-dialog {
+    background: #0f172a;
+    border: 1px solid rgba(51,65,85,0.6);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+html.dark .el-dialog__header { border-bottom: 1px solid rgba(51,65,85,0.4); }
+html.dark .el-dialog__title { color: #e2e8f0; }
+html.dark .el-dialog__headerbtn .el-dialog__close { color: #64748b; }
+html.dark .el-dialog__headerbtn:hover .el-dialog__close { color: #94a3b8; }
+
+/* Slider */
+.el-slider__runway { background: #e2e8f0; }
+.el-slider__bar { background: #0284c7; }
+.el-slider__button { border-color: #0284c7; background: #ffffff; }
+
+html.dark .el-slider__runway { background: rgba(51,65,85,0.6); }
+html.dark .el-slider__bar { background: #22d3ee; }
+html.dark .el-slider__button { border-color: #22d3ee; background: #0f172a; }
+
+/* Upload */
+.el-upload-dragger {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #64748b;
+}
+.el-upload-dragger:hover { border-color: #0284c7; }
+html.dark .el-upload-dragger {
+    background: rgba(15,23,42,0.8);
+    border-color: rgba(51,65,85,0.6);
+    color: #64748b;
+}
+html.dark .el-upload-dragger:hover { border-color: rgba(34,211,238,0.5); }
+
+/* ── 8. 工具特定：compute-result、passworld 等 ── */
+.compute-result {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px !important;
+}
+.compute-result .label { color: #475569; }
+.compute-result .passworld {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+.compute-result a { color: #0284c7 !important; }
+
+html.dark .compute-result {
+    background: rgba(15,23,42,0.8) !important;
+    border: 1px solid rgba(51,65,85,0.5);
+}
+html.dark .compute-result .label { color: #94a3b8; }
+html.dark .compute-result .passworld {
+    background: rgba(30,41,59,0.6) !important;
+    border-color: rgba(51,65,85,0.6) !important;
+    color: #e2e8f0 !important;
+}
+html.dark .compute-result a { color: #22d3ee !important; }
+
+/* ── 9. Vue 工具模板布局兼容层 ── */
+.w100 { width: 100%; }
+.tool-body { width: 100%; color: #334155; }
+.tool-body .left { flex: 1; min-width: 0; }
+.tool-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid rgba(2,132,199,0.25);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+html.dark .tool-head {
+    border-bottom: 1px solid rgba(34,211,238,0.45);
+}
+
+.tool-head .title,
+.tool-head h1 {
+    flex: 1;
+    min-width: 0;
+    color: #0f172a;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    line-height: 1.35;
+    margin: 0;
+    word-break: break-word;
+}
+html.dark .tool-head .title,
+html.dark .tool-head h1 {
+    color: #f1f5f9;
+}
+
+.tool-body .description {
+    color: #475569;
+    background: #f1f5f9;
+    border-left: 3px solid #0284c7;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 24px;
+    font-size: 0.875rem;
+    line-height: 1.7;
+}
+html.dark .tool-body .description {
+    color: #94a3b8;
+    background: rgba(30,41,59,0.55);
+    border-left: 2px solid rgba(34,211,238,0.5);
+}
+
+.tool-body .tool-form {
+    width: min(100%, 560px);
+    margin: 0 auto 24px;
+    text-align: center;
+}
+.tool-body .tool-form .el-form-item--large { margin-bottom: 24px; }
+.tool-body .tool-form .el-alert__description { text-align: left; }
+.tool-body .tool-form .trans { display: flex; align-items: center; gap: 12px; }
+.tool-body .tool-form .trans .trans-left,
+.tool-body .tool-form .trans .trans-right { align-self: flex-start; width: 50%; }
+.tool-body .tool-form .trans .my-icon-kxjt,
+.tool-body .tool-form .trans .my-icon-mutual-convert {
+    flex: 0 0 auto;
+    color: #94a3b8;
+    font-size: 1.75rem;
+    padding: 0 4px;
+}
+.tool-body .tool-form .trans .my-icon-mutual-convert { transform: rotate(90deg); }
+.tool-body .tool-form .trans .edit-top { margin-bottom: 6px; }
+.tool-body .tool-form .trans .edit-bottom { margin-top: 6px; }
+.tool-body .tool-form .trans .edit-top .item,
+.tool-body .tool-form .trans .edit-bottom .item {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    margin: 0 6px 6px 0;
+}
+.tool-body .tool-form .trans .edit-textarea {
+    display: block;
+    width: 100%;
+    min-height: 241px;
+    resize: vertical;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #0f172a;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tool-body .tool-form .trans .edit-textarea:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2,132,199,0.12);
+}
+html.dark .tool-body .tool-form .trans .edit-textarea {
+    border: 1px solid rgba(51,65,85,0.9);
+    background: rgba(2,6,23,0.7);
+    color: #e2e8f0;
+}
+html.dark .tool-body .tool-form .trans .edit-textarea:focus {
+    border-color: #22d3ee;
+    box-shadow: none;
+}
+
+.tool-body .tool-form .trans .text-statistics span:not(:last-child) {
+    margin-right: 8px;
+    padding-right: 8px;
+    border-right: 1px solid #cbd5e1;
+}
+html.dark .tool-body .tool-form .trans .text-statistics span:not(:last-child) {
+    border-right: 1px solid rgba(100,116,139,0.5);
+}
+
+.my-div-input {
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #0f172a;
+    outline: none;
+    word-break: break-word;
+}
+.my-div-input:focus { border-color: #0284c7; }
+html.dark .my-div-input {
+    border: 1px solid rgba(51,65,85,0.9);
+    background: rgba(15,23,42,0.8);
+    color: #e2e8f0;
+}
+html.dark .my-div-input:focus { border-color: #22d3ee; }
+
+/* ── 10. 评论组件 ── */
+.comment-model {
+    width: 100%;
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #ffffff;
+}
+.comment-model > .title {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+.comment-submit-box { width: 100%; }
+.comment-submit-box .el-textarea { display: block; width: 100%; }
+.comment-submit-box .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+}
+.comment-submit-box .bottom-right { display: flex; align-items: center; gap: 16px; }
+.comment-submit-box .bottom-right a { color: #64748b; }
+.comment-submit-box .bottom-right a:hover { color: #0284c7; }
+.comment-list { margin-top: 16px; }
+.comment-item {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+}
+.comment-item > .item-right > .top { display: flex; align-items: center; gap: 12px; color: #64748b; }
+.comment-item > .item-right > .top .name { flex: 1; min-width: 0; color: #0f172a; font-weight: 500; }
+.comment-item > .item-right > .top .time { flex: 0 0 auto; color: #94a3b8; font-size: 0.75rem; }
+.comment-item > .item-right .comment-content { margin: 7px 0; color: #334155; line-height: 1.6; }
+
+html.dark .comment-model {
+    border: 1px solid rgba(51,65,85,0.65);
+    background: rgba(15,23,42,0.72);
+}
+html.dark .comment-model > .title {
+    border-bottom: 1px solid rgba(51,65,85,0.55);
+    color: #e2e8f0;
+}
+html.dark .comment-item { border-top: 1px solid rgba(51,65,85,0.55); }
+html.dark .comment-item > .item-right > .top { color: #94a3b8; }
+html.dark .comment-item > .item-right > .top .name { color: #cbd5e1; }
+html.dark .comment-item > .item-right > .top .time { color: #64748b; }
+html.dark .comment-item > .item-right .comment-content { color: #94a3b8; }
+
+/* ── 11. 测评与益智游戏 ── */
+.tool-body .tool-form.test-form {
+    width: min(100%, 1000px);
+    max-width: none;
+    padding: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #ffffff;
+    text-align: left;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+.tool-body .tool-form.test-form .test-question .desc { margin: 0 0 12px; color: #0f172a; font-size: 1.125rem; }
+.tool-body .tool-form.test-form .test-question-options .item {
+    width: 100%; min-height: 36px; margin: 6px; padding: 10px 12px;
+    border: 1px solid #e2e8f0; border-radius: 8px;
+    background: #f8fafc; cursor: pointer; color: #334155;
+    transition: all 0.2s ease;
+}
+.tool-body .tool-form.test-form .test-question-options .item:hover {
+    border-color: #38bdf8;
+    background: #f0f9ff;
+    color: #0284c7;
+}
+.tool-body .tool-form.test-form .test-question-options .item.active {
+    border-color: #0284c7;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-weight: 600;
+}
+
+html.dark .tool-body .tool-form.test-form {
+    border: 1px solid rgba(51,65,85,0.6);
+    background: rgba(15,23,42,0.55);
+    box-shadow: none;
+}
+html.dark .tool-body .tool-form.test-form .test-question .desc { color: #e2e8f0; }
+html.dark .tool-body .tool-form.test-form .test-question-options .item {
+    border: 1px solid rgba(51,65,85,0.8);
+    background: rgba(2,6,23,0.35);
+    color: #cbd5e1;
+}
+html.dark .tool-body .tool-form.test-form .test-question-options .item:hover { border-color: rgba(34,211,238,0.75); }
+html.dark .tool-body .tool-form.test-form .test-question-options .item.active { border-color: #22d3ee; background: rgba(34,211,238,0.15); color: #cffafe; }
+
+.game-box {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: min(500px, 100%); max-width: 100%; margin: 0 auto 18px;
+    padding: 8px 0 16px; color: #334155; font-size: 1rem; user-select: none;
+}
+.game-box .game-name { width: 100%; margin-bottom: 24px; color: #0f172a; font-size: 1.35rem; text-align: center; }
+.game-box .game-level { width: 100%; margin-bottom: 16px; color: #64748b; font-size: 1.05rem; text-align: center; }
+.game-box .game-top { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 28px; margin-bottom: 16px; }
+
+html.dark .game-box { color: #cbd5e1; }
+html.dark .game-box .game-name { color: #f1f5f9; }
+html.dark .game-box .game-level { color: #94a3b8; }
+
+/* ── 12. 分类列表与搜索页 ── */
+.category-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+}
+.cat-hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+html.dark .cat-hero {
+    border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+}
+.cat-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #0f172a 30%, #0284c7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+html.dark .cat-title {
+    color: #f8fafc;
+    background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.cat-badge {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #e0f2fe;
+    border: 1px solid #bae6fd;
+    color: #0284c7;
+}
+html.dark .cat-badge {
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+}
+
+.tool-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: all 0.2s ease;
+}
+.tool-box:hover {
+    border-color: #38bdf8;
+    box-shadow: 0 8px 24px rgba(2,132,199,0.1);
+    transform: translateY(-2px);
+}
+.tool-box .name { color: #0f172a; font-weight: 600; }
+.tool-box .desc { color: #64748b; font-size: 0.82rem; }
+
+html.dark .tool-box {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+    box-shadow: none;
+}
+html.dark .tool-box:hover {
+    border-color: rgba(34, 211, 238, 0.5);
+    background: rgba(8, 47, 73, 0.5);
+}
+html.dark .tool-box .name { color: #f1f5f9; }
+html.dark .tool-box .desc { color: #94a3b8; }
+
+/* ── 13. 高级扩展工具通用样式 (Terminal Panel, Periodic, Minesweeper etc.) ── */
+.terminal-panel {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+.terminal-header {
+    background: #f8fafc;
+    padding: 8px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.78rem;
+    color: #475569;
+}
+html.dark .terminal-panel {
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(51, 65, 85, 0.7);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+html.dark .terminal-header {
+    background: #111c30;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+    color: #94a3b8;
+}
+
+/* 元素周期表控制栏 */
+.pt-control-bar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+.pt-chip {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+}
+.pt-chip.active {
+    background: #e0f2fe;
+    border-color: #0284c7;
+    color: #0369a1;
+}
+html.dark .pt-control-bar {
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+    box-shadow: none;
+}
+html.dark .pt-chip {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+    color: #94a3b8;
+}
+html.dark .pt-chip.active {
+    background: rgba(34, 211, 238, 0.15);
+    border-color: #22d3ee;
+    color: #38bdf8;
+}
+
+/* 扫雷游戏容器 */
+.ms-container {
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+.ms-header {
+    background: #f1f5f9;
+    border: 2px solid #cbd5e1;
+}
+html.dark .ms-container {
+    background: #0f172a;
+    border: 2px solid #334155;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(34, 211, 238, 0.1);
+}
+html.dark .ms-header {
+    background: #020617;
+    border: 2px solid #1e293b;
+}
+
+/* ── 14. 常用布局实用工具类补全 ── */
+.flex-col { flex-direction: column !important; }
+.flex-row { flex-direction: row !important; }
+.flex-wrap { flex-wrap: wrap !important; }
+.flex-nowrap { flex-wrap: nowrap !important; }
+.items-start { align-items: flex-start !important; }
+.items-center { align-items: center !important; }
+.items-end { align-items: flex-end !important; }
+.justify-start { justify-content: flex-start !important; }
+.justify-center { justify-content: center !important; }
+.justify-between { justify-content: space-between !important; }
+.gap-1 { gap: 4px !important; }
+.gap-2 { gap: 8px !important; }
+.gap-3 { gap: 12px !important; }
+.gap-4 { gap: 16px !important; }

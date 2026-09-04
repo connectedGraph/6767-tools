@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-decgif" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4338CA"/>
+      <stop offset="50%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-decgif)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Top GIF Banner -->
+  <rect x="18" y="5.5" width="12" height="6.5" rx="2" fill="#EF4444" stroke="#FFFFFF" stroke-width="0.8"/>
+  <text x="24" y="10.2" fill="#FFFFFF" font-family="system-ui, sans-serif" font-weight="900" font-size="4.2" text-anchor="middle">GIF</text>
+  <!-- 3 Fanned Out Film Slides (Decomposed Frames) -->
+  <!-- Left Slide (Tilted -16 deg) -->
+  <g transform="rotate(-16 15 25)">
+    <rect x="6" y="15" width="15" height="18" rx="2.5" fill="rgba(15,23,42,0.7)" stroke="#38BDF8" stroke-width="1.5"/>
+    <circle cx="10" cy="19.5" r="1.4" fill="#FDE047"/>
+    <path d="M7 29l4-4 3 3 4-4v4.5H7z" fill="#38BDF8"/>
+  </g>
+  <!-- Right Slide (Tilted +16 deg) -->
+  <g transform="rotate(16 33 25)">
+    <rect x="27" y="15" width="15" height="18" rx="2.5" fill="rgba(15,23,42,0.7)" stroke="#EC4899" stroke-width="1.5"/>
+    <circle cx="31" cy="19.5" r="1.4" fill="#FDE047"/>
+    <path d="M28 29l4-4 3 3 4-4v4.5H28z" fill="#EC4899"/>
+  </g>
+  <!-- Center Slide (Front Focus) -->
+  <rect x="16.5" y="13" width="15" height="19" rx="2.5" fill="#6366F1" stroke="#FFFFFF" stroke-width="1.8"/>
+  <circle cx="21" cy="18" r="1.6" fill="#FDE047"/>
+  <path d="M17.5 28l4-4 3 3 4-4.5v5.5h-11z" fill="#FFFFFF"/>
+  <!-- Burst Dispersion Separation Arrows -->
+  <path d="M15 37l-5 4m0 0h4m-4 0v-4 M33 37l5 4m0 0h-4m4 0v-4" stroke="#FDE047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

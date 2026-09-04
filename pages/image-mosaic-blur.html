@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no" />
+    <title>图片马赛克与局部隐私遮挡 - 在线工具</title>
+    <meta name="description" content="免费在线图片马赛克与局部隐私遮挡工具，支持交互式涂抹马赛克、高斯模糊、黑色遮挡块、白色遮挡块与红框重点标注。支持笔刷与矩形框选，支持撤销/重做与橡皮擦还原，一键导出保护隐私后的图片。拓展时间: 2026-08-31。" />
+    <meta name="keywords" content="图片马赛克,图片模糊,隐私遮挡,身份证脱敏,打码工具,图片红框标注,在线涂抹马赛克,图片局部遮蔽,图片去隐私" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="dns-prefetch" href="" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .editor-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 上传区域 */
+        .upload-dropzone {
+            border: 2px dashed rgba(51, 65, 85, 0.8);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.5);
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .upload-dropzone:hover, .upload-dropzone.drag-over {
+            border-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.06);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+        }
+        .upload-icon {
+            font-size: 44px;
+            color: #22d3ee;
+            margin-bottom: 10px;
+        }
+        .upload-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 6px;
+        }
+        .upload-subtitle {
+            font-size: 0.82rem;
+            color: #64748b;
+        }
+
+        /* 工具主工作区网格 */
+        .mosaic-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 18px;
+        }
+        @media (max-width: 960px) {
+            .mosaic-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 左侧工具箱 */
+        .tools-sidebar {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .sidebar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+            padding-bottom: 14px;
+        }
+        .sidebar-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .section-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 工具选择按钮网格 */
+        .tool-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 8px;
+            color: #cbd5e1;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tool-btn:hover {
+            border-color: #22d3ee;
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.08);
+        }
+        .tool-btn.active {
+            border-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.16);
+            color: #22d3ee;
+            font-weight: 600;
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.25);
+        }
+        .tool-btn-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        /* 参数滑块行 */
+        .slider-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        .slider-label {
+            min-width: 70px;
+        }
+        .slider-control {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .slider-val {
+            width: 36px;
+            text-align: right;
+            font-family: ui-monospace, Consolas, monospace;
+            color: #22d3ee;
+        }
+
+        /* 右侧画布编辑区 */
+        .canvas-area {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .canvas-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .history-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 视口舞台 */
+        .stage-viewport {
+            width: 100%;
+            height: 540px;
+            background: #090e17;
+            background-image: 
+                linear-gradient(45deg, #121a29 25%, transparent 25%), 
+                linear-gradient(-45deg, #121a29 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #121a29 75%), 
+                linear-gradient(-45deg, transparent 75%, #121a29 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: crosshair;
+            user-select: none;
+        }
+        .stage-wrapper {
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            border-radius: 4px;
+            transform-origin: center center;
+            transition: transform 0.15s ease-out;
+        }
+        #mainCanvas {
+            display: block;
+            border-radius: 4px;
+        }
+        #overlayCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            border-radius: 4px;
+        }
+
+        /* 笔刷光标环 */
+        .brush-cursor-circle {
+            position: fixed;
+            pointer-events: none;
+            border: 1.5px solid #22d3ee;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(34, 211, 238, 0.15);
+            z-index: 1000;
+            display: none;
+        }
+
+        /* 底部导出栏 */
+        .bottom-export-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="图片马赛克与局部隐私遮挡 - 在线工具" />
+    <meta property="og:description" content="免费在线图片马赛克与局部隐私遮挡工具，支持交互式涂抹马赛克、高斯模糊、黑色遮挡块、白色遮挡块与红框重点标注。" />
+    <meta property="og:url" content="https://tool.6767.chat/image-mosaic-blur" />
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">图片马赛克与局部隐私遮挡</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">图片马赛克与局部隐私遮挡 (Image Mosaic & Privacy Censor)</h1>
+                </div>
+                <div class="description">
+                    强大的纯前端交互式图片脱敏与隐私保护工具。支持<strong>自由涂抹马赛克、高斯模糊、黑色实心遮挡块、白色遮蔽块与红色框选高亮</strong>。支持矩形框选与画笔涂抹双模式，支持多步撤销与重做，支持橡皮擦像素级还原，纯本地离线处理保护个人敏感隐私。
+                </div>
+
+                <div class="editor-container" v-cloak>
+                    <!-- 上传区域 -->
+                    <div class="upload-dropzone" 
+                         v-if="!hasImage"
+                         :class="{'drag-over': isDragging}"
+                         @click="triggerFileInput"
+                         @dragover.prevent="isDragging = true"
+                         @dragleave.prevent="isDragging = false"
+                         @drop.prevent="handleDrop">
+                        <input id="imageFileInput" type="file" accept="image/*" style="display:none;" @change="handleFileChange" />
+                        <div class="upload-icon">
+                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto;">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <div class="upload-title">点击选择图片，或将图片拖拽到此处</div>
+                        <div class="upload-subtitle">支持 JPG、PNG、WEBP、GIF、BMP，支持直接 Ctrl+V 粘贴截图</div>
+
+                        <div style="margin-top: 14px;" @click.stop>
+                            <el-button size="small" type="primary" plain @click="loadSampleCard">
+                                加载示例脱敏证件卡片
+                            </el-button>
+                        </div>
+                    </div>
+
+                    <!-- 主编辑器工作区 -->
+                    <div class="mosaic-layout" v-if="hasImage">
+                        <!-- 左侧工具箱 -->
+                        <div class="tools-sidebar">
+                            <!-- 1. 遮蔽类型 -->
+                            <div class="sidebar-section">
+                                <div class="section-label">
+                                    <span>遮蔽工具类型</span>
+                                </div>
+                                <div class="tool-type-grid">
+                                    <button type="button" class="tool-btn" :class="{'active': activeTool === 'mosaic'}" @click="activeTool = 'mosaic'">
+                                        <svg class="tool-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                                        像素马赛克
+                                    </button>
+                                    <button type="button" class="tool-btn" :class="{'active': activeTool === 'blur'}" @click="activeTool = 'blur'">
+                                        <svg class="tool-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle></svg>
+                                        高斯模糊
+                                    </button>
+                                    <button type="button" class="tool-btn" :class="{'active': activeTool === 'blackout'}" @click="activeTool = 'blackout'">
+                                        <svg class="tool-btn-icon" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg>
+                                        黑色遮挡
+                                    </button>
+                                    <button type="button" class="tool-btn" :class="{'active': activeTool === 'whiteout'}" @click="activeTool = 'whiteout'">
+                                        <svg class="tool-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg>
+                                        白色遮挡
+                                    </button>
+                                    <button type="button" class="tool-btn" :class="{'active': activeTool === 'highlight'}" @click="activeTool = 'highlight'">
+                                        <svg class="tool-btn-icon" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg>
+                                        红框高亮
+                                    </button>
+                                    <button type="button" class="tool-btn" :class="{'active': activeTool === 'eraser'}" @click="activeTool = 'eraser'">
+                                        <svg class="tool-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13l-5-5-8 8a2 2 0 0 0 0 3l3 3a2 2 0 0 0 3 0l7-7z"></path><line x1="18" y1="13" x2="22" y2="17"></line></svg>
+                                        橡皮擦还原
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 2. 绘制模式 -->
+                            <div class="sidebar-section">
+                                <div class="section-label">
+                                    <span>绘制方式</span>
+                                </div>
+                                <el-radio-group v-model="drawShape" size="small" style="width:100%; display:flex;">
+                                    <el-radio-button label="brush" style="flex:1;">自由涂抹 (Brush)</el-radio-button>
+                                    <el-radio-button label="rect" style="flex:1;">矩形框选 (Box)</el-radio-button>
+                                </el-radio-group>
+                            </div>
+
+                            <!-- 3. 笔刷与参数细调 -->
+                            <div class="sidebar-section">
+                                <div class="section-label">
+                                    <span>参数调节</span>
+                                </div>
+
+                                <!-- 笔刷大小 -->
+                                <div class="slider-row" v-if="drawShape === 'brush'">
+                                    <span class="slider-label">笔刷粗细：</span>
+                                    <div class="slider-control">
+                                        <el-slider v-model="brushSize" :min="6" :max="100" :step="2" size="small" style="flex:1;"></el-slider>
+                                        <span class="slider-val">{{ brushSize }}px</span>
+                                    </div>
+                                </div>
+
+                                <!-- 马赛克颗粒大小 -->
+                                <div class="slider-row" v-if="activeTool === 'mosaic'">
+                                    <span class="slider-label">颗粒大小：</span>
+                                    <div class="slider-control">
+                                        <el-slider v-model="mosaicBlockSize" :min="4" :max="36" :step="2" size="small" style="flex:1;"></el-slider>
+                                        <span class="slider-val">{{ mosaicBlockSize }}px</span>
+                                    </div>
+                                </div>
+
+                                <!-- 模糊程度 -->
+                                <div class="slider-row" v-if="activeTool === 'blur'">
+                                    <span class="slider-label">模糊强度：</span>
+                                    <div class="slider-control">
+                                        <el-slider v-model="blurRadius" :min="2" :max="25" :step="1" size="small" style="flex:1;"></el-slider>
+                                        <span class="slider-val">{{ blurRadius }}px</span>
+                                    </div>
+                                </div>
+
+                                <!-- 红框线宽 -->
+                                <div class="slider-row" v-if="activeTool === 'highlight'">
+                                    <span class="slider-label">框线粗细：</span>
+                                    <div class="slider-control">
+                                        <el-slider v-model="highlightLineWidth" :min="1" :max="10" :step="1" size="small" style="flex:1;"></el-slider>
+                                        <span class="slider-val">{{ highlightLineWidth }}px</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. 图片信息与更换 -->
+                            <div class="sidebar-section">
+                                <div class="section-label">
+                                    <span>图像文件</span>
+                                    <el-button size="small" type="primary" link @click="triggerFileInput">更换图片</el-button>
+                                </div>
+                                <div style="font-size:0.75rem; color:#64748b; font-family:monospace; line-height:1.5;">
+                                    <div>尺寸: {{ imageInfo.width }} × {{ imageInfo.height }} px</div>
+                                    <div>名称: {{ imageInfo.name }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右侧编辑舞台 -->
+                        <div class="canvas-area">
+                            <div class="canvas-toolbar">
+                                <!-- 历史与撤销 -->
+                                <div class="history-controls">
+                                    <el-button size="small" :disabled="historyIndex <= 0" @click="undo">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                                        撤销 (Ctrl+Z)
+                                    </el-button>
+                                    <el-button size="small" :disabled="historyIndex >= historyStack.length - 1" @click="redo">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                                        重做 (Ctrl+Y)
+                                    </el-button>
+                                    <el-button size="small" type="danger" plain @click="resetToOriginal">
+                                        还原全部
+                                    </el-button>
+                                    <span style="font-size:0.75rem; color:#64748b; font-family:monospace; margin-left:4px;">
+                                        记录: {{ historyIndex }} / {{ historyStack.length - 1 }}
+                                    </span>
+                                </div>
+
+                                <!-- 缩放控制 -->
+                                <div class="zoom-controls">
+                                    <el-button-group size="small">
+                                        <el-button @click="zoomStage(-0.15)">-</el-button>
+                                        <el-button @click="stageZoom = 1">{{ Math.round(stageZoom * 100) }}%</el-button>
+                                        <el-button @click="zoomStage(0.15)">+</el-button>
+                                        <el-button @click="fitStage">适应窗口</el-button>
+                                    </el-button-group>
+                                </div>
+                            </div>
+
+                            <!-- 视口与 Canvas 舞台 -->
+                            <div class="stage-viewport" 
+                                 id="stageViewport"
+                                 @mousedown="onMouseDown"
+                                 @mousemove="onMouseMove"
+                                 @mouseup="onMouseUp"
+                                 @mouseleave="onMouseLeave"
+                                 @mouseenter="onMouseEnter">
+                                <div class="stage-wrapper" :style="{ transform: 'scale(' + stageZoom + ')' }">
+                                    <canvas id="mainCanvas"></canvas>
+                                    <canvas id="overlayCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部导出控制栏 -->
+                    <div class="bottom-export-bar" v-if="hasImage">
+                        <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span style="font-size:0.85rem; color:#94a3b8;">导出格式：</span>
+                                <el-radio-group v-model="exportFormat" size="small">
+                                    <el-radio-button label="image/png">PNG (无损推荐)</el-radio-button>
+                                    <el-radio-button label="image/jpeg">JPEG</el-radio-button>
+                                    <el-radio-button label="image/webp">WebP</el-radio-button>
+                                </el-radio-group>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <el-button type="primary" size="large" @click="downloadProtectedImage">
+                                <i class="my-icon my-icon-save" style="margin-right:6px;"></i>
+                                下载保护隐私后的图片
+                            </el-button>
+                            <el-button size="large" @click="copyProtectedImage">
+                                复制图片到剪贴板
+                            </el-button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 笔刷跟随光标环 -->
+                <div class="brush-cursor-circle" id="brushCursor" :style="{ width: (brushSize * stageZoom) + 'px', height: (brushSize * stageZoom) + 'px' }"></div>
+
+                <div class="divider"></div>
+
+                <div class="content">
+                    <h3>图片马赛克与局部隐私遮挡介绍</h3>
+                    <p>在分享屏幕截图、证件照、快递单、交易明细或聊天记录时，直接发布极易泄露姓名、身份证号、银行卡号、手机号码、人脸及家庭住址等敏感数据。本工具提供专业、无痕且安全的纯前端离线隐私脱敏方案。</p>
+                    <p>支持自由切换<strong>像素马赛克 (Pixelate)、高斯模糊 (Gaussian Blur)、黑色实心脱敏块 (Redaction)、白色遮蔽块以及红色框选标注</strong>。支持画笔手绘与矩形框选双模式，全过程在本地运行，杜绝隐私信息在网络中上传留痕。</p>
+
+                    <h3>快捷键与使用技巧</h3>
+                    <ul>
+                        <li><code>Ctrl + V</code>：在任意时刻直接粘贴剪贴板截图开始脱敏处理。</li>
+                        <li><code>Ctrl + Z</code>：快速撤销上一步操作；<code>Ctrl + Y</code>：重做下一步操作。</li>
+                        <li><strong>矩形框选 (Box)</strong>：适合身份证号、密码框、姓名等规整区域，一键框选瞬间遮蔽。</li>
+                        <li><strong>自由涂抹 (Brush)</strong>：适合涂抹人脸、异形印章、签名或多行文本。</li>
+                        <li><strong>橡皮擦还原 (Eraser)</strong>：误操作打码时，无需全部重来，使用橡皮擦涂抹即可精准还原原图对应像素。</li>
+                    </ul>
+
+                    <p style="margin-top: 15px; font-size: 0.8rem; color: #64748b;">
+                        拓展时间: 2026-08-31 · 纯前端零上传安全保障
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    var languageCode = 'zh';
+    var websiteRoot = "";
+    var mainWebSiteHost = "";
+    var webApiSiteHost = "/api";
+    var staticSiteHost = "";
+    var staticFileVersion="260728100716";
+</script>
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js?260728100716"></script>
+<script src="./js/search.js?260728100716"></script>
+
+<script>
+const { createApp, nextTick } = Vue;
+
+const app = createApp({
+    data() {
+        return {
+            hasImage: false,
+            isDragging: false,
+            imageInfo: { name: '', width: 0, height: 0 },
+            activeTool: 'mosaic', // 'mosaic' | 'blur' | 'blackout' | 'whiteout' | 'highlight' | 'eraser'
+            drawShape: 'rect', // 'brush' | 'rect'
+            brushSize: 28,
+            mosaicBlockSize: 14,
+            blurRadius: 8,
+            highlightLineWidth: 3,
+            stageZoom: 1,
+            exportFormat: 'image/png',
+            historyStack: [],
+            historyIndex: -1,
+            maxHistorySteps: 25,
+            isDrawing: false,
+            startPos: { x: 0, y: 0 },
+            lastPos: { x: 0, y: 0 },
+            originalImageCanvas: null,
+            originalImageEl: null
+        };
+    },
+    mounted() {
+        window.addEventListener('paste', this.handleGlobalPaste);
+        window.addEventListener('keydown', this.handleGlobalKeydown);
+        // 默认加载示例
+        this.loadSampleCard();
+    },
+    beforeUnmount() {
+        window.removeEventListener('paste', this.handleGlobalPaste);
+        window.removeEventListener('keydown', this.handleGlobalKeydown);
+    },
+    methods: {
+        triggerFileInput() {
+            let el = document.getElementById('imageFileInput');
+            if (!el) {
+                // 如果已在编辑页更换图片，创建一个临时 input
+                el = document.createElement('input');
+                el.type = 'file';
+                el.accept = 'image/*';
+                el.onchange = this.handleFileChange;
+            }
+            el.click();
+        },
+        handleFileChange(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            this.loadImageFile(file);
+            e.target.value = '';
+        },
+        handleDrop(e) {
+            this.isDragging = false;
+            const files = e.dataTransfer.files;
+            if (files && files.length > 0 && files[0].type.startsWith('image/')) {
+                this.loadImageFile(files[0]);
+            }
+        },
+        handleGlobalPaste(e) {
+            const items = e.clipboardData && e.clipboardData.items;
+            if (!items) return;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const blob = items[i].getAsFile();
+                    if (blob) this.loadImageFile(blob, '剪贴板截图.png');
+                    break;
+                }
+            }
+        },
+        handleGlobalKeydown(e) {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) {
+                e.preventDefault();
+                if (e.shiftKey) {
+                    this.redo();
+                } else {
+                    this.undo();
+                }
+            } else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) {
+                e.preventDefault();
+                this.redo();
+            }
+        },
+        loadImageFile(file, customName) {
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const img = new Image();
+                img.onload = () => {
+                    this.initImage(img, customName || file.name);
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        },
+        initImage(img, name) {
+            this.originalImageEl = img;
+            this.imageInfo = {
+                name: name || '图片.png',
+                width: img.naturalWidth || img.width,
+                height: img.naturalHeight || img.height
+            };
+
+            // 创建持久保存的原图 Canvas 用于橡皮擦与像素基准
+            this.originalImageCanvas = document.createElement('canvas');
+            this.originalImageCanvas.width = this.imageInfo.width;
+            this.originalImageCanvas.height = this.imageInfo.height;
+            const origCtx = this.originalImageCanvas.getContext('2d');
+            origCtx.drawImage(img, 0, 0);
+
+            this.hasImage = true;
+            this.historyStack = [];
+            this.historyIndex = -1;
+
+            nextTick(() => {
+                const mainCanvas = document.getElementById('mainCanvas');
+                const overlayCanvas = document.getElementById('overlayCanvas');
+                if (!mainCanvas || !overlayCanvas) return;
+
+                mainCanvas.width = this.imageInfo.width;
+                mainCanvas.height = this.imageInfo.height;
+                overlayCanvas.width = this.imageInfo.width;
+                overlayCanvas.height = this.imageInfo.height;
+
+                const ctx = mainCanvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                this.saveHistorySnapshot();
+                this.fitStage();
+            });
+        },
+        fitStage() {
+            nextTick(() => {
+                const viewport = document.getElementById('stageViewport');
+                if (!viewport || !this.imageInfo.width) return;
+                const availW = viewport.clientWidth - 40;
+                const availH = viewport.clientHeight - 40;
+                const scaleW = availW / this.imageInfo.width;
+                const scaleH = availH / this.imageInfo.height;
+                this.stageZoom = Math.min(1, Math.min(scaleW, scaleH));
+            });
+        },
+        zoomStage(delta) {
+            this.stageZoom = Math.max(0.1, Math.min(3.0, this.stageZoom + delta));
+        },
+        saveHistorySnapshot() {
+            const mainCanvas = document.getElementById('mainCanvas');
+            if (!mainCanvas) return;
+            const ctx = mainCanvas.getContext('2d');
+            const snapshot = ctx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
+
+            // 如果当前在历史中间操作，丢弃重做历史
+            if (this.historyIndex < this.historyStack.length - 1) {
+                this.historyStack = this.historyStack.slice(0, this.historyIndex + 1);
+            }
+
+            this.historyStack.push(snapshot);
+            if (this.historyStack.length > this.maxHistorySteps) {
+                this.historyStack.shift();
+            } else {
+                this.historyIndex++;
+            }
+        },
+        undo() {
+            if (this.historyIndex > 0) {
+                this.historyIndex--;
+                this.applyHistorySnapshot(this.historyStack[this.historyIndex]);
+            }
+        },
+        redo() {
+            if (this.historyIndex < this.historyStack.length - 1) {
+                this.historyIndex++;
+                this.applyHistorySnapshot(this.historyStack[this.historyIndex]);
+            }
+        },
+        applyHistorySnapshot(snapshot) {
+            const mainCanvas = document.getElementById('mainCanvas');
+            if (!mainCanvas || !snapshot) return;
+            const ctx = mainCanvas.getContext('2d');
+            ctx.putImageData(snapshot, 0, 0);
+        },
+        resetToOriginal() {
+            if (!this.originalImageCanvas) return;
+            const mainCanvas = document.getElementById('mainCanvas');
+            const ctx = mainCanvas.getContext('2d');
+            ctx.drawImage(this.originalImageCanvas, 0, 0);
+            this.saveHistorySnapshot();
+            ElementPlus.ElMessage.info('已恢复为初始原图状态');
+        },
+        getCanvasCoords(e) {
+            const mainCanvas = document.getElementById('mainCanvas');
+            if (!mainCanvas) return { x: 0, y: 0 };
+            const rect = mainCanvas.getBoundingClientRect();
+            const scaleX = mainCanvas.width / rect.width;
+            const scaleY = mainCanvas.height / rect.height;
+            return {
+                x: Math.round((e.clientX - rect.left) * scaleX),
+                y: Math.round((e.clientY - rect.top) * scaleY)
+            };
+        },
+        onMouseDown(e) {
+            if (!this.hasImage) return;
+            this.isDrawing = true;
+            const pos = this.getCanvasCoords(e);
+            this.startPos = pos;
+            this.lastPos = pos;
+
+            if (this.drawShape === 'brush') {
+                this.applyBrushEffect(pos.x, pos.y);
+            }
+        },
+        onMouseMove(e) {
+            this.updateBrushCursor(e);
+            if (!this.isDrawing || !this.hasImage) return;
+            const pos = this.getCanvasCoords(e);
+
+            if (this.drawShape === 'brush') {
+                // 笔刷连续插值绘制
+                this.interpolateBrush(this.lastPos, pos);
+                this.lastPos = pos;
+            } else if (this.drawShape === 'rect') {
+                // 矩形模式：在 overlayCanvas 上绘制预览框
+                this.renderRectPreview(this.startPos, pos);
+            }
+        },
+        onMouseUp(e) {
+            if (!this.isDrawing || !this.hasImage) return;
+            this.isDrawing = false;
+            const pos = this.getCanvasCoords(e);
+
+            if (this.drawShape === 'rect') {
+                this.clearOverlayCanvas();
+                const x = Math.min(this.startPos.x, pos.x);
+                const y = Math.min(this.startPos.y, pos.y);
+                const w = Math.abs(pos.x - this.startPos.x);
+                const h = Math.abs(pos.y - this.startPos.y);
+
+                if (w > 2 && h > 2) {
+                    this.applyRectEffect(x, y, w, h);
+                    this.saveHistorySnapshot();
+                }
+            } else if (this.drawShape === 'brush') {
+                this.saveHistorySnapshot();
+            }
+        },
+        onMouseLeave() {
+            this.hideBrushCursor();
+            if (this.isDrawing && this.drawShape === 'brush') {
+                this.isDrawing = false;
+                this.saveHistorySnapshot();
+            } else if (this.isDrawing && this.drawShape === 'rect') {
+                this.clearOverlayCanvas();
+                this.isDrawing = false;
+            }
+        },
+        onMouseEnter(e) {
+            if (this.drawShape === 'brush') {
+                this.showBrushCursor(e);
+            }
+        },
+        updateBrushCursor(e) {
+            const cursor = document.getElementById('brushCursor');
+            if (!cursor) return;
+            if (this.drawShape === 'brush') {
+                cursor.style.display = 'block';
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                cursor.style.width = (this.brushSize * this.stageZoom) + 'px';
+                cursor.style.height = (this.brushSize * this.stageZoom) + 'px';
+            } else {
+                cursor.style.display = 'none';
+            }
+        },
+        hideBrushCursor() {
+            const cursor = document.getElementById('brushCursor');
+            if (cursor) cursor.style.display = 'none';
+        },
+        showBrushCursor(e) {
+            this.updateBrushCursor(e);
+        },
+        clearOverlayCanvas() {
+            const overlay = document.getElementById('overlayCanvas');
+            if (!overlay) return;
+            const ctx = overlay.getContext('2d');
+            ctx.clearRect(0, 0, overlay.width, overlay.height);
+        },
+        renderRectPreview(start, end) {
+            const overlay = document.getElementById('overlayCanvas');
+            if (!overlay) return;
+            const ctx = overlay.getContext('2d');
+            ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+            const x = Math.min(start.x, end.x);
+            const y = Math.min(start.y, end.y);
+            const w = Math.abs(end.x - start.x);
+            const h = Math.abs(end.y - start.y);
+
+            ctx.save();
+            if (this.activeTool === 'highlight') {
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = this.highlightLineWidth;
+                ctx.strokeRect(x, y, w, h);
+            } else {
+                ctx.strokeStyle = '#22d3ee';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.strokeRect(x, y, w, h);
+                ctx.fillStyle = 'rgba(34, 211, 238, 0.15)';
+                ctx.fillRect(x, y, w, h);
+            }
+            ctx.restore();
+        },
+        interpolateBrush(p1, p2) {
+            const dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+            const step = Math.max(2, this.brushSize / 4);
+            const steps = Math.ceil(dist / step);
+
+            for (let i = 0; i <= steps; i++) {
+                const t = steps === 0 ? 0 : i / steps;
+                const x = p1.x + (p2.x - p1.x) * t;
+                const y = p1.y + (p2.y - p1.y) * t;
+                this.applyBrushEffect(x, y);
+            }
+        },
+        applyBrushEffect(cx, cy) {
+            const r = this.brushSize / 2;
+            const x = Math.max(0, Math.floor(cx - r));
+            const y = Math.max(0, Math.floor(cy - r));
+            const w = Math.min(this.imageInfo.width - x, Math.ceil(r * 2));
+            const h = Math.min(this.imageInfo.height - y, Math.ceil(r * 2));
+            if (w <= 0 || h <= 0) return;
+
+            const mainCanvas = document.getElementById('mainCanvas');
+            const ctx = mainCanvas.getContext('2d');
+
+            if (this.activeTool === 'blackout') {
+                ctx.save();
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            } else if (this.activeTool === 'whiteout') {
+                ctx.save();
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            } else if (this.activeTool === 'highlight') {
+                ctx.save();
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = this.highlightLineWidth;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+            } else if (this.activeTool === 'eraser') {
+                // 从 originalImageCanvas 复制圆形原图像素
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.clip();
+                ctx.drawImage(this.originalImageCanvas, 0, 0);
+                ctx.restore();
+            } else if (this.activeTool === 'mosaic') {
+                this.applyMosaicToArea(x, y, w, h, true, cx, cy, r);
+            } else if (this.activeTool === 'blur') {
+                this.applyBlurToArea(x, y, w, h, true, cx, cy, r);
+            }
+        },
+        applyRectEffect(x, y, w, h) {
+            const mainCanvas = document.getElementById('mainCanvas');
+            const ctx = mainCanvas.getContext('2d');
+
+            if (this.activeTool === 'blackout') {
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(x, y, w, h);
+            } else if (this.activeTool === 'whiteout') {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(x, y, w, h);
+            } else if (this.activeTool === 'highlight') {
+                ctx.save();
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = this.highlightLineWidth;
+                ctx.strokeRect(x, y, w, h);
+                ctx.restore();
+            } else if (this.activeTool === 'eraser') {
+                ctx.drawImage(this.originalImageCanvas, x, y, w, h, x, y, w, h);
+            } else if (this.activeTool === 'mosaic') {
+                this.applyMosaicToArea(x, y, w, h, false);
+            } else if (this.activeTool === 'blur') {
+                this.applyBlurToArea(x, y, w, h, false);
+            }
+        },
+        applyMosaicToArea(x, y, w, h, isCircle, cx, cy, cr) {
+            const mainCanvas = document.getElementById('mainCanvas');
+            const ctx = mainCanvas.getContext('2d');
+            const blockSize = Math.max(2, this.mosaicBlockSize);
+
+            const imgData = ctx.getImageData(x, y, w, h);
+            const data = imgData.data;
+
+            for (let by = 0; by < h; by += blockSize) {
+                for (let bx = 0; bx < w; bx += blockSize) {
+                    const bw = Math.min(blockSize, w - bx);
+                    const bh = Math.min(blockSize, h - by);
+
+                    // 计算块中心坐标与圆形笔刷距离
+                    if (isCircle) {
+                        const globalX = x + bx + bw / 2;
+                        const globalY = y + by + bh / 2;
+                        if (Math.hypot(globalX - cx, globalY - cy) > cr) {
+                            continue;
+                        }
+                    }
+
+                    // 取块内采样颜色
+                    let rSum = 0, gSum = 0, bSum = 0, count = 0;
+                    for (let py = 0; py < bh; py++) {
+                        for (let px = 0; px < bw; px++) {
+                            const idx = ((by + py) * w + (bx + px)) * 4;
+                            rSum += data[idx];
+                            gSum += data[idx + 1];
+                            bSum += data[idx + 2];
+                            count++;
+                        }
+                    }
+
+                    const rAvg = Math.round(rSum / count);
+                    const gAvg = Math.round(gSum / count);
+                    const bAvg = Math.round(bSum / count);
+
+                    for (let py = 0; py < bh; py++) {
+                        for (let px = 0; px < bw; px++) {
+                            const idx = ((by + py) * w + (bx + px)) * 4;
+                            data[idx] = rAvg;
+                            data[idx + 1] = gAvg;
+                            data[idx + 2] = bAvg;
+                        }
+                    }
+                }
+            }
+
+            ctx.putImageData(imgData, x, y);
+        },
+        applyBlurToArea(x, y, w, h, isCircle, cx, cy, cr) {
+            const mainCanvas = document.getElementById('mainCanvas');
+            const ctx = mainCanvas.getContext('2d');
+            const radius = Math.max(1, this.blurRadius);
+
+            // 使用离屏 canvas 进行快速降采样再双线性插值实现平滑模糊
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            const scaleDown = Math.max(2, radius);
+
+            tempCanvas.width = Math.max(1, Math.floor(w / scaleDown));
+            tempCanvas.height = Math.max(1, Math.floor(h / scaleDown));
+
+            tempCtx.drawImage(mainCanvas, x, y, w, h, 0, 0, tempCanvas.width, tempCanvas.height);
+
+            ctx.save();
+            if (isCircle) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+                ctx.clip();
+            }
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, x, y, w, h);
+            ctx.restore();
+        },
+        downloadProtectedImage() {
+            const mainCanvas = document.getElementById('mainCanvas');
+            if (!mainCanvas || !this.hasImage) return;
+
+            const ext = this.exportFormat === 'image/png' ? 'png' : (this.exportFormat === 'image/webp' ? 'webp' : 'jpg');
+            const dataUrl = mainCanvas.toDataURL(this.exportFormat, 0.95);
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `censor_${Date.now()}.${ext}`;
+            a.click();
+            ElementPlus.ElMessage.success('隐私脱敏图片已成功下载！');
+        },
+        copyProtectedImage() {
+            const mainCanvas = document.getElementById('mainCanvas');
+            if (!mainCanvas || !this.hasImage) return;
+
+            mainCanvas.toBlob((blob) => {
+                if (blob && navigator.clipboard && navigator.clipboard.write) {
+                    navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': blob })
+                    ]).then(() => {
+                        ElementPlus.ElMessage.success('图片已成功复制到剪贴板！');
+                    }).catch(() => {
+                        ElementPlus.ElMessage.error('当前浏览器环境拒绝写入剪贴板图片');
+                    });
+                } else {
+                    ElementPlus.ElMessage.warning('当前浏览器不支持直接复制图片，请使用下载功能');
+                }
+            }, 'image/png');
+        },
+        loadSampleCard() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 720;
+            canvas.height = 450;
+            const ctx = canvas.getContext('2d');
+
+            // 绘制精美的模拟证件/快递卡片
+            const bgGrad = ctx.createLinearGradient(0, 0, 720, 450);
+            bgGrad.addColorStop(0, '#1e293b');
+            bgGrad.addColorStop(1, '#0f172a');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, 720, 450);
+
+            // 卡片边框
+            ctx.strokeStyle = 'rgba(51, 65, 85, 0.9)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(20, 20, 680, 410);
+
+            // 徽标与标题
+            ctx.fillStyle = '#22d3ee';
+            ctx.font = 'bold 22px system-ui, sans-serif';
+            ctx.fillText('IDENTITY CERTIFICATE · 示例证件卡片', 50, 70);
+
+            // 模拟头像照片
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(50, 110, 150, 190);
+            ctx.fillStyle = '#64748b';
+            ctx.beginPath();
+            ctx.arc(125, 180, 40, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(125, 270, 65, Math.PI, 0);
+            ctx.fill();
+
+            // 模拟敏感信息文本
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = '16px system-ui, sans-serif';
+            ctx.fillText('姓名 (Name): 张小明 (敏感信息)', 230, 130);
+            ctx.fillText('性别 (Sex): 男      民族 (Ethnic): 汉', 230, 170);
+            ctx.fillText('出生 (Birth): 1995年08月18日', 230, 210);
+            ctx.fillText('住址 (Address): 浙江省杭州市西湖区科技路88号 (敏感)', 230, 250);
+
+            // 模拟身份证号条目
+            ctx.fillStyle = '#f87171';
+            ctx.font = 'bold 18px ui-monospace, Consolas, monospace';
+            ctx.fillText('公民身份证号: 33010619950818291X', 230, 320);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '13px system-ui, sans-serif';
+            ctx.fillText('提示：尝试使用【马赛克】或【黑色遮挡】将姓名、住址与身份证号进行脱敏覆盖', 50, 390);
+
+            const img = new Image();
+            img.onload = () => {
+                this.initImage(img, '示例敏感证件卡片.png');
+            };
+            img.src = canvas.toDataURL('image/png');
+        }
+    }
+});
+
+app.use(ElementPlus);
+app.mount('.main-body');
+</script>
+</body>
+</html>

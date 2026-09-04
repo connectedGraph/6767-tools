@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>正则表达式测试器 - 在线工具</title>
+    <meta name="description" content="在线正则表达式测试与速查工具，支持实时正则匹配、语法高亮、捕获组提取、常用修饰符切换、常用正则模板库一键填入与正则替换预览。" />
+    <meta name="keywords" content="正则表达式测试, 正则测试器, Regex Tester, 正则表达式捕获组, 正则速查, 常用正则表达式, 正则在线替换" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="dns-prefetch" href="" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .regex-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* 终端正则输入栏 */
+        .regex-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 8px;
+            padding: 4px 12px;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .regex-bar:focus-within {
+            border-color: rgba(34, 211, 238, 0.8);
+            box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.2);
+        }
+        .regex-slash {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 1.4rem;
+            color: #22d3ee;
+            user-select: none;
+            font-weight: bold;
+        }
+        .regex-input-field {
+            flex: 1;
+        }
+        .regex-input-field .el-input__wrapper {
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+        .regex-input-field input {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 1.05rem;
+            color: #38bdf8 !important;
+            font-weight: 500;
+        }
+
+        /* 修饰符标签选择器 */
+        .flags-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            padding: 4px 8px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 6px;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .flag-chip {
+            cursor: pointer;
+            padding: 2px 8px;
+            font-family: ui-monospace, monospace;
+            font-size: 0.82rem;
+            border-radius: 4px;
+            background: rgba(15, 23, 42, 0.6);
+            color: #94a3b8;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            user-select: none;
+            transition: all 0.15s ease;
+        }
+        .flag-chip.active {
+            background: rgba(34, 211, 238, 0.2);
+            color: #22d3ee;
+            border-color: rgba(34, 211, 238, 0.7);
+            font-weight: 600;
+        }
+        .flag-chip:hover {
+            color: #e2e8f0;
+            border-color: rgba(34, 211, 238, 0.5);
+        }
+
+        /* 状态与统计栏 */
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 8px 14px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: ui-monospace, monospace;
+        }
+        .stats-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-badge {
+            background: rgba(34, 211, 238, 0.15);
+            color: #38bdf8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .stat-badge.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        /* 文本区域与高亮展示器 */
+        .viewer-container {
+            position: relative;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            overflow: hidden;
+        }
+        .viewer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 14px;
+            background: rgba(30, 41, 59, 0.7);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+            font-size: 0.82rem;
+            color: #94a3b8;
+        }
+        .viewer-header .title {
+            font-weight: 600;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .viewer-box {
+            min-height: 160px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+            font-size: 0.92rem;
+            line-height: 1.65;
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: #cbd5e1;
+        }
+
+        /* 匹配高亮样式 */
+        .match-highlight-0 {
+            background: rgba(34, 211, 238, 0.35);
+            color: #ecfeff;
+            border-bottom: 2px solid #22d3ee;
+            border-radius: 3px;
+            padding: 1px 3px;
+            margin: 0 1px;
+            box-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
+        }
+        .match-highlight-1 {
+            background: rgba(251, 191, 36, 0.35);
+            color: #fef3c7;
+            border-bottom: 2px solid #f59e0b;
+            border-radius: 3px;
+            padding: 1px 3px;
+            margin: 0 1px;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+        }
+        .match-highlight-2 {
+            background: rgba(52, 211, 153, 0.35);
+            color: #ecfdf5;
+            border-bottom: 2px solid #10b981;
+            border-radius: 3px;
+            padding: 1px 3px;
+            margin: 0 1px;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+        }
+        .match-highlight-3 {
+            background: rgba(167, 139, 250, 0.35);
+            color: #f5f3ff;
+            border-bottom: 2px solid #8b5cf6;
+            border-radius: 3px;
+            padding: 1px 3px;
+            margin: 0 1px;
+            box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+        }
+
+        /* 捕获组列表卡片 */
+        .group-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            transition: border-color 0.2s;
+        }
+        .group-card:hover {
+            border-color: rgba(34, 211, 238, 0.5);
+        }
+        .group-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-family: ui-monospace, monospace;
+        }
+        .group-tag {
+            background: rgba(34, 211, 238, 0.15);
+            color: #38bdf8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .group-val {
+            font-family: ui-monospace, monospace;
+            color: #e2e8f0;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 4px 8px;
+            border-radius: 4px;
+            word-break: break-all;
+            font-size: 0.88rem;
+        }
+
+        /* 常用模板网格 */
+        .template-category {
+            margin-bottom: 18px;
+        }
+        .template-cat-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 10px;
+        }
+        .template-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .template-card:hover {
+            border-color: rgba(34, 211, 238, 0.7);
+            transform: translateY(-2px);
+            background: rgba(15, 23, 42, 0.95);
+            box-shadow: 0 4px 14px rgba(34, 211, 238, 0.15);
+        }
+        .template-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+        }
+        .template-pattern {
+            font-family: ui-monospace, monospace;
+            font-size: 0.78rem;
+            color: #94a3b8;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 4px 6px;
+            border-radius: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-bottom: 8px;
+        }
+        .template-desc {
+            font-size: 0.78rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        /* 速查手册表格 */
+        .cheatsheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .cheatsheet-table th {
+            background: rgba(30, 41, 59, 0.9);
+            color: #38bdf8;
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .cheatsheet-table td {
+            padding: 8px 12px;
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            color: #cbd5e1;
+        }
+        .cheatsheet-table tr:nth-child(even) td {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        .cheatsheet-code {
+            font-family: ui-monospace, monospace;
+            color: #22d3ee;
+            font-weight: 600;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .meta-footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #475569;
+            font-family: ui-monospace, monospace;
+            border-top: 1px solid rgba(51, 65, 85, 0.4);
+            padding-top: 12px;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="正则表达式测试器 - 在线工具" />
+    <meta property="og:description" content="在线正则表达式测试与速查工具，支持实时正则匹配、语法高亮、捕获组提取、常用修饰符切换、常用正则模板库一键填入与正则替换预览。" />
+    <meta property="og:url" content="https://tool.6767.chat/regex-tester" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="正则表达式测试器 - 在线工具" />
+    <meta name="twitter:description" content="在线正则表达式测试与速查工具，支持实时正则匹配、语法高亮、捕获组提取、常用修饰符切换、常用正则模板库一键填入与正则替换预览。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/regex-tester" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">正则表达式测试器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app" v-cloak>
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">正则表达式测试器</h1>
+                </div>
+                <div class="description">
+                    实时正则匹配测试、匹配项高亮、捕获组 (Group) 提取、常用修饰符切换与内置常用正则表达式模板库，纯前端离线运行，保护数据隐私。
+                </div>
+
+                <div class="regex-container">
+                    <!-- 1. 正则表达式输入栏 -->
+                    <div>
+                        <div class="regex-bar">
+                            <span class="regex-slash">/</span>
+                            <div class="regex-input-field">
+                                <el-input 
+                                    v-model="pattern" 
+                                    placeholder="在此输入正则表达式，如 ([a-zA-Z0-9_\.\+-]+)@([a-zA-Z0-9-]+\.[a-zA-Z0-9-\.]+)" 
+                                    clearable 
+                                    @input="handleExecute"
+                                />
+                            </div>
+                            <span class="regex-slash">/</span>
+                            
+                            <!-- 修饰符切换 -->
+                            <div class="flags-box">
+                                <span 
+                                    v-for="flag in flagOptions" 
+                                    :key="flag.key" 
+                                    :class="['flag-chip', { active: flags.includes(flag.key) }]"
+                                    @click="toggleFlag(flag.key)"
+                                    :title="flag.title"
+                                >
+                                    {{ flag.key }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- 状态/错误提示 -->
+                        <div class="stats-bar mt-2">
+                            <div class="stats-item">
+                                <span>匹配状态:</span>
+                                <span v-if="isValidRegex" class="stat-badge">{{ matchCount }} 项匹配</span>
+                                <span v-else class="stat-badge error">语法错误</span>
+                                <span class="text-xs text-slate-500 ml-2" v-if="isValidRegex">耗时: {{ execTime }}ms</span>
+                            </div>
+                            <div class="stats-item text-xs text-slate-400">
+                                <span>修饰符:</span>
+                                <span class="text-cyan-400 font-mono">{{ flags.length ? flags.join('') : '无' }}</span>
+                            </div>
+                        </div>
+
+                        <div v-if="errorMsg" class="mt-2 text-xs text-red-400 bg-red-950/40 p-2 rounded border border-red-800/60 font-mono">
+                            {{ errorMsg }}
+                        </div>
+                    </div>
+
+                    <!-- 2. 测试文本与操作按钮 -->
+                    <el-form label-position="top">
+                        <el-form-item>
+                            <template #label>
+                                <div class="flex justify-between items-center w-full">
+                                    <span class="font-medium text-slate-300">测试文本 (Test String)</span>
+                                    <div class="space-x-2">
+                                        <el-button size="small" @click="loadSample">载入示例</el-button>
+                                        <el-button size="small" @click="clearText">清空文本</el-button>
+                                        <el-button size="small" type="primary" plain @click="copyText(testText)">复制文本</el-button>
+                                    </div>
+                                </div>
+                            </template>
+                            <el-input 
+                                v-model="testText" 
+                                type="textarea" 
+                                :rows="6" 
+                                placeholder="在此粘贴或输入需要进行正则匹配测试的文本..." 
+                                @input="handleExecute"
+                            />
+                        </el-form-item>
+                    </el-form>
+
+                    <!-- 3. 多标签功能视图：匹配高亮 / 捕获组 / 文本替换 / 常用模板 / 语法速查 -->
+                    <el-tabs v-model="activeTab" type="border-card">
+                        <!-- 标签 1: 实时匹配与高亮预览 -->
+                        <el-tab-pane label="实时匹配高亮" name="highlight">
+                            <div class="viewer-container">
+                                <div class="viewer-header">
+                                    <div class="title">
+                                        <span>匹配高亮视图 (Match Highlights)</span>
+                                        <span class="text-xs font-normal text-slate-400" v-if="matchCount > 0">(共 {{ matchCount }} 处匹配)</span>
+                                    </div>
+                                    <el-button size="small" text @click="copyAllMatches">复制所有匹配项</el-button>
+                                </div>
+                                <div class="viewer-box" v-html="highlightedHtml"></div>
+                            </div>
+                        </el-tab-pane>
+
+                        <!-- 标签 2: 捕获组 (Groups) 详情明细 -->
+                        <el-tab-pane label="捕获组提取 (Groups)" name="groups">
+                            <div v-if="matches.length === 0" class="text-center py-8 text-slate-500 font-mono text-sm">
+                                暂无匹配项或捕获组
+                            </div>
+                            <div v-else class="max-h-96 overflow-y-auto pr-1">
+                                <div v-for="(m, idx) in matches" :key="idx" class="group-card">
+                                    <div class="group-head">
+                                        <div>
+                                            <span class="group-tag">Match #{{ idx + 1 }}</span>
+                                            <span class="ml-2 text-slate-400">位置: [{{ m.start }} ~ {{ m.end }}]</span>
+                                            <span class="ml-2 text-slate-500">长度: {{ m.full.length }}</span>
+                                        </div>
+                                        <el-button size="small" text @click="copyText(m.full)">复制</el-button>
+                                    </div>
+                                    <div class="group-val mb-2">{{ m.full }}</div>
+
+                                    <!-- 子捕获组 -->
+                                    <div v-if="m.groups && m.groups.length > 0" class="mt-2 space-y-1.5 pl-3 border-l-2 border-slate-700">
+                                        <div v-for="g in m.groups" :key="g.index" class="flex items-center text-xs">
+                                            <span class="text-slate-400 font-mono w-24 flex-shrink-0">
+                                                {{ g.name ? `Group "${g.name}":` : `Group #${g.index}:` }}
+                                            </span>
+                                            <span class="font-mono text-emerald-300 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800 flex-1 overflow-hidden text-ellipsis">
+                                                {{ g.val !== undefined ? g.val : '<undefined>' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+
+                        <!-- 标签 3: 正则替换 (Replace) -->
+                        <el-tab-pane label="正则替换 (Replace)" name="replace">
+                            <div class="space-y-4">
+                                <el-form label-position="top">
+                                    <el-form-item label="替换内容 (支持 $1, $2, $& 等反向引用)">
+                                        <el-input 
+                                            v-model="replacePattern" 
+                                            placeholder="如：[$&] 或 <a href='$1'>$2</a>" 
+                                            @input="handleReplace"
+                                        />
+                                    </el-form-item>
+                                    <el-form-item>
+                                        <template #label>
+                                            <div class="flex justify-between items-center w-full">
+                                                <span class="font-medium text-slate-300">替换结果预览</span>
+                                                <el-button size="small" type="primary" plain @click="copyText(replacedText)">复制替换结果</el-button>
+                                            </div>
+                                        </template>
+                                        <el-input 
+                                            v-model="replacedText" 
+                                            type="textarea" 
+                                            :rows="6" 
+                                            readonly 
+                                            placeholder="替换结果将实时显示在此处..." 
+                                        />
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                        </el-tab-pane>
+
+                        <!-- 标签 4: 常用正则表达式库 (一键填入) -->
+                        <el-tab-pane label="常用正则大全" name="templates">
+                            <div class="max-h-96 overflow-y-auto pr-1">
+                                <div v-for="cat in presetCategories" :key="cat.name" class="template-category">
+                                    <div class="template-cat-title">
+                                        <span>◈ {{ cat.name }}</span>
+                                    </div>
+                                    <div class="template-grid">
+                                        <div 
+                                            v-for="tpl in cat.items" 
+                                            :key="tpl.title" 
+                                            class="template-card"
+                                            @click="applyTemplate(tpl)"
+                                        >
+                                            <div>
+                                                <div class="template-title">{{ tpl.title }}</div>
+                                                <div class="template-pattern" :title="tpl.pattern">{{ tpl.pattern }}</div>
+                                                <div class="template-desc">{{ tpl.desc }}</div>
+                                            </div>
+                                            <div class="mt-3 flex justify-between items-center">
+                                                <span class="text-xs text-cyan-400 font-mono">/{{ tpl.flags || 'g' }}</span>
+                                                <span class="text-xs text-cyan-400 hover:underline">一键填入 &#8594;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+
+                        <!-- 标签 5: 正则语法速查手册 -->
+                        <el-tab-pane label="语法速查表" name="cheatsheet">
+                            <div class="max-h-96 overflow-y-auto pr-1 space-y-4">
+                                <table class="cheatsheet-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 140px;">元字符 / 语法</th>
+                                            <th>说明</th>
+                                            <th style="width: 180px;">示例</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><span class="cheatsheet-code">.</span></td><td>匹配除换行符以外的任意单个字符 (s 修饰符下匹配包含换行符)</td><td><span class="font-mono text-xs">a.c &#8594; "abc", "a c"</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">\d</span> / <span class="cheatsheet-code">\D</span></td><td>匹配数字 [0-9] / 匹配非数字 [^0-9]</td><td><span class="font-mono text-xs">\d{3} &#8594; "123"</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">\w</span> / <span class="cheatsheet-code">\W</span></td><td>匹配字母、数字、下划线 [A-Za-z0-9_] / 非单词字符</td><td><span class="font-mono text-xs">\w+ &#8594; "user_01"</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">\s</span> / <span class="cheatsheet-code">\S</span></td><td>匹配任何空白字符 (空格、制表、换页等) / 非空白字符</td><td><span class="font-mono text-xs">\s+ &#8594; "   "</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">^</span> / <span class="cheatsheet-code">$</span></td><td>匹配字符串或行首 (m模式下) / 匹配字符串或行尾</td><td><span class="font-mono text-xs">^\d+$ &#8594; 纯数字行</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">\b</span> / <span class="cheatsheet-code">\B</span></td><td>匹配单词边界 / 非单词边界</td><td><span class="font-mono text-xs">\bcat\b &#8594; "cat"</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">*</span> / <span class="cheatsheet-code">+</span> / <span class="cheatsheet-code">?</span></td><td>匹配 0 次或多次 / 匹配 1 次或多次 / 匹配 0 次或 1 次</td><td><span class="font-mono text-xs">a*b, a+b, a?b</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">{n,m}</span></td><td>匹配最少 n 次，最多 m 次</td><td><span class="font-mono text-xs">\d{6,18}</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">(...)</span></td><td>捕获组，提取匹配子串并记录 Group 索引</td><td><span class="font-mono text-xs">(\d{4})-(\d{2})</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">(?:...)</span></td><td>非捕获组，仅用于分组而不捕获文本</td><td><span class="font-mono text-xs">(?:https?|ftp)</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">(?&lt;name&gt;...)</span></td><td>命名捕获组，可通过名称提取 Group</td><td><span class="font-mono text-xs">(?&lt;year&gt;\d{4})</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">(?=...)</span></td><td>正向先行断言 (Lookahead)：后面必须跟随匹配内容</td><td><span class="font-mono text-xs">\d+(?=px)</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">(?!...)</span></td><td>负向先行断言：后面不能跟随匹配内容</td><td><span class="font-mono text-xs">\d+(?!px)</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">(?&lt;=...)</span></td><td>正向后行断言 (Lookbehind)：前面必须是匹配内容</td><td><span class="font-mono text-xs">(?&lt;=\$)\d+</span></td></tr>
+                                        <tr><td><span class="cheatsheet-code">(?&lt;!...)</span></td><td>负向后行断言：前面不能是匹配内容</td><td><span class="font-mono text-xs">(?&lt;!\\)\$</span></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
+
+                    <!-- 卡片底部元信息 -->
+                    <div class="meta-footer">
+                        <span>在线工具集 · 程序员工具系列</span>
+                        <span>拓展时间: 2026-08-31</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+    const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+    const app = createApp({
+        setup() {
+            const pattern = ref('([a-zA-Z0-9_.+-]+)@([a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+)');
+            const flags = ref(['g', 'm']);
+            const testText = ref(`欢迎使用在线正则表达式测试工具！
+以下是一些测试数据：
+官方支持邮箱: support@6767.chat, admin@service.org.cn
+开发人员: dev.team+filter@company.io, test-123@sub.domain.com.cn
+联系电话: 13800138000, 19912345678, 010-88888888
+服务器地址: https://tool.6767.chat/regex-tester?v=2026
+IPv4 地址: 192.168.1.1, 10.0.0.254, 127.0.0.1`);
+            
+            const replacePattern = ref('[$1 AT $2]');
+            const replacedText = ref('');
+            const activeTab = ref('highlight');
+
+            const flagOptions = [
+                { key: 'g', title: '全局匹配 (Global)：查找所有匹配项' },
+                { key: 'i', title: '忽略大小写 (IgnoreCase)' },
+                { key: 'm', title: '多行模式 (Multiline)：^ 和 $ 匹配每一行的起止' },
+                { key: 's', title: '单行/点号通配模式 (dotAll)：. 可匹配换行符' },
+                { key: 'u', title: 'Unicode 模式：支持完整的 Unicode 字符' }
+            ];
+
+            const isValidRegex = ref(true);
+            const errorMsg = ref('');
+            const execTime = ref(0);
+            const matchCount = ref(0);
+            const matches = ref([]);
+            const highlightedHtml = ref('');
+
+            // 常用正则模板库
+            const presetCategories = [
+                {
+                    name: '网络与通信',
+                    items: [
+                        {
+                            title: '电子邮箱 (Email)',
+                            pattern: '[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+',
+                            flags: 'g',
+                            desc: '匹配标准电子邮箱地址，含二级域名与加号别名',
+                            sample: 'contact: support@6767.chat, team+vip@domain.com.cn'
+                        },
+                        {
+                            title: 'URL 网址 (HTTP/HTTPS)',
+                            pattern: 'https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&//=]*)',
+                            flags: 'g',
+                            desc: '匹配 http/https 完整 URL 包含路径与查询参数',
+                            sample: '访问主页: https://tool.6767.chat/regex-tester?tab=1&lang=zh#anchor'
+                        },
+                        {
+                            title: 'IPv4 地址',
+                            pattern: '(?:(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)',
+                            flags: 'g',
+                            desc: '匹配 0.0.0.0 ~ 255.255.255.255 标准 IPv4',
+                            sample: '本机IP: 127.0.0.1, 局域网: 192.168.1.1, 公网: 124.221.137.194'
+                        },
+                        {
+                            title: 'IPv6 地址',
+                            pattern: '(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}',
+                            flags: 'g',
+                            desc: '匹配标准 IPv6 地址格式',
+                            sample: 'IPv6: 2001:0db8:85a3:0000:0000:8a2e:0370:7334'
+                        },
+                        {
+                            title: '端口号 (1~65535)',
+                            pattern: '^(?:[1-9]\\d{0,3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$',
+                            flags: '',
+                            desc: '校验合法端口号范围 1 到 65535',
+                            sample: '8093'
+                        },
+                        {
+                            title: 'MAC 地址',
+                            pattern: '^(?:[0-9A-Fa-f]{2}[:-]){5}(?:[0-9A-Fa-f]{2})$',
+                            flags: 'i',
+                            desc: '匹配 48 位网卡 MAC 物理地址',
+                            sample: '00:1A:2B:3C:4D:5E'
+                        }
+                    ]
+                },
+                {
+                    name: '中国本土常用',
+                    items: [
+                        {
+                            title: '手机号码 (中国大陆)',
+                            pattern: '1[3-9]\\d{9}',
+                            flags: 'g',
+                            desc: '支持 13x~19x 全号段 11 位大陆手机号码',
+                            sample: '联系电话: 13800138000, 19912345678, 17766668888'
+                        },
+                        {
+                            title: '二代身份证号 (18位)',
+                            pattern: '^[1-9]\\d{5}(?:18|19|20)\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])\\d{3}[\\dXx]$',
+                            flags: '',
+                            desc: '18位身份证格式与出生日期区间验证',
+                            sample: '11010119900307238X'
+                        },
+                        {
+                            title: '国内固定座机电话',
+                            pattern: '0\\d{2,3}-\\d{7,8}',
+                            flags: 'g',
+                            desc: '带区号的国内座机，如 010-88888888',
+                            sample: '总机: 010-88888888, 传真: 0755-12345678'
+                        },
+                        {
+                            title: '统一社会信用代码',
+                            pattern: '^[0-9A-HJ-NPQRTUWXY]{2}\\d{6}[0-9A-HJ-NPQRTUWXY]{10}$',
+                            flags: '',
+                            desc: '18位企业统一社会信用代码校验',
+                            sample: '91110000MAC123456X'
+                        },
+                        {
+                            title: '中国邮政编码',
+                            pattern: '[1-9]\\d{5}(?!\\d)',
+                            flags: 'g',
+                            desc: '6位数字邮政编码',
+                            sample: '邮编: 100000, 518000'
+                        },
+                        {
+                            title: '纯中文字符 (CJK)',
+                            pattern: '[\\u4e00-\\u9fa5]+',
+                            flags: 'g',
+                            desc: '提取或验证常用汉字字符',
+                            sample: '在线工具集 Online Tools 2026'
+                        },
+                        {
+                            title: '车牌号码 (普通+新能源)',
+                            pattern: '^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-HJ-NP-Z](?:[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]|[DF][A-HJ-NP-Z0-9]\\d{4}|\\d{5}[DF])$',
+                            flags: '',
+                            desc: '中国机动车号牌包括蓝牌、黄牌与绿色新能源',
+                            sample: '粤B12345D'
+                        }
+                    ]
+                },
+                {
+                    name: '开发与文本',
+                    items: [
+                        {
+                            title: '十六进制颜色代码 (Hex)',
+                            pattern: '#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\\b',
+                            flags: 'g',
+                            desc: '匹配 #FFF, #22D3EE, #1E293BCC 等颜色值',
+                            sample: 'color: #22d3ee; background: #0f172a; border: #334155;'
+                        },
+                        {
+                            title: 'HTML 标签提取',
+                            pattern: '<([a-zA-Z1-6]+)(\\s[^>]*)?>([\\s\\S]*?)<\\/\\1>',
+                            flags: 'g',
+                            desc: '提取成对 HTML 标签及其内容与属性',
+                            sample: '<div class="card">Hello <b>World</b></div>'
+                        },
+                        {
+                            title: '强密码强度验证',
+                            pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&._~#-])[A-Za-z\\d@$!%*?&._~#-]{8,32}$',
+                            flags: '',
+                            desc: '8~32位，必须包含大小写字母、数字及特殊字符',
+                            sample: 'Admin_2026#Secure'
+                        },
+                        {
+                            title: '用户名 (字母/数字/下划线)',
+                            pattern: '^[a-zA-Z0-9_-]{4,16}$',
+                            flags: '',
+                            desc: '4到16位字符，仅限英文字母、数字、下划线、减号',
+                            sample: 'dev_user-2026'
+                        },
+                        {
+                            title: 'JWT Token 提取',
+                            pattern: 'eyJ[a-zA-Z0-9_-]*\\.eyJ[a-zA-Z0-9_-]*\\.[a-zA-Z0-9_-]*',
+                            flags: 'g',
+                            desc: '匹配三段式 JSON Web Token',
+                            sample: 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIn0.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ'
+                        },
+                        {
+                            title: 'Markdown 链接提取',
+                            pattern: '\\[([^\\]]+)\\]\\((https?:\\/\\/[^\\s\\)]+)\\)',
+                            flags: 'g',
+                            desc: '提取 Markdown 超链接文本与 URL',
+                            sample: '请访问 [在线工具集](https://tool.6767.chat) 获取更多工具。'
+                        }
+                    ]
+                },
+                {
+                    name: '日期与数值',
+                    items: [
+                        {
+                            title: '日期 (YYYY-MM-DD)',
+                            pattern: '\\b\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])\\b',
+                            flags: 'g',
+                            desc: '标准 ISO 8601 年-月-日格式',
+                            sample: '发布日期: 2026-08-31, 截止时间: 2026-12-31'
+                        },
+                        {
+                            title: '时间 (HH:mm:ss)',
+                            pattern: '\\b(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d\\b',
+                            flags: 'g',
+                            desc: '24小时制时分秒',
+                            sample: '打卡时间: 09:30:00, 下班时间: 18:45:00'
+                        },
+                        {
+                            title: '浮点数 / 金额 (最多两位小数)',
+                            pattern: '^-?\\d+(?:\\.\\d{1,2})?$',
+                            flags: '',
+                            desc: '正负整数或至多保留2位小数的金额数值',
+                            sample: '1299.50'
+                        },
+                        {
+                            title: '整数 (包含正负零)',
+                            pattern: '^-?\\d+$',
+                            flags: '',
+                            desc: '匹配纯整数',
+                            sample: '-1024'
+                        }
+                    ]
+                }
+            ];
+
+            const toggleFlag = (flagKey) => {
+                if (flags.value.includes(flagKey)) {
+                    flags.value = flags.value.filter(f => f !== flagKey);
+                } else {
+                    flags.value.push(flagKey);
+                }
+                handleExecute();
+            };
+
+            const escapeHtml = (str) => {
+                return (str || '').replace(/[&<>"']/g, (m) => {
+                    return {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#039;'
+                    }[m];
+                });
+            };
+
+            // 核心正则执行与高亮解析引擎
+            const handleExecute = () => {
+                errorMsg.value = '';
+                const startTime = performance.now();
+
+                if (!pattern.value) {
+                    isValidRegex.value = true;
+                    matches.value = [];
+                    matchCount.value = 0;
+                    highlightedHtml.value = escapeHtml(testText.value);
+                    execTime.value = 0;
+                    handleReplace();
+                    return;
+                }
+
+                let reg;
+                try {
+                    reg = new RegExp(pattern.value, flags.value.join(''));
+                    isValidRegex.value = true;
+                } catch (e) {
+                    isValidRegex.value = false;
+                    errorMsg.value = e.message;
+                    matches.value = [];
+                    matchCount.value = 0;
+                    highlightedHtml.value = escapeHtml(testText.value);
+                    execTime.value = Math.round((performance.now() - startTime) * 100) / 100;
+                    return;
+                }
+
+                const text = testText.value || '';
+                const isGlobal = flags.value.includes('g');
+                const foundMatches = [];
+
+                if (isGlobal) {
+                    let m;
+                    let lastIdx = -1;
+                    while ((m = reg.exec(text)) !== null) {
+                        // 防止零宽正则无限死循环 (如 ^, \b, a*)
+                        if (m.index === lastIdx && reg.lastIndex === lastIdx) {
+                            reg.lastIndex++;
+                            continue;
+                        }
+                        lastIdx = reg.lastIndex;
+
+                        const subGroups = [];
+                        if (m.length > 1) {
+                            for (let i = 1; i < m.length; i++) {
+                                subGroups.push({
+                                    index: i,
+                                    name: null,
+                                    val: m[i]
+                                });
+                            }
+                        }
+                        if (m.groups) {
+                            for (const [gName, gVal] of Object.entries(m.groups)) {
+                                const exist = subGroups.find(g => g.val === gVal);
+                                if (exist) exist.name = gName;
+                            }
+                        }
+
+                        foundMatches.push({
+                            full: m[0],
+                            start: m.index,
+                            end: m.index + m[0].length,
+                            groups: subGroups
+                        });
+
+                        if (foundMatches.length >= 1000) break; // 上限防爆卡
+                    }
+                } else {
+                    const m = reg.exec(text);
+                    if (m) {
+                        const subGroups = [];
+                        if (m.length > 1) {
+                            for (let i = 1; i < m.length; i++) {
+                                subGroups.push({
+                                    index: i,
+                                    name: null,
+                                    val: m[i]
+                                });
+                            }
+                        }
+                        if (m.groups) {
+                            for (const [gName, gVal] of Object.entries(m.groups)) {
+                                const exist = subGroups.find(g => g.val === gVal);
+                                if (exist) exist.name = gName;
+                            }
+                        }
+                        foundMatches.push({
+                            full: m[0],
+                            start: m.index,
+                            end: m.index + m[0].length,
+                            groups: subGroups
+                        });
+                    }
+                }
+
+                matches.value = foundMatches;
+                matchCount.value = foundMatches.length;
+
+                // 生成彩色高亮 HTML
+                if (foundMatches.length === 0) {
+                    highlightedHtml.value = escapeHtml(text);
+                } else {
+                    let html = '';
+                    let cursor = 0;
+
+                    for (let i = 0; i < foundMatches.length; i++) {
+                        const m = foundMatches[i];
+                        if (m.start > cursor) {
+                            html += escapeHtml(text.slice(cursor, m.start));
+                        }
+                        const cls = `match-highlight-${i % 4}`;
+                        const safeContent = escapeHtml(m.full);
+                        html += `<mark class="${cls}" title="Match #${i + 1} [${m.start}, ${m.end}]">${safeContent || '&empty;'}</mark>`;
+                        cursor = m.end;
+                    }
+                    if (cursor < text.length) {
+                        html += escapeHtml(text.slice(cursor));
+                    }
+                    highlightedHtml.value = html;
+                }
+
+                execTime.value = Math.round((performance.now() - startTime) * 100) / 100;
+                handleReplace();
+            };
+
+            const handleReplace = () => {
+                if (!isValidRegex.value || !pattern.value) {
+                    replacedText.value = testText.value;
+                    return;
+                }
+                try {
+                    const reg = new RegExp(pattern.value, flags.value.join(''));
+                    replacedText.value = (testText.value || '').replace(reg, replacePattern.value);
+                } catch (e) {
+                    replacedText.value = testText.value;
+                }
+            };
+
+            const applyTemplate = (tpl) => {
+                pattern.value = tpl.pattern;
+                flags.value = (tpl.flags || 'g').split('').filter(Boolean);
+                if (tpl.sample) {
+                    testText.value = tpl.sample;
+                }
+                activeTab.value = 'highlight';
+                handleExecute();
+                ElementPlus.ElMessage.success(`已载入模板: ${tpl.title}`);
+            };
+
+            const loadSample = () => {
+                pattern.value = '([a-zA-Z0-9_.+-]+)@([a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+)';
+                flags.value = ['g', 'm'];
+                testText.value = `欢迎使用在线正则表达式测试工具！
+以下是一些测试数据：
+官方支持邮箱: support@6767.chat, admin@service.org.cn
+开发人员: dev.team+filter@company.io, test-123@sub.domain.com.cn
+联系电话: 13800138000, 19912345678, 010-88888888
+服务器地址: https://tool.6767.chat/regex-tester?v=2026
+IPv4 地址: 192.168.1.1, 10.0.0.254, 127.0.0.1`;
+                replacePattern.value = '[$1 AT $2]';
+                handleExecute();
+                ElementPlus.ElMessage.success('已载入默认示例');
+            };
+
+            const clearText = () => {
+                testText.value = '';
+                handleExecute();
+            };
+
+            const copyText = (val) => {
+                if (!val) {
+                    ElementPlus.ElMessage.warning('内容为空');
+                    return;
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(val).then(() => {
+                        ElementPlus.ElMessage.success('复制成功');
+                    }).catch(() => {
+                        fallbackCopy(val);
+                    });
+                } else {
+                    fallbackCopy(val);
+                }
+            };
+
+            const fallbackCopy = (val) => {
+                const ta = document.createElement('textarea');
+                ta.value = val;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                    ElementPlus.ElMessage.success('复制成功');
+                } catch (e) {
+                    ElementPlus.ElMessage.error('复制失败，请手动复制');
+                }
+                document.body.removeChild(ta);
+            };
+
+            const copyAllMatches = () => {
+                if (matches.value.length === 0) {
+                    ElementPlus.ElMessage.warning('暂无匹配项可复制');
+                    return;
+                }
+                const content = matches.value.map(m => m.full).join('\n');
+                copyText(content);
+            };
+
+            onMounted(() => {
+                handleExecute();
+            });
+
+            return {
+                pattern,
+                flags,
+                flagOptions,
+                testText,
+                replacePattern,
+                replacedText,
+                activeTab,
+                isValidRegex,
+                errorMsg,
+                execTime,
+                matchCount,
+                matches,
+                highlightedHtml,
+                presetCategories,
+                toggleFlag,
+                handleExecute,
+                handleReplace,
+                applyTemplate,
+                loadSample,
+                clearText,
+                copyText,
+                copyAllMatches
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('#app');
+</script>
+</body>
+</html>

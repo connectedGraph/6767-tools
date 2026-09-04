@@ -1,0 +1,701 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>CSS 盒子阴影生成器 - 在线工具</title>
+    <meta name="description" content="专业可视化 CSS 盒子阴影生成器 (Box Shadow Studio)：支持 X/Y 偏移、模糊半径 Blur、扩散半径 Spread、颜色与透明度可视化滑动调节，支持 Inset 内阴影与多层阴影叠加，实时预览并一键复制 CSS 代码。" />
+    <meta name="keywords" content="CSS阴影生成器,CSS box-shadow,盒子阴影,Inset内阴影,多层阴影,新拟态阴影,发光特效,Tailwind阴影" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .shadow-stage {
+            border-radius: 12px;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: background-color 0.25s;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            overflow: hidden;
+            padding: 30px;
+        }
+        .shadow-box-target {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
+        }
+        .shadow-box-target.is-hover-anim:hover {
+            transform: translateY(-6px);
+        }
+        .layer-tab-item {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 8px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        .layer-tab-item:hover, .layer-tab-item.active {
+            border-color: #22d3ee;
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.12);
+        }
+        .light-dial-pad {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 2px dashed rgba(51, 65, 85, 0.8);
+            background: rgba(9, 14, 23, 0.8);
+            position: relative;
+            cursor: crosshair;
+            margin: 0 auto;
+        }
+        .light-dial-dot {
+            width: 18px;
+            height: 18px;
+            background: #facc15;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px #facc15, 0 0 20px rgba(250, 204, 21, 0.6);
+            pointer-events: none;
+            transition: transform 0.05s;
+        }
+        .preset-shadow-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 84px;
+        }
+        .preset-shadow-card:hover {
+            border-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.08);
+            transform: translateY(-2px);
+        }
+        .preset-shadow-box {
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            background: #1e293b;
+        }
+        .code-output-card {
+            background: #090e17;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.84rem;
+            color: #38bdf8;
+            position: relative;
+            word-break: break-all;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="CSS 盒子阴影生成器 - 在线工具" />
+    <meta property="og:description" content="专业可视化 CSS 盒子阴影生成器：支持 X/Y 偏移、模糊半径、扩散半径、内阴影与多层阴影叠加，实时预览并一键复制 CSS。" />
+    <meta property="og:url" content="https://tool.6767.chat/css-shadow-generator" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CSS 盒子阴影生成器 - 在线工具" />
+    <meta name="twitter:description" content="专业可视化 CSS 盒子阴影生成器：支持 X/Y 偏移、模糊半径、扩散半径、内阴影与多层阴影叠加，实时预览并一键复制 CSS。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/css-shadow-generator" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">CSS 盒子阴影生成器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h1 class="title text-xl md:text-2xl font-bold text-slate-100 mb-1">CSS 盒子阴影生成器 (Box Shadow Studio)</h1>
+                        <p class="description text-slate-400 text-sm mb-0">
+                            可视化调配 CSS 盒子阴影属性，支持水平/垂直偏移、模糊半径、扩散半径、颜色透明度、内阴影 (Inset) 及多层阴影叠加，一键生成 CSS 与 Tailwind 代码。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 实时预览舞台 -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs font-mono text-slate-400">// 实时阴影渲染舞台 (Shadow Stage)</div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-slate-500">舞台背景:</span>
+                            <el-radio-group v-model="stageBg" size="small">
+                                <el-radio-button label="#050a14">深空黑</el-radio-button>
+                                <el-radio-button label="#0f172a">板岩灰</el-radio-button>
+                                <el-radio-button label="#e2e8f0">浅灰白</el-radio-button>
+                                <el-radio-button label="#ffffff">纯白</el-radio-button>
+                            </el-radio-group>
+                        </div>
+                    </div>
+
+                    <!-- 渲染舞台 -->
+                    <div class="shadow-stage" :style="{ backgroundColor: stageBg }">
+                        <div class="shadow-box-target" 
+                             :class="{ 'is-hover-anim': enableHoverAnim }"
+                             :style="{
+                                 width: boxWidth + 'px',
+                                 height: boxHeight + 'px',
+                                 backgroundColor: boxColor,
+                                 borderRadius: boxRadius + 'px',
+                                 boxShadow: fullBoxShadowValue,
+                                 color: isDarkBox ? '#f1f5f9' : '#0f172a'
+                             }">
+                            <div class="font-mono text-sm font-semibold text-center px-4">
+                                {{ currentShadowSummary }}
+                            </div>
+                            <span class="text-xs opacity-60 font-mono mt-1">
+                                {{ layers.filter(l => l.enabled).length }} 层阴影叠加
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 舞台与盒子参数调节 -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 mt-3 px-2 text-xs text-slate-400">
+                        <div class="flex items-center gap-2">
+                            <span class="whitespace-nowrap flex-shrink-0">盒子颜色:</span>
+                            <el-color-picker v-model="boxColor" size="small" />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="whitespace-nowrap flex-shrink-0">盒子尺寸:</span>
+                            <div style="width: 90px;"><el-slider v-model="boxWidth" :min="120" :max="360" :step="10" /></div>
+                            <span>×</span>
+                            <div style="width: 90px;"><el-slider v-model="boxHeight" :min="100" :max="260" :step="10" /></div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="whitespace-nowrap flex-shrink-0">圆角:</span>
+                            <div style="width: 90px;"><el-slider v-model="boxRadius" :min="0" :max="50" /></div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <el-switch v-model="enableHoverAnim" active-text="悬浮升起效果 (Hover Lift)" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 多图层管理与控制 -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 mb-6">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-800">
+                        <!-- 图层切换标签栏 -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div v-for="(layer, idx) in layers" :key="layer.id"
+                                class="layer-tab-item"
+                                :class="{ active: activeLayerIndex === idx }"
+                                @click="activeLayerIndex = idx">
+                                <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: layer.enabled ? layer.color : '#64748b' }"></span>
+                                <span>图层 #{{ idx + 1 }} {{ layer.inset ? '(Inset)' : '' }}</span>
+                                <span class="text-xs hover:text-cyan-300" @click.stop="toggleLayerEnabled(idx)" :title="layer.enabled ? '隐藏此图层' : '显示此图层'">
+                                    {{ layer.enabled ? '👁️' : '🙈' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- 图层操作按钮 -->
+                        <div class="flex items-center gap-2">
+                            <el-button size="small" type="primary" :disabled="layers.length >= 6" @click="addLayer">
+                                ➕ 新增图层
+                            </el-button>
+                            <el-button size="small" @click="duplicateActiveLayer">
+                                📄 复制当前层
+                            </el-button>
+                            <el-button size="small" type="danger" :disabled="layers.length <= 1" @click="deleteActiveLayer">
+                                🗑️ 删除图层
+                            </el-button>
+                        </div>
+                    </div>
+
+                    <!-- 当前激活图层详细控制面板 -->
+                    <div v-if="activeLayer" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                        <!-- 滑块参数 (X, Y, Blur, Spread) -->
+                        <div class="md:col-span-2 space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- 水平偏移 X -->
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-400 font-mono mb-1">
+                                        <span>水平偏移 (Offset X)</span>
+                                        <span>{{ activeLayer.x }}px</span>
+                                    </div>
+                                    <el-slider v-model="activeLayer.x" :min="-100" :max="100" />
+                                </div>
+                                <!-- 垂直偏移 Y -->
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-400 font-mono mb-1">
+                                        <span>垂直偏移 (Offset Y)</span>
+                                        <span>{{ activeLayer.y }}px</span>
+                                    </div>
+                                    <el-slider v-model="activeLayer.y" :min="-100" :max="100" />
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- 模糊半径 Blur -->
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-400 font-mono mb-1">
+                                        <span>模糊半径 (Blur Radius)</span>
+                                        <span>{{ activeLayer.blur }}px</span>
+                                    </div>
+                                    <el-slider v-model="activeLayer.blur" :min="0" :max="100" />
+                                </div>
+                                <!-- 扩散半径 Spread -->
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-400 font-mono mb-1">
+                                        <span>扩散半径 (Spread Radius)</span>
+                                        <span>{{ activeLayer.spread }}px</span>
+                                    </div>
+                                    <el-slider v-model="activeLayer.spread" :min="-50" :max="50" />
+                                </div>
+                            </div>
+
+                            <!-- 颜色与透明度 + 内阴影 -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center pt-2">
+                                <div class="flex items-center gap-3">
+                                    <el-color-picker v-model="activeLayer.color" show-alpha />
+                                    <div>
+                                        <div class="text-xs text-slate-400 font-mono">阴影色彩 &amp; 不透明度</div>
+                                        <div class="text-xs text-slate-300 font-mono">{{ activeLayer.color }}</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end">
+                                    <el-switch v-model="activeLayer.inset" active-text="内阴影 (Inset)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 交互式光源罗盘 (Light Source Dial) -->
+                        <div class="flex flex-col items-center justify-center p-3 bg-slate-950/70 rounded-lg border border-slate-800">
+                            <div class="text-xs font-mono text-slate-400 mb-2">💡 光源罗盘控制器</div>
+                            <div class="light-dial-pad" ref="lightDialRef" @mousedown="startLightDrag" @touchstart="startLightTouch">
+                                <div class="light-dial-dot" :style="{ transform: `translate(-50%, -50%) translate(${lightDotX}px, ${lightDotY}px)` }"></div>
+                            </div>
+                            <div class="text-xs text-slate-500 font-mono mt-2 text-center">拖拽小黄点调整光照方向</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 阴影预设库 (Presets) -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                            <span>🎨 经典阴影预设库 (Curated Shadow Presets)</span>
+                        </h3>
+                        <span class="text-xs text-slate-500">点击即刻载入预设阴影</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        <div v-for="preset in presets" :key="preset.name" 
+                            class="preset-shadow-card" 
+                            @click="applyPreset(preset)">
+                            <div class="preset-shadow-box" :style="{ boxShadow: preset.shadow }"></div>
+                            <span class="text-xs text-slate-300 font-medium text-center">{{ preset.name }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 代码生成与导出 -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-mono text-slate-400">// CSS / Tailwind 属性输出</span>
+                        <div class="flex items-center gap-2">
+                            <el-button type="primary" size="small" @click="copyCss">📋 复制 CSS box-shadow</el-button>
+                            <el-button type="success" size="small" @click="copyTailwind">⚡ 复制 Tailwind 类</el-button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="code-output-card">
+                            <div class="text-xs text-slate-500 mb-1">/* Standard CSS */</div>
+                            <code>box-shadow: {{ fullBoxShadowValue }};</code>
+                        </div>
+                        <div class="code-output-card">
+                            <div class="text-xs text-slate-500 mb-1">/* Cross-browser Prefix */</div>
+                            <code>-webkit-box-shadow: {{ fullBoxShadowValue }};<br>box-shadow: {{ fullBoxShadowValue }};</code>
+                        </div>
+                        <div class="code-output-card">
+                            <div class="text-xs text-slate-500 mb-1">/* Tailwind Arbitrary Shadow */</div>
+                            <code>shadow-[{{ fullBoxShadowValue.replace(/\s+/g, '_') }}]</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 技术知识 -->
+                <div class="content space-y-3">
+                    <h3 class="text-lg font-bold text-slate-200">📐 CSS box-shadow 属性规则详解</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        CSS <code class="text-cyan-400">box-shadow</code> 语法结构：<code class="text-cyan-400">[inset] &lt;offset-x&gt; &lt;offset-y&gt; [&lt;blur-radius&gt;] [&lt;spread-radius&gt;] &lt;color&gt;</code>。
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="p-3 bg-slate-900/60 rounded border border-slate-800">
+                            <h4 class="font-bold text-cyan-400 mb-1">多层阴影叠加原理 (Layered Shadows)</h4>
+                            <p class="text-slate-400">在现实世界中，光线扩散会产生自然衰减。Stripe 和 Tailwind 的高质感阴影通过同时叠加一层“近距离高不透明度细阴影”与一层“远距离大范围低不透明度漫反射阴影”，能让 UI 元素显得格外柔和逼真。</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/60 rounded border border-slate-800">
+                            <h4 class="font-bold text-amber-400 mb-1">内阴影 (Inset Shadow) 与新拟态</h4>
+                            <p class="text-slate-400">添加 <code class="text-amber-300">inset</code> 关键字可将阴影绘制在边框内部，常用于创建被按下的按钮、凹陷的输入框 (Recessed input) 或柔和的新拟态 (Neumorphism) 凹凸质感。</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500 font-mono mt-3">拓展时间: 2026-08-31</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+<script>
+    const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+    const PRESETS = [
+        {
+            name: "微质感卡片",
+            shadow: "0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.12)",
+            layers: [
+                { id: 1, x: 0, y: 1, blur: 3, spread: 0, color: "rgba(0, 0, 0, 0.2)", inset: false, enabled: true },
+                { id: 2, x: 0, y: 1, blur: 2, spread: 0, color: "rgba(0, 0, 0, 0.12)", inset: false, enabled: true }
+            ]
+        },
+        {
+            name: "悬浮立体",
+            shadow: "0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3)",
+            layers: [
+                { id: 1, x: 0, y: 10, blur: 25, spread: -5, color: "rgba(0, 0, 0, 0.4)", inset: false, enabled: true },
+                { id: 2, x: 0, y: 8, blur: 10, spread: -6, color: "rgba(0, 0, 0, 0.3)", inset: false, enabled: true }
+            ]
+        },
+        {
+            name: "弥散软阴影",
+            shadow: "0 20px 40px -15px rgba(0, 0, 0, 0.5)",
+            layers: [
+                { id: 1, x: 0, y: 20, blur: 40, spread: -15, color: "rgba(0, 0, 0, 0.5)", inset: false, enabled: true }
+            ]
+        },
+        {
+            name: "霓虹青光",
+            shadow: "0 0 20px rgba(34, 211, 238, 0.5), 0 0 40px rgba(34, 211, 238, 0.2)",
+            layers: [
+                { id: 1, x: 0, y: 0, blur: 20, spread: 0, color: "rgba(34, 211, 238, 0.5)", inset: false, enabled: true },
+                { id: 2, x: 0, y: 0, blur: 40, spread: 0, color: "rgba(34, 211, 238, 0.2)", inset: false, enabled: true }
+            ]
+        },
+        {
+            name: "赛博洋红",
+            shadow: "0 0 25px rgba(236, 72, 153, 0.6), 0 10px 30px rgba(168, 85, 247, 0.4)",
+            layers: [
+                { id: 1, x: 0, y: 0, blur: 25, spread: 0, color: "rgba(236, 72, 153, 0.6)", inset: false, enabled: true },
+                { id: 2, x: 0, y: 10, blur: 30, spread: 0, color: "rgba(168, 85, 247, 0.4)", inset: false, enabled: true }
+            ]
+        },
+        {
+            name: "琥珀金辉",
+            shadow: "0 0 30px rgba(245, 158, 11, 0.4), 0 10px 20px rgba(180, 83, 9, 0.3)",
+            layers: [
+                { id: 1, x: 0, y: 0, blur: 30, spread: 0, color: "rgba(245, 158, 11, 0.4)", inset: false, enabled: true },
+                { id: 2, x: 0, y: 10, blur: 20, spread: 0, color: "rgba(180, 83, 9, 0.3)", inset: false, enabled: true }
+            ]
+        },
+        {
+            name: "复古硬投影",
+            shadow: "8px 8px 0px #0f172a",
+            layers: [
+                { id: 1, x: 8, y: 8, blur: 0, spread: 0, color: "rgba(15, 23, 42, 1)", inset: false, enabled: true }
+            ]
+        },
+        {
+            name: "内嵌凹陷",
+            shadow: "inset 0 2px 4px 0 rgba(0, 0, 0, 0.5), inset 0 1px 2px 0 rgba(0, 0, 0, 0.3)",
+            layers: [
+                { id: 1, x: 0, y: 2, blur: 4, spread: 0, color: "rgba(0, 0, 0, 0.5)", inset: true, enabled: true },
+                { id: 2, x: 0, y: 1, blur: 2, spread: 0, color: "rgba(0, 0, 0, 0.3)", inset: true, enabled: true }
+            ]
+        },
+        {
+            name: "新拟态凸起",
+            shadow: "8px 8px 16px rgba(0, 0, 0, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.05)",
+            layers: [
+                { id: 1, x: 8, y: 8, blur: 16, spread: 0, color: "rgba(0, 0, 0, 0.4)", inset: false, enabled: true },
+                { id: 2, x: -8, y: -8, blur: 16, spread: 0, color: "rgba(255, 255, 255, 0.05)", inset: false, enabled: true }
+            ]
+        },
+        {
+            name: "新拟态内凹",
+            shadow: "inset 6px 6px 12px rgba(0, 0, 0, 0.5), inset -6px -6px 12px rgba(255, 255, 255, 0.06)",
+            layers: [
+                { id: 1, x: 6, y: 6, blur: 12, spread: 0, color: "rgba(0, 0, 0, 0.5)", inset: true, enabled: true },
+                { id: 2, x: -6, y: -6, blur: 12, spread: 0, color: "rgba(255, 255, 255, 0.06)", inset: true, enabled: true }
+            ]
+        },
+        {
+            name: "底部桌面投影",
+            shadow: "0 25px 20px -20px rgba(0, 0, 0, 0.6)",
+            layers: [
+                { id: 1, x: 0, y: 25, blur: 20, spread: -20, color: "rgba(0, 0, 0, 0.6)", inset: false, enabled: true }
+            ]
+        },
+        {
+            name: "毛玻璃边界阴影",
+            shadow: "0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 0 0 1px rgba(255, 255, 255, 0.1)",
+            layers: [
+                { id: 1, x: 0, y: 8, blur: 32, spread: 0, color: "rgba(0, 0, 0, 0.37)", inset: false, enabled: true },
+                { id: 2, x: 0, y: 0, blur: 0, spread: 1, color: "rgba(255, 255, 255, 0.1)", inset: true, enabled: true }
+            ]
+        }
+    ];
+
+    const app = createApp({
+        setup() {
+            let nextLayerId = 10;
+
+            const stageBg = ref("#050a14");
+            const boxColor = ref("#1e293b");
+            const boxWidth = ref(220);
+            const boxHeight = ref(150);
+            const boxRadius = ref(12);
+            const enableHoverAnim = ref(false);
+
+            const lightDialRef = ref(null);
+            let isLightDragging = false;
+
+            const layers = ref([
+                { id: 1, x: 0, y: 10, blur: 25, spread: -5, color: "rgba(0, 0, 0, 0.5)", inset: false, enabled: true },
+                { id: 2, x: 0, y: 4, blur: 10, spread: -3, color: "rgba(0, 0, 0, 0.3)", inset: false, enabled: true }
+            ]);
+
+            const activeLayerIndex = ref(0);
+            const activeLayer = computed(() => layers.value[activeLayerIndex.value] || null);
+
+            const isDarkBox = computed(() => {
+                const hex = boxColor.value.replace('#', '');
+                if (hex.length === 6) {
+                    const r = parseInt(hex.slice(0, 2), 16);
+                    const g = parseInt(hex.slice(2, 4), 16);
+                    const b = parseInt(hex.slice(4, 6), 16);
+                    return (r * 0.299 + g * 0.587 + b * 0.114) < 140;
+                }
+                return true;
+            });
+
+            // 计算完整 box-shadow CSS 值
+            const fullBoxShadowValue = computed(() => {
+                const activeOnes = layers.value.filter(l => l.enabled);
+                if (!activeOnes.length) return 'none';
+                return activeOnes.map(l => {
+                    const insetStr = l.inset ? 'inset ' : '';
+                    return `${insetStr}${l.x}px ${l.y}px ${l.blur}px ${l.spread}px ${l.color}`;
+                }).join(', ');
+            });
+
+            const currentShadowSummary = computed(() => {
+                if (!activeLayer.value) return 'Box Shadow';
+                return `${activeLayer.value.x}px ${activeLayer.value.y}px ${activeLayer.value.blur}px`;
+            });
+
+            // 光源罗盘坐标点计算
+            const lightDotX = computed(() => {
+                if (!activeLayer.value) return 0;
+                return Math.max(-45, Math.min(45, -activeLayer.value.x * 0.8));
+            });
+
+            const lightDotY = computed(() => {
+                if (!activeLayer.value) return 0;
+                return Math.max(-45, Math.min(45, -activeLayer.value.y * 0.8));
+            });
+
+            const addLayer = () => {
+                if (layers.value.length >= 6) return;
+                const newL = {
+                    id: nextLayerId++,
+                    x: 0,
+                    y: 12,
+                    blur: 24,
+                    spread: -4,
+                    color: "rgba(0, 0, 0, 0.4)",
+                    inset: false,
+                    enabled: true
+                };
+                layers.value.push(newL);
+                activeLayerIndex.value = layers.value.length - 1;
+            };
+
+            const duplicateActiveLayer = () => {
+                if (layers.value.length >= 6 || !activeLayer.value) return;
+                const clone = {
+                    ...activeLayer.value,
+                    id: nextLayerId++,
+                    y: activeLayer.value.y + 4
+                };
+                layers.value.push(clone);
+                activeLayerIndex.value = layers.value.length - 1;
+            };
+
+            const deleteActiveLayer = () => {
+                if (layers.value.length <= 1) return;
+                layers.value.splice(activeLayerIndex.value, 1);
+                activeLayerIndex.value = Math.max(0, activeLayerIndex.value - 1);
+            };
+
+            const toggleLayerEnabled = (idx) => {
+                layers.value[idx].enabled = !layers.value[idx].enabled;
+            };
+
+            const applyPreset = (preset) => {
+                layers.value = preset.layers.map(l => ({
+                    ...l,
+                    id: nextLayerId++
+                }));
+                activeLayerIndex.value = 0;
+                ElementPlus.ElMessage.success(`已载入预设: ${preset.name}`);
+            };
+
+            // 光源拖拽
+            const startLightDrag = (e) => {
+                isLightDragging = true;
+                updateLightFromEvent(e);
+                window.addEventListener('mousemove', onLightMove);
+                window.addEventListener('mouseup', stopLightDrag);
+            };
+
+            const startLightTouch = (e) => {
+                isLightDragging = true;
+                if (e.touches[0]) updateLightFromEvent(e.touches[0]);
+                window.addEventListener('touchmove', onLightTouchMove);
+                window.addEventListener('touchend', stopLightDrag);
+            };
+
+            const onLightMove = (e) => {
+                if (!isLightDragging) return;
+                updateLightFromEvent(e);
+            };
+
+            const onLightTouchMove = (e) => {
+                if (!isLightDragging || !e.touches[0]) return;
+                updateLightFromEvent(e.touches[0]);
+            };
+
+            const updateLightFromEvent = (e) => {
+                if (!lightDialRef.value || !activeLayer.value) return;
+                const rect = lightDialRef.value.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const deltaX = e.clientX - centerX;
+                const deltaY = e.clientY - centerY;
+                
+                // 距离限制在半径内
+                const maxR = rect.width / 2 - 10;
+                const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                const ratio = dist > maxR ? maxR / dist : 1;
+                
+                const finalX = deltaX * ratio;
+                const finalY = deltaY * ratio;
+
+                // 光源在左上时，阴影在右下（反向）
+                activeLayer.value.x = Math.round(-finalX / maxR * 40);
+                activeLayer.value.y = Math.round(-finalY / maxR * 40);
+            };
+
+            const stopLightDrag = () => {
+                isLightDragging = false;
+                window.removeEventListener('mousemove', onLightMove);
+                window.removeEventListener('mouseup', stopLightDrag);
+                window.removeEventListener('touchmove', onLightTouchMove);
+                window.removeEventListener('touchend', stopLightDrag);
+            };
+
+            const copyCss = () => {
+                const code = `box-shadow: ${fullBoxShadowValue.value};`;
+                navigator.clipboard.writeText(code).then(() => {
+                    ElementPlus.ElMessage.success('CSS box-shadow 属性已复制到剪贴板！');
+                });
+            };
+
+            const copyTailwind = () => {
+                const arbitrary = `shadow-[${fullBoxShadowValue.value.replace(/\s+/g, '_')}]`;
+                navigator.clipboard.writeText(arbitrary).then(() => {
+                    ElementPlus.ElMessage.success('Tailwind 阴影类名已复制！');
+                });
+            };
+
+            return {
+                stageBg,
+                boxColor,
+                boxWidth,
+                boxHeight,
+                boxRadius,
+                enableHoverAnim,
+                lightDialRef,
+                layers,
+                activeLayerIndex,
+                activeLayer,
+                isDarkBox,
+                fullBoxShadowValue,
+                currentShadowSummary,
+                lightDotX,
+                lightDotY,
+                presets: PRESETS,
+                addLayer,
+                duplicateActiveLayer,
+                deleteActiveLayer,
+                toggleLayerEnabled,
+                applyPreset,
+                startLightDrag,
+                startLightTouch,
+                copyCss,
+                copyTailwind
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('.main-body');
+</script>
+</body>
+</html>

@@ -1,0 +1,783 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>CSS 渐变色生成器 - 在线工具</title>
+    <meta name="description" content="专业可视化 CSS 渐变色生成器 (Gradient Studio)：支持线性渐变 Linear、径向渐变 Radial、锥形渐变 Conic 调色，可自由拖拽添加色标控制点与角度，内置数十款精美渐变预设，一键复制 CSS 与 Tailwind 代码。" />
+    <meta name="keywords" content="CSS渐变生成器,CSS渐变色,Linear Gradient,Radial Gradient,Conic Gradient,在线调色板,Tailwind渐变,前端CSS工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .gradient-preview-card {
+            border-radius: 12px;
+            min-height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+        }
+        .gradient-text-preview {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent !important;
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-align: center;
+            user-select: none;
+            letter-spacing: -0.02em;
+        }
+        .color-stop-bar-wrapper {
+            position: relative;
+            height: 38px;
+            background: #090e17;
+            border-radius: 8px;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            margin: 24px 10px 14px 10px;
+            cursor: crosshair;
+        }
+        .color-stop-bar-fill {
+            width: 100%;
+            height: 100%;
+            border-radius: 7px;
+        }
+        .color-stop-pin {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            z-index: 10;
+        }
+        .color-stop-pin.is-active {
+            transform: translate(-50%, -50%) scale(1.25);
+            border-color: #22d3ee;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.8), 0 6px 12px rgba(0,0,0,0.8);
+            z-index: 20;
+        }
+        .stop-list-item {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            transition: border-color 0.2s;
+        }
+        .stop-list-item.active {
+            border-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.08);
+        }
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+        }
+        .preset-thumb {
+            height: 72px;
+            border-radius: 8px;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 6px;
+        }
+        .preset-thumb:hover {
+            transform: translateY(-2px) scale(1.02);
+            border-color: #22d3ee;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+        .preset-name {
+            font-size: 0.7rem;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 2px 6px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+            font-weight: 500;
+        }
+        .direction-dial-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            background: rgba(15, 23, 42, 0.6);
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 0.9rem;
+        }
+        .direction-dial-btn:hover, .direction-dial-btn.active {
+            border-color: #22d3ee;
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.15);
+        }
+        .code-output-card {
+            background: #090e17;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.84rem;
+            color: #38bdf8;
+            position: relative;
+            word-break: break-all;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="CSS 渐变色生成器 - 在线工具" />
+    <meta property="og:description" content="专业可视化 CSS 渐变色生成器：支持线性渐变 Linear、径向渐变 Radial、锥形渐变 Conic 调色，内置数十款精美渐变预设，一键复制 CSS。" />
+    <meta property="og:url" content="https://tool.6767.chat/css-gradient-generator" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CSS 渐变色生成器 - 在线工具" />
+    <meta name="twitter:description" content="专业可视化 CSS 渐变色生成器：支持线性渐变 Linear、径向渐变 Radial、锥形渐变 Conic 调色，内置数十款精美渐变预设，一键复制 CSS。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/css-gradient-generator" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">CSS 渐变色生成器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h1 class="title text-xl md:text-2xl font-bold text-slate-100 mb-1">CSS 渐变色生成器 (Gradient Studio)</h1>
+                        <p class="description text-slate-400 text-sm mb-0">
+                            可视化调配 CSS 线性渐变、径向渐变与锥形渐变，支持自定义色标点、角度罗盘、精美预设与一键导出代码或 PNG 图片。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 渐变实时预览区域 -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs font-mono text-slate-400">// 实时渲染画布 (Live Preview)</div>
+                        <div class="flex items-center gap-2">
+                            <el-radio-group v-model="previewMode" size="small">
+                                <el-radio-button label="box">盒子背景</el-radio-button>
+                                <el-radio-button label="text">文字镂空</el-radio-button>
+                                <el-radio-button label="contrast">图文对比</el-radio-button>
+                            </el-radio-group>
+                            <el-button size="small" @click="toggleFullscreen">全屏预览</el-button>
+                        </div>
+                    </div>
+
+                    <!-- 盒子预览 -->
+                    <div v-if="previewMode === 'box'" 
+                         class="gradient-preview-card shadow-2xl" 
+                         :style="{ background: gradientCssValue, height: previewHeight + 'px', borderRadius: previewRadius + 'px' }">
+                        <span class="text-xs font-mono px-3 py-1 rounded bg-black/40 text-white/90 backdrop-blur">
+                            {{ gradientType.toUpperCase() }} · {{ colorStops.length }} STOPS
+                        </span>
+                    </div>
+
+                    <!-- 镂空文字预览 -->
+                    <div v-else-if="previewMode === 'text'" 
+                         class="gradient-preview-card bg-slate-950 p-6 flex flex-col items-center justify-center"
+                         :style="{ height: previewHeight + 'px', borderRadius: previewRadius + 'px' }">
+                        <div class="gradient-text-preview" :style="{ backgroundImage: gradientCssValue }">
+                            MODERN GRADIENT CSS
+                        </div>
+                        <div class="text-xs text-slate-500 font-mono mt-2">background-clip: text; color: transparent;</div>
+                    </div>
+
+                    <!-- 图文对比预览 -->
+                    <div v-else 
+                         class="gradient-preview-card p-6 flex flex-col items-center justify-center text-center" 
+                         :style="{ background: gradientCssValue, height: previewHeight + 'px', borderRadius: previewRadius + 'px' }">
+                        <div class="max-w-md space-y-2">
+                            <h2 class="text-2xl font-bold text-white drop-shadow-md">Crafting Beautiful Interfaces</h2>
+                            <p class="text-sm text-white/80 drop-shadow">高对比度与无障碍文字排版在渐变背景上的实机呈现测试</p>
+                            <div class="pt-2 flex justify-center gap-2">
+                                <button class="px-4 py-1.5 rounded-full bg-white text-slate-900 font-medium text-xs shadow-lg">主行动按钮</button>
+                                <button class="px-4 py-1.5 rounded-full bg-black/30 text-white backdrop-blur border border-white/20 text-xs">次要按钮</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 预览控制器条 -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 mt-3 px-2 text-xs text-slate-400">
+                        <div class="flex items-center gap-3">
+                            <span class="whitespace-nowrap flex-shrink-0">画布高度:</span>
+                            <div style="width: 130px;"><el-slider v-model="previewHeight" :min="140" :max="400" :step="10" /></div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="whitespace-nowrap flex-shrink-0">圆角:</span>
+                            <div style="width: 110px;"><el-slider v-model="previewRadius" :min="0" :max="40" :step="2" /></div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <el-button size="small" @click="exportAsPng">导出为 PNG 图片</el-button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 渐变类型与核心参数 -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-center">
+                        <!-- 渐变模式 -->
+                        <div>
+                            <div class="text-xs text-slate-400 font-mono mb-2">// 渐变模式 (Gradient Type)</div>
+                            <el-radio-group v-model="gradientType" class="uuid-type-radio w-full" @change="handleTypeChange">
+                                <el-radio-button label="linear">线性 Linear</el-radio-button>
+                                <el-radio-button label="radial">径向 Radial</el-radio-button>
+                                <el-radio-button label="conic">锥形 Conic</el-radio-button>
+                            </el-radio-group>
+                        </div>
+
+                        <!-- 线性角度控制 -->
+                        <div v-if="gradientType === 'linear'" class="md:col-span-2">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs text-slate-400 font-mono">// 渐变角度: {{ linearAngle }}°</span>
+                                <div class="flex items-center gap-1">
+                                    <button v-for="dir in directionShortcuts" :key="dir.angle" 
+                                        type="button" class="direction-dial-btn"
+                                        :class="{ active: linearAngle === dir.angle }"
+                                        :title="dir.label"
+                                        @click="linearAngle = dir.angle">
+                                        {{ dir.icon }}
+                                    </button>
+                                </div>
+                            </div>
+                            <el-slider v-model="linearAngle" :min="0" :max="360" show-input />
+                        </div>
+
+                        <!-- 径向参数控制 -->
+                        <div v-if="gradientType === 'radial'" class="md:col-span-2 grid grid-cols-2 gap-3">
+                            <div>
+                                <div class="text-xs text-slate-400 font-mono mb-2">// 形状 (Shape)</div>
+                                <el-select v-model="radialShape" size="small" class="w-full">
+                                    <el-option label="正圆 (circle)" value="circle" />
+                                    <el-option label="椭圆 (ellipse)" value="ellipse" />
+                                </el-select>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400 font-mono mb-2">// 扩散范围 (Extent)</div>
+                                <el-select v-model="radialExtent" size="small" class="w-full">
+                                    <el-option label="最远角 (farthest-corner)" value="farthest-corner" />
+                                    <el-option label="最近侧 (closest-side)" value="closest-side" />
+                                    <el-option label="最近角 (closest-corner)" value="closest-corner" />
+                                    <el-option label="最远侧 (farthest-side)" value="farthest-side" />
+                                </el-select>
+                            </div>
+                        </div>
+
+                        <!-- 锥形参数控制 -->
+                        <div v-if="gradientType === 'conic'" class="md:col-span-2">
+                            <div class="text-xs text-slate-400 font-mono mb-2">// 起始旋转角度: {{ conicAngle }}°</div>
+                            <el-slider v-model="conicAngle" :min="0" :max="360" show-input />
+                        </div>
+                    </div>
+
+                    <!-- 重复渐变开关 -->
+                    <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                        <div class="flex items-center gap-2">
+                            <el-switch v-model="isRepeating" active-text="重复渐变 (Repeating)" />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <el-button size="small" @click="reverseStops">⇄ 反转色标</el-button>
+                            <el-button size="small" @click="distributeStops">⇶ 均匀分布</el-button>
+                            <el-button size="small" @click="randomizeColors">🎲 随机配色</el-button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 色标控制轴 (Color Stops Visual Timeline) -->
+                <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 mb-6">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs text-slate-400 font-mono">// 色标控制轴 (点击色轴任意位置可新增色标，拖拽控制点调节位置)</span>
+                        <span class="text-xs text-cyan-400 font-mono">当前选中色标: #{{ activeStopIndex + 1 }}</span>
+                    </div>
+
+                    <!-- 可视化色标控制条 -->
+                    <div class="color-stop-bar-wrapper" ref="stopBarRef" @click="handleBarClick">
+                        <div class="color-stop-bar-fill" :style="{ background: linearGradientBarValue }"></div>
+                        <div v-for="(stop, idx) in colorStops" :key="stop.id" 
+                            class="color-stop-pin" 
+                            :class="{ 'is-active': activeStopIndex === idx }"
+                            :style="{ left: stop.position + '%', backgroundColor: stop.color }"
+                            @mousedown.stop="startDrag(idx, $event)"
+                            @touchstart.stop="startTouchDrag(idx, $event)"
+                            @click.stop="setActiveStop(idx)">
+                        </div>
+                    </div>
+
+                    <!-- 选中色标属性微调卡 -->
+                    <div v-if="activeStop" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mt-4 p-3 bg-slate-950/80 rounded-lg border border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <el-color-picker v-model="activeStop.color" show-alpha />
+                            <span class="text-xs font-mono text-slate-300">{{ activeStop.color }}</span>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 mb-1">位置 (0% ~ 100%)</div>
+                            <el-slider v-model="activeStop.position" :min="0" :max="100" show-input />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <el-button size="small" type="primary" @click="addColorStop">➕ 新增色标</el-button>
+                            <el-button size="small" type="danger" :disabled="colorStops.length <= 2" @click="deleteActiveStop">
+                                🗑️ 删除此色标
+                            </el-button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 精品渐变预设库 -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                            <span>🎨 精选渐变预设库 (Curated Presets)</span>
+                        </h3>
+                        <el-radio-group v-model="presetCategory" size="small">
+                            <el-radio-button label="all">全部</el-radio-button>
+                            <el-radio-button label="cyber">赛博科技</el-radio-button>
+                            <el-radio-button label="sunset">晚霞暖光</el-radio-button>
+                            <el-radio-button label="nature">自然清新</el-radio-button>
+                            <el-radio-button label="dark">深邃暗夜</el-radio-button>
+                        </el-radio-group>
+                    </div>
+
+                    <div class="preset-grid">
+                        <div v-for="preset in filteredPresets" :key="preset.name" 
+                            class="preset-thumb" 
+                            :style="{ background: preset.css }"
+                            @click="applyPreset(preset)">
+                            <span class="preset-name">{{ preset.name }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 生成代码输出区域 -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-mono text-slate-400">// CSS / Tailwind 代码输出</span>
+                        <div class="flex items-center gap-2">
+                            <el-button type="primary" size="small" @click="copyCss">📋 复制 CSS 代码</el-button>
+                            <el-button type="success" size="small" @click="copyTailwind">⚡ 复制 Tailwind 类</el-button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="code-output-card">
+                            <div class="text-xs text-slate-500 mb-1">// Standard CSS</div>
+                            <code>background: {{ gradientCssValue }};</code>
+                        </div>
+                        <div class="code-output-card">
+                            <div class="text-xs text-slate-500 mb-1">// Tailwind Arbitrary Class</div>
+                            <code>bg-[{{ gradientCssValue.replace(/\s+/g, '_') }}]</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 知识文档 -->
+                <div class="content space-y-3">
+                    <h3 class="text-lg font-bold text-slate-200">📖 CSS 渐变函数语法详解</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="p-3 bg-slate-900/60 rounded border border-slate-800">
+                            <h4 class="font-bold text-cyan-400 mb-1">linear-gradient()</h4>
+                            <p class="text-slate-400">沿一条直线方向混合两种或多种颜色。接受角度（如 135deg、to bottom right）以及任意数量的色标位置。</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/60 rounded border border-slate-800">
+                            <h4 class="font-bold text-purple-400 mb-1">radial-gradient()</h4>
+                            <p class="text-slate-400">从单一原点向外辐射扩散过渡，支持圆形 (circle) 或椭圆 (ellipse)，以及到最近/最远角侧的边界范围。</p>
+                        </div>
+                        <div class="p-3 bg-slate-900/60 rounded border border-slate-800">
+                            <h4 class="font-bold text-emerald-400 mb-1">conic-gradient()</h4>
+                            <p class="text-slate-400">围绕中心点顺时针旋转过渡（形如饼图或色轮），非常适合制作现代雷达扫描、彩虹色轮或发光环形效果。</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500 font-mono mt-3">拓展时间: 2026-08-31</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 全屏预览 Modal -->
+    <div v-if="isFullscreen" class="fixed inset-0 z-50 flex items-center justify-center p-6 cursor-pointer" 
+         :style="{ background: gradientCssValue }" 
+         @click="isFullscreen = false">
+        <div class="bg-black/60 backdrop-blur-md px-6 py-3 rounded-full text-white text-sm font-mono border border-white/20">
+            点击任意位置退出全屏
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+<script>
+    const { createApp, ref, reactive, computed, onMounted, onUnmounted } = Vue;
+
+    const PRESETS = [
+        // 赛博科技
+        { name: "霓虹幻境", category: "cyber", type: "linear", angle: 135, stops: [{ id: 1, color: "#22d3ee", position: 0 }, { id: 2, color: "#a855f7", position: 100 }], css: "linear-gradient(135deg, #22d3ee 0%, #a855f7 100%)" },
+        { name: "赛博朋克", category: "cyber", type: "linear", angle: 90, stops: [{ id: 1, color: "#f43f5e", position: 0 }, { id: 2, color: "#06b6d4", position: 100 }], css: "linear-gradient(90deg, #f43f5e 0%, #06b6d4 100%)" },
+        { name: "极客绿影", category: "cyber", type: "linear", angle: 160, stops: [{ id: 1, color: "#10b981", position: 0 }, { id: 2, color: "#064e3b", position: 100 }], css: "linear-gradient(160deg, #10b981 0%, #064e3b 100%)" },
+        { name: "深邃以太", category: "cyber", type: "linear", angle: 225, stops: [{ id: 1, color: "#6366f1", position: 0 }, { id: 2, color: "#0f172a", position: 100 }], css: "linear-gradient(225deg, #6366f1 0%, #0f172a 100%)" },
+        { name: "全息光芒", category: "cyber", type: "conic", angle: 0, stops: [{ id: 1, color: "#22d3ee", position: 0 }, { id: 2, color: "#ec4899", position: 50 }, { id: 3, color: "#22d3ee", position: 100 }], css: "conic-gradient(from 0deg, #22d3ee 0%, #ec4899 50%, #22d3ee 100%)" },
+        { name: "量子脉冲", category: "cyber", type: "linear", angle: 45, stops: [{ id: 1, color: "#3b82f6", position: 0 }, { id: 2, color: "#8b5cf6", position: 50 }, { id: 3, color: "#ec4899", position: 100 }], css: "linear-gradient(45deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%)" },
+
+        // 晚霞暖光
+        { name: "加州日落", category: "sunset", type: "linear", angle: 135, stops: [{ id: 1, color: "#f97316", position: 0 }, { id: 2, color: "#ec4899", position: 100 }], css: "linear-gradient(135deg, #f97316 0%, #ec4899 100%)" },
+        { name: "烈焰暖阳", category: "sunset", type: "linear", angle: 180, stops: [{ id: 1, color: "#ef4444", position: 0 }, { id: 2, color: "#fbbf24", position: 100 }], css: "linear-gradient(180deg, #ef4444 0%, #fbbf24 100%)" },
+        { name: "粉红晚霞", category: "sunset", type: "linear", angle: 120, stops: [{ id: 1, color: "#fb7185", position: 0 }, { id: 2, color: "#fda4af", position: 100 }], css: "linear-gradient(120deg, #fb7185 0%, #fda4af 100%)" },
+        { name: "金色琥珀", category: "sunset", type: "radial", angle: 0, stops: [{ id: 1, color: "#f59e0b", position: 0 }, { id: 2, color: "#78350f", position: 100 }], css: "radial-gradient(circle at center, #f59e0b 0%, #78350f 100%)" },
+        { name: "紫夜流火", category: "sunset", type: "linear", angle: 315, stops: [{ id: 1, color: "#4c1d95", position: 0 }, { id: 2, color: "#db2777", position: 50 }, { id: 3, color: "#f59e0b", position: 100 }], css: "linear-gradient(315deg, #4c1d95 0%, #db2777 50%, #f59e0b 100%)" },
+        { name: "蜜桃甜心", category: "sunset", type: "linear", angle: 90, stops: [{ id: 1, color: "#ffedd5", position: 0 }, { id: 2, color: "#fecdd3", position: 100 }], css: "linear-gradient(90deg, #ffedd5 0%, #fecdd3 100%)" },
+
+        // 自然清新
+        { name: "极光森林", category: "nature", type: "linear", angle: 140, stops: [{ id: 1, color: "#059669", position: 0 }, { id: 2, color: "#34d399", position: 100 }], css: "linear-gradient(140deg, #059669 0%, #34d399 100%)" },
+        { name: "浅海碧波", category: "nature", type: "linear", angle: 180, stops: [{ id: 1, color: "#06b6d4", position: 0 }, { id: 2, color: "#3b82f6", position: 100 }], css: "linear-gradient(180deg, #06b6d4 0%, #3b82f6 100%)" },
+        { name: "薄荷微风", category: "nature", type: "linear", angle: 45, stops: [{ id: 1, color: "#a7f3d0", position: 0 }, { id: 2, color: "#6ee7b7", position: 100 }], css: "linear-gradient(45deg, #a7f3d0 0%, #6ee7b7 100%)" },
+        { name: "青翠竹韵", category: "nature", type: "linear", angle: 135, stops: [{ id: 1, color: "#84cc16", position: 0 }, { id: 2, color: "#15803d", position: 100 }], css: "linear-gradient(135deg, #84cc16 0%, #15803d 100%)" },
+        { name: "蓝天暖云", category: "nature", type: "linear", angle: 200, stops: [{ id: 1, color: "#7dd3fc", position: 0 }, { id: 2, color: "#e0f2fe", position: 100 }], css: "linear-gradient(200deg, #7dd3fc 0%, #e0f2fe 100%)" },
+        { name: "深海奇境", category: "nature", type: "radial", angle: 0, stops: [{ id: 1, color: "#0284c7", position: 0 }, { id: 2, color: "#0369a1", position: 50 }, { id: 3, color: "#082f49", position: 100 }], css: "radial-gradient(circle at center, #0284c7 0%, #0369a1 50%, #082f49 100%)" },
+
+        // 深邃暗夜
+        { name: "黑曜石", category: "dark", type: "linear", angle: 135, stops: [{ id: 1, color: "#1e293b", position: 0 }, { id: 2, color: "#0f172a", position: 100 }], css: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)" },
+        { name: "午夜星空", category: "dark", type: "radial", angle: 0, stops: [{ id: 1, color: "#312e81", position: 0 }, { id: 2, color: "#0f172a", position: 100 }], css: "radial-gradient(circle at center, #312e81 0%, #0f172a 100%)" },
+        { name: "暗金流光", category: "dark", type: "linear", angle: 120, stops: [{ id: 1, color: "#451a03", position: 0 }, { id: 2, color: "#78350f", position: 50 }, { id: 3, color: "#1c1917", position: 100 }], css: "linear-gradient(120deg, #451a03 0%, #78350f 50%, #1c1917 100%)" },
+        { name: "钛金灰阶", category: "dark", type: "linear", angle: 180, stops: [{ id: 1, color: "#334155", position: 0 }, { id: 2, color: "#0f172a", position: 100 }], css: "linear-gradient(180deg, #334155 0%, #0f172a 100%)" },
+        { name: "暗影猩红", category: "dark", type: "linear", angle: 150, stops: [{ id: 1, color: "#881337", position: 0 }, { id: 2, color: "#0f172a", position: 100 }], css: "linear-gradient(150deg, #881337 0%, #0f172a 100%)" },
+        { name: "深空黑洞", category: "dark", type: "radial", angle: 0, stops: [{ id: 1, color: "#1e1b4b", position: 0 }, { id: 2, color: "#020617", position: 100 }], css: "radial-gradient(circle at center, #1e1b4b 0%, #020617 100%)" }
+    ];
+
+    const app = createApp({
+        setup() {
+            const gradientType = ref('linear');
+            const linearAngle = ref(135);
+            const conicAngle = ref(0);
+            const radialShape = ref('circle');
+            const radialExtent = ref('farthest-corner');
+            const isRepeating = ref(false);
+
+            const previewMode = ref('box');
+            const previewHeight = ref(240);
+            const previewRadius = ref(12);
+            const isFullscreen = ref(false);
+            const presetCategory = ref('all');
+
+            const stopBarRef = ref(null);
+            let nextStopId = 10;
+            let isDragging = false;
+            let dragStopIndex = -1;
+
+            const colorStops = ref([
+                { id: 1, color: "#22d3ee", position: 0 },
+                { id: 2, color: "#a855f7", position: 100 }
+            ]);
+            const activeStopIndex = ref(0);
+
+            const activeStop = computed(() => colorStops.value[activeStopIndex.value] || null);
+
+            const directionShortcuts = [
+                { angle: 0, label: "向上", icon: "↑" },
+                { angle: 45, label: "右上", icon: "↗" },
+                { angle: 90, label: "向右", icon: "→" },
+                { angle: 135, label: "右下", icon: "↘" },
+                { angle: 180, label: "向下", icon: "↓" },
+                { angle: 225, label: "左下", icon: "↙" },
+                { angle: 270, label: "向左", icon: "←" },
+                { angle: 315, label: "左上", icon: "↖" }
+            ];
+
+            // 格式化色标字符串
+            const formattedStopsString = computed(() => {
+                const sorted = [...colorStops.value].sort((a, b) => a.position - b.position);
+                return sorted.map(s => `${s.color} ${s.position}%`).join(', ');
+            });
+
+            // 色标控制轴背景线性渐变
+            const linearGradientBarValue = computed(() => {
+                return `linear-gradient(90deg, ${formattedStopsString.value})`;
+            });
+
+            // 主渐变 CSS 字符串
+            const gradientCssValue = computed(() => {
+                const stops = formattedStopsString.value;
+                const rep = isRepeating.value ? 'repeating-' : '';
+
+                if (gradientType.value === 'linear') {
+                    return `${rep}linear-gradient(${linearAngle.value}deg, ${stops})`;
+                }
+                if (gradientType.value === 'radial') {
+                    return `${rep}radial-gradient(${radialShape.value} ${radialExtent.value} at center, ${stops})`;
+                }
+                if (gradientType.value === 'conic') {
+                    return `${rep}conic-gradient(from ${conicAngle.value}deg at center, ${stops})`;
+                }
+                return `linear-gradient(135deg, ${stops})`;
+            });
+
+            const filteredPresets = computed(() => {
+                if (presetCategory.value === 'all') return PRESETS;
+                return PRESETS.filter(p => p.category === presetCategory.value);
+            });
+
+            const setActiveStop = (idx) => {
+                activeStopIndex.value = idx;
+            };
+
+            const addColorStop = () => {
+                let newPos = 50;
+                if (colorStops.value.length >= 2) {
+                    newPos = Math.round((colorStops.value[0].position + colorStops.value[1].position) / 2);
+                }
+                const newStop = {
+                    id: nextStopId++,
+                    color: "#f59e0b",
+                    position: newPos
+                };
+                colorStops.value.push(newStop);
+                activeStopIndex.value = colorStops.value.length - 1;
+            };
+
+            const deleteActiveStop = () => {
+                if (colorStops.value.length <= 2) return;
+                colorStops.value.splice(activeStopIndex.value, 1);
+                activeStopIndex.value = Math.max(0, activeStopIndex.value - 1);
+            };
+
+            const reverseStops = () => {
+                colorStops.value = colorStops.value.map(s => ({
+                    ...s,
+                    position: 100 - s.position
+                })).reverse();
+            };
+
+            const distributeStops = () => {
+                const count = colorStops.value.length;
+                if (count <= 1) return;
+                const sorted = [...colorStops.value].sort((a, b) => a.position - b.position);
+                const step = 100 / (count - 1);
+                sorted.forEach((s, idx) => {
+                    s.position = Math.round(idx * step);
+                });
+                colorStops.value = sorted;
+            };
+
+            const randomizeColors = () => {
+                const randomHex = () => '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+                colorStops.value.forEach(s => {
+                    s.color = randomHex();
+                });
+                linearAngle.value = Math.floor(Math.random() * 360);
+            };
+
+            const handleBarClick = (e) => {
+                if (!stopBarRef.value) return;
+                const rect = stopBarRef.value.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const percentage = Math.max(0, Math.min(100, Math.round((clickX / rect.width) * 100)));
+                
+                // 新增色标
+                const newStop = {
+                    id: nextStopId++,
+                    color: activeStop.value ? activeStop.value.color : "#38bdf8",
+                    position: percentage
+                };
+                colorStops.value.push(newStop);
+                activeStopIndex.value = colorStops.value.length - 1;
+            };
+
+            // 拖拽色标
+            const startDrag = (idx, e) => {
+                isDragging = true;
+                dragStopIndex = idx;
+                activeStopIndex.value = idx;
+                window.addEventListener('mousemove', onDragging);
+                window.addEventListener('mouseup', stopDrag);
+            };
+
+            const startTouchDrag = (idx, e) => {
+                isDragging = true;
+                dragStopIndex = idx;
+                activeStopIndex.value = idx;
+                window.addEventListener('touchmove', onTouchDragging);
+                window.addEventListener('touchend', stopDrag);
+            };
+
+            const onDragging = (e) => {
+                if (!isDragging || !stopBarRef.value || dragStopIndex === -1) return;
+                const rect = stopBarRef.value.getBoundingClientRect();
+                const currentX = e.clientX - rect.left;
+                const pct = Math.max(0, Math.min(100, Math.round((currentX / rect.width) * 100)));
+                colorStops.value[dragStopIndex].position = pct;
+            };
+
+            const onTouchDragging = (e) => {
+                if (!isDragging || !stopBarRef.value || dragStopIndex === -1 || !e.touches[0]) return;
+                const rect = stopBarRef.value.getBoundingClientRect();
+                const currentX = e.touches[0].clientX - rect.left;
+                const pct = Math.max(0, Math.min(100, Math.round((currentX / rect.width) * 100)));
+                colorStops.value[dragStopIndex].position = pct;
+            };
+
+            const stopDrag = () => {
+                isDragging = false;
+                dragStopIndex = -1;
+                window.removeEventListener('mousemove', onDragging);
+                window.removeEventListener('mouseup', stopDrag);
+                window.removeEventListener('touchmove', onTouchDragging);
+                window.removeEventListener('touchend', stopDrag);
+            };
+
+            const applyPreset = (preset) => {
+                gradientType.value = preset.type || 'linear';
+                if (preset.angle !== undefined) {
+                    if (preset.type === 'conic') conicAngle.value = preset.angle;
+                    else linearAngle.value = preset.angle;
+                }
+                colorStops.value = preset.stops.map((s, idx) => ({
+                    id: nextStopId++,
+                    color: s.color,
+                    position: s.position
+                }));
+                activeStopIndex.value = 0;
+                ElementPlus.ElMessage.success(`已载入预设: ${preset.name}`);
+            };
+
+            const copyCss = () => {
+                const code = `background: ${gradientCssValue.value};`;
+                navigator.clipboard.writeText(code).then(() => {
+                    ElementPlus.ElMessage.success('CSS 渐变代码已复制到剪贴板！');
+                });
+            };
+
+            const copyTailwind = () => {
+                const arbitrary = `bg-[${gradientCssValue.value.replace(/\s+/g, '_')}]`;
+                navigator.clipboard.writeText(arbitrary).then(() => {
+                    ElementPlus.ElMessage.success('Tailwind 类名已复制！');
+                });
+            };
+
+            const exportAsPng = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1200;
+                canvas.height = 630;
+                const ctx = canvas.getContext('2d');
+
+                let gradient;
+                if (gradientType.value === 'linear') {
+                    const angleRad = (linearAngle.value - 90) * (Math.PI / 180);
+                    const cx = canvas.width / 2;
+                    const cy = canvas.height / 2;
+                    const len = Math.sqrt(cx * cx + cy * cy);
+                    const x0 = cx - Math.cos(angleRad) * len;
+                    const y0 = cy - Math.sin(angleRad) * len;
+                    const x1 = cx + Math.cos(angleRad) * len;
+                    const y1 = cy + Math.sin(angleRad) * len;
+                    gradient = ctx.createLinearGradient(x0, y0, x1, y1);
+                } else {
+                    const cx = canvas.width / 2;
+                    const cy = canvas.height / 2;
+                    const r = Math.max(cx, cy);
+                    gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+                }
+
+                colorStops.value.forEach(s => {
+                    try {
+                        gradient.addColorStop(s.position / 100, s.color);
+                    } catch (e) {}
+                });
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const a = document.createElement('a');
+                a.download = `gradient_${Date.now()}.png`;
+                a.href = canvas.toDataURL('image/png');
+                a.click();
+                ElementPlus.ElMessage.success('PNG 渐变图片已下载');
+            };
+
+            const toggleFullscreen = () => {
+                isFullscreen.value = !isFullscreen.value;
+            };
+
+            return {
+                gradientType,
+                linearAngle,
+                conicAngle,
+                radialShape,
+                radialExtent,
+                isRepeating,
+                previewMode,
+                previewHeight,
+                previewRadius,
+                isFullscreen,
+                presetCategory,
+                stopBarRef,
+                colorStops,
+                activeStopIndex,
+                activeStop,
+                directionShortcuts,
+                linearGradientBarValue,
+                gradientCssValue,
+                filteredPresets,
+                setActiveStop,
+                addColorStop,
+                deleteActiveStop,
+                reverseStops,
+                distributeStops,
+                randomizeColors,
+                handleBarClick,
+                startDrag,
+                startTouchDrag,
+                applyPreset,
+                copyCss,
+                copyTailwind,
+                exportAsPng,
+                toggleFullscreen
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('.main-body');
+</script>
+</body>
+</html>

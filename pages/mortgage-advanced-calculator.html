@@ -1,0 +1,1064 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>房贷提前还款与省息对比器 - 在线工具</title>
+    <meta name="description" content="专业房贷提前还款与省息测算工具：支持商业贷款、公积金贷款及组合贷款，在等额本息与等额本金还款方式下，精准对比部分提前还款与一次性结清，智能测算【还款年限不变减少月供】与【月供不变缩短还款年限】节省利息金额、新月供及提前结清时间，输出前后月供对比及完整还款计划时间表。" />
+    <meta name="keywords" content="房贷提前还款计算器,提前还贷省息对比,缩短年限减少月供,房贷计算器,商业贷款,公积金贷款,组合贷款,等额本息,等额本金" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .mortgage-calc-container {
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 12px;
+            padding: 16px 18px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+        .stat-card:hover {
+            border-color: rgba(34, 211, 238, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+        .stat-card.primary::before { background: #22d3ee; }
+        .stat-card.success::before { background: #10b981; }
+        .stat-card.warning::before { background: #f59e0b; }
+        .stat-card.danger::before { background: #f43f5e; }
+        .stat-card.purple::before { background: #a855f7; }
+
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stat-card .value {
+            font-size: 1.55rem;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            color: #f1f5f9;
+            letter-spacing: -0.5px;
+        }
+        .stat-card .sub-text {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .compare-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .plan-card {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .plan-card.active-recommend {
+            border-color: rgba(34, 211, 238, 0.8);
+            background: rgba(34, 211, 238, 0.04);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.12);
+        }
+        .plan-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+        }
+        .plan-card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .plan-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 0.86rem;
+            border-bottom: 1px dashed rgba(51, 65, 85, 0.35);
+        }
+        .plan-item-row:last-child { border-bottom: none; }
+        .plan-item-label { color: #94a3b8; }
+        .plan-item-val {
+            font-family: ui-monospace, monospace;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .preset-chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .preset-chip {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preset-chip:hover {
+            border-color: #22d3ee;
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.1);
+        }
+        .preset-chip.active {
+            background: rgba(34, 211, 238, 0.18);
+            border-color: #22d3ee;
+            color: #22d3ee;
+            font-weight: 600;
+        }
+
+        .dark-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.84rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .dark-table th {
+            background: rgba(30, 41, 59, 0.9);
+            color: #94a3b8;
+            padding: 10px 12px;
+            text-align: right;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .dark-table th:first-child, .dark-table td:first-child { text-align: left; }
+        .dark-table td {
+            padding: 8px 12px;
+            color: #cbd5e1;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.35);
+            text-align: right;
+        }
+        .dark-table tr:last-child td { border-bottom: none; }
+        .dark-table tr:hover td { background: rgba(30, 41, 59, 0.5); }
+        .dark-table .node-row td {
+            background: rgba(245, 158, 11, 0.15) !important;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+        .node-tag {
+            background: #f59e0b;
+            color: #0f172a;
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 0.72rem;
+            font-weight: bold;
+            margin-left: 6px;
+        }
+
+        .section-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin: 22px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 14px;
+            background: #22d3ee;
+            border-radius: 2px;
+        }
+
+        .badge-cyan {
+            background: rgba(34, 211, 238, 0.15);
+            color: #22d3ee;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+        .badge-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+
+        .helper-tip {
+            font-size: 0.78rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        .bar-chart-track {
+            background: rgba(51, 65, 85, 0.4);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            margin: 8px 0 16px 0;
+        }
+        .bar-chart-seg {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./life" class="tool-topbar-cat">生活实用</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">房贷提前还款与省息对比器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+  <div class="tool-body mortgage-calc-container">
+    <div class="card-model">
+      <div class="card-body">
+        <div class="tool-head">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h1 class="title" style="margin-bottom: 0;">房贷提前还款与省息对比器</h1>
+            <span class="badge-cyan">拓展时间: 2026-08-31 · 纯前端离线精算</span>
+          </div>
+        </div>
+        <div class="description" style="margin-top: 8px;">
+          在商业贷款、公积金贷款及组合贷款基础上，支持“部分提前还款”、“缩短还款年限 vs 减少月供”的节省利息精确测算，输出前后月供对比、节省利息全景看板及分期还款计划时间表。
+        </div>
+
+        <!-- 快捷场景预设 -->
+        <div class="section-title">常见贷款与提前还贷预设</div>
+        <div class="preset-chip-group">
+          <span class="preset-chip" @click="applyPreset(100, 30, 3.1, 20, 24, 'equal-interest')">
+            💼 刚需商贷100万 · 30年 3.1% · 已还2年提还20万
+          </span>
+          <span class="preset-chip" @click="applyPreset(200, 30, 3.0, 50, 36, 'equal-interest')">
+            🏡 改善商贷200万 · 30年 3.0% · 已还3年提还50万
+          </span>
+          <span class="preset-chip" @click="applyPreset(80, 20, 2.85, 30, 12, 'equal-interest', 'fund')">
+            🏦 公积金80万 · 20年 2.85% · 已还1年提还30万
+          </span>
+          <span class="preset-chip" @click="applyPreset(150, 30, 3.1, 30, 24, 'equal-principal')">
+            📉 等额本金150万 · 30年 · 已还2年提还30万
+          </span>
+        </div>
+
+        <!-- 输入表单 -->
+        <el-form :model="formData" label-position="top" class="tool-form">
+          <el-row :gutter="18">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item label="贷款类型">
+                <el-radio-group v-model="formData.loanType" @change="compute">
+                  <el-radio-button label="commercial">商业贷款</el-radio-button>
+                  <el-radio-button label="fund">公积金贷款</el-radio-button>
+                  <el-radio-button label="combination">组合贷款</el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item label="还款方式">
+                <el-radio-group v-model="formData.repayMethod" @change="compute">
+                  <el-radio-button label="equal-interest">等额本息 (每月等额)</el-radio-button>
+                  <el-radio-button label="equal-principal">等额本金 (逐月递减)</el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item label="贷款期限 (年)">
+                <el-select v-model="formData.loanYears" class="w100" @change="compute">
+                  <el-option v-for="y in [5, 10, 15, 20, 25, 30]" :key="y" :label="`${y} 年 (${y * 12} 期)`" :value="y"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <!-- 贷款金额与利率 -->
+          <el-row :gutter="18" v-if="formData.loanType === 'commercial' || formData.loanType === 'combination'">
+            <el-col :xs="24" :sm="12" :md="12">
+              <el-form-item label="商业贷款金额 (万元)">
+                <el-input-number v-model="formData.commercialAmount" :min="1" :max="5000" :step="5" class="w100" @change="compute" />
+                <div class="helper-tip">例如 100 万元输入 100</div>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="12">
+              <el-form-item label="商业贷款年利率 (%)">
+                <el-input-number v-model="formData.commercialRate" :min="0.1" :max="20" :step="0.05" :precision="2" class="w100" @change="compute" />
+                <div class="helper-tip">最新首套房贷 LPR 参考：约 3.0% ~ 3.3%</div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="18" v-if="formData.loanType === 'fund' || formData.loanType === 'combination'">
+            <el-col :xs="24" :sm="12" :md="12">
+              <el-form-item label="公积金贷款金额 (万元)">
+                <el-input-number v-model="formData.fundAmount" :min="1" :max="3000" :step="5" class="w100" @change="compute" />
+                <div class="helper-tip">例如 80 万元输入 80</div>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="12">
+              <el-form-item label="公积金贷款年利率 (%)">
+                <el-input-number v-model="formData.fundRate" :min="0.1" :max="15" :step="0.05" :precision="2" class="w100" @change="compute" />
+                <div class="helper-tip">公积金 5 年以上首套基准：2.85% (二套 3.325%)</div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="18">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item label="首次还款年月">
+                <el-date-picker v-model="formData.startMonth" type="month" format="YYYY-MM" value-format="YYYY-MM" placeholder="选择起始年月" class="w100" @change="compute" />
+                <div class="helper-tip">银行开始计息扣款的第一个月</div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <div class="divider"></div>
+
+          <!-- 提前还款核心设置 -->
+          <div class="section-title">提前还款关键测算设定</div>
+          <el-row :gutter="18">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item label="提前还款节点 (已还款期数)">
+                <el-select v-model="formData.repaidMonths" class="w100" @change="compute">
+                  <el-option label="已还 6 个月 (半年)" :value="6"></el-option>
+                  <el-option label="已还 12 个月 (1年)" :value="12"></el-option>
+                  <el-option label="已还 24 个月 (2年)" :value="24"></el-option>
+                  <el-option label="已还 36 个月 (3年)" :value="36"></el-option>
+                  <el-option label="已还 60 个月 (5年)" :value="60"></el-option>
+                  <el-option label="已还 120 个月 (10年)" :value="120"></el-option>
+                  <el-option :label="`自定义期数 (${formData.repaidMonths} 期)`" :value="formData.repaidMonths"></el-option>
+                </el-select>
+                <div class="helper-tip">在第 {{ formData.repaidMonths }} 期还款后执行提前还贷</div>
+              </el-form-item>
+            </el-col>
+
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item label="提前还款方式">
+                <el-radio-group v-model="formData.earlyType" @change="compute">
+                  <el-radio-button label="partial">部分提前还款</el-radio-button>
+                  <el-radio-button label="full">一次性全部结清</el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+
+            <el-col :xs="24" :sm="12" :md="8" v-if="formData.earlyType === 'partial'">
+              <el-form-item label="提前还款本金 (万元)">
+                <el-input-number v-model="formData.earlyAmount" :min="1" :max="5000" :step="5" class="w100" @change="compute" />
+                <div class="helper-tip">当前剩余未还本金约: ￥{{ summary.remainPrincipalBeforeEarly.toFixed(2) }} 万</div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="18" v-if="formData.loanType === 'combination' && formData.earlyType === 'partial'">
+            <el-col :xs="24" :sm="12" :md="12">
+              <el-form-item label="组合贷款提前还款策略">
+                <el-select v-model="formData.combStrategy" class="w100" @change="compute">
+                  <el-option label="🌟 优先归还商业贷款 (利率高，省息最大化)" value="priority-commercial"></el-option>
+                  <el-option label="按商贷/公积金剩余本金比例等比分摊" value="proportional"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <el-button type="primary" size="large" @click="compute" style="min-width: 140px;">
+              ⚡ 立即测算对比
+            </el-button>
+          </div>
+        </el-form>
+
+        <div class="divider"></div>
+
+        <!-- 结果看板：原计划 vs 提前还贷两大方案 -->
+        <div class="section-title">提前还款双方案省息深度对比看板</div>
+        <div class="compare-box">
+          <!-- 方案 A: 期限不变，减少月供 -->
+          <div class="plan-card" :class="{'active-recommend': recommendPlan === 'A'}">
+            <div class="plan-card-header">
+              <div class="plan-card-title">
+                <span>方案 A · 月供减少，期限不变</span>
+              </div>
+              <span class="badge-green" v-if="recommendPlan === 'A'">月供减压首选</span>
+            </div>
+            
+            <div class="plan-item-row">
+              <span class="plan-item-label">节省利息总额</span>
+              <span class="plan-item-val" style="color: #34d399; font-size: 1.15rem;">
+                ￥{{ planA.savedInterest.toFixed(2) }} 万元
+              </span>
+            </div>
+            <div class="plan-item-row">
+              <span class="plan-item-label">提前还款后新月供</span>
+              <span class="plan-item-val" style="color: #22d3ee; font-weight: 700;">
+                ￥{{ planA.newMonthlyPay.toFixed(2) }} 元/月
+              </span>
+            </div>
+            <div class="plan-item-row">
+              <span class="plan-item-label">每月少还月供</span>
+              <span class="plan-item-val" style="color: #fbbf24;">
+                -￥{{ planA.monthlyReduced.toFixed(2) }} 元
+              </span>
+            </div>
+            <div class="plan-item-row">
+              <span class="plan-item-label">剩余还款期限</span>
+              <span class="plan-item-val">{{ planA.remainMonths }} 期 ({{ (planA.remainMonths / 12).toFixed(1) }} 年)</span>
+            </div>
+            <div class="plan-item-row">
+              <span class="plan-item-label">最终结清年月</span>
+              <span class="plan-item-val">{{ planA.finishDate }}</span>
+            </div>
+            <div class="plan-item-row">
+              <span class="plan-item-label">全周期总还款额</span>
+              <span class="plan-item-val">￥{{ planA.totalRepaidAll.toFixed(2) }} 万元</span>
+            </div>
+            <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 12px; line-height: 1.5;">
+              💡 <strong>适用场景</strong>：希望降低每月固定现金流支出压力、保障日常生活品质或应对收入波动的借款人。
+            </div>
+          </div>
+
+          <!-- 方案 B: 月供不变，缩短期限 -->
+          <div class="plan-card" :class="{'active-recommend': recommendPlan === 'B'}">
+            <div class="plan-card-header">
+              <div class="plan-card-title">
+                <span>方案 B · 月供不变，缩短年限</span>
+              </div>
+              <span class="badge-cyan" v-if="recommendPlan === 'B'">省息性价比最高</span>
+            </div>
+            
+            <div class="plan-item-row">
+              <span class="plan-item-label">节省利息总额</span>
+              <span class="plan-item-val" style="color: #22d3ee; font-size: 1.15rem; font-weight: 700;">
+                ￥{{ planB.savedInterest.toFixed(2) }} 万元
+              </span>
+            </div>
+            <div class="plan-item-row">
+              <span class="plan-item-label">缩短还款期限</span>
+              <span class="plan-item-val" style="color: #34d399; font-weight: 700;">
+                省去 {{ planB.shortenedMonths }} 个月 (约 {{ (planB.shortenedMonths / 12).toFixed(1) }} 年)
+              </span>
+            </div>
+            <div class="plan-item-row">
+              <span class="plan-item-label">提前还款后月供</span>
+              <span class="plan-item-val">￥{{ planB.newMonthlyPay.toFixed(2) }} 元/月</span>
+            </div>
+            <div class="plan-item-row">
+              <span class="plan-item-label">剩余还款期限</span>
+              <span class="plan-item-val">{{ planB.remainMonths }} 期 ({{ (planB.remainMonths / 12).toFixed(1) }} 年)</span>
+            </div>
+            <div class="plan-item-row">
+              <span class="plan-item-label">大幅提前结清年月</span>
+              <span class="plan-item-val" style="color: #22d3ee;">{{ planB.finishDate }}</span>
+            </div>
+            <div class="plan-item-row">
+              <span class="plan-item-label">全周期总还款额</span>
+              <span class="plan-item-val">￥{{ planB.totalRepaidAll.toFixed(2) }} 万元</span>
+            </div>
+            <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 12px; line-height: 1.5;">
+              💡 <strong>适用场景</strong>：当前月供无压力，希望尽早还清房贷、彻底免去后期高额复利利息并早日“无债一身轻”的借款人。
+            </div>
+          </div>
+        </div>
+
+        <!-- 原贷款基础指标看板 -->
+        <div class="section-title">原贷款基准数据看板 (未提前还款前)</div>
+        <div class="stats-grid">
+          <div class="stat-card primary">
+            <div class="label">
+              <span>原首期月供</span>
+              <span>{{ formData.repayMethod === 'equal-interest' ? '每月等额' : '首月最高' }}</span>
+            </div>
+            <div class="value">￥{{ summary.origFirstMonthlyPay.toFixed(2) }}</div>
+            <div class="sub-text">总期数 {{ formData.loanYears * 12 }} 个月</div>
+          </div>
+
+          <div class="stat-card danger">
+            <div class="label">
+              <span>原计划总支付利息</span>
+              <span>利息/本金比 {{ (summary.origTotalInterest / (summary.totalLoanAmount || 1) * 100).toFixed(1) }}%</span>
+            </div>
+            <div class="value" style="color: #f87171;">￥{{ summary.origTotalInterest.toFixed(2) }} 万</div>
+            <div class="sub-text">本金 ￥{{ summary.totalLoanAmount }} 万</div>
+          </div>
+
+          <div class="stat-card purple">
+            <div class="label">
+              <span>原计划还款总额</span>
+              <span>本息合计</span>
+            </div>
+            <div class="value" style="color: #c084fc;">￥{{ summary.origTotalRepaid.toFixed(2) }} 万</div>
+            <div class="sub-text">原定结清: {{ summary.origFinishDate }}</div>
+          </div>
+
+          <div class="stat-card warning">
+            <div class="label">
+              <span>已还本息合计</span>
+              <span>已还 {{ formData.repaidMonths }} 期</span>
+            </div>
+            <div class="value" style="color: #fbbf24;">￥{{ summary.repaidTotalSoFar.toFixed(2) }} 万</div>
+            <div class="sub-text">已还本金 ￥{{ summary.repaidPrincipalSoFar.toFixed(2) }} 万 | 已付利息 ￥{{ summary.repaidInterestSoFar.toFixed(2) }} 万</div>
+          </div>
+        </div>
+
+        <!-- 还款构成进度条 -->
+        <div class="chart-section" style="margin-top: 16px;">
+          <div style="font-size: 0.92rem; font-weight: 600; color: #e2e8f0; margin-bottom: 8px;">
+            原计划 vs 方案 A vs 方案 B 全周期还款构成对比
+          </div>
+          
+          <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 10px;">原计划总支出：￥{{ summary.origTotalRepaid.toFixed(2) }} 万元 (本金 {{ summary.totalLoanAmount }}万 + 利息 {{ summary.origTotalInterest.toFixed(2) }}万)</div>
+          <div class="bar-chart-track">
+            <div class="bar-chart-seg" :style="{width: `${(summary.totalLoanAmount / summary.origTotalRepaid * 100).toFixed(1)}%`, background: '#22d3ee'}" title="贷款本金"></div>
+            <div class="bar-chart-seg" :style="{width: `${(summary.origTotalInterest / summary.origTotalRepaid * 100).toFixed(1)}%`, background: '#f43f5e'}" title="总利息"></div>
+          </div>
+
+          <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 10px;">方案 A 总支出：￥{{ planA.totalRepaidAll.toFixed(2) }} 万元 (节省利息 ￥{{ planA.savedInterest.toFixed(2) }} 万)</div>
+          <div class="bar-chart-track">
+            <div class="bar-chart-seg" :style="{width: `${(summary.totalLoanAmount / summary.origTotalRepaid * 100).toFixed(1)}%`, background: '#22d3ee'}" title="贷款本金"></div>
+            <div class="bar-chart-seg" :style="{width: `${((planA.totalRepaidAll - summary.totalLoanAmount) / summary.origTotalRepaid * 100).toFixed(1)}%`, background: '#f59e0b'}" title="实际支付利息"></div>
+            <div class="bar-chart-seg" :style="{width: `${(planA.savedInterest / summary.origTotalRepaid * 100).toFixed(1)}%`, background: '#10b981'}" title="节省利息"></div>
+          </div>
+
+          <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 10px;">方案 B 总支出：￥{{ planB.totalRepaidAll.toFixed(2) }} 万元 (节省利息 ￥{{ planB.savedInterest.toFixed(2) }} 万)</div>
+          <div class="bar-chart-track">
+            <div class="bar-chart-seg" :style="{width: `${(summary.totalLoanAmount / summary.origTotalRepaid * 100).toFixed(1)}%`, background: '#22d3ee'}" title="贷款本金"></div>
+            <div class="bar-chart-seg" :style="{width: `${((planB.totalRepaidAll - summary.totalLoanAmount) / summary.origTotalRepaid * 100).toFixed(1)}%`, background: '#f59e0b'}" title="实际支付利息"></div>
+            <div class="bar-chart-seg" :style="{width: `${(planB.savedInterest / summary.origTotalRepaid * 100).toFixed(1)}%`, background: '#10b981'}" title="节省利息"></div>
+          </div>
+        </div>
+
+        <!-- 还款计划时间表 -->
+        <div class="section-title" style="justify-content: space-between; flex-wrap: wrap;">
+          <span>分期还款计划时间表</span>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <el-radio-group v-model="tablePlanMode" size="small">
+              <el-radio-button label="planA">方案 A (月供减少)</el-radio-button>
+              <el-radio-button label="planB">方案 B (年限缩短)</el-radio-button>
+              <el-radio-button label="orig">原计划</el-radio-button>
+            </el-radio-group>
+            <el-button size="small" @click="exportCSV">导出 CSV 表格</el-button>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto; margin-bottom: 24px; max-height: 480px;">
+          <table class="dark-table">
+            <thead>
+              <tr>
+                <th>期数</th>
+                <th>还款年月</th>
+                <th>当期月供 (元)</th>
+                <th>偿还本金 (元)</th>
+                <th>偿还利息 (元)</th>
+                <th>剩余本金 (元)</th>
+                <th>状态说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in currentTableList" :key="item.index" :class="{'node-row': item.isEarlyNode}">
+                <td style="font-weight: 600;">
+                  第 {{ item.index }} 期
+                </td>
+                <td>{{ item.date }}</td>
+                <td style="font-weight: 700; color: #22d3ee;">￥{{ item.monthlyPay.toFixed(2) }}</td>
+                <td>￥{{ item.principal.toFixed(2) }}</td>
+                <td style="color: #f87171;">￥{{ item.interest.toFixed(2) }}</td>
+                <td style="font-family: ui-monospace, monospace;">￥{{ item.remainPrincipal.toFixed(2) }}</td>
+                <td>
+                  <span v-if="item.isEarlyNode" class="node-tag">提前还款 ￥{{ formData.earlyAmount }}万</span>
+                  <span v-else-if="item.status === 'past'" style="color: #64748b;">已还</span>
+                  <span v-else style="color: #10b981;">待还</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 房贷提前还款专业指南 -->
+        <div class="content">
+          <h3>房贷提前还款核心常识与决策建议</h3>
+          <p>
+            <strong>1. 提前还贷的最佳时机：</strong><br />
+            等额本息还款方式下，前期的月供中利息占比较大，本金占比较小。若已还款超过总期限的 1/2 或 1/3，大部分利息已经偿还，提前还贷的省息效果将逐步减弱。
+          </p>
+          <p>
+            <strong>2. “缩短年限” vs “减少月供”如何选择？</strong><br />
+            - <strong>缩短还款年限（方案 B）</strong>：利息节省幅度通常显著高于减少月供方案，能最大限度压缩银行总利息，适合收入稳定、无降薪压力的人群。<br />
+            - <strong>减少月供金额（方案 A）</strong>：每个月即刻减少固定支出，提高手头月度自由现金流，适合希望减轻当前生活负债压力的人群。
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script>
+  const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+  const app = createApp({
+    setup() {
+      const formData = reactive({
+        loanType: 'commercial',
+        repayMethod: 'equal-interest',
+        loanYears: 30,
+        commercialAmount: 100,
+        commercialRate: 3.1,
+        fundAmount: 80,
+        fundRate: 2.85,
+        startMonth: '2024-01',
+        repaidMonths: 24,
+        earlyType: 'partial',
+        earlyAmount: 20,
+        combStrategy: 'priority-commercial'
+      });
+
+      const tablePlanMode = ref('planA');
+
+      const applyPreset = (amount, years, rate, earlyAmt, repaidM, method, type = 'commercial') => {
+        formData.loanType = type;
+        formData.repayMethod = method;
+        formData.loanYears = years;
+        if (type === 'commercial') {
+          formData.commercialAmount = amount;
+          formData.commercialRate = rate;
+        } else if (type === 'fund') {
+          formData.fundAmount = amount;
+          formData.fundRate = rate;
+        }
+        formData.earlyAmount = earlyAmt;
+        formData.repaidMonths = repaidM;
+        formData.earlyType = 'partial';
+        compute();
+      };
+
+      const summary = reactive({
+        totalLoanAmount: 100,
+        origFirstMonthlyPay: 0,
+        origTotalInterest: 0,
+        origTotalRepaid: 0,
+        origFinishDate: '',
+        repaidTotalSoFar: 0,
+        repaidPrincipalSoFar: 0,
+        repaidInterestSoFar: 0,
+        remainPrincipalBeforeEarly: 0
+      });
+
+      const planA = reactive({
+        savedInterest: 0,
+        newMonthlyPay: 0,
+        monthlyReduced: 0,
+        remainMonths: 0,
+        finishDate: '',
+        totalRepaidAll: 0
+      });
+
+      const planB = reactive({
+        savedInterest: 0,
+        shortenedMonths: 0,
+        newMonthlyPay: 0,
+        remainMonths: 0,
+        finishDate: '',
+        totalRepaidAll: 0
+      });
+
+      const recommendPlan = computed(() => {
+        return planB.savedInterest >= planA.savedInterest ? 'B' : 'A';
+      });
+
+      // Schedule lists
+      const origSchedule = ref([]);
+      const planASchedule = ref([]);
+      const planBSchedule = ref([]);
+
+      const computeMonthDate = (startYYYYMM, offsetMonths) => {
+        const [y, m] = startYYYYMM.split('-').map(Number);
+        const totalM = (y * 12 + (m - 1)) + offsetMonths;
+        const newY = Math.floor(totalM / 12);
+        const newM = (totalM % 12) + 1;
+        return `${newY}-${String(newM).padStart(2, '0')}`;
+      };
+
+      // Simulate a single loan channel
+      const simulateSingleLoan = (principalWan, annualRatePercent, totalMonths, method) => {
+        const P = principalWan * 10000;
+        const r = (annualRatePercent / 100) / 12;
+        const list = [];
+        let remain = P;
+
+        if (method === 'equal-interest') {
+          // Equal Monthly Payment
+          const M = r === 0 ? P / totalMonths : (P * r * Math.pow(1 + r, totalMonths)) / (Math.pow(1 + r, totalMonths) - 1);
+          for (let i = 1; i <= totalMonths; i++) {
+            const interest = remain * r;
+            const principal = Math.min(remain, M - interest);
+            const actualPay = principal + interest;
+            remain = Math.max(0, remain - principal);
+            list.push({
+              index: i,
+              monthlyPay: actualPay,
+              principal: principal,
+              interest: interest,
+              remainPrincipal: remain
+            });
+          }
+        } else {
+          // Equal Principal
+          const basePrincipal = P / totalMonths;
+          for (let i = 1; i <= totalMonths; i++) {
+            const interest = remain * r;
+            const principal = (i === totalMonths) ? remain : basePrincipal;
+            const actualPay = principal + interest;
+            remain = Math.max(0, remain - principal);
+            list.push({
+              index: i,
+              monthlyPay: actualPay,
+              principal: principal,
+              interest: interest,
+              remainPrincipal: remain
+            });
+          }
+        }
+        return list;
+      };
+
+      const compute = () => {
+        const totalMonths = Number(formData.loanYears) * 12;
+        const isCommercial = formData.loanType === 'commercial' || formData.loanType === 'combination';
+        const isFund = formData.loanType === 'fund' || formData.loanType === 'combination';
+
+        const commAmount = isCommercial ? (Number(formData.commercialAmount) || 0) : 0;
+        const commRate = Number(formData.commercialRate) || 0;
+        const fundAmount = isFund ? (Number(formData.fundAmount) || 0) : 0;
+        const fundRate = Number(formData.fundRate) || 0;
+
+        const totalLoanWan = commAmount + fundAmount;
+        summary.totalLoanAmount = totalLoanWan;
+
+        // 1. Simulate Original Full Schedule
+        const commListOrig = commAmount > 0 ? simulateSingleLoan(commAmount, commRate, totalMonths, formData.repayMethod) : [];
+        const fundListOrig = fundAmount > 0 ? simulateSingleLoan(fundAmount, fundRate, totalMonths, formData.repayMethod) : [];
+
+        const origFull = [];
+        let sumOrigInterest = 0;
+        for (let i = 0; i < totalMonths; i++) {
+          const c = commListOrig[i] || { monthlyPay: 0, principal: 0, interest: 0, remainPrincipal: 0 };
+          const f = fundListOrig[i] || { monthlyPay: 0, principal: 0, interest: 0, remainPrincipal: 0 };
+          const mPay = c.monthlyPay + f.monthlyPay;
+          const pPay = c.principal + f.principal;
+          const iPay = c.interest + f.interest;
+          const rPrinc = c.remainPrincipal + f.remainPrincipal;
+          sumOrigInterest += iPay;
+
+          origFull.push({
+            index: i + 1,
+            date: computeMonthDate(formData.startMonth, i),
+            monthlyPay: mPay,
+            principal: pPay,
+            interest: iPay,
+            remainPrincipal: rPrinc,
+            status: i < formData.repaidMonths ? 'past' : 'future',
+            isEarlyNode: false
+          });
+        }
+
+        origSchedule.value = origFull;
+        summary.origFirstMonthlyPay = origFull[0] ? origFull[0].monthlyPay : 0;
+        summary.origTotalInterest = sumOrigInterest / 10000;
+        summary.origTotalRepaid = totalLoanWan + summary.origTotalInterest;
+        summary.origFinishDate = origFull[origFull.length - 1] ? origFull[origFull.length - 1].date : '';
+
+        // 2. State at Early Repayment Node
+        const repaidM = Math.min(totalMonths - 1, Math.max(1, Number(formData.repaidMonths) || 1));
+        let soFarInterest = 0;
+        let soFarPrincipal = 0;
+        for (let i = 0; i < repaidM; i++) {
+          soFarInterest += origFull[i].interest;
+          soFarPrincipal += origFull[i].principal;
+        }
+        summary.repaidTotalSoFar = (soFarInterest + soFarPrincipal) / 10000;
+        summary.repaidPrincipalSoFar = soFarPrincipal / 10000;
+        summary.repaidInterestSoFar = soFarInterest / 10000;
+
+        const commRemainAtNode = commListOrig[repaidM - 1] ? commListOrig[repaidM - 1].remainPrincipal : 0;
+        const fundRemainAtNode = fundListOrig[repaidM - 1] ? fundListOrig[repaidM - 1].remainPrincipal : 0;
+        const totalRemainAtNode = commRemainAtNode + fundRemainAtNode;
+        summary.remainPrincipalBeforeEarly = totalRemainAtNode / 10000;
+
+        // Early repayment principal
+        let earlyPayYuan = 0;
+        if (formData.earlyType === 'full') {
+          earlyPayYuan = totalRemainAtNode;
+        } else {
+          earlyPayYuan = Math.min(totalRemainAtNode, (Number(formData.earlyAmount) || 0) * 10000);
+        }
+
+        // Allocate early payment between Commercial & Fund
+        let commEarly = 0;
+        let fundEarly = 0;
+        if (formData.loanType === 'combination') {
+          if (formData.combStrategy === 'priority-commercial') {
+            commEarly = Math.min(commRemainAtNode, earlyPayYuan);
+            fundEarly = Math.min(fundRemainAtNode, earlyPayYuan - commEarly);
+          } else {
+            const ratio = totalRemainAtNode > 0 ? (commRemainAtNode / totalRemainAtNode) : 0;
+            commEarly = Math.min(commRemainAtNode, earlyPayYuan * ratio);
+            fundEarly = Math.min(fundRemainAtNode, earlyPayYuan - commEarly);
+          }
+        } else if (formData.loanType === 'commercial') {
+          commEarly = earlyPayYuan;
+        } else {
+          fundEarly = earlyPayYuan;
+        }
+
+        const newCommRemain = Math.max(0, commRemainAtNode - commEarly);
+        const newFundRemain = Math.max(0, fundRemainAtNode - fundEarly);
+        const newTotalRemain = newCommRemain + newFundRemain;
+        const remainMonthsOrig = totalMonths - repaidM;
+
+        // 3. Calculate Plan A: Keep Term, Reduce Monthly Payment
+        let planA_commList = [];
+        let planA_fundList = [];
+        if (newCommRemain > 0 && remainMonthsOrig > 0) {
+          planA_commList = simulateSingleLoan(newCommRemain / 10000, commRate, remainMonthsOrig, formData.repayMethod);
+        }
+        if (newFundRemain > 0 && remainMonthsOrig > 0) {
+          planA_fundList = simulateSingleLoan(newFundRemain / 10000, fundRate, remainMonthsOrig, formData.repayMethod);
+        }
+
+        const schedA = [];
+        for (let i = 0; i < repaidM; i++) {
+          schedA.push({ ...origFull[i], isEarlyNode: (i === repaidM - 1) });
+        }
+        let planA_futureInterest = 0;
+        for (let i = 0; i < remainMonthsOrig; i++) {
+          const c = planA_commList[i] || { monthlyPay: 0, principal: 0, interest: 0, remainPrincipal: 0 };
+          const f = planA_fundList[i] || { monthlyPay: 0, principal: 0, interest: 0, remainPrincipal: 0 };
+          planA_futureInterest += (c.interest + f.interest);
+          schedA.push({
+            index: repaidM + i + 1,
+            date: computeMonthDate(formData.startMonth, repaidM + i),
+            monthlyPay: c.monthlyPay + f.monthlyPay,
+            principal: c.principal + f.principal,
+            interest: c.interest + f.interest,
+            remainPrincipal: c.remainPrincipal + f.remainPrincipal,
+            status: 'future',
+            isEarlyNode: false
+          });
+        }
+        planASchedule.value = schedA;
+
+        const planA_totalInterest = soFarInterest + planA_futureInterest;
+        planA.savedInterest = Math.max(0, (sumOrigInterest - planA_totalInterest) / 10000);
+        planA.newMonthlyPay = (planA_commList[0]?.monthlyPay || 0) + (planA_fundList[0]?.monthlyPay || 0);
+        planA.monthlyReduced = Math.max(0, summary.origFirstMonthlyPay - planA.newMonthlyPay);
+        planA.remainMonths = remainMonthsOrig;
+        planA.finishDate = summary.origFinishDate;
+        planA.totalRepaidAll = totalLoanWan + (planA_totalInterest / 10000);
+
+        // 4. Calculate Plan B: Keep Monthly Payment (or base principal), Shorten Term
+        let schedB_futureComm = [];
+        let schedB_futureFund = [];
+
+        if (formData.repayMethod === 'equal-interest') {
+          // Commercial channel keep payment
+          if (newCommRemain > 0) {
+            const origM_comm = commListOrig[0]?.monthlyPay || 0;
+            const r_comm = (commRate / 100) / 12;
+            let rem = newCommRemain;
+            let step = 1;
+            while (rem > 0.01 && step <= 600) {
+              const iVal = rem * r_comm;
+              const pVal = Math.min(rem, origM_comm - iVal);
+              const mPay = pVal + iVal;
+              rem = Math.max(0, rem - pVal);
+              schedB_futureComm.push({ index: step, monthlyPay: mPay, principal: pVal, interest: iVal, remainPrincipal: rem });
+              step++;
+            }
+          }
+          // Fund channel keep payment
+          if (newFundRemain > 0) {
+            const origM_fund = fundListOrig[0]?.monthlyPay || 0;
+            const r_fund = (fundRate / 100) / 12;
+            let rem = newFundRemain;
+            let step = 1;
+            while (rem > 0.01 && step <= 600) {
+              const iVal = rem * r_fund;
+              const pVal = Math.min(rem, origM_fund - iVal);
+              const mPay = pVal + iVal;
+              rem = Math.max(0, rem - pVal);
+              schedB_futureFund.push({ index: step, monthlyPay: mPay, principal: pVal, interest: iVal, remainPrincipal: rem });
+              step++;
+            }
+          }
+        } else {
+          // Equal Principal: keep monthly principal payment
+          if (newCommRemain > 0) {
+            const origP_comm = (commAmount * 10000) / totalMonths;
+            const r_comm = (commRate / 100) / 12;
+            let rem = newCommRemain;
+            let step = 1;
+            while (rem > 0.01 && step <= 600) {
+              const iVal = rem * r_comm;
+              const pVal = Math.min(rem, origP_comm);
+              const mPay = pVal + iVal;
+              rem = Math.max(0, rem - pVal);
+              schedB_futureComm.push({ index: step, monthlyPay: mPay, principal: pVal, interest: iVal, remainPrincipal: rem });
+              step++;
+            }
+          }
+          if (newFundRemain > 0) {
+            const origP_fund = (fundAmount * 10000) / totalMonths;
+            const r_fund = (fundRate / 100) / 12;
+            let rem = newFundRemain;
+            let step = 1;
+            while (rem > 0.01 && step <= 600) {
+              const iVal = rem * r_fund;
+              const pVal = Math.min(rem, origP_fund);
+              const mPay = pVal + iVal;
+              rem = Math.max(0, rem - pVal);
+              schedB_futureFund.push({ index: step, monthlyPay: mPay, principal: pVal, interest: iVal, remainPrincipal: rem });
+              step++;
+            }
+          }
+        }
+
+        const maxNewMonthsB = Math.max(schedB_futureComm.length, schedB_futureFund.length);
+        const schedB = [];
+        for (let i = 0; i < repaidM; i++) {
+          schedB.push({ ...origFull[i], isEarlyNode: (i === repaidM - 1) });
+        }
+        let planB_futureInterest = 0;
+        for (let i = 0; i < maxNewMonthsB; i++) {
+          const c = schedB_futureComm[i] || { monthlyPay: 0, principal: 0, interest: 0, remainPrincipal: 0 };
+          const f = schedB_futureFund[i] || { monthlyPay: 0, principal: 0, interest: 0, remainPrincipal: 0 };
+          planB_futureInterest += (c.interest + f.interest);
+          schedB.push({
+            index: repaidM + i + 1,
+            date: computeMonthDate(formData.startMonth, repaidM + i),
+            monthlyPay: c.monthlyPay + f.monthlyPay,
+            principal: c.principal + f.principal,
+            interest: c.interest + f.interest,
+            remainPrincipal: c.remainPrincipal + f.remainPrincipal,
+            status: 'future',
+            isEarlyNode: false
+          });
+        }
+        planBSchedule.value = schedB;
+
+        const planB_totalInterest = soFarInterest + planB_futureInterest;
+        planB.savedInterest = Math.max(0, (sumOrigInterest - planB_totalInterest) / 10000);
+        planB.remainMonths = maxNewMonthsB;
+        planB.shortenedMonths = Math.max(0, remainMonthsOrig - maxNewMonthsB);
+        planB.newMonthlyPay = (schedB_futureComm[0]?.monthlyPay || 0) + (schedB_futureFund[0]?.monthlyPay || 0) || summary.origFirstMonthlyPay;
+        planB.finishDate = schedB[schedB.length - 1] ? schedB[schedB.length - 1].date : summary.origFinishDate;
+        planB.totalRepaidAll = totalLoanWan + (planB_totalInterest / 10000);
+      };
+
+      const currentTableList = computed(() => {
+        if (tablePlanMode.value === 'planA') return planASchedule.value;
+        if (tablePlanMode.value === 'planB') return planBSchedule.value;
+        return origSchedule.value;
+      });
+
+      const exportCSV = () => {
+        const list = currentTableList.value;
+        if (!list || !list.length) return;
+        let csv = '期数,还款年月,当期月供(元),偿还本金(元),偿还利息(元),剩余本金(元),状态说明\n';
+        list.forEach(row => {
+          const status = row.isEarlyNode ? `提前还款${formData.earlyAmount}万` : (row.status === 'past' ? '已还' : '待还');
+          csv += `${row.index},${row.date},${row.monthlyPay.toFixed(2)},${row.principal.toFixed(2)},${row.interest.toFixed(2)},${row.remainPrincipal.toFixed(2)},${status}\n`;
+        });
+
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `房贷还款计划明细_${tablePlanMode.value}_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+
+      onMounted(() => {
+        compute();
+      });
+
+      return {
+        formData,
+        tablePlanMode,
+        applyPreset,
+        summary,
+        planA,
+        planB,
+        recommendPlan,
+        currentTableList,
+        compute,
+        exportCSV
+      };
+    }
+  });
+
+  app.use(ElementPlus);
+  app.mount('.main-body');
+</script>
+</body>
+</html>

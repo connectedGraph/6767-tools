@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-sn" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B45309"/>
+      <stop offset="50%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-sn)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- License Certificate Badge Base -->
+  <rect x="7" y="11" width="34" height="26" rx="4" fill="rgba(15,23,42,0.78)" stroke="#FDE047" stroke-width="1.8"/>
+  <!-- Top Gold Security Seal Ribbon -->
+  <circle cx="24" cy="11" r="4.5" fill="#FDE047" stroke="#B45309" stroke-width="1"/>
+  <path d="M22 14.5l-2 5 4-1.5 4 1.5-2-5" fill="#F59E0B"/>
+  <path d="M22.5 11l1 1 2-2" stroke="#B45309" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- License Key Code Slots XXXX-XXXX -->
+  <!-- Row 1 Left -->
+  <rect x="10" y="18.5" width="12" height="6.5" rx="1.8" fill="#1E293B" stroke="#FDE047" stroke-width="1"/>
+  <text x="16" y="23.5" fill="#FDE047" font-family="monospace" font-weight="900" font-size="3.8" text-anchor="middle">A7K9</text>
+  <!-- Row 1 Dash -->
+  <line x1="23" y1="21.7" x2="25" y2="21.7" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Row 1 Right -->
+  <rect x="26" y="18.5" width="12" height="6.5" rx="1.8" fill="#1E293B" stroke="#FDE047" stroke-width="1"/>
+  <text x="32" y="23.5" fill="#FDE047" font-family="monospace" font-weight="900" font-size="3.8" text-anchor="middle">8F2M</text>
+  <!-- Row 2 Left -->
+  <rect x="10" y="27" width="12" height="6.5" rx="1.8" fill="#1E293B" stroke="#60A5FA" stroke-width="1"/>
+  <text x="16" y="32" fill="#60A5FA" font-family="monospace" font-weight="900" font-size="3.8" text-anchor="middle">4B9X</text>
+  <!-- Row 2 Dash -->
+  <line x1="23" y1="30.2" x2="25" y2="30.2" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Row 2 Right -->
+  <rect x="26" y="27" width="12" height="6.5" rx="1.8" fill="#1E293B" stroke="#60A5FA" stroke-width="1"/>
+  <text x="32" y="32" fill="#60A5FA" font-family="monospace" font-weight="900" font-size="3.8" text-anchor="middle">91QP</text>
+</svg>

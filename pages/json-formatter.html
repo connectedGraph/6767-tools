@@ -1,0 +1,1509 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>JSON 格式化与深度工具箱 - 在线工具</title>
+    <meta name="description" content="在线 JSON 格式化、美化与压缩工具，支持语法错误高亮定位与自动修复、交互式树状折叠、JSONPath 路径检索、转换为 TypeScript Interface 与 Go Struct 结构体。" />
+    <meta name="keywords" content="JSON格式化,JSON美化,JSON压缩,JSON校验,JSON树状图,JSONPath,JSON转TypeScript,JSON转Go,JSON转Struct" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .jf-workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        @media (max-width: 860px) {
+            .jf-workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+        .terminal-panel {
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+        .terminal-header {
+            background: #111c30;
+            padding: 8px 14px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.78rem;
+            color: #94a3b8;
+        }
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .editor-wrapper {
+            position: relative;
+            flex: 1;
+            min-height: 420px;
+            display: flex;
+            background: #090f1d;
+            font-family: "JetBrains Mono", "Fira Code", Consolas, "Liberation Mono", monospace;
+            font-size: 13px;
+        }
+        .line-numbers {
+            width: 44px;
+            padding: 12px 6px;
+            text-align: right;
+            background: #0b1326;
+            color: #475569;
+            user-select: none;
+            border-right: 1px solid rgba(51, 65, 85, 0.4);
+            line-height: 20px;
+            font-size: 12px;
+            overflow: hidden;
+        }
+        .json-textarea {
+            flex: 1;
+            background: transparent;
+            color: #e2e8f0;
+            border: none;
+            outline: none;
+            padding: 12px 14px;
+            line-height: 20px;
+            font-family: inherit;
+            font-size: 13px;
+            resize: none;
+            white-space: pre;
+            overflow-x: auto;
+            tab-size: 2;
+        }
+        .json-textarea::placeholder {
+            color: #475569;
+        }
+
+        /* Error notification banner */
+        .jf-error-box {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-top: 12px;
+            color: #fca5a5;
+            font-size: 0.82rem;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        }
+        .jf-error-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            color: #f87171;
+            margin-bottom: 6px;
+        }
+
+        /* Highlighted code view */
+        .highlighted-viewer {
+            padding: 12px 14px;
+            background: #090f1d;
+            overflow: auto;
+            min-height: 420px;
+            max-height: 600px;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 13px;
+            line-height: 20px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: #cbd5e1;
+        }
+        .hl-key { color: #38bdf8; font-weight: 500; }
+        .hl-string { color: #4ade80; }
+        .hl-number { color: #f472b6; }
+        .hl-boolean { color: #fbbf24; }
+        .hl-null { color: #94a3b8; font-style: italic; }
+        .hl-bracket { color: #94a3b8; }
+
+        /* Tree View Styling */
+        .tree-container {
+            padding: 12px 14px;
+            background: #090f1d;
+            min-height: 420px;
+            max-height: 600px;
+            overflow: auto;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+        .tree-node {
+            margin: 2px 0;
+            line-height: 22px;
+        }
+        .tree-toggle {
+            cursor: pointer;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            color: #94a3b8;
+            font-size: 10px;
+            margin-right: 4px;
+            border-radius: 2px;
+            background: rgba(51, 65, 85, 0.4);
+            transition: all 0.15s;
+        }
+        .tree-toggle:hover {
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.2);
+        }
+        .tree-key {
+            color: #38bdf8;
+            cursor: pointer;
+        }
+        .tree-key:hover {
+            text-decoration: underline;
+        }
+        .tree-colon {
+            color: #64748b;
+            margin-right: 6px;
+        }
+        .tree-badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 0 5px;
+            border-radius: 3px;
+            margin-left: 6px;
+            font-family: ui-monospace, monospace;
+            vertical-align: middle;
+        }
+        .tree-badge-obj { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .tree-badge-arr { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .tree-copy-btn {
+            opacity: 0;
+            margin-left: 8px;
+            font-size: 11px;
+            color: #22d3ee;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+        .tree-node-row:hover .tree-copy-btn {
+            opacity: 1;
+        }
+
+        /* Action Toolbar */
+        .jf-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+        }
+        .jf-stats-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.76rem;
+            color: #94a3b8;
+            margin-top: 10px;
+        }
+        .jf-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(51, 65, 85, 0.4);
+        }
+        .jf-stat-val {
+            color: #22d3ee;
+            font-weight: 600;
+        }
+
+        /* Custom Tabs in Right Panel */
+        .jf-tabs-nav {
+            display: flex;
+            background: #0f172a;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+            overflow-x: auto;
+        }
+        .jf-tab-btn {
+            padding: 9px 16px;
+            font-size: 0.8rem;
+            font-family: ui-monospace, monospace;
+            color: #94a3b8;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .jf-tab-btn:hover {
+            color: #e2e8f0;
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .jf-tab-btn.active {
+            color: #22d3ee;
+            border-bottom-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.08);
+            font-weight: 600;
+        }
+
+        .code-gen-box {
+            background: #090f1d;
+            padding: 14px;
+            min-height: 420px;
+            max-height: 600px;
+            overflow: auto;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+        .code-gen-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #111c30;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+            font-size: 0.8rem;
+        }
+
+        .query-input-bar {
+            padding: 10px 12px;
+            background: #111c30;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .query-result-meta {
+            padding: 6px 12px;
+            background: #0c1424;
+            font-family: ui-monospace, monospace;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="JSON 格式化与深度工具箱 - 在线工具" />
+    <meta property="og:description" content="在线 JSON 格式化、美化与压缩工具，支持语法错误高亮定位与自动修复、交互式树状折叠、JSONPath 路径检索、转换为 TypeScript 与 Go Struct 结构体。" />
+    <meta property="og:url" content="https://tool.6767.chat/json-formatter" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="JSON 格式化与深度工具箱 - 在线工具" />
+    <meta name="twitter:description" content="在线 JSON 格式化、美化与压缩工具，支持语法错误高亮定位与自动修复、交互式树状折叠、JSONPath 路径检索、转换为 TypeScript 与 Go Struct 结构体。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/json-formatter" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 标准顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">JSON 格式化与深度工具箱</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">JSON 格式化与深度工具箱</h1>
+                </div>
+                <div class="description">
+                    高效专业的 JSON 深度处理平台：支持 JSON 智能美化/压缩/排序、精确语法错误行号定位与一键修复、交互式折叠树状视图、JSONPath 路径过滤检索，以及一键转换为 TypeScript 接口、Go Struct 结构体与 JSON Schema。纯前端本地解析，不上传任何数据。
+                </div>
+
+                <!-- 顶层操作工具栏 -->
+                <div class="jf-toolbar">
+                    <el-button-group>
+                        <el-button type="primary" size="small" @click="formatJson(2)">美化 (2空格)</el-button>
+                        <el-button type="primary" size="small" @click="formatJson(4)">美化 (4空格)</el-button>
+                        <el-button type="primary" size="small" @click="formatJson('\t')">美化 (Tab)</el-button>
+                        <el-button type="primary" size="small" @click="minifyJson">压缩 (Minify)</el-button>
+                    </el-button-group>
+
+                    <el-dropdown @command="handleToolAction" trigger="click">
+                        <el-button size="small">
+                            高级处理 <i class="el-icon--right">▼</i>
+                        </el-button>
+                        <template #dropdown>
+                            <el-dropdown-menu>
+                                <el-dropdown-item command="sortKeys">键名字母排序 (A-Z)</el-dropdown-item>
+                                <el-dropdown-item command="unicodeEscape">中文转 Unicode 编码</el-dropdown-item>
+                                <el-dropdown-item command="unicodeUnescape">Unicode 解码为中文</el-dropdown-item>
+                                <el-dropdown-item command="escapeString">转义为单行字符串 (Escape)</el-dropdown-item>
+                                <el-dropdown-item command="unescapeString">去除字符串转义 (Unescape)</el-dropdown-item>
+                                <el-dropdown-item command="autoFix" divided>尝试自动修复格式错误</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+
+                    <el-dropdown @command="loadSampleData" trigger="click">
+                        <el-button size="small">
+                            加载示例 <i class="el-icon--right">▼</i>
+                        </el-button>
+                        <template #dropdown>
+                            <el-dropdown-menu>
+                                <el-dropdown-item command="simple">基础用户信息</el-dropdown-item>
+                                <el-dropdown-item command="ecommerce">电商订单复杂多层嵌套</el-dropdown-item>
+                                <el-dropdown-item command="apiResponse">RESTful API 标准响应</el-dropdown-item>
+                                <el-dropdown-item command="invalid">常见语法错误用例 (单引号/尾随逗号)</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+
+                    <el-button size="small" type="success" plain @click="copyFormatted">复制当前结果</el-button>
+                    <el-button size="small" type="info" plain @click="downloadJson">下载文件</el-button>
+                    <el-button size="small" type="danger" plain @click="clearInput">清空</el-button>
+                </div>
+
+                <!-- 统计状态栏 -->
+                <div class="jf-stats-bar" v-if="isValidJson">
+                    <div class="jf-stat-item">状态: <span class="jf-stat-val" style="color: #4ade80;">有效 JSON</span></div>
+                    <div class="jf-stat-item">字符数: <span class="jf-stat-val">{{ stats.charCount }}</span></div>
+                    <div class="jf-stat-item">大小: <span class="jf-stat-val">{{ stats.formattedSize }}</span></div>
+                    <div class="jf-stat-item">压缩后: <span class="jf-stat-val">{{ stats.minifiedSize }} (-{{ stats.savingPercent }}%)</span></div>
+                    <div class="jf-stat-item">总键数: <span class="jf-stat-val">{{ stats.keyCount }}</span></div>
+                    <div class="jf-stat-item">最大深度: <span class="jf-stat-val">{{ stats.maxDepth }}</span></div>
+                </div>
+
+                <!-- 主工作区：双栏终端布局 -->
+                <div class="jf-workspace">
+                    <!-- 左侧：输入与编辑器 -->
+                    <div class="terminal-panel">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <span class="terminal-dot dot-red"></span>
+                                <span class="terminal-dot dot-yellow"></span>
+                                <span class="terminal-dot dot-green"></span>
+                                <span style="margin-left: 6px; font-weight: 600; color: #cbd5e1;">JSON 原始输入</span>
+                            </div>
+                            <div style="font-size: 0.72rem;">
+                                {{ inputLineCount }} 行 | {{ rawInput.length }} 字符
+                            </div>
+                        </div>
+
+                        <div class="editor-wrapper">
+                            <div class="line-numbers" ref="lineNumbersEl">
+                                <div v-for="n in inputLineCount" :key="n">{{ n }}</div>
+                            </div>
+                            <textarea
+                                class="json-textarea"
+                                v-model="rawInput"
+                                @input="handleInput"
+                                @scroll="syncScroll"
+                                ref="textareaEl"
+                                placeholder="在此粘贴或输入 JSON 代码..."
+                                spellcheck="false"
+                            ></textarea>
+                        </div>
+
+                        <!-- 错误提示框 -->
+                        <div class="jf-error-box" v-if="parseError">
+                            <div class="jf-error-title">
+                                <span>⚠ 语法解析错误</span>
+                                <span style="color: #fca5a5; font-weight: normal;" v-if="parseError.line">
+                                    [第 {{ parseError.line }} 行, 第 {{ parseError.column }} 列]
+                                </span>
+                            </div>
+                            <div style="margin-bottom: 6px; word-break: break-all;">{{ parseError.message }}</div>
+                            <div v-if="parseError.snippet" style="background: rgba(0,0,0,0.35); padding: 6px 8px; border-radius: 4px; font-size: 0.76rem; white-space: pre-wrap; margin-bottom: 8px;">
+                                {{ parseError.snippet }}
+                            </div>
+                            <el-button size="small" type="danger" @click="autoFixJson">
+                                尝试自动修复此错误
+                            </el-button>
+                        </div>
+                    </div>
+
+                    <!-- 右侧：多视图查看与代码生成器 -->
+                    <div class="terminal-panel">
+                        <div class="jf-tabs-nav">
+                            <button
+                                class="jf-tab-btn"
+                                :class="{ active: activeTab === 'highlight' }"
+                                @click="activeTab = 'highlight'"
+                            >
+                                高亮美化
+                            </button>
+                            <button
+                                class="jf-tab-btn"
+                                :class="{ active: activeTab === 'tree' }"
+                                @click="activeTab = 'tree'"
+                            >
+                                交互树状图
+                            </button>
+                            <button
+                                class="jf-tab-btn"
+                                :class="{ active: activeTab === 'query' }"
+                                @click="activeTab = 'query'"
+                            >
+                                JSONPath 检索
+                            </button>
+                            <button
+                                class="jf-tab-btn"
+                                :class="{ active: activeTab === 'ts' }"
+                                @click="activeTab = 'ts'"
+                            >
+                                TypeScript
+                            </button>
+                            <button
+                                class="jf-tab-btn"
+                                :class="{ active: activeTab === 'go' }"
+                                @click="activeTab = 'go'"
+                            >
+                                Go Struct
+                            </button>
+                            <button
+                                class="jf-tab-btn"
+                                :class="{ active: activeTab === 'schema' }"
+                                @click="activeTab = 'schema'"
+                            >
+                                JSON Schema
+                            </button>
+                        </div>
+
+                        <!-- Tab 1: 语法高亮视图 -->
+                        <div v-show="activeTab === 'highlight'">
+                            <div class="code-gen-toolbar">
+                                <span>语法高亮代码</span>
+                                <el-button size="small" type="primary" plain @click="copyCode(formattedJson)">复制 JSON</el-button>
+                            </div>
+                            <div class="highlighted-viewer" v-html="highlightedHtml || '<span style=\'color:#64748b;\'>等待有效 JSON 输入...</span>'"></div>
+                        </div>
+
+                        <!-- Tab 2: 交互树状图视图 -->
+                        <div v-show="activeTab === 'tree'">
+                            <div class="code-gen-toolbar">
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <el-button size="small" @click="expandAllTree(true)">全部展开</el-button>
+                                    <el-button size="small" @click="expandAllTree(false)">全部折叠</el-button>
+                                    <el-button size="small" @click="collapseToLevel(2)">折叠至 2 层</el-button>
+                                </div>
+                                <el-input
+                                    v-model="treeSearchQuery"
+                                    size="small"
+                                    placeholder="搜索 Key 或值..."
+                                    style="width: 160px;"
+                                    clearable
+                                />
+                            </div>
+                            <div class="tree-container" v-if="isValidJson">
+                                <json-tree-node
+                                    :data="parsedJson"
+                                    :name="'root'"
+                                    :path="'$'"
+                                    :search-query="treeSearchQuery"
+                                    :expanded-map="treeExpandedMap"
+                                    @toggle="toggleTreeNode"
+                                    @copy-path="copyTreePath"
+                                    @copy-value="copyTreeValue"
+                                />
+                            </div>
+                            <div class="tree-container" v-else style="color: #64748b; padding: 20px;">
+                                暂无有效的 JSON 数据可供解析为树状图。
+                            </div>
+                        </div>
+
+                        <!-- Tab 3: JSONPath / 路径检索 -->
+                        <div v-show="activeTab === 'query'">
+                            <div class="query-input-bar">
+                                <span style="font-family: monospace; color: #22d3ee; font-size: 0.85rem;">表达式:</span>
+                                <el-input
+                                    v-model="jsonPathExpr"
+                                    size="small"
+                                    placeholder="例: $.users[*].name, $.store.book[0], $..id"
+                                    @input="runJsonPath"
+                                    clearable
+                                />
+                                <el-button size="small" type="primary" @click="runJsonPath">检索</el-button>
+                            </div>
+                            <div class="query-result-meta">
+                                <span>匹配结果: {{ queryResults.length }} 项</span>
+                                <span style="margin-left: 12px; color: #64748b;">支持 $..name 深度检索、[*].id 列表投影、[0] 下标等常用语法</span>
+                            </div>
+                            <div class="code-gen-box">
+                                <pre style="margin: 0;">{{ queryResultFormatted || '// 暂无匹配结果或表达式为空' }}</pre>
+                            </div>
+                        </div>
+
+                        <!-- Tab 4: TypeScript Interface 生成器 -->
+                        <div v-show="activeTab === 'ts'">
+                            <div class="code-gen-toolbar">
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <span>Root 接口名:</span>
+                                    <el-input v-model="tsRootName" size="small" style="width: 130px;" />
+                                    <el-checkbox v-model="tsExport">export</el-checkbox>
+                                </div>
+                                <el-button size="small" type="primary" plain @click="copyCode(generatedTypeScript)">复制 TS 接口</el-button>
+                            </div>
+                            <div class="code-gen-box">
+                                <pre style="margin: 0;">{{ generatedTypeScript || '// 暂无生成代码' }}</pre>
+                            </div>
+                        </div>
+
+                        <!-- Tab 5: Go Struct 生成器 -->
+                        <div v-show="activeTab === 'go'">
+                            <div class="code-gen-toolbar">
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <span>Root 结构体名:</span>
+                                    <el-input v-model="goRootName" size="small" style="width: 130px;" />
+                                    <el-checkbox v-model="goOmitempty">omitempty 标签</el-checkbox>
+                                </div>
+                                <el-button size="small" type="primary" plain @click="copyCode(generatedGoStruct)">复制 Go 代码</el-button>
+                            </div>
+                            <div class="code-gen-box">
+                                <pre style="margin: 0;">{{ generatedGoStruct || '// 暂无生成代码' }}</pre>
+                            </div>
+                        </div>
+
+                        <!-- Tab 6: JSON Schema 生成器 -->
+                        <div v-show="activeTab === 'schema'">
+                            <div class="code-gen-toolbar">
+                                <span>Draft-07 JSON Schema 结构定义</span>
+                                <el-button size="small" type="primary" plain @click="copyCode(generatedJsonSchema)">复制 Schema</el-button>
+                            </div>
+                            <div class="code-gen-box">
+                                <pre style="margin: 0;">{{ generatedJsonSchema || '// 暂无生成代码' }}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 知识与功能说明 -->
+                <div class="content">
+                    <h3>JSON 格式与开发规范说明</h3>
+                    <p><strong>JavaScript Object Notation (JSON)</strong> 是一种轻量级的数据交换格式，基于 ECMAScript 标准衍生，广泛应用于 Web API、微服务通信、配置文件及持久化存储中。</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0;">
+                        <div style="background: rgba(30, 41, 59, 0.5); padding: 12px; border-radius: 6px; border: 1px solid rgba(51, 65, 85, 0.4);">
+                            <h4 style="margin-top: 0; color: #38bdf8;">标准 JSON 格式约束</h4>
+                            <ul style="padding-left: 18px; margin: 0; font-size: 0.84rem; line-height: 1.7;">
+                                <li>键名 (Key) 必须用双引号 <code>"..."</code> 包裹，不允许单引号或无引号。</li>
+                                <li>字符串值必须使用双引号包裹，不可使用反引号或未转义换行。</li>
+                                <li>对象与数组最后一个元素后面禁止包含尾随逗号 (Trailing comma)。</li>
+                                <li>支持的值类型：字符串 (String)、数值 (Number)、布尔值 (true/false)、空值 (null)、对象 (Object)、数组 (Array)。</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(30, 41, 59, 0.5); padding: 12px; border-radius: 6px; border: 1px solid rgba(51, 65, 85, 0.4);">
+                            <h4 style="margin-top: 0; color: #4ade80;">本工具箱特色优势</h4>
+                            <ul style="padding-left: 18px; margin: 0; font-size: 0.84rem; line-height: 1.7;">
+                                <li><strong>行号精确报错与自愈：</strong>精准定位语法错误行与列，并能智能自动修复单引号、尾随逗号及未加引号键名。</li>
+                                <li><strong>类型代码自动生成：</strong>从复杂 JSON 一键推断生成严谨的 TypeScript 接口与 Go 结构体代码。</li>
+                                <li><strong>全树交互与路径速查：</strong>一键折叠/展开任意深度树节点，悬停即可一键提取 JSONPath 路径。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; font-size: 0.75rem; color: #64748b; text-align: right; font-family: ui-monospace, monospace;">
+                    拓展时间: 2026-08-31
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="301" :comment-class="2"></comment>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+    const { createApp, ref, reactive, computed, watch, nextTick } = Vue;
+
+    // 递归 JSON 树节点组件
+    const JsonTreeNode = {
+        name: 'JsonTreeNode',
+        props: ['data', 'name', 'path', 'searchQuery', 'expandedMap'],
+        emits: ['toggle', 'copy-path', 'copy-value'],
+        template: `
+            <div class="tree-node" v-if="isVisible">
+                <div class="tree-node-row" style="display: flex; align-items: baseline; flex-wrap: wrap;">
+                    <span 
+                        class="tree-toggle" 
+                        v-if="isContainer" 
+                        @click.stop="$emit('toggle', path)"
+                    >
+                        {{ isExpanded ? '▼' : '▶' }}
+                    </span>
+                    <span v-else style="display: inline-block; width: 16px; margin-right: 4px;"></span>
+
+                    <span 
+                        class="tree-key" 
+                        v-if="name !== null" 
+                        @click.stop="$emit('copy-path', path)"
+                        title="点击复制此字段的 JSONPath 路径"
+                    >
+                        {{ formatKeyName(name) }}
+                    </span>
+                    <span class="tree-colon" v-if="name !== null">:</span>
+
+                    <!-- 容器类型预览 (折叠时) -->
+                    <template v-if="isContainer">
+                        <span style="color: #94a3b8;" v-if="isArray">[{{ isExpanded ? '' : '...' }}]</span>
+                        <span style="color: #94a3b8;" v-else>{<span v-if="!isExpanded">...</span>}</span>
+                        <span :class="['tree-badge', isArray ? 'tree-badge-arr' : 'tree-badge-obj']">
+                            {{ isArray ? 'Array(' + data.length + ')' : 'Object(' + Object.keys(data).length + ')' }}
+                        </span>
+                    </template>
+
+                    <!-- 基本类型显示 -->
+                    <template v-else>
+                        <span :class="valClass" @click.stop="$emit('copy-value', data)" style="cursor: pointer;" title="点击复制此值">
+                            {{ formatValue(data) }}
+                        </span>
+                    </template>
+
+                    <span class="tree-copy-btn" @click.stop="$emit('copy-path', path)">复制路径</span>
+                    <span class="tree-copy-btn" @click.stop="$emit('copy-value', data)">复制值</span>
+                </div>
+
+                <!-- 展开子节点 -->
+                <div v-if="isContainer && isExpanded" style="padding-left: 18px; border-left: 1px dashed rgba(51, 65, 85, 0.4); margin-left: 7px;">
+                    <template v-if="isArray">
+                        <json-tree-node
+                            v-for="(item, idx) in data"
+                            :key="idx"
+                            :data="item"
+                            :name="idx"
+                            :path="path + '[' + idx + ']'"
+                            :search-query="searchQuery"
+                            :expanded-map="expandedMap"
+                            @toggle="$emit('toggle', $event)"
+                            @copy-path="$emit('copy-path', $event)"
+                            @copy-value="$emit('copy-value', $event)"
+                        />
+                    </template>
+                    <template v-else>
+                        <json-tree-node
+                            v-for="(val, key) in data"
+                            :key="key"
+                            :data="val"
+                            :name="key"
+                            :path="path + '.' + key"
+                            :search-query="searchQuery"
+                            :expanded-map="expandedMap"
+                            @toggle="$emit('toggle', $event)"
+                            @copy-path="$emit('copy-path', $event)"
+                            @copy-value="$emit('copy-value', $event)"
+                        />
+                    </template>
+                </div>
+            </div>
+        `,
+        computed: {
+            isContainer() {
+                return this.data !== null && typeof this.data === 'object';
+            },
+            isArray() {
+                return Array.isArray(this.data);
+            },
+            isExpanded() {
+                return this.expandedMap[this.path] !== false;
+            },
+            valClass() {
+                if (this.data === null) return 'hl-null';
+                const t = typeof this.data;
+                if (t === 'string') return 'hl-string';
+                if (t === 'number') return 'hl-number';
+                if (t === 'boolean') return 'hl-boolean';
+                return '';
+            },
+            isVisible() {
+                if (!this.searchQuery || !this.searchQuery.trim()) return true;
+                const q = this.searchQuery.trim().toLowerCase();
+                const keyStr = String(this.name).toLowerCase();
+                const valStr = typeof this.data === 'object' ? '' : String(this.data).toLowerCase();
+                return keyStr.includes(q) || valStr.includes(q);
+            }
+        },
+        methods: {
+            formatKeyName(k) {
+                if (typeof k === 'number') return `[${k}]`;
+                return `"${k}"`;
+            },
+            formatValue(v) {
+                if (v === null) return 'null';
+                if (typeof v === 'string') return `"${v}"`;
+                return String(v);
+            }
+        }
+    };
+
+    const app = createApp({
+        components: {
+            'json-tree-node': JsonTreeNode
+        },
+        setup() {
+            const rawInput = ref('');
+            const activeTab = ref('highlight');
+            const parseError = ref(null);
+            const parsedJson = ref(null);
+            const isValidJson = ref(false);
+            const textareaEl = ref(null);
+            const lineNumbersEl = ref(null);
+
+            // 树视图状态
+            const treeSearchQuery = ref('');
+            const treeExpandedMap = reactive({});
+
+            // JSONPath 状态
+            const jsonPathExpr = ref('$.data.items[*]');
+            const queryResults = ref([]);
+
+            // TypeScript / Go 生成器配置
+            const tsRootName = ref('ApiResponse');
+            const tsExport = ref(true);
+            const goRootName = ref('AutoGenerated');
+            const goOmitempty = ref(true);
+
+            // 统计分析
+            const stats = reactive({
+                charCount: 0,
+                formattedSize: '0 B',
+                minifiedSize: '0 B',
+                savingPercent: 0,
+                keyCount: 0,
+                maxDepth: 0
+            });
+
+            const inputLineCount = computed(() => {
+                if (!rawInput.value) return 1;
+                return rawInput.value.split('\n').length;
+            });
+
+            const formattedJson = computed(() => {
+                if (!isValidJson.value || parsedJson.value === null) return '';
+                return JSON.stringify(parsedJson.value, null, 2);
+            });
+
+            // 语法高亮 HTML 生成器
+            const highlightedHtml = computed(() => {
+                if (!isValidJson.value || parsedJson.value === null) return '';
+                const jsonStr = JSON.stringify(parsedJson.value, null, 2);
+                return syntaxHighlight(jsonStr);
+            });
+
+            function syntaxHighlight(json) {
+                if (!json) return '';
+                json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                    let cls = 'hl-number';
+                    if (/^"/.test(match)) {
+                        if (/:$/.test(match)) {
+                            cls = 'hl-key';
+                        } else {
+                            cls = 'hl-string';
+                        }
+                    } else if (/true|false/.test(match)) {
+                        cls = 'hl-boolean';
+                    } else if (/null/.test(match)) {
+                        cls = 'hl-null';
+                    }
+                    return '<span class="' + cls + '">' + match + '</span>';
+                });
+            }
+
+            // 同步编辑器滚动条
+            const syncScroll = (e) => {
+                if (lineNumbersEl.value && textareaEl.value) {
+                    lineNumbersEl.value.scrollTop = textareaEl.value.scrollTop;
+                }
+            };
+
+            // 核心解析逻辑
+            const parseJsonInput = () => {
+                const text = rawInput.value.trim();
+                if (!text) {
+                    parseError.value = null;
+                    parsedJson.value = null;
+                    isValidJson.value = false;
+                    return;
+                }
+
+                try {
+                    const parsed = JSON.parse(text);
+                    parsedJson.value = parsed;
+                    isValidJson.value = true;
+                    parseError.value = null;
+                    calcStats(parsed, text);
+                    runJsonPath();
+                } catch (err) {
+                    isValidJson.value = false;
+                    parsedJson.value = null;
+                    parseError.value = extractDetailedError(err, text);
+                }
+            };
+
+            // 精确错误提取定位算法
+            const extractDetailedError = (err, text) => {
+                const msg = err.message || String(err);
+                let line = null;
+                let column = null;
+                let position = null;
+
+                // Chrome / V8: "at position 123"
+                const posMatch = msg.match(/at position (\d+)/i);
+                if (posMatch) {
+                    position = parseInt(posMatch[1], 10);
+                }
+
+                // Firefox: "at line 2 column 5"
+                const lineColMatch = msg.match(/line (\d+) column (\d+)/i);
+                if (lineColMatch) {
+                    line = parseInt(lineColMatch[1], 10);
+                    column = parseInt(lineColMatch[2], 10);
+                }
+
+                if (position !== null && line === null) {
+                    const lines = text.slice(0, position).split('\n');
+                    line = lines.length;
+                    column = lines[lines.length - 1].length + 1;
+                }
+
+                let snippet = '';
+                if (line !== null) {
+                    const allLines = text.split('\n');
+                    const targetLine = allLines[line - 1] || '';
+                    const pointer = ' '.repeat(Math.max(0, (column || 1) - 1)) + '^';
+                    snippet = `Line ${line}: ${targetLine}\n         ${pointer}`;
+                }
+
+                return {
+                    message: msg,
+                    line,
+                    column,
+                    position,
+                    snippet
+                };
+            };
+
+            // 计算统计信息
+            const calcStats = (data, rawText) => {
+                stats.charCount = rawText.length;
+                stats.formattedSize = formatBytes(new Blob([JSON.stringify(data, null, 2)]).size);
+                const minified = JSON.stringify(data);
+                const minSize = new Blob([minified]).size;
+                stats.minifiedSize = formatBytes(minSize);
+                const rawSize = new Blob([rawText]).size;
+                stats.savingPercent = rawSize > 0 ? Math.max(0, Math.round((1 - minSize / rawSize) * 100)) : 0;
+
+                let keys = 0;
+                let maxD = 0;
+                const traverse = (obj, depth) => {
+                    if (depth > maxD) maxD = depth;
+                    if (obj && typeof obj === 'object') {
+                        if (Array.isArray(obj)) {
+                            obj.forEach(item => traverse(item, depth + 1));
+                        } else {
+                            const objKeys = Object.keys(obj);
+                            keys += objKeys.length;
+                            objKeys.forEach(k => traverse(obj[k], depth + 1));
+                        }
+                    }
+                };
+                traverse(data, 1);
+                stats.keyCount = keys;
+                stats.maxDepth = maxD;
+            };
+
+            const formatBytes = (bytes) => {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            };
+
+            const handleInput = () => {
+                parseJsonInput();
+            };
+
+            // 格式化功能
+            const formatJson = (indent) => {
+                if (!isValidJson.value) {
+                    parseJsonInput();
+                    if (!isValidJson.value) {
+                        ElementPlus.ElMessage.warning('当前 JSON 存在语法错误，无法格式化');
+                        return;
+                    }
+                }
+                rawInput.value = JSON.stringify(parsedJson.value, null, indent);
+                parseJsonInput();
+                ElementPlus.ElMessage.success('已完成格式化');
+            };
+
+            // 压缩功能
+            const minifyJson = () => {
+                if (!isValidJson.value) {
+                    parseJsonInput();
+                    if (!isValidJson.value) {
+                        ElementPlus.ElMessage.warning('当前 JSON 存在语法错误，无法压缩');
+                        return;
+                    }
+                }
+                rawInput.value = JSON.stringify(parsedJson.value);
+                parseJsonInput();
+                ElementPlus.ElMessage.success('已完成压缩');
+            };
+
+            // 自动修复常见 JSON 语法错误
+            const autoFixJson = () => {
+                let s = rawInput.value;
+                if (!s.trim()) return;
+
+                try {
+                    // 1. 去除单行注释 // ... 与多行注释 /* ... */
+                    s = s.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1');
+                    // 2. 将单引号键值替换为双引号: 'foo': 'bar' -> "foo": "bar"
+                    s = s.replace(/'([^'\\]*(?:\\.[^'\\]*)*)'/g, '"$1"');
+                    // 3. 修复无引号键名: { foo: 123 } -> { "foo": 123 }
+                    s = s.replace(/([{,]\s*)([a-zA-Z0-9_$]+)\s*:/g, '$1"$2":');
+                    // 4. 移除对象与数组中的尾随逗号: ,} -> } 和 ,] -> ]
+                    s = s.replace(/,\s*([}\]])/g, '$1');
+                    // 5. 替换 JS 特有值 undefined, NaN
+                    s = s.replace(/:\s*undefined\b/g, ': null').replace(/:\s*NaN\b/g, ': null');
+
+                    const fixed = JSON.parse(s);
+                    rawInput.value = JSON.stringify(fixed, null, 2);
+                    parseJsonInput();
+                    ElementPlus.ElMessage.success('语法错误已成功自动修复并美化！');
+                } catch (e) {
+                    ElementPlus.ElMessage.error('自动修复未能完全解决，请根据错误行号手动调整。');
+                }
+            };
+
+            // 键名字母排序
+            const sortObjectKeys = (obj) => {
+                if (Array.isArray(obj)) {
+                    return obj.map(sortObjectKeys);
+                } else if (obj !== null && typeof obj === 'object') {
+                    const sorted = {};
+                    Object.keys(obj).sort().forEach(k => {
+                        sorted[k] = sortObjectKeys(obj[k]);
+                    });
+                    return sorted;
+                }
+                return obj;
+            };
+
+            const handleToolAction = (cmd) => {
+                if (cmd === 'autoFix') {
+                    autoFixJson();
+                    return;
+                }
+                if (!isValidJson.value) {
+                    ElementPlus.ElMessage.warning('请先输入有效的 JSON 数据');
+                    return;
+                }
+                if (cmd === 'sortKeys') {
+                    const sorted = sortObjectKeys(parsedJson.value);
+                    rawInput.value = JSON.stringify(sorted, null, 2);
+                    parseJsonInput();
+                    ElementPlus.ElMessage.success('已完成键名 A-Z 递归排序');
+                } else if (cmd === 'unicodeEscape') {
+                    const jsonStr = JSON.stringify(parsedJson.value, null, 2);
+                    rawInput.value = jsonStr.replace(/[\u007f-\uffff]/g, (c) => '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4));
+                    parseJsonInput();
+                    ElementPlus.ElMessage.success('已将非 ASCII 字符转换为 Unicode 编码');
+                } else if (cmd === 'unicodeUnescape') {
+                    rawInput.value = unescape(rawInput.value.replace(/\\u/g, '%u'));
+                    parseJsonInput();
+                    ElementPlus.ElMessage.success('已完成 Unicode 解码');
+                } else if (cmd === 'escapeString') {
+                    rawInput.value = JSON.stringify(JSON.stringify(parsedJson.value));
+                    ElementPlus.ElMessage.success('已转义为单行字符串');
+                } else if (cmd === 'unescapeString') {
+                    try {
+                        const unescaped = JSON.parse(rawInput.value);
+                        if (typeof unescaped === 'string') {
+                            rawInput.value = JSON.stringify(JSON.parse(unescaped), null, 2);
+                            parseJsonInput();
+                            ElementPlus.ElMessage.success('已成功去转义并还原为 JSON');
+                        }
+                    } catch (e) {
+                        ElementPlus.ElMessage.error('去转义失败，请检查输入格式');
+                    }
+                }
+            };
+
+            // 示例数据加载
+            const loadSampleData = (type) => {
+                if (type === 'simple') {
+                    rawInput.value = JSON.stringify({
+                        name: "张三",
+                        age: 28,
+                        isDeveloper: true,
+                        skills: ["JavaScript", "Vue.js", "Go", "Docker"],
+                        address: {
+                            city: "上海市",
+                            district: "浦东新区",
+                            zipCode: "200120"
+                        },
+                        projects: null
+                    }, null, 2);
+                } else if (type === 'ecommerce') {
+                    rawInput.value = JSON.stringify({
+                        code: 200,
+                        status: "success",
+                        data: {
+                            orderId: "ORD-20260831-9876",
+                            timestamp: 1788147600,
+                            buyer: {
+                                userId: 10086,
+                                username: "alex_dev",
+                                email: "alex@example.com",
+                                vipLevel: 3
+                            },
+                            items: [
+                                { itemId: "ITM-01", name: "4K 极客电竞显示器", price: 2999.5, quantity: 1, tags: ["hardware", "display"] },
+                                { itemId: "ITM-02", name: "机械键盘 87键 RGB", price: 499.0, quantity: 2, tags: ["accessory", "keyboard"] }
+                            ],
+                            payment: {
+                                method: "WeChatPay",
+                                amountPaid: 3997.5,
+                                isPaid: true,
+                                transactionId: "TXN_WX_88992211"
+                            }
+                        }
+                    }, null, 2);
+                } else if (type === 'apiResponse') {
+                    rawInput.value = JSON.stringify({
+                        requestId: "req_f48a91c0b39",
+                        timestamp: new Date().toISOString(),
+                        pagination: {
+                            page: 1,
+                            pageSize: 20,
+                            totalRecords: 1420,
+                            totalPages: 71
+                        },
+                        items: [
+                            { id: 1, title: "深度探索现代前端工程架构", author: "Antigravity", views: 18450, published: true },
+                            { id: 2, title: "Go 语言高并发实战指南", author: "CloudNative", views: 9320, published: true }
+                        ]
+                    }, null, 2);
+                } else if (type === 'invalid') {
+                    rawInput.value = `{\n  'toolName': 'JSON Formatter',\n  version: 2.0,\n  features: [\n    'Pretty Print',\n    'Tree View',\n    'Type Generation',\n  ],\n  author: 'Developer',\n}`;
+                }
+                parseJsonInput();
+                ElementPlus.ElMessage.success('示例数据已加载');
+            };
+
+            // 清空
+            const clearInput = () => {
+                rawInput.value = '';
+                parseJsonInput();
+                ElementPlus.ElMessage.info('已清空');
+            };
+
+            // 复制与下载
+            const copyCode = (text) => {
+                if (!text) {
+                    ElementPlus.ElMessage.warning('内容为空');
+                    return;
+                }
+                c.copy(text);
+                ElementPlus.ElMessage.success('已复制到剪贴板');
+            };
+
+            const copyFormatted = () => {
+                if (!isValidJson.value) {
+                    ElementPlus.ElMessage.warning('当前无有效 JSON 内容');
+                    return;
+                }
+                copyCode(formattedJson.value);
+            };
+
+            const downloadJson = () => {
+                if (!isValidJson.value) {
+                    ElementPlus.ElMessage.warning('当前无有效 JSON 内容');
+                    return;
+                }
+                c.downloadTxt('formatted-data.json', formattedJson.value);
+            };
+
+            // 树视图操作
+            const toggleTreeNode = (path) => {
+                treeExpandedMap[path] = treeExpandedMap[path] === false ? true : false;
+            };
+
+            const expandAllTree = (expand) => {
+                if (!parsedJson.value) return;
+                const traversePaths = (val, curPath) => {
+                    treeExpandedMap[curPath] = expand;
+                    if (val && typeof val === 'object') {
+                        if (Array.isArray(val)) {
+                            val.forEach((item, idx) => traversePaths(item, curPath + '[' + idx + ']'));
+                        } else {
+                            Object.keys(val).forEach(k => traversePaths(val[k], curPath + '.' + k));
+                        }
+                    }
+                };
+                traversePaths(parsedJson.value, '$');
+            };
+
+            const collapseToLevel = (maxLevel) => {
+                if (!parsedJson.value) return;
+                const traverseLevels = (val, curPath, level) => {
+                    treeExpandedMap[curPath] = level < maxLevel;
+                    if (val && typeof val === 'object') {
+                        if (Array.isArray(val)) {
+                            val.forEach((item, idx) => traverseLevels(item, curPath + '[' + idx + ']', level + 1));
+                        } else {
+                            Object.keys(val).forEach(k => traverseLevels(val[k], curPath + '.' + k, level + 1));
+                        }
+                    }
+                };
+                traverseLevels(parsedJson.value, '$', 1);
+                ElementPlus.ElMessage.success(`已折叠至第 ${maxLevel} 层`);
+            };
+
+            const copyTreePath = (path) => {
+                c.copy(path);
+                ElementPlus.ElMessage.success(`已复制路径: ${path}`);
+            };
+
+            const copyTreeValue = (val) => {
+                const text = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val);
+                c.copy(text);
+                ElementPlus.ElMessage.success('已复制字段值');
+            };
+
+            // JSONPath 解析引擎 (纯前端零依赖)
+            const runJsonPath = () => {
+                if (!isValidJson.value || !parsedJson.value) {
+                    queryResults.value = [];
+                    return;
+                }
+                const expr = jsonPathExpr.value.trim();
+                if (!expr) {
+                    queryResults.value = [];
+                    return;
+                }
+
+                try {
+                    queryResults.value = evaluateJsonPath(parsedJson.value, expr);
+                } catch (e) {
+                    queryResults.value = [];
+                }
+            };
+
+            const evaluateJsonPath = (root, pathStr) => {
+                // 深度模糊匹配 $..key
+                if (pathStr.startsWith('$..')) {
+                    const targetKey = pathStr.slice(3).trim();
+                    const results = [];
+                    const search = (node) => {
+                        if (node && typeof node === 'object') {
+                            if (Array.isArray(node)) {
+                                node.forEach(search);
+                            } else {
+                                for (const k in node) {
+                                    if (k === targetKey) results.push(node[k]);
+                                    search(node[k]);
+                                }
+                            }
+                        }
+                    };
+                    search(root);
+                    return results;
+                }
+
+                // 标准分词评估器
+                let current = [root];
+                let cleanPath = pathStr.replace(/^\$\.?/, '');
+                if (!cleanPath) return current;
+
+                // 拆分为 tokens (key, [*], [0], 等)
+                const tokens = cleanPath.match(/[^.\[\]]+|\[\d+\]|\[\*\]/g) || [];
+
+                for (let token of tokens) {
+                    let next = [];
+                    if (token === '[*]' || token === '*') {
+                        for (let item of current) {
+                            if (Array.isArray(item)) next.push(...item);
+                            else if (item && typeof item === 'object') next.push(...Object.values(item));
+                        }
+                    } else if (/^\[\d+\]$/.test(token)) {
+                        const idx = parseInt(token.slice(1, -1), 10);
+                        for (let item of current) {
+                            if (Array.isArray(item) && item[idx] !== undefined) next.push(item[idx]);
+                        }
+                    } else {
+                        for (let item of current) {
+                            if (item && typeof item === 'object' && token in item) {
+                                next.push(item[token]);
+                            }
+                        }
+                    }
+                    current = next;
+                }
+                return current;
+            };
+
+            const queryResultFormatted = computed(() => {
+                if (!queryResults.value || queryResults.value.length === 0) return '';
+                return JSON.stringify(queryResults.value.length === 1 ? queryResults.value[0] : queryResults.value, null, 2);
+            });
+
+            // 代码生成器：TypeScript Interface
+            const generatedTypeScript = computed(() => {
+                if (!isValidJson.value || parsedJson.value === null) return '';
+                try {
+                    const interfaces = [];
+                    const root = tsRootName.value.trim() || 'RootObject';
+                    const prefix = tsExport.value ? 'export interface ' : 'interface ';
+
+                    const toPascalCase = (str) => {
+                        return str.replace(/([-_][a-z])/ig, ($1) => $1.toUpperCase().replace('-', '').replace('_', ''))
+                                  .replace(/^[a-z]/, (c) => c.toUpperCase());
+                    };
+
+                    const generateType = (val, keyName) => {
+                        if (val === null) return 'any';
+                        if (typeof val === 'string') return 'string';
+                        if (typeof val === 'number') return 'number';
+                        if (typeof val === 'boolean') return 'boolean';
+                        if (Array.isArray(val)) {
+                            if (val.length === 0) return 'any[]';
+                            const first = val[0];
+                            if (typeof first === 'object' && first !== null) {
+                                const subName = toPascalCase(keyName ? keyName.replace(/s$/, '') + 'Item' : 'Item');
+                                buildInterface(first, subName);
+                                return `${subName}[]`;
+                            }
+                            return `${typeof first}[]`;
+                        }
+                        if (typeof val === 'object') {
+                            const subName = toPascalCase(keyName || 'NestedObject');
+                            buildInterface(val, subName);
+                            return subName;
+                        }
+                        return 'any';
+                    };
+
+                    const buildInterface = (obj, name) => {
+                        const lines = [];
+                        lines.push(`${prefix}${name} {`);
+                        for (const k in obj) {
+                            const val = obj[k];
+                            const t = generateType(val, k);
+                            const safeKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(k) ? k : `"${k}"`;
+                            lines.push(`  ${safeKey}: ${t};`);
+                        }
+                        lines.push('}');
+                        interfaces.push(lines.join('\n'));
+                    };
+
+                    buildInterface(parsedJson.value, root);
+                    return interfaces.reverse().join('\n\n');
+                } catch (e) {
+                    return '// TypeScript 生成失败: ' + e.message;
+                }
+            });
+
+            // 代码生成器：Go Struct
+            const generatedGoStruct = computed(() => {
+                if (!isValidJson.value || parsedJson.value === null) return '';
+                try {
+                    const structs = [];
+                    const root = goRootName.value.trim() || 'AutoGenerated';
+                    const omit = goOmitempty.value ? ',omitempty' : '';
+
+                    const toGoFieldName = (str) => {
+                        let res = str.replace(/([-_][a-z])/ig, ($1) => $1.toUpperCase().replace('-', '').replace('_', ''))
+                                     .replace(/^[a-z]/, (c) => c.toUpperCase());
+                        if (/^id$/i.test(res)) return 'ID';
+                        if (/^url$/i.test(res)) return 'URL';
+                        if (/^ip$/i.test(res)) return 'IP';
+                        return res;
+                    };
+
+                    const generateGoType = (val, keyName) => {
+                        if (val === null) return 'interface{}';
+                        if (typeof val === 'string') return 'string';
+                        if (typeof val === 'number') return Number.isInteger(val) ? 'int64' : 'float64';
+                        if (typeof val === 'boolean') return 'bool';
+                        if (Array.isArray(val)) {
+                            if (val.length === 0) return '[]interface{}';
+                            const first = val[0];
+                            if (typeof first === 'object' && first !== null) {
+                                const subName = toGoFieldName(keyName ? keyName.replace(/s$/, '') + 'Item' : 'Item');
+                                buildGoStruct(first, subName);
+                                return `[]${subName}`;
+                            }
+                            const elemType = typeof first === 'number' ? (Number.isInteger(first) ? 'int64' : 'float64') : typeof first;
+                            return `[]${elemType}`;
+                        }
+                        if (typeof val === 'object') {
+                            const subName = toGoFieldName(keyName || 'Nested');
+                            buildGoStruct(val, subName);
+                            return subName;
+                        }
+                        return 'interface{}';
+                    };
+
+                    const buildGoStruct = (obj, name) => {
+                        const lines = [];
+                        lines.push(`type ${name} struct {`);
+                        for (const k in obj) {
+                            const val = obj[k];
+                            const fieldName = toGoFieldName(k);
+                            const t = generateGoType(val, k);
+                            lines.push(`\t${fieldName} ${t} \`json:"${k}${omit}"\``);
+                        }
+                        lines.push('}');
+                        structs.push(lines.join('\n'));
+                    };
+
+                    buildGoStruct(parsedJson.value, root);
+                    return structs.reverse().join('\n\n');
+                } catch (e) {
+                    return '// Go Struct 生成失败: ' + e.message;
+                }
+            });
+
+            // 代码生成器：JSON Schema Draft-07
+            const generatedJsonSchema = computed(() => {
+                if (!isValidJson.value || parsedJson.value === null) return '';
+                try {
+                    const generateSchema = (val) => {
+                        if (val === null) return { type: "null" };
+                        const t = typeof val;
+                        if (t === 'string') return { type: "string" };
+                        if (t === 'number') return { type: Number.isInteger(val) ? "integer" : "number" };
+                        if (t === 'boolean') return { type: "boolean" };
+                        if (Array.isArray(val)) {
+                            return {
+                                type: "array",
+                                items: val.length > 0 ? generateSchema(val[0]) : {}
+                            };
+                        }
+                        if (t === 'object') {
+                            const properties = {};
+                            const required = [];
+                            for (const k in val) {
+                                properties[k] = generateSchema(val[k]);
+                                required.push(k);
+                            }
+                            return {
+                                type: "object",
+                                properties,
+                                required
+                            };
+                        }
+                        return {};
+                    };
+
+                    const schema = {
+                        "$schema": "http://json-schema.org/draft-07/schema#",
+                        "title": tsRootName.value || "RootSchema",
+                        ...generateSchema(parsedJson.value)
+                    };
+                    return JSON.stringify(schema, null, 2);
+                } catch (e) {
+                    return '// JSON Schema 生成失败: ' + e.message;
+                }
+            });
+
+            // 初始化加载一个精美示例
+            loadSampleData('ecommerce');
+
+            return {
+                rawInput,
+                activeTab,
+                parseError,
+                parsedJson,
+                isValidJson,
+                textareaEl,
+                lineNumbersEl,
+                inputLineCount,
+                formattedJson,
+                highlightedHtml,
+                syncScroll,
+                handleInput,
+                formatJson,
+                minifyJson,
+                autoFixJson,
+                handleToolAction,
+                loadSampleData,
+                clearInput,
+                copyCode,
+                copyFormatted,
+                downloadJson,
+                stats,
+                // Tree
+                treeSearchQuery,
+                treeExpandedMap,
+                toggleTreeNode,
+                expandAllTree,
+                collapseToLevel,
+                copyTreePath,
+                copyTreeValue,
+                // JSONPath
+                jsonPathExpr,
+                queryResults,
+                queryResultFormatted,
+                runJsonPath,
+                // Code Gen
+                tsRootName,
+                tsExport,
+                goRootName,
+                goOmitempty,
+                generatedTypeScript,
+                generatedGoStruct,
+                generatedJsonSchema
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('.main-body');
+</script>
+</body>
+</html>

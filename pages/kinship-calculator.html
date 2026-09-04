@@ -1,0 +1,428 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>中国亲戚关系称谓换算器 - 在线工具</title>
+    <meta name="description" content="中国传统亲戚称谓换算计算器，支持输入关系链（如爸爸的哥哥的儿子）双向互查亲戚称谓、区分长幼尊卑与辈分关系。" />
+    <meta name="keywords" content="亲戚称谓计算器,亲戚计算器,中国亲戚关系,辈分计算,三姑六婆计算器" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+    <style>
+        .control-bar {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+            backdrop-filter: blur(16px);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .geek-select {
+            background: #090f1d !important;
+            border: 1px solid rgba(51, 65, 85, 0.8) !important;
+            color: #e2e8f0 !important;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            border-radius: 6px;
+            padding: 6px 12px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .result-card {
+            background: #070b14;
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(251, 191, 36, 0.08);
+            margin-bottom: 24px;
+        }
+        .result-chain {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+        .result-chain-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f1f5f9;
+            min-height: 32px;
+            margin-bottom: 16px;
+        }
+        .result-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(51, 65, 85, 0.6);
+            padding-top: 16px;
+        }
+        .result-title-text {
+            font-size: 28px;
+            font-weight: 900;
+            color: #fde047;
+            letter-spacing: 0.02em;
+            text-shadow: 0 0 16px rgba(253, 224, 71, 0.35);
+        }
+
+        .keypad-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .kin-key {
+            height: 52px;
+            background: #090f1d;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 10px;
+            color: #fde68a;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .kin-key:hover {
+            background: rgba(251, 191, 36, 0.15);
+            border-color: #fbbf24;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+        }
+        .kin-key-op {
+            background: #18181b;
+            border-color: rgba(113, 113, 122, 0.5);
+            color: #e4e4e7;
+        }
+        .kin-key-op:hover {
+            border-color: #a1a1aa;
+            background: #27272a;
+        }
+        .kin-key:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .sample-pills {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            border-top: 1px solid rgba(51, 65, 85, 0.6);
+            padding-top: 16px;
+        }
+        .sample-pill {
+            font-size: 12px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: #090f1d;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .sample-pill:hover {
+            border-color: #fbbf24;
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./life" class="text-slate-400 hover:text-cyan-400 text-sm">生活实用</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">中国亲戚关系称谓换算器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">中国亲戚关系称谓换算器</h1>
+                </div>
+                <div class="description">中国传统亲戚称谓换算计算器，支持输入关系链（如爸爸的哥哥的儿子）双向互查亲戚称谓、区分长幼尊卑与辈分关系。</div>
+
+    <!-- Options Control Bar -->
+    <div class="control-bar">
+        <div style="display: flex; align-items: center; gap: 20px; font-size: 13px; color: #94a3b8; font-family: 'JetBrains Mono', monospace;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span>我的性别:</span>
+                <label style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                    <input type="radio" value="male" v-model="myGender" @change="calculate" /> 男
+                </label>
+                <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; margin-left: 8px;">
+                    <input type="radio" value="female" v-model="myGender" @change="calculate" /> 女
+                </label>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span>计算方向:</span>
+                <select v-model="mode" @change="calculate" class="geek-select">
+                    <option value="forward">我应该怎么称呼对方 (正向)</option>
+                    <option value="reverse">对方应该怎么称呼我 (反向)</option>
+                </select>
+            </div>
+        </div>
+
+        <button @click="clearChain" style="padding: 6px 14px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(244,63,94,0.4); background: rgba(244,63,94,0.1); color: #f43f5e; cursor: pointer;">清空输入</button>
+    </div>
+
+    <!-- Result Display -->
+    <div class="result-card">
+        <div class="result-chain">// 关系路径 (Relationship Path)</div>
+        <div class="result-chain-text">{{ chainText || '我' }}</div>
+
+        <div class="result-title-row">
+            <div>
+                <div style="font-size: 12px; color: #fbbf24; font-family: 'JetBrains Mono', monospace;">// 对应称谓:</div>
+                <div class="result-title-text">{{ resultTitles.join(' / ') || '自己' }}</div>
+            </div>
+            <button v-if="resultTitles.length" @click="copyResult" style="padding: 8px 16px; font-size: 12px; font-weight: 600; border-radius: 8px; border: 1px solid #fbbf24; background: rgba(251,191,36,0.2); color: #fde68a; cursor: pointer;">复制称谓</button>
+        </div>
+    </div>
+
+    <!-- Keypad -->
+    <div class="keypad-card">
+        <div class="keypad-grid">
+            <button @click="addRelation('父')" class="kin-key">父 (爸爸)</button>
+            <button @click="addRelation('母')" class="kin-key">母 (妈妈)</button>
+            <button @click="addRelation('夫')" class="kin-key" :disabled="myGender==='male'">夫 (老公)</button>
+            <button @click="addRelation('妻')" class="kin-key" :disabled="myGender==='female'">妻 (老婆)</button>
+
+            <button @click="addRelation('兄')" class="kin-key">兄 (哥哥)</button>
+            <button @click="addRelation('弟')" class="kin-key">弟 (弟弟)</button>
+            <button @click="addRelation('姐')" class="kin-key">姐 (姐姐)</button>
+            <button @click="addRelation('妹')" class="kin-key">妹 (妹妹)</button>
+
+            <button @click="addRelation('子')" class="kin-key">子 (儿子)</button>
+            <button @click="addRelation('女')" class="kin-key">女 (女儿)</button>
+            <button @click="backspace" class="kin-key kin-key-op">⌫ 退格</button>
+            <button @click="clearChain" class="kin-key kin-key-op" style="color: #f43f5e;">C 清空</button>
+        </div>
+
+        <!-- Quick Samples -->
+        <div class="sample-pills">
+            <span style="font-size: 12px; color: #64748b; font-family: 'JetBrains Mono', monospace; margin-right: 4px;">常见关系:</span>
+            <button @click="setChain(['父', '兄', '子'])" class="sample-pill">堂哥/堂弟</button>
+            <button @click="setChain(['母', '妹', '女'])" class="sample-pill">表姐/表妹</button>
+            <button @click="setChain(['父', '姐'])" class="sample-pill">姑妈</button>
+            <button @click="setChain(['母', '兄'])" class="sample-pill">舅舅</button>
+            <button @click="setChain(['妻', '妹'])" class="sample-pill">小姨子</button>
+            <button @click="setChain(['夫', '兄'])" class="sample-pill">大伯子</button>
+        </div>
+    </div>
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>中国亲戚称谓系统结构庞大、分支复杂。逢年过节遇到各种亲戚长辈常常不知道如何称呼。本工具采用关系链多级推导算法，支持正向查询（我对他的称呼）与反向查询（对方对我的称呼），轻松理清三姑六婆与复杂家族辈分。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="305" :comment-class="2"></comment>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script>
+    const { createApp, ref, computed } = Vue;
+
+    const KIN_MAP = {
+        '父': ['爸爸', '父亲'],
+        '母': ['妈妈', '母亲'],
+        '夫': ['丈夫', '老公'],
+        '妻': ['妻子', '老婆'],
+        '兄': ['哥哥'],
+        '弟': ['弟弟'],
+        '姐': ['姐姐'],
+        '妹': ['妹妹'],
+        '子': ['儿子'],
+        '女': ['女儿'],
+        '父,父': ['爷爷', '祖父'],
+        '父,母': ['奶奶', '祖母'],
+        '父,兄': ['大伯', '伯父'],
+        '父,弟': ['叔叔', '叔父'],
+        '父,姐': ['姑妈', '大姑'],
+        '父,妹': ['姑姑', '小姑'],
+        '父,兄,妻': ['伯母', '大娘'],
+        '父,弟,妻': ['婶婶', '婶母'],
+        '父,姐,夫': ['姑父', '大姑父'],
+        '父,妹,夫': ['姑父', '小姑父'],
+        '父,兄,子': ['堂哥', '堂弟'],
+        '父,弟,子': ['堂弟', '堂哥'],
+        '父,兄,女': ['堂姐', '堂妹'],
+        '父,弟,女': ['堂妹', '堂姐'],
+        '父,姐,子': ['表哥', '表弟'],
+        '父,妹,子': ['表弟', '表哥'],
+        '父,姐,女': ['表姐', '表妹'],
+        '父,妹,女': ['表妹', '表姐'],
+        '母,父': ['外公', '姥爷'],
+        '母,母': ['外婆', '姥姥'],
+        '母,兄': ['大舅', '舅父'],
+        '母,弟': ['小舅', '舅舅'],
+        '母,姐': ['大姨', '姨妈'],
+        '母,妹': ['小姨', '姨母'],
+        '母,兄,妻': ['舅妈', '大舅母'],
+        '母,弟,妻': ['舅妈', '小舅母'],
+        '母,姐,夫': ['大姨父', '姨夫'],
+        '母,妹,夫': ['小姨父', '姨母夫'],
+        '母,兄,子': ['表哥', '表弟'],
+        '母,弟,子': ['表弟', '表哥'],
+        '母,姐,子': ['表哥', '表弟'],
+        '母,妹,子': ['表弟', '表哥'],
+        '母,兄,女': ['表姐', '表妹'],
+        '母,弟,女': ['表妹', '表姐'],
+        '母,姐,女': ['表姐', '表妹'],
+        '母,妹,女': ['表妹', '表姐'],
+        '兄,妻': ['嫂子', '大嫂'],
+        '弟,妻': ['弟妹', '弟媳'],
+        '姐,夫': ['姐夫'],
+        '妹,夫': ['妹夫'],
+        '兄,子': ['侄子'],
+        '弟,子': ['侄子'],
+        '兄,女': ['侄女'],
+        '弟,女': ['侄女'],
+        '姐,子': ['外甥'],
+        '妹,子': ['外甥'],
+        '姐,女': ['外甥女'],
+        '妹,女': ['外甥女'],
+        '子,妻': ['儿媳妇', '儿媳'],
+        '女,夫': ['女婿'],
+        '子,子': ['孙子'],
+        '子,女': ['孙女'],
+        '女,子': ['外孙'],
+        '女,女': ['外孙女'],
+        '夫,父': ['公公'],
+        '夫,母': ['婆婆'],
+        '夫,兄': ['大伯子'],
+        '夫,弟': ['小叔子'],
+        '夫,姐': ['大姑子'],
+        '夫,妹': ['小姑子'],
+        '妻,父': ['岳父', '老丈人'],
+        '妻,母': ['岳母', '丈母娘'],
+        '妻,兄': ['大舅子'],
+        '妻,弟': ['小舅子'],
+        '妻,姐': ['大姨子'],
+        '妻,妹': ['小姨子'],
+    };
+
+    createApp({
+        setup() {
+            const chain = ref([]);
+            const myGender = ref('male');
+            const mode = ref('forward');
+            const resultTitles = ref([]);
+
+            const chainText = computed(() => {
+                if (!chain.value.length) return '我';
+                return '我的 ' + chain.value.map(c => ({
+                    '父': '爸爸', '母': '妈妈', '夫': '丈夫', '妻': '妻子',
+                    '兄': '哥哥', '弟': '弟弟', '姐': '姐姐', '妹': '妹妹',
+                    '子': '儿子', '女': '女儿'
+                }[c] || c)).join(' 的 ');
+            });
+
+            function calculate() {
+                if (!chain.value.length) {
+                    resultTitles.value = ['自己'];
+                    return;
+                }
+                const key = chain.value.join(',');
+                if (mode.value === 'forward') {
+                    resultTitles.value = KIN_MAP[key] || ['暂未收录该较远亲属称谓或关系过长'];
+                } else {
+                    const revMap = {
+                        '父': myGender.value === 'male' ? ['儿子'] : ['女儿'],
+                        '母': myGender.value === 'male' ? ['儿子'] : ['女儿'],
+                        '夫': ['妻子', '老婆'],
+                        '妻': ['丈夫', '老公'],
+                        '兄': myGender.value === 'male' ? ['弟弟'] : ['妹妹'],
+                        '弟': myGender.value === 'male' ? ['哥哥'] : ['姐姐'],
+                        '姐': myGender.value === 'male' ? ['弟弟'] : ['妹妹'],
+                        '妹': myGender.value === 'male' ? ['哥哥'] : ['姐姐'],
+                        '子': myGender.value === 'male' ? ['爸爸'] : ['妈妈'],
+                        '女': myGender.value === 'male' ? ['爸爸'] : ['妈妈'],
+                        '父,兄': myGender.value === 'male' ? ['侄子'] : ['侄女'],
+                        '父,弟': myGender.value === 'male' ? ['侄子'] : ['侄女'],
+                        '母,兄': myGender.value === 'male' ? ['外甥'] : ['外甥女'],
+                        '母,弟': myGender.value === 'male' ? ['外甥'] : ['外甥女'],
+                    };
+                    resultTitles.value = revMap[key] || ['请使用正向模式换算或关系较为复杂'];
+                }
+            }
+
+            function addRelation(rel) {
+                chain.value.push(rel);
+                calculate();
+            }
+
+            function backspace() {
+                chain.value.pop();
+                calculate();
+            }
+
+            function clearChain() {
+                chain.value = [];
+                calculate();
+            }
+
+            function setChain(arr) {
+                chain.value = [...arr];
+                calculate();
+            }
+
+            function copyResult() {
+                if (!resultTitles.value.length) return;
+                navigator.clipboard.writeText(resultTitles.value.join(' / ')).then(() => {
+                    ElementPlus.ElMessage.success('已复制亲戚称谓！');
+                });
+            }
+
+            return {
+                chain,
+                myGender,
+                mode,
+                resultTitles,
+                chainText,
+                addRelation,
+                backspace,
+                clearChain,
+                setChain,
+                copyResult
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

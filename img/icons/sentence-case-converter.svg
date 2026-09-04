@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-sentence" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-sentence)" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <!-- Letter 'A' (Capital, prominent) -->
+  <path d="M7 32 L13.5 15 L20 32 M9.2 27 L17.8 27" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Letter 'b' (Lowercase) -->
+  <path d="M23.5 15 L23.5 32 M23.5 25.5 C24.5 23 28.5 23 28.5 27 C28.5 31 24.5 31 23.5 28.5" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Letter 'c' (Lowercase) -->
+  <path d="M37 25 C36 23 32 23 32 27 C32 31 36 31 37 29" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- Period '.' (Gold glow) -->
+  <circle cx="41" cy="30.5" r="2" fill="#fbbf24"/>
+
+  <!-- Grammar Flow Guide Line -->
+  <path d="M6 36.5 L42 36.5" stroke="#34d399" stroke-width="1.2" stroke-dasharray="2.5 2" opacity="0.6"/>
+</svg>

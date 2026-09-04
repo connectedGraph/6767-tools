@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-rabbit" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#042f40"/>
+      <stop offset="100%" stop-color="#02141c"/>
+    </linearGradient>
+    <linearGradient id="rabbit-grad" x1="12" y1="12" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-rabbit)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#38bdf8" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- High-speed velocity stream lines >>> -->
+  <path d="M8 18l4 4-4 4M13 18l4 4-4 4" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+
+  <!-- Fast Rabbit Geometry -->
+  <path d="M31 11c-2 2-6 7-8 9l3 1c2-3 6-7 7-9 0.5-1-0.8-2-2-1z" fill="#7dd3fc"/>
+  <path d="M36 14c-2 2-6 6-7 8l2.5 1c2-3 5-6 6.5-7.5 0.8-0.8-0.5-2.2-2-1.5z" fill="#38bdf8"/>
+  
+  <path d="M22 21c-3-1-6 0-8 3-2.5 3.5-2 8 1 10 3 2 7 1 10-1l4-4c2-2 3-5 1-7l-4-2-4 1z" fill="url(#rabbit-grad)"/>
+  <circle cx="28" cy="22" r="1" fill="#0f172a"/>
+  
+  <path d="M26 30l3 5M16 34l-3 3" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+  <line x1="33" y1="32" x2="39" y2="32" stroke="#a5f3fc" stroke-width="2" stroke-linecap="round"/>
+  <line x1="30" y1="36" x2="37" y2="36" stroke="#a5f3fc" stroke-width="2" stroke-linecap="round"/>
+</svg>

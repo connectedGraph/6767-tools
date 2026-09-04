@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-mock" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064E3B"/>
+      <stop offset="50%" stop-color="#0D9488"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <linearGradient id="card-mock" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#1E293B" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-mock)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  
+  <!-- Data Table Panel -->
+  <rect x="7" y="9" width="34" height="30" rx="5" fill="url(#card-mock)" stroke="#2DD4BF" stroke-width="1.4"/>
+  
+  <!-- Table Header Bar -->
+  <path d="M7 14c0-2.76 2.24-5 5-5h24c2.76 0 5 2.24 5 5v3H7v-3z" fill="rgba(45,212,191,0.2)"/>
+  <circle cx="11.5" cy="12.5" r="1.5" fill="#F43F5E"/>
+  <circle cx="16" cy="12.5" r="1.5" fill="#FBBF24"/>
+  <circle cx="20.5" cy="12.5" r="1.5" fill="#34D399"/>
+  <text x="37" y="14" fill="#67E8F9" font-family="monospace" font-weight="900" font-size="4.2" text-anchor="end">MOCK</text>
+  
+  <!-- Row 1: User / ID -->
+  <circle cx="12" cy="22" r="2.2" fill="#38BDF8"/>
+  <rect x="17" y="20.5" width="10" height="3" rx="1.5" fill="#E2E8F0"/>
+  <rect x="29" y="20.5" width="8.5" height="3" rx="1.5" fill="#FDE047"/>
+  
+  <!-- Row 2: Phone / Location -->
+  <circle cx="12" cy="28" r="2.2" fill="#A78BFA"/>
+  <rect x="17" y="26.5" width="12" height="3" rx="1.5" fill="#94A3B8"/>
+  <rect x="31" y="26.5" width="6.5" height="3" rx="1.5" fill="#34D399"/>
+
+  <!-- Row 3: Bank / Card -->
+  <circle cx="12" cy="34" r="2.2" fill="#FB7185"/>
+  <rect x="17" y="32.5" width="8" height="3" rx="1.5" fill="#E2E8F0"/>
+  <rect x="27" y="32.5" width="10.5" height="3" rx="1.5" fill="#67E8F9"/>
+
+  <!-- Random Dice Badge -->
+  <g transform="translate(32, 27)">
+    <rect x="0" y="0" width="11" height="11" rx="2.5" fill="#0F172A" stroke="#FDE047" stroke-width="1.2"/>
+    <circle cx="3" cy="3" r="0.8" fill="#FDE047"/>
+    <circle cx="8" cy="3" r="0.8" fill="#FDE047"/>
+    <circle cx="5.5" cy="5.5" r="0.8" fill="#FDE047"/>
+    <circle cx="3" cy="8" r="0.8" fill="#FDE047"/>
+    <circle cx="8" cy="8" r="0.8" fill="#FDE047"/>
+  </g>
+</svg>

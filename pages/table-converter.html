@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>在线表格转换器 (Excel / CSV / Markdown / HTML / JSON / ASCII) - 在线工具</title>
+    <meta name="description" content="在线多功能表格转换器，支持粘贴 Excel、CSV、TSV 数据，一键相互转换为 Markdown 表格、HTML 表格、JSON 数组对象、ASCII 纯文本表格及 SQL 插入语句，支持列选择、重命名、对齐设置与实时表格预览。" />
+    <meta name="keywords" content="表格转换器,Excel转Markdown,CSV转JSON,Markdown表格生成器,HTML表格转换,ASCII表格生成,TSV转换,SQL插入生成器" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .converter-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 1024px) {
+            .converter-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .code-textarea {
+            width: 100%;
+            height: 320px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 8px;
+            color: #e2e8f0;
+            resize: vertical;
+            outline: none;
+            box-sizing: border-box;
+            tab-size: 4;
+            white-space: pre;
+            overflow: auto;
+        }
+        .code-textarea:focus {
+            border-color: rgba(34, 211, 238, 0.8);
+            box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.15);
+        }
+        .action-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        .meta-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            font-size: 12px;
+            color: #94a3b8;
+            font-family: ui-monospace, monospace;
+        }
+        .meta-stat-badge strong {
+            color: #22d3ee;
+        }
+        .preview-table-wrapper {
+            max-height: 380px;
+            overflow: auto;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.6);
+        }
+        .custom-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+        .custom-data-table th {
+            position: sticky;
+            top: 0;
+            background: #1e293b;
+            color: #38bdf8;
+            font-weight: 600;
+            padding: 10px 14px;
+            border-bottom: 2px solid rgba(51, 65, 85, 0.9);
+            white-space: nowrap;
+            z-index: 2;
+        }
+        .custom-data-table td {
+            padding: 8px 14px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            color: #cbd5e1;
+            white-space: nowrap;
+        }
+        .custom-data-table tr:hover td {
+            background: rgba(34, 211, 238, 0.06);
+        }
+        .col-config-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 8px 12px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+        .col-config-item.is-hidden {
+            opacity: 0.5;
+            background: rgba(15, 23, 42, 0.4);
+        }
+        .format-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .format-tab-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            background: rgba(15, 23, 42, 0.7);
+            color: #94a3b8;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .format-tab-btn:hover {
+            color: #e2e8f0;
+            border-color: rgba(34, 211, 238, 0.4);
+        }
+        .format-tab-btn.active {
+            background: rgba(8, 47, 73, 0.8);
+            border-color: #22d3ee;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+        .options-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 14px;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        .info-card-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #94a3b8;
+        }
+        .info-card-box h3 {
+            color: #e2e8f0;
+            font-size: 15px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">在线表格转换器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">在线表格转换器 (Table Converter)</h1>
+                </div>
+                <div class="description">
+                    支持粘贴 Excel 复制内容、CSV/TSV 文本，一键相互转换为 Markdown 表格、HTML 表格、JSON 数组对象、ASCII 终端文本表格与 SQL 批量插入语句。提供字段选择、列重命名、左右对齐调节及实时表格数据预览。
+                </div>
+
+                <div id="app" v-cloak>
+                    <!-- 顶部全局统计与快捷示例 -->
+                    <div class="action-bar">
+                        <div class="btn-group">
+                            <el-button-group>
+                                <el-button size="small" type="primary" plain @click="loadSample('employees')">示例: 员工绩效表</el-button>
+                                <el-button size="small" type="primary" plain @click="loadSample('products')">示例: 商品销售单</el-button>
+                                <el-button size="small" type="primary" plain @click="loadSample('servers')">示例: 服务器监控</el-button>
+                            </el-button-group>
+                            <el-button size="small" @click="triggerUpload">
+                                导入 CSV/TSV 文件
+                            </el-button>
+                            <input type="file" ref="fileInput" accept=".csv,.tsv,.txt,.json" style="display:none" @change="handleFileUpload" />
+                            <el-button size="small" type="danger" plain @click="handleClear">清空输入</el-button>
+                        </div>
+                        <div class="btn-group">
+                            <div class="meta-stat-badge">
+                                <span>行数: <strong>{{ parsedData.rows.length }}</strong></span>
+                                <span>列数: <strong>{{ parsedData.headers.length }}</strong></span>
+                                <span>单元格: <strong>{{ parsedData.rows.length * parsedData.headers.length }}</strong></span>
+                                <span>分隔符: <strong>{{ delimiterLabel }}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 转换器核心栅格布局 -->
+                    <div class="converter-layout">
+                        <!-- 左侧：输入与解析设置 -->
+                        <div>
+                            <div class="options-row">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span class="text-slate-400">分隔符:</span>
+                                    <el-select v-model="delimiterMode" size="small" style="width: 120px;" @change="reparse">
+                                        <el-option label="自动识别" value="auto"></el-option>
+                                        <el-option label="Tab 制表符" value="tab"></el-option>
+                                        <el-option label="逗号 (,)" value="comma"></el-option>
+                                        <el-option label="分号 (;)" value="semicolon"></el-option>
+                                        <el-option label="竖线 (|)" value="pipe"></el-option>
+                                    </el-select>
+                                </div>
+
+                                <el-checkbox v-model="hasHeader" @change="reparse">首行为表头</el-checkbox>
+                                <el-checkbox v-model="trimCells" @change="reparse">清除前后空格</el-checkbox>
+                                <el-checkbox v-model="skipEmptyRows" @change="reparse">过滤空行</el-checkbox>
+                            </div>
+
+                            <textarea
+                                v-model="rawInput"
+                                class="code-textarea"
+                                placeholder="请在此处直接粘贴 Excel 复制的单元格数据、CSV、TSV 或以逗号/Tab/竖线分隔的文本数据..."
+                                @input="onInputChanged"
+                                spellcheck="false"
+                            ></textarea>
+
+                            <!-- 折叠面板：列配置与自定义 -->
+                            <div style="margin-top: 14px;">
+                                <el-collapse v-model="activeCollapse">
+                                    <el-collapse-item title="列字段自定义 (筛选、重命名与对齐方式)" name="columns">
+                                        <div v-if="parsedData.headers.length === 0" class="text-slate-500 text-xs py-2">
+                                            暂无列数据，请先在上方输入或粘贴表格内容。
+                                        </div>
+                                        <div v-else style="max-height: 220px; overflow-y: auto; padding-right: 4px;">
+                                            <div
+                                                v-for="(col, index) in columnsConfig"
+                                                :key="col.originalName + index"
+                                                class="col-config-item"
+                                                :class="{ 'is-hidden': !col.visible }"
+                                            >
+                                                <div style="display:flex; align-items:center; gap:8px; flex: 1;">
+                                                    <el-checkbox v-model="col.visible" @change="generateOutput"></el-checkbox>
+                                                    <span style="font-size:12px; color:#94a3b8; font-family:monospace; min-width: 24px;">#{{ index + 1 }}</span>
+                                                    <el-input
+                                                        v-model="col.alias"
+                                                        size="small"
+                                                        placeholder="列名别名"
+                                                        style="max-width: 180px;"
+                                                        @input="generateOutput"
+                                                    ></el-input>
+                                                    <span style="font-size:12px; color:#64748b;">(原名: {{ col.originalName }})</span>
+                                                </div>
+
+                                                <div style="display:flex; align-items:center; gap:8px;">
+                                                    <el-select v-model="col.align" size="small" style="width: 96px;" @change="generateOutput">
+                                                        <el-option label="左对齐" value="left"></el-option>
+                                                        <el-option label="居中" value="center"></el-option>
+                                                        <el-option label="右对齐" value="right"></el-option>
+                                                    </el-select>
+
+                                                    <el-button-group>
+                                                        <el-button size="small" :disabled="index === 0" @click="moveColumn(index, -1)">↑</el-button>
+                                                        <el-button size="small" :disabled="index === columnsConfig.length - 1" @click="moveColumn(index, 1)">↓</el-button>
+                                                    </el-button-group>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </el-collapse-item>
+                                </el-collapse>
+                            </div>
+                        </div>
+
+                        <!-- 右侧：多格式转换输出与预览 -->
+                        <div>
+                            <!-- 格式切换 Tab -->
+                            <div class="format-tabs">
+                                <button
+                                    class="format-tab-btn"
+                                    :class="{ active: currentTab === 'preview' }"
+                                    @click="currentTab = 'preview'"
+                                >
+                                    表格预览
+                                </button>
+                                <button
+                                    class="format-tab-btn"
+                                    :class="{ active: currentTab === 'markdown' }"
+                                    @click="currentTab = 'markdown'"
+                                >
+                                    Markdown
+                                </button>
+                                <button
+                                    class="format-tab-btn"
+                                    :class="{ active: currentTab === 'html' }"
+                                    @click="currentTab = 'html'"
+                                >
+                                    HTML Table
+                                </button>
+                                <button
+                                    class="format-tab-btn"
+                                    :class="{ active: currentTab === 'json' }"
+                                    @click="currentTab = 'json'"
+                                >
+                                    JSON
+                                </button>
+                                <button
+                                    class="format-tab-btn"
+                                    :class="{ active: currentTab === 'ascii' }"
+                                    @click="currentTab = 'ascii'"
+                                >
+                                    ASCII 文本
+                                </button>
+                                <button
+                                    class="format-tab-btn"
+                                    :class="{ active: currentTab === 'csv' }"
+                                    @click="currentTab = 'csv'"
+                                >
+                                    CSV / TSV
+                                </button>
+                                <button
+                                    class="format-tab-btn"
+                                    :class="{ active: currentTab === 'sql' }"
+                                    @click="currentTab = 'sql'"
+                                >
+                                    SQL Insert
+                                </button>
+                            </div>
+
+                            <!-- 格式特定附加选项 -->
+                            <div class="options-row" style="min-height: 44px;">
+                                <!-- Markdown 选项 -->
+                                <template v-if="currentTab === 'markdown'">
+                                    <el-checkbox v-model="mdPretty" @change="generateOutput">美化空格对齐</el-checkbox>
+                                    <span class="text-xs text-slate-500">标准 GitHub Flavored 语法</span>
+                                </template>
+
+                                <!-- HTML 选项 -->
+                                <template v-if="currentTab === 'html'">
+                                    <el-checkbox v-model="htmlWrapper" @change="generateOutput">包含 thead/tbody 结构</el-checkbox>
+                                    <el-checkbox v-model="htmlClass" @change="generateOutput">注入 class="dark-table"</el-checkbox>
+                                </template>
+
+                                <!-- JSON 选项 -->
+                                <template v-if="currentTab === 'json'">
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <span class="text-slate-400">格式:</span>
+                                        <el-select v-model="jsonMode" size="small" style="width: 140px;" @change="generateOutput">
+                                            <el-option label="对象数组 (Key-Value)" value="objects"></el-option>
+                                            <el-option label="二维数组 (2D Array)" value="2d"></el-option>
+                                            <el-option label="按列归组 (Columnar)" value="columns"></el-option>
+                                        </el-select>
+                                    </div>
+                                    <el-checkbox v-model="jsonTypeInference" @change="generateOutput">自动转换数字/布尔类型</el-checkbox>
+                                    <el-checkbox v-model="jsonIndent" @change="generateOutput">2 空格缩进美化</el-checkbox>
+                                </template>
+
+                                <!-- ASCII 选项 -->
+                                <template v-if="currentTab === 'ascii'">
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <span class="text-slate-400">边框样式:</span>
+                                        <el-select v-model="asciiStyle" size="small" style="width: 140px;" @change="generateOutput">
+                                            <el-option label="MySQL 终端 (+---+)" value="mysql"></el-option>
+                                            <el-option label="Unicode 细线 (┌─┬─┐)" value="unicode"></el-option>
+                                            <el-option label="无边框空格对齐" value="simple"></el-option>
+                                            <el-option label="Markdown 纯文本" value="pipe"></el-option>
+                                        </el-select>
+                                    </div>
+                                </template>
+
+                                <!-- CSV 选项 -->
+                                <template v-if="currentTab === 'csv'">
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <span class="text-slate-400">导出分隔符:</span>
+                                        <el-select v-model="csvExportDelimiter" size="small" style="width: 120px;" @change="generateOutput">
+                                            <el-option label="逗号 (,)" value=","></el-option>
+                                            <el-option label="Tab 制表符" value="\t"></el-option>
+                                            <el-option label="分号 (;)" value=";"></el-option>
+                                            <el-option label="竖线 (|)" value="|"></el-option>
+                                        </el-select>
+                                    </div>
+                                    <el-checkbox v-model="csvAlwaysQuote" @change="generateOutput">强制为所有字段加引号</el-checkbox>
+                                </template>
+
+                                <!-- SQL 选项 -->
+                                <template v-if="currentTab === 'sql'">
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <span class="text-slate-400">目标表名:</span>
+                                        <el-input v-model="sqlTableName" size="small" style="width: 130px;" @input="generateOutput"></el-input>
+                                    </div>
+                                    <el-checkbox v-model="sqlBatchInsert" @change="generateOutput">单条批量 INSERT</el-checkbox>
+                                </template>
+
+                                <!-- 表格预览选项 -->
+                                <template v-if="currentTab === 'preview'">
+                                    <div style="display:flex; align-items:center; gap:8px; width: 100%;">
+                                        <el-input
+                                            v-model="previewFilter"
+                                            size="small"
+                                            placeholder="搜索过滤表格数据..."
+                                            prefix-icon="Search"
+                                            clearable
+                                            style="max-width: 240px;"
+                                        ></el-input>
+                                        <span class="text-xs text-slate-500">共显示 {{ filteredRows.length }} 行</span>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- 表格预览视图 -->
+                            <div v-if="currentTab === 'preview'" class="preview-table-wrapper">
+                                <table class="custom-data-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 48px; text-align: center;">#</th>
+                                            <th
+                                                v-for="col in activeColumns"
+                                                :key="col.alias"
+                                                :style="{ textAlign: col.align }"
+                                            >
+                                                {{ col.alias }}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="filteredRows.length === 0">
+                                            <td :colspan="activeColumns.length + 1" style="text-align: center; color: #64748b; padding: 30px;">
+                                                无匹配数据或表格为空
+                                            </td>
+                                        </tr>
+                                        <tr v-for="(row, rIdx) in filteredRows" :key="rIdx">
+                                            <td style="text-align: center; color: #64748b; font-family: monospace; font-size: 11px;">{{ rIdx + 1 }}</td>
+                                            <td
+                                                v-for="col in activeColumns"
+                                                :key="col.alias"
+                                                :style="{ textAlign: col.align }"
+                                            >
+                                                {{ row[col.originalIndex] !== undefined ? row[col.originalIndex] : '' }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- 代码转换输出框 -->
+                            <div v-else>
+                                <textarea
+                                    v-model="outputText"
+                                    class="code-textarea"
+                                    readonly
+                                    spellcheck="false"
+                                ></textarea>
+                            </div>
+
+                            <!-- 底部操作按钮 -->
+                            <div style="margin-top: 12px; display:flex; gap:10px; justify-content: flex-end;">
+                                <el-button type="primary" @click="handleCopyOutput">
+                                    复制转换结果
+                                </el-button>
+                                <el-button @click="handleDownload">
+                                    下载文件 ({{ downloadExt }})
+                                </el-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>工具介绍与核心特性</h3>
+                    <p><strong>在线表格转换器</strong>专为开发者、数据分析师与日常办公人员打造，提供高效率、高精度的纯前端离线数据表格格式转换：</p>
+                    <ul>
+                        <li><strong>Excel 一键互转：</strong>直接从 Microsoft Excel / WPS / Google Sheets 复制单元格粘贴至输入框，自动识别 Tab 制表符并无损还原表格结构。</li>
+                        <li><strong>多格式双向支持：</strong>支持快速导出为 Markdown 表格、HTML 表格结构、JSON 数组/对象、MySQL/Unicode 风格的 ASCII 纯文本表格、CSV/TSV 以及 SQL 插入语句。</li>
+                        <li><strong>字段高级定制：</strong>支持勾选显示/隐藏特定列、重命名列名（Alias）、设置每列对齐方式（左对齐/居中/右对齐）以及自由调整列顺序。</li>
+                        <li><strong>数据隐私安全：</strong>纯客户端 JavaScript 离线运算，您的所有数据均在浏览器本地内存中处理，零服务器上传，保护敏感财务与业务数据。</li>
+                    </ul>
+                    <p style="margin-top: 10px; font-size: 12px; color: #64748b;">
+                        版本: 2.0.0 | 拓展时间: 2026-08-31 | 离线纯前端架构
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+const { createApp, ref, reactive, computed, watch, onMounted } = Vue;
+
+const app = createApp({
+    setup() {
+        const rawInput = ref('');
+        const outputText = ref('');
+        const currentTab = ref('preview');
+        const delimiterMode = ref('auto');
+        const detectedDelimiter = ref('\t');
+        const hasHeader = ref(true);
+        const trimCells = ref(true);
+        const skipEmptyRows = ref(true);
+        const activeCollapse = ref([]);
+        const previewFilter = ref('');
+        const fileInput = ref(null);
+
+        // 各格式专属选项
+        const mdPretty = ref(true);
+        const htmlWrapper = ref(true);
+        const htmlClass = ref(true);
+        const jsonMode = ref('objects');
+        const jsonTypeInference = ref(true);
+        const jsonIndent = ref(true);
+        const asciiStyle = ref('mysql');
+        const csvExportDelimiter = ref(',');
+        const csvAlwaysQuote = ref(false);
+        const sqlTableName = ref('my_table');
+        const sqlBatchInsert = ref(true);
+
+        const parsedData = reactive({
+            headers: [],
+            rows: []
+        });
+
+        const columnsConfig = ref([]);
+
+        // 识别有效分隔符
+        const detectDelimiter = (text) => {
+            if (delimiterMode.value !== 'auto') {
+                switch (delimiterMode.value) {
+                    case 'tab': return '\t';
+                    case 'comma': return ',';
+                    case 'semicolon': return ';';
+                    case 'pipe': return '|';
+                    default: return ',';
+                }
+            }
+            const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0).slice(0, 10);
+            if (lines.length === 0) return '\t';
+
+            const counts = { '\t': 0, ',': 0, ';': 0, '|': 0 };
+            for (const line of lines) {
+                for (const d of Object.keys(counts)) {
+                    counts[d] += (line.split(d).length - 1);
+                }
+            }
+            let best = '\t', maxCount = -1;
+            for (const [d, cnt] of Object.entries(counts)) {
+                if (cnt > maxCount) {
+                    maxCount = cnt;
+                    best = d;
+                }
+            }
+            return maxCount > 0 ? best : '\t';
+        };
+
+        const delimiterLabel = computed(() => {
+            const d = detectedDelimiter.value;
+            if (d === '\t') return 'Tab 制表符';
+            if (d === ',') return '逗号 (,)';
+            if (d === ';') return '分号 (;)';
+            if (d === '|') return '竖线 (|)';
+            return '自定义';
+        });
+
+        // 健壮的分隔文本行解析器 (含引号转义与嵌套处理)
+        const parseDelimitedLine = (line, delimiter) => {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    if (inQuotes && line[i + 1] === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === delimiter && !inQuotes) {
+                    result.push(trimCells.value ? current.trim() : current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(trimCells.value ? current.trim() : current);
+            return result;
+        };
+
+        // 重新解析输入文本
+        const reparse = () => {
+            const text = rawInput.value;
+            if (!text || !text.trim()) {
+                parsedData.headers = [];
+                parsedData.rows = [];
+                columnsConfig.value = [];
+                outputText.value = '';
+                return;
+            }
+
+            const delim = detectDelimiter(text);
+            detectedDelimiter.value = delim;
+
+            const rawLines = text.split(/\r?\n/);
+            const lines = skipEmptyRows.value ? rawLines.filter(l => l.trim().length > 0) : rawLines;
+            if (lines.length === 0) {
+                parsedData.headers = [];
+                parsedData.rows = [];
+                columnsConfig.value = [];
+                return;
+            }
+
+            const parsedRows = lines.map(l => parseDelimitedLine(l, delim));
+            const maxCols = Math.max(...parsedRows.map(r => r.length));
+
+            // 补齐所有行的列数
+            for (const row of parsedRows) {
+                while (row.length < maxCols) {
+                    row.push('');
+                }
+            }
+
+            let headers = [];
+            let dataRows = [];
+
+            if (hasHeader.value) {
+                headers = parsedRows[0].map((h, i) => h || ('Col_' + (i + 1)));
+                dataRows = parsedRows.slice(1);
+            } else {
+                headers = Array.from({ length: maxCols }, (_, i) => 'Col_' + (i + 1));
+                dataRows = parsedRows;
+            }
+
+            parsedData.headers = headers;
+            parsedData.rows = dataRows;
+
+            // 保持或更新列配置
+            const newColsConfig = [];
+            headers.forEach((h, i) => {
+                const existing = columnsConfig.value.find(c => c.originalIndex === i);
+                newColsConfig.push({
+                    originalIndex: i,
+                    originalName: h,
+                    alias: existing ? existing.alias : h,
+                    align: existing ? existing.align : 'left',
+                    visible: existing ? existing.visible : true
+                });
+            });
+            columnsConfig.value = newColsConfig;
+
+            generateOutput();
+        };
+
+        const onInputChanged = () => {
+            reparse();
+        };
+
+        // 列移动
+        const moveColumn = (index, delta) => {
+            const target = index + delta;
+            if (target < 0 || target >= columnsConfig.value.length) return;
+            const temp = columnsConfig.value[index];
+            columnsConfig.value[index] = columnsConfig.value[target];
+            columnsConfig.value[target] = temp;
+            generateOutput();
+        };
+
+        const activeColumns = computed(() => {
+            return columnsConfig.value.filter(c => c.visible);
+        });
+
+        // 过滤预览行
+        const filteredRows = computed(() => {
+            if (!previewFilter.value) return parsedData.rows;
+            const q = previewFilter.value.toLowerCase();
+            return parsedData.rows.filter(row => {
+                return row.some(cell => String(cell).toLowerCase().includes(q));
+            });
+        });
+
+        // 核心输出生成器
+        const generateOutput = () => {
+            const cols = activeColumns.value;
+            const rows = parsedData.rows;
+
+            if (cols.length === 0 || rows.length === 0) {
+                outputText.value = '';
+                return;
+            }
+
+            switch (currentTab.value) {
+                case 'markdown':
+                    outputText.value = buildMarkdown(cols, rows);
+                    break;
+                case 'html':
+                    outputText.value = buildHTML(cols, rows);
+                    break;
+                case 'json':
+                    outputText.value = buildJSON(cols, rows);
+                    break;
+                case 'ascii':
+                    outputText.value = buildASCII(cols, rows);
+                    break;
+                case 'csv':
+                    outputText.value = buildCSV(cols, rows);
+                    break;
+                case 'sql':
+                    outputText.value = buildSQL(cols, rows);
+                    break;
+                default:
+                    outputText.value = buildMarkdown(cols, rows);
+            }
+        };
+
+        // 1. 生成 Markdown 表格
+        const buildMarkdown = (cols, rows) => {
+            const headerTitles = cols.map(c => c.alias.replace(/\|/g, '\\|'));
+            const dataMatrix = rows.map(r => cols.map(c => String(r[c.originalIndex] || '').replace(/\|/g, '\\|')));
+
+            if (!mdPretty.value) {
+                const hLine = '| ' + headerTitles.join(' | ') + ' |';
+                const sLine = '| ' + cols.map(c => {
+                    if (c.align === 'center') return ':---:';
+                    if (c.align === 'right') return '---:';
+                    return ':---';
+                }).join(' | ') + ' |';
+                const rLines = dataMatrix.map(r => '| ' + r.join(' | ') + ' |');
+                return [hLine, sLine, ...rLines].join('\n');
+            }
+
+            // 计算每列最大宽度
+            const colWidths = cols.map((c, i) => {
+                let maxLen = Math.max(headerTitles[i].length, 3);
+                for (const row of dataMatrix) {
+                    if (row[i] && row[i].length > maxLen) {
+                        maxLen = row[i].length;
+                    }
+                }
+                return maxLen;
+            });
+
+            const pad = (str, len, align) => {
+                const diff = len - str.length;
+                if (diff <= 0) return str;
+                if (align === 'right') return ' '.repeat(diff) + str;
+                if (align === 'center') {
+                    const left = Math.floor(diff / 2);
+                    const right = diff - left;
+                    return ' '.repeat(left) + str + ' '.repeat(right);
+                }
+                return str + ' '.repeat(diff);
+            };
+
+            const hLine = '| ' + headerTitles.map((t, i) => pad(t, colWidths[i], cols[i].align)).join(' | ') + ' |';
+            const sLine = '| ' + cols.map((c, i) => {
+                const w = colWidths[i];
+                if (c.align === 'center') return ':' + '-'.repeat(Math.max(w - 2, 1)) + ':';
+                if (c.align === 'right') return '-'.repeat(Math.max(w - 1, 2)) + ':';
+                return ':' + '-'.repeat(Math.max(w - 1, 2));
+            }).join(' | ') + ' |';
+
+            const rLines = dataMatrix.map(r => {
+                return '| ' + r.map((cell, i) => pad(cell, colWidths[i], cols[i].align)).join(' | ') + ' |';
+            });
+
+            return [hLine, sLine, ...rLines].join('\n');
+        };
+
+        // 2. 生成 HTML Table
+        const buildHTML = (cols, rows) => {
+            const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            const classAttr = htmlClass.value ? ' class="data-table"' : '';
+
+            let out = `<table${classAttr}>\n`;
+            if (htmlWrapper.value) {
+                out += '  <thead>\n    <tr>\n';
+                cols.forEach(c => {
+                    const alignAttr = c.align !== 'left' ? ` align="${c.align}"` : '';
+                    out += `      <th${alignAttr}>${esc(c.alias)}</th>\n`;
+                });
+                out += '    </tr>\n  </thead>\n  <tbody>\n';
+            } else {
+                out += '  <tr>\n';
+                cols.forEach(c => {
+                    const alignAttr = c.align !== 'left' ? ` align="${c.align}"` : '';
+                    out += `    <th${alignAttr}>${esc(c.alias)}</th>\n`;
+                });
+                out += '  </tr>\n';
+            }
+
+            rows.forEach(r => {
+                out += htmlWrapper.value ? '    <tr>\n' : '  <tr>\n';
+                cols.forEach(c => {
+                    const alignAttr = c.align !== 'left' ? ` align="${c.align}"` : '';
+                    const val = esc(r[c.originalIndex]);
+                    out += htmlWrapper.value ? `      <td${alignAttr}>${val}</td>\n` : `    <td${alignAttr}>${val}</td>\n`;
+                });
+                out += htmlWrapper.value ? '    </tr>\n' : '  </tr>\n';
+            });
+
+            if (htmlWrapper.value) {
+                out += '  </tbody>\n';
+            }
+            out += '</table>';
+            return out;
+        };
+
+        // 3. 生成 JSON
+        const buildJSON = (cols, rows) => {
+            const castVal = (v) => {
+                if (!jsonTypeInference.value) return v;
+                if (v === '' || v === null || v === undefined) return null;
+                if (v.toLowerCase() === 'true') return true;
+                if (v.toLowerCase() === 'false') return false;
+                if (!isNaN(v) && !isNaN(parseFloat(v)) && isFinite(v)) {
+                    return Number(v);
+                }
+                return v;
+            };
+
+            let dataObj = null;
+            if (jsonMode.value === 'objects') {
+                dataObj = rows.map(r => {
+                    const obj = {};
+                    cols.forEach(c => {
+                        obj[c.alias] = castVal(r[c.originalIndex]);
+                    });
+                    return obj;
+                });
+            } else if (jsonMode.value === '2d') {
+                dataObj = [
+                    cols.map(c => c.alias),
+                    ...rows.map(r => cols.map(c => castVal(r[c.originalIndex])))
+                ];
+            } else if (jsonMode.value === 'columns') {
+                dataObj = {};
+                cols.forEach(c => {
+                    dataObj[c.alias] = rows.map(r => castVal(r[c.originalIndex]));
+                });
+            }
+            return jsonIndent.value ? JSON.stringify(dataObj, null, 2) : JSON.stringify(dataObj);
+        };
+
+        // 4. 生成 ASCII 表格
+        const buildASCII = (cols, rows) => {
+            const headerTitles = cols.map(c => c.alias);
+            const dataMatrix = rows.map(r => cols.map(c => String(r[c.originalIndex] || '')));
+
+            const colWidths = cols.map((c, i) => {
+                let maxLen = headerTitles[i].length;
+                for (const row of dataMatrix) {
+                    if (row[i] && row[i].length > maxLen) {
+                        maxLen = row[i].length;
+                    }
+                }
+                return Math.max(maxLen, 2);
+            });
+
+            const pad = (str, len, align) => {
+                const diff = len - str.length;
+                if (diff <= 0) return str;
+                if (align === 'right') return ' '.repeat(diff) + str;
+                if (align === 'center') {
+                    const left = Math.floor(diff / 2);
+                    const right = diff - left;
+                    return ' '.repeat(left) + str + ' '.repeat(right);
+                }
+                return str + ' '.repeat(diff);
+            };
+
+            if (asciiStyle.value === 'mysql') {
+                const border = '+' + colWidths.map(w => '-'.repeat(w + 2)).join('+') + '+';
+                const hLine = '| ' + headerTitles.map((t, i) => pad(t, colWidths[i], cols[i].align)).join(' | ') + ' |';
+                const rLines = dataMatrix.map(r => '| ' + r.map((cell, i) => pad(cell, colWidths[i], cols[i].align)).join(' | ') + ' |');
+                return [border, hLine, border, ...rLines, border].join('\n');
+            } else if (asciiStyle.value === 'unicode') {
+                const top = '┌' + colWidths.map(w => '─'.repeat(w + 2)).join('┬') + '┐';
+                const mid = '├' + colWidths.map(w => '─'.repeat(w + 2)).join('┼') + '┤';
+                const bot = '└' + colWidths.map(w => '─'.repeat(w + 2)).join('┴') + '┘';
+                const hLine = '│ ' + headerTitles.map((t, i) => pad(t, colWidths[i], cols[i].align)).join(' │ ') + ' │';
+                const rLines = dataMatrix.map(r => '│ ' + r.map((cell, i) => pad(cell, colWidths[i], cols[i].align)).join(' │ ') + ' │');
+                return [top, hLine, mid, ...rLines, bot].join('\n');
+            } else if (asciiStyle.value === 'simple') {
+                const hLine = headerTitles.map((t, i) => pad(t, colWidths[i], cols[i].align)).join('  ');
+                const sep = colWidths.map(w => '-'.repeat(w)).join('  ');
+                const rLines = dataMatrix.map(r => r.map((cell, i) => pad(cell, colWidths[i], cols[i].align)).join('  '));
+                return [hLine, sep, ...rLines].join('\n');
+            } else {
+                // pipe
+                const hLine = headerTitles.join(' | ');
+                const sep = colWidths.map(w => '-'.repeat(w)).join(' | ');
+                const rLines = dataMatrix.map(r => r.join(' | '));
+                return [hLine, sep, ...rLines].join('\n');
+            }
+        };
+
+        // 5. 生成 CSV/TSV
+        const buildCSV = (cols, rows) => {
+            const delim = csvExportDelimiter.value === '\\t' ? '\t' : csvExportDelimiter.value;
+            const quoteField = (val) => {
+                const s = String(val !== undefined && val !== null ? val : '');
+                if (csvAlwaysQuote.value || s.includes(delim) || s.includes('"') || s.includes('\n') || s.includes('\r')) {
+                    return '"' + s.replace(/"/g, '""') + '"';
+                }
+                return s;
+            };
+
+            const hLine = cols.map(c => quoteField(c.alias)).join(delim);
+            const rLines = rows.map(r => cols.map(c => quoteField(r[c.originalIndex])).join(delim));
+            return [hLine, ...rLines].join('\n');
+        };
+
+        // 6. 生成 SQL Insert
+        const buildSQL = (cols, rows) => {
+            const tbl = sqlTableName.value.trim() || 'my_table';
+            const colNames = cols.map(c => `\`${c.alias.replace(/`/g, '')}\``).join(', ');
+
+            const formatVal = (v) => {
+                if (v === '' || v === null || v === undefined) return 'NULL';
+                if (!isNaN(v) && !isNaN(parseFloat(v)) && isFinite(v)) return v;
+                return `'${String(v).replace(/'/g, "''")}'`;
+            };
+
+            if (sqlBatchInsert.value) {
+                const valuesArr = rows.map(r => {
+                    const rowVals = cols.map(c => formatVal(r[c.originalIndex])).join(', ');
+                    return `  (${rowVals})`;
+                });
+                return `INSERT INTO \`${tbl}\` (${colNames}) VALUES\n${valuesArr.join(',\n')};`;
+            } else {
+                return rows.map(r => {
+                    const rowVals = cols.map(c => formatVal(r[c.originalIndex])).join(', ');
+                    return `INSERT INTO \`${tbl}\` (${colNames}) VALUES (${rowVals});`;
+                }).join('\n');
+            }
+        };
+
+        // 预设示例加载
+        const loadSample = (type) => {
+            if (type === 'employees') {
+                rawInput.value = [
+                    "姓名\t部门\t职位\t工号\t基本薪资\t绩效评分\t入职日期\t在职状态",
+                    "张伟\t研发部\t高级架构师\tEMP1001\t32000\t4.8\t2021-03-15\t在职",
+                    "李娜\t产品部\t高级产品经理\tEMP1002\t26000\t4.6\t2022-07-01\t在职",
+                    "王强\t运维部\tSRE专家\tEMP1003\t28000\t4.9\t2020-11-12\t在职",
+                    "赵敏\t设计部\tUI/UX主设\tEMP1004\t21000\t4.5\t2023-02-20\t在职",
+                    "孙杰\t市场部\t增长总监\tEMP1005\t35000\t4.7\t2019-08-10\t在职"
+                ].join('\n');
+            } else if (type === 'products') {
+                rawInput.value = [
+                    "商品SKU,品名,品类,标价,折扣率,库存量,仓库区,是否上架",
+                    "SKU-8801,MacBook Pro M3,笔记本电脑,14999.00,0.95,48,A区-01,true",
+                    "SKU-8802,4K 144Hz 显屏,显示设备,2499.00,0.88,120,B区-03,true",
+                    "SKU-8803,客制化机械键盘,外设配件,699.00,1.00,350,C区-12,true",
+                    "SKU-8804,人体工学电竞椅,办公家具,1280.00,0.85,30,D区-05,false",
+                    "SKU-8805,主动降噪耳机,音频设备,1899.00,0.90,210,B区-08,true"
+                ].join('\n');
+            } else if (type === 'servers') {
+                rawInput.value = [
+                    "Node_Name | IP_Address | CPU_Usage | Memory_GB | Disk_IO | Ping_ms | Health",
+                    "k8s-master-01 | 192.168.10.11 | 24.5% | 32.4/64 | 142 IOPS | 1.2 | Optimal",
+                    "k8s-worker-01 | 192.168.10.21 | 68.2% | 58.1/64 | 890 IOPS | 1.5 | Normal",
+                    "k8s-worker-02 | 192.168.10.22 | 89.4% | 61.8/64 | 1240 IOPS | 2.1 | Warning",
+                    "db-primary-01 | 192.168.20.51 | 42.1% | 118.5/128 | 3400 IOPS | 0.8 | Optimal",
+                    "redis-cache-01| 192.168.20.81 | 15.6% | 28.2/32 | 450 IOPS | 0.5 | Optimal"
+                ].join('\n');
+            }
+            reparse();
+            ElementPlus.ElMessage.success('已加载示例数据');
+        };
+
+        const handleClear = () => {
+            rawInput.value = '';
+            parsedData.headers = [];
+            parsedData.rows = [];
+            columnsConfig.value = [];
+            outputText.value = '';
+            previewFilter.value = '';
+            ElementPlus.ElMessage.info('输入已清空');
+        };
+
+        const triggerUpload = () => {
+            if (fileInput.value) {
+                fileInput.value.value = '';
+                fileInput.value.click();
+            }
+        };
+
+        const handleFileUpload = (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                rawInput.value = event.target.result;
+                reparse();
+                ElementPlus.ElMessage.success(`成功载入文件: ${file.name}`);
+            };
+            reader.readAsText(file, 'UTF-8');
+        };
+
+        const handleCopyOutput = () => {
+            if (currentTab.value === 'preview') {
+                // 默认复制 Markdown
+                const content = buildMarkdown(activeColumns.value, parsedData.rows);
+                navigator.clipboard.writeText(content).then(() => {
+                    ElementPlus.ElMessage.success('已复制 Markdown 格式表格至剪贴板');
+                });
+                return;
+            }
+            if (!outputText.value) {
+                ElementPlus.ElMessage.warning('当前无转换结果可复制');
+                return;
+            }
+            navigator.clipboard.writeText(outputText.value).then(() => {
+                ElementPlus.ElMessage.success('复制成功');
+            }).catch(() => {
+                ElementPlus.ElMessage.error('复制失败，请手动选择复制');
+            });
+        };
+
+        const downloadExt = computed(() => {
+            switch (currentTab.value) {
+                case 'markdown': return '.md';
+                case 'html': return '.html';
+                case 'json': return '.json';
+                case 'ascii': return '.txt';
+                case 'csv': return csvExportDelimiter.value === '\\t' ? '.tsv' : '.csv';
+                case 'sql': return '.sql';
+                default: return '.md';
+            }
+        });
+
+        const handleDownload = () => {
+            let content = outputText.value;
+            if (currentTab.value === 'preview') {
+                content = buildMarkdown(activeColumns.value, parsedData.rows);
+            }
+            if (!content) {
+                ElementPlus.ElMessage.warning('当前无内容可供下载');
+                return;
+            }
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `table-export-${Date.now()}${downloadExt.value}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            ElementPlus.ElMessage.success('文件下载开始');
+        };
+
+        watch(currentTab, () => {
+            generateOutput();
+        });
+
+        onMounted(() => {
+            loadSample('employees');
+        });
+
+        return {
+            rawInput,
+            outputText,
+            currentTab,
+            delimiterMode,
+            detectedDelimiter,
+            delimiterLabel,
+            hasHeader,
+            trimCells,
+            skipEmptyRows,
+            activeCollapse,
+            previewFilter,
+            fileInput,
+            mdPretty,
+            htmlWrapper,
+            htmlClass,
+            jsonMode,
+            jsonTypeInference,
+            jsonIndent,
+            asciiStyle,
+            csvExportDelimiter,
+            csvAlwaysQuote,
+            sqlTableName,
+            sqlBatchInsert,
+            parsedData,
+            columnsConfig,
+            activeColumns,
+            filteredRows,
+            downloadExt,
+            reparse,
+            onInputChanged,
+            moveColumn,
+            generateOutput,
+            loadSample,
+            handleClear,
+            triggerUpload,
+            handleFileUpload,
+            handleCopyOutput,
+            handleDownload
+        };
+    }
+});
+
+app.use(ElementPlus);
+app.mount('.main-body');
+</script>
+</body>
+</html>

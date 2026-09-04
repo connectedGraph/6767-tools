@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-growth" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042f2e"/>
+      <stop offset="50%" stop-color="#0f504c"/>
+      <stop offset="100%" stop-color="#022625"/>
+    </linearGradient>
+    <linearGradient id="ruler-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="kid-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-growth)"/>
+  <rect width="46" height="46" x="1" y="1" rx="11" fill="none" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1"/>
+  
+  <!-- Height Growth Ruler (Left) -->
+  <rect x="9" y="8" width="6" height="32" rx="1.5" fill="rgba(14, 165, 233, 0.15)" stroke="url(#ruler-grad)" stroke-width="1.5"/>
+  <!-- Ruler Graduation Marks -->
+  <line x1="15" y1="12" x2="11" y2="12" stroke="#38bdf8" stroke-width="1.5"/>
+  <line x1="15" y1="16" x2="12.5" y2="16" stroke="#38bdf8" stroke-width="1"/>
+  <line x1="15" y1="20" x2="11" y2="20" stroke="#38bdf8" stroke-width="1.5"/>
+  <line x1="15" y1="24" x2="12.5" y2="24" stroke="#38bdf8" stroke-width="1"/>
+  <line x1="15" y1="28" x2="11" y2="28" stroke="#38bdf8" stroke-width="1.5"/>
+  <line x1="15" y1="32" x2="12.5" y2="32" stroke="#38bdf8" stroke-width="1"/>
+  <line x1="15" y1="36" x2="11" y2="36" stroke="#38bdf8" stroke-width="1.5"/>
+  
+  <!-- Parent Silhouette (Right) -->
+  <circle cx="36" cy="14" r="2.8" fill="#94a3b8"/>
+  <path d="M32 40 L32 23 C32 20 34 19 36 19 C38 19 40 20 40 23 L40 40" fill="none" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round"/>
+  
+  <!-- Child Silhouette (Center, reaching up joyfully) -->
+  <circle cx="23.5" cy="24" r="2.5" fill="url(#kid-grad)"/>
+  <path d="M20 40 L20 31 C20 29 21.5 28 23.5 28 C25.5 28 27 29 27 31 L27 40" fill="none" stroke="url(#kid-grad)" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Child Raised Arm to Ruler -->
+  <path d="M22 29 L16 20" fill="none" stroke="url(#kid-grad)" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Upward Growth Arrow -->
+  <path d="M18 17 L18 10 L15.5 12.5 M18 10 L20.5 12.5" fill="none" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

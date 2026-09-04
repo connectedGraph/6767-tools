@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no" />
+    <title>图片调色板提取器 - 在线工具</title>
+    <meta name="description" content="免费在线图片调色板提取工具，利用 ColorThief 纯前端快速提取图片的主色调（Dominant Color）与前10种主导色彩调色板（Palette），支持 HEX/RGB/HSL 色值一键复制与调色卡图导出。拓展时间: 2026-08-31。" />
+    <meta name="keywords" content="调色板提取,图片提取颜色,提取图片主色调,Color Palette Extractor,ColorThief,在线配色提取,图片取色器,提取主题色,调色卡生成" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="dns-prefetch" href="" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .palette-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 上传区域 */
+        .upload-dropzone {
+            border: 2px dashed rgba(51, 65, 85, 0.8);
+            border-radius: 12px;
+            padding: 32px 20px;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.5);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .upload-dropzone:hover, .upload-dropzone.drag-over {
+            border-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.06);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #22d3ee;
+            margin-bottom: 12px;
+        }
+        .upload-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 6px;
+        }
+        .upload-subtitle {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        /* 预设示例图按钮 */
+        .preset-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .preset-btn {
+            font-size: 0.78rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .preset-btn:hover {
+            color: #22d3ee;
+            border-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.1);
+        }
+        .preset-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* 控制栏 */
+        .control-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .control-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* 工作区布局 */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 900px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 图片预览卡片 */
+        .image-preview-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .image-preview-wrapper {
+            width: 100%;
+            max-height: 280px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #090e17;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(51, 65, 85, 0.4);
+        }
+        .image-preview-wrapper img {
+            max-width: 100%;
+            max-height: 280px;
+            object-fit: contain;
+            display: block;
+        }
+        .image-meta-info {
+            font-size: 0.78rem;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 4px;
+        }
+
+        /* 主色调 Hero 卡片 */
+        .dominant-color-card {
+            border-radius: 10px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s;
+        }
+        .dominant-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 4px;
+            align-self: flex-start;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+        }
+        .dominant-hex {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .dominant-codes {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.85rem;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            opacity: 0.9;
+        }
+        .dominant-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        /* 调色板色块列表 */
+        .palette-section {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .palette-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .palette-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .palette-title-badge {
+            font-size: 0.75rem;
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.12);
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+
+        /* 渐变全景色条 */
+        .palette-strip-bar {
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            overflow: hidden;
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+        .palette-strip-item {
+            flex: 1;
+            height: 100%;
+            cursor: pointer;
+            transition: flex 0.2s, transform 0.2s;
+            position: relative;
+        }
+        .palette-strip-item:hover {
+            flex: 1.8;
+            z-index: 2;
+        }
+
+        /* 色块网格 */
+        .swatch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
+        }
+        @media (max-width: 600px) {
+            .swatch-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 10px;
+            }
+        }
+
+        .swatch-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        .swatch-card:hover {
+            border-color: #22d3ee;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 12px rgba(34, 211, 238, 0.2);
+        }
+        .swatch-color-box {
+            height: 80px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: height 0.2s;
+        }
+        .swatch-index-tag {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            font-size: 0.68rem;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.4);
+            color: #ffffff;
+            backdrop-filter: blur(4px);
+        }
+        .swatch-copy-overlay {
+            opacity: 0;
+            background: rgba(0, 0, 0, 0.65);
+            color: #ffffff;
+            font-size: 0.78rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            backdrop-filter: blur(4px);
+            transition: opacity 0.2s;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .swatch-card:hover .swatch-copy-overlay {
+            opacity: 1;
+        }
+        .swatch-info {
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .swatch-hex {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .swatch-rgb, .swatch-hsl {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.72rem;
+            color: #94a3b8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .swatch-quick-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(51, 65, 85, 0.4);
+        }
+        .swatch-action-mini-btn {
+            flex: 1;
+            font-size: 0.68rem;
+            padding: 2px 4px;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 4px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .swatch-action-mini-btn:hover {
+            color: #22d3ee;
+            border-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.12);
+        }
+
+        /* 导出工具栏 */
+        .export-actions-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 16px 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+        }
+
+        /* 复制反馈浮层 / Toast */
+        .copy-toast-banner {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            background: #0f172a;
+            border: 1px solid #22d3ee;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(34, 211, 238, 0.3);
+            color: #e2e8f0;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: fadeInSlide 0.25s ease-out;
+        }
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 隐藏的导出画布 */
+        #exportCardCanvas {
+            display: none;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="图片调色板提取器 - 在线工具" />
+    <meta property="og:description" content="免费在线图片调色板提取工具，利用 ColorThief 纯前端快速提取图片的主色调与前10种主导色彩调色板，支持 HEX/RGB/HSL 色值一键复制与调色卡图导出。" />
+    <meta property="og:url" content="https://tool.6767.chat/color-palette-extractor" />
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">图片调色板提取器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">图片调色板提取器 (Color Palette Extractor)</h1>
+                </div>
+                <div class="description">
+                    上传本地图片，利用 ColorThief 纯前端算法快速提取图片的主色调（Dominant Color）与前 10 种主导色彩配色方案，显示 HEX / RGB / HSL 精准色值，支持点击色块一键复制，支持一键导出精美调色卡图。图片全程在浏览器本地离线解析，不上传任何服务器，保护您的数据隐私。
+                </div>
+
+                <div class="palette-container" v-cloak>
+                    <!-- 上传区域 -->
+                    <div class="upload-dropzone" 
+                         :class="{'drag-over': isDragging}"
+                         @click="triggerFileInput"
+                         @dragover.prevent="isDragging = true"
+                         @dragleave.prevent="isDragging = false"
+                         @drop.prevent="handleDrop">
+                        <input id="imgFileInput" type="file" accept="image/*" style="display:none;" @change="handleFileChange" />
+                        <div class="upload-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto;">
+                                <path d="M12 2v10m0 0l-3-3m3 3l3-3"></path>
+                                <path d="M20 16v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"></path>
+                                <circle cx="18" cy="6" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="upload-title">点击选择图片，或拖放图片到此处</div>
+                        <div class="upload-subtitle">支持 JPG、PNG、WEBP、GIF、SVG、BMP，支持直接 Ctrl+V 粘贴截图</div>
+
+                        <!-- 快速预设示例 -->
+                        <div class="preset-row" @click.stop>
+                            <span style="font-size:0.75rem; color:#64748b;">快速体验预设示例：</span>
+                            <button type="button" class="preset-btn" @click="loadPreset('sunset')">
+                                <span class="preset-dot" style="background: linear-gradient(135deg, #f97316, #ec4899);"></span>
+                                霞光落日
+                            </button>
+                            <button type="button" class="preset-btn" @click="loadPreset('cyberpunk')">
+                                <span class="preset-dot" style="background: linear-gradient(135deg, #06b6d4, #a855f7);"></span>
+                                赛博霓虹
+                            </button>
+                            <button type="button" class="preset-btn" @click="loadPreset('forest')">
+                                <span class="preset-dot" style="background: linear-gradient(135deg, #10b981, #065f46);"></span>
+                                幽深林海
+                            </button>
+                            <button type="button" class="preset-btn" @click="loadPreset('morandi')">
+                                <span class="preset-dot" style="background: linear-gradient(135deg, #94a3b8, #cbd5e1);"></span>
+                                莫兰迪雅灰
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 参数控制栏 -->
+                    <div class="control-bar" v-if="currentImageSrc">
+                        <div class="control-group">
+                            <span class="control-label">提取色彩数量：</span>
+                            <el-radio-group v-model="paletteCount" size="small" @change="reExtractPalette">
+                                <el-radio-button :label="5">5 色</el-radio-button>
+                                <el-radio-button :label="8">8 色</el-radio-button>
+                                <el-radio-button :label="10">10 色 (推荐)</el-radio-button>
+                                <el-radio-button :label="12">12 色</el-radio-button>
+                                <el-radio-button :label="16">16 色</el-radio-button>
+                            </el-radio-group>
+                        </div>
+
+                        <div class="control-group">
+                            <span class="control-label">采样精度：</span>
+                            <el-select v-model="sampleQuality" size="small" style="width: 120px;" @change="reExtractPalette">
+                                <el-option :value="1" label="最高精度 (逐像素)"></el-option>
+                                <el-option :value="5" label="标准质量 (平衡)"></el-option>
+                                <el-option :value="10" label="极速采样 (快速)"></el-option>
+                            </el-select>
+                        </div>
+                    </div>
+
+                    <!-- 主工作区：图片预览与提取结果 -->
+                    <div class="workspace-grid" v-if="currentImageSrc">
+                        <!-- 左侧：原图与主色调 -->
+                        <div class="image-preview-card">
+                            <div class="image-preview-wrapper">
+                                <img id="sourceImageEl" :src="currentImageSrc" alt="Source Preview" @load="onImageLoaded" />
+                            </div>
+                            <div class="image-meta-info" v-if="imageDimensions">
+                                <span>尺寸: {{ imageDimensions.width }} × {{ imageDimensions.height }} px</span>
+                                <span>文件名: {{ imageName }}</span>
+                            </div>
+
+                            <!-- 主色调 Hero -->
+                            <div v-if="dominantColor" class="dominant-color-card" :style="{ background: dominantColor.hex, color: dominantColor.textColor }">
+                                <div class="dominant-badge">DOMINANT 主色调</div>
+                                <div class="dominant-hex">{{ dominantColor.hex }}</div>
+                                <div class="dominant-codes">
+                                    <div>RGB: {{ dominantColor.rgbStr }}</div>
+                                    <div>HSL: {{ dominantColor.hslStr }}</div>
+                                </div>
+                                <div class="dominant-actions">
+                                    <el-button size="small" :style="{ background: 'rgba(0,0,0,0.3)', borderColor: 'transparent', color: dominantColor.textColor }" @click="copyText(dominantColor.hex, 'HEX 色值')">
+                                        复制 HEX
+                                    </el-button>
+                                    <el-button size="small" :style="{ background: 'rgba(0,0,0,0.3)', borderColor: 'transparent', color: dominantColor.textColor }" @click="copyText(dominantColor.rgbStr, 'RGB 色值')">
+                                        复制 RGB
+                                    </el-button>
+                                    <el-button size="small" :style="{ background: 'rgba(0,0,0,0.3)', borderColor: 'transparent', color: dominantColor.textColor }" @click="copyText(dominantColor.hslStr, 'HSL 色值')">
+                                        复制 HSL
+                                    </el-button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右侧：调色板全景与色块卡片列表 -->
+                        <div class="palette-section">
+                            <div class="palette-header">
+                                <div class="palette-title">
+                                    <span>主导色彩配色方案</span>
+                                    <span class="palette-title-badge">{{ paletteColors.length }} 种色彩</span>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <el-button size="small" type="primary" plain @click="copyAllHex">
+                                        一键复制全部 HEX
+                                    </el-button>
+                                    <el-button size="small" type="primary" plain @click="exportCssVariables">
+                                        导出 CSS 变量
+                                    </el-button>
+                                </div>
+                            </div>
+
+                            <!-- 渐变色带全景 -->
+                            <div class="palette-strip-bar" v-if="paletteColors.length > 0">
+                                <div v-for="(color, idx) in paletteColors" 
+                                     :key="'strip-' + idx"
+                                     class="palette-strip-item"
+                                     :style="{ background: color.hex }"
+                                     :title="'点击复制 ' + color.hex"
+                                     @click="copyText(color.hex, 'HEX: ' + color.hex)">
+                                </div>
+                            </div>
+
+                            <!-- 色块网格 -->
+                            <div class="swatch-grid" v-if="paletteColors.length > 0">
+                                <div v-for="(color, idx) in paletteColors"
+                                     :key="'swatch-' + idx"
+                                     class="swatch-card"
+                                     @click="copyText(color.hex, 'HEX: ' + color.hex)">
+                                    <div class="swatch-color-box" :style="{ background: color.hex }">
+                                        <span class="swatch-index-tag">#{{ idx + 1 }}</span>
+                                        <span class="swatch-copy-overlay">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                            点击复制
+                                        </span>
+                                    </div>
+                                    <div class="swatch-info" @click.stop>
+                                        <div class="swatch-hex">
+                                            <span>{{ color.hex }}</span>
+                                            <span style="font-size:0.7rem; font-weight:normal; color:#64748b;">{{ color.brightness }}%</span>
+                                        </div>
+                                        <div class="swatch-rgb">{{ color.rgbStr }}</div>
+                                        <div class="swatch-hsl">{{ color.hslStr }}</div>
+                                        <div class="swatch-quick-actions">
+                                            <button class="swatch-action-mini-btn" @click="copyText(color.hex, 'HEX')">HEX</button>
+                                            <button class="swatch-action-mini-btn" @click="copyText(color.rgbStr, 'RGB')">RGB</button>
+                                            <button class="swatch-action-mini-btn" @click="copyText(color.hslStr, 'HSL')">HSL</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 正在提取加载状态 -->
+                            <div v-if="isExtracting" style="text-align:center; padding: 40px; color:#22d3ee;">
+                                正在分析图片色彩分布并提取调色板...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 调色卡导出栏 -->
+                    <div class="export-actions-row" v-if="currentImageSrc && paletteColors.length > 0">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:0.9rem; font-weight:600; color:#e2e8f0;">调色卡图生成</span>
+                            <span style="font-size:0.78rem; color:#64748b;">将提取的配色与原图合成为高清调色卡图片</span>
+                        </div>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <el-button type="primary" @click="exportPaletteCard('download')">
+                                <i class="my-icon my-icon-save" style="margin-right:4px;"></i>
+                                下载调色卡图片 (PNG)
+                            </el-button>
+                            <el-button @click="exportPaletteCard('copy')">
+                                复制调色卡到剪贴板
+                            </el-button>
+                            <el-button @click="exportJsonData">
+                                导出 JSON 数据
+                            </el-button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 隐藏的 Canvas 用于生成调色卡图片 -->
+                <canvas id="exportCardCanvas"></canvas>
+
+                <!-- 悬浮复制成功 Toast -->
+                <div class="copy-toast-banner" v-if="toastMessage">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>{{ toastMessage }}</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="content">
+                    <h3>图片调色板提取器介绍</h3>
+                    <p>图片调色板提取器基于经典的 <strong>ColorThief (基于中位切分法 Modified Median Cut Quantization, MMCQ)</strong> 算法，能够智能识别并分析图像中的色彩分布权重，自动提取出最具代表性的<strong>主色调 (Dominant Color)</strong> 以及多达 16 种的<strong>主导色彩配色方案 (Palette)</strong>。</p>
+                    <p>支持快速将色值转换为 <strong>HEX十六进制、RGB三原色、HSL色相饱和度亮度</strong> 等多种通用格式，方便设计师、前端工程师与插画师快速进行色彩拾取、界面配色搭配与灵感沉淀。</p>
+
+                    <h3>使用方法</h3>
+                    <ul>
+                        <li><strong>上传图片</strong>：支持点击虚线框上传、拖拽本地图片文件到窗口，或者直接使用 <code>Ctrl + V</code> 粘贴剪贴板截图。</li>
+                        <li><strong>调整参数</strong>：可自由切换提取色彩数量（5色、8色、10色、12色、16色）以及调节采样精度。</li>
+                        <li><strong>色值复制</strong>：点击任意色块即可快速复制对应的 HEX 色值，或点击底部的 HEX / RGB / HSL 快捷按钮复制指定格式。</li>
+                        <li><strong>导出调色卡</strong>：点击“下载调色卡图片”按钮，系统会自动将图片缩略图与提取的色块、色值标签合成为一张设计感十足的调色板海报并保存到本地。</li>
+                        <li><strong>纯本地离线计算</strong>：所有像素分析与 Canvas 渲染均在本地浏览器内存中完成，零网络传输，保护隐私安全。</li>
+                    </ul>
+
+                    <p style="margin-top: 15px; font-size: 0.8rem; color: #64748b;">
+                        拓展时间: 2026-08-31 · 纯前端安全处理
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    var languageCode = 'zh';
+    var websiteRoot = "";
+    var mainWebSiteHost = "";
+    var webApiSiteHost = "/api";
+    var staticSiteHost = "";
+    var staticFileVersion="260728100716";
+</script>
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/color-thief/color-thief.umd.js"></script>
+<script src="./js/common.js?260728100716"></script>
+<script src="./js/search.js?260728100716"></script>
+
+<script>
+const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+const app = createApp({
+    data() {
+        return {
+            isDragging: false,
+            currentImageSrc: null,
+            imageName: '未命名图片',
+            imageDimensions: null,
+            paletteCount: 10,
+            sampleQuality: 5,
+            isExtracting: false,
+            dominantColor: null,
+            paletteColors: [],
+            toastMessage: '',
+            toastTimer: null,
+            colorThief: null
+        };
+    },
+    mounted() {
+        try {
+            if (typeof ColorThief !== 'undefined') {
+                this.colorThief = new ColorThief();
+            }
+        } catch (e) {
+            console.warn('ColorThief initialization error:', e);
+        }
+
+        // 监听全局 Ctrl+V 粘贴图片
+        window.addEventListener('paste', this.handleGlobalPaste);
+
+        // 默认加载一个精美的日落示例
+        this.loadPreset('sunset');
+    },
+    methods: {
+        triggerFileInput() {
+            document.getElementById('imgFileInput').click();
+        },
+        handleFileChange(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            this.processImageFile(file);
+            e.target.value = '';
+        },
+        handleDrop(e) {
+            this.isDragging = false;
+            const files = e.dataTransfer.files;
+            if (files && files.length > 0) {
+                this.processImageFile(files[0]);
+            }
+        },
+        handleGlobalPaste(e) {
+            const items = e.clipboardData && e.clipboardData.items;
+            if (!items) return;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const blob = items[i].getAsFile();
+                    this.processImageFile(blob, '剪贴板截图.png');
+                    break;
+                }
+            }
+        },
+        processImageFile(file, customName) {
+            if (!file || !file.type.startsWith('image/')) {
+                ElementPlus.ElMessage.warning('请上传有效的图片文件');
+                return;
+            }
+            this.imageName = customName || file.name || '图片';
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                this.currentImageSrc = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        },
+        onImageLoaded(e) {
+            const img = e.target;
+            this.imageDimensions = {
+                width: img.naturalWidth || img.width,
+                height: img.naturalHeight || img.height
+            };
+            this.extractColors();
+        },
+        extractColors() {
+            const img = document.getElementById('sourceImageEl');
+            if (!img) return;
+
+            this.isExtracting = true;
+            setTimeout(() => {
+                try {
+                    let domRgb = null;
+                    let palRgbList = [];
+
+                    if (this.colorThief) {
+                        try {
+                            domRgb = this.colorThief.getColor(img, this.sampleQuality);
+                            palRgbList = this.colorThief.getPalette(img, this.paletteCount, this.sampleQuality);
+                        } catch (ctErr) {
+                            console.warn('ColorThief failed, using Canvas fallback', ctErr);
+                        }
+                    }
+
+                    // Fallback to Canvas analysis if ColorThief fails or returns null
+                    if (!domRgb || !palRgbList || palRgbList.length === 0) {
+                        const fallback = this.fallbackExtractFromCanvas(img, this.paletteCount);
+                        domRgb = fallback.dominant;
+                        palRgbList = fallback.palette;
+                    }
+
+                    if (domRgb) {
+                        this.dominantColor = this.formatColorObj(domRgb);
+                    }
+
+                    if (palRgbList && palRgbList.length > 0) {
+                        this.paletteColors = palRgbList.map(rgb => this.formatColorObj(rgb));
+                    }
+                } catch (err) {
+                    console.error('Error during color extraction:', err);
+                    ElementPlus.ElMessage.error('提取调色板时发生错误，请重试');
+                } finally {
+                    this.isExtracting = false;
+                }
+            }, 30);
+        },
+        reExtractPalette() {
+            if (this.currentImageSrc) {
+                this.extractColors();
+            }
+        },
+        fallbackExtractFromCanvas(img, count) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const maxDimension = 200;
+            let w = img.naturalWidth || img.width || 100;
+            let h = img.naturalHeight || img.height || 100;
+            if (w > maxDimension || h > maxDimension) {
+                if (w > h) {
+                    h = Math.round((h * maxDimension) / w);
+                    w = maxDimension;
+                } else {
+                    w = Math.round((w * maxDimension) / h);
+                    h = maxDimension;
+                }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(img, 0, 0, w, h);
+            const data = ctx.getImageData(0, 0, w, h).data;
+
+            const colorMap = {};
+            for (let i = 0; i < data.length; i += 4) {
+                const alpha = data[i + 3];
+                if (alpha < 128) continue;
+                // Quantize to 5-bit
+                const r = Math.round(data[i] / 8) * 8;
+                const g = Math.round(data[i + 1] / 8) * 8;
+                const b = Math.round(data[i + 2] / 8) * 8;
+                const key = `${r},${g},${b}`;
+                colorMap[key] = (colorMap[key] || 0) + 1;
+            }
+
+            const sorted = Object.entries(colorMap).sort((a, b) => b[1] - a[1]);
+            const pal = sorted.slice(0, count).map(entry => {
+                const parts = entry[0].split(',').map(Number);
+                return [parts[0], parts[1], parts[2]];
+            });
+            const dom = pal[0] || [40, 40, 40];
+            return { dominant: dom, palette: pal.length ? pal : [dom] };
+        },
+        formatColorObj(rgb) {
+            const r = Math.max(0, Math.min(255, Math.round(rgb[0])));
+            const g = Math.max(0, Math.min(255, Math.round(rgb[1])));
+            const b = Math.max(0, Math.min(255, Math.round(rgb[2])));
+
+            const hex = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
+            const rgbStr = `rgb(${r}, ${g}, ${b})`;
+
+            // Calculate HSL
+            const rNorm = r / 255, gNorm = g / 255, bNorm = b / 255;
+            const max = Math.max(rNorm, gNorm, bNorm), min = Math.min(rNorm, gNorm, bNorm);
+            let h = 0, s = 0, l = (max + min) / 2;
+
+            if (max !== min) {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case rNorm: h = (gNorm - bNorm) / d + (gNorm < bNorm ? 6 : 0); break;
+                    case gNorm: h = (bNorm - rNorm) / d + 2; break;
+                    case bNorm: h = (rNorm - gNorm) / d + 4; break;
+                }
+                h /= 6;
+            }
+            const hDeg = Math.round(h * 360);
+            const sPct = Math.round(s * 100);
+            const lPct = Math.round(l * 100);
+            const hslStr = `hsl(${hDeg}, ${sPct}%, ${lPct}%)`;
+
+            // Calculate Relative Luminance (WCAG 2.0)
+            const brightness = Math.round((r * 299 + g * 587 + b * 114) / 1000 / 2.55);
+            const textColor = brightness > 55 ? '#0f172a' : '#ffffff';
+
+            return {
+                r, g, b,
+                hex,
+                rgbStr,
+                hslStr,
+                brightness,
+                textColor
+            };
+        },
+        copyText(text, label) {
+            if (!text) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    this.showToast(`已复制 ${label || text}`);
+                }).catch(() => {
+                    this.fallbackCopyText(text, label);
+                });
+            } else {
+                this.fallbackCopyText(text, label);
+            }
+        },
+        fallbackCopyText(text, label) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                this.showToast(`已复制 ${label || text}`);
+            } catch (err) {
+                ElementPlus.ElMessage.error('复制失败，请手动选择复制');
+            }
+            document.body.removeChild(textarea);
+        },
+        showToast(msg) {
+            this.toastMessage = msg;
+            if (this.toastTimer) clearTimeout(this.toastTimer);
+            this.toastTimer = setTimeout(() => {
+                this.toastMessage = '';
+            }, 2200);
+        },
+        copyAllHex() {
+            if (!this.paletteColors || this.paletteColors.length === 0) return;
+            const hexList = this.paletteColors.map(c => c.hex).join(', ');
+            this.copyText(hexList, '全部 HEX 配色列表');
+        },
+        exportCssVariables() {
+            if (!this.paletteColors || this.paletteColors.length === 0) return;
+            let css = ':root {\n';
+            if (this.dominantColor) {
+                css += `  --color-dominant: ${this.dominantColor.hex};\n`;
+            }
+            this.paletteColors.forEach((c, idx) => {
+                css += `  --color-palette-${idx + 1}: ${c.hex};\n`;
+            });
+            css += '}';
+            this.copyText(css, 'CSS 变量代码');
+        },
+        exportJsonData() {
+            if (!this.paletteColors || this.paletteColors.length === 0) return;
+            const data = {
+                dominant: this.dominantColor,
+                palette: this.paletteColors,
+                exportedAt: new Date().toISOString()
+            };
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `palette-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            this.showToast('调色板 JSON 数据已下载');
+        },
+        exportPaletteCard(mode) {
+            const img = document.getElementById('sourceImageEl');
+            if (!img || !this.dominantColor || this.paletteColors.length === 0) {
+                ElementPlus.ElMessage.warning('请先加载并提取调色板');
+                return;
+            }
+
+            const canvas = document.getElementById('exportCardCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // 尺寸规格：高清海报宽度 1200px
+            const cardWidth = 1200;
+            const padding = 60;
+            const imgHeight = 440;
+            const contentWidth = cardWidth - padding * 2;
+
+            // 计算色块排版
+            const cols = Math.min(this.paletteColors.length, 5);
+            const rows = Math.ceil(this.paletteColors.length / cols);
+            const swatchBoxHeight = 120;
+            const swatchGap = 16;
+            const paletteGridHeight = rows * swatchBoxHeight + (rows - 1) * swatchGap;
+
+            const cardHeight = padding + 80 + imgHeight + 30 + 90 + 30 + paletteGridHeight + 60 + 50 + padding;
+            canvas.width = cardWidth;
+            canvas.height = cardHeight;
+
+            // 绘制优雅深色背景
+            const bgGradient = ctx.createLinearGradient(0, 0, 0, cardHeight);
+            bgGradient.addColorStop(0, '#0b1329');
+            bgGradient.addColorStop(1, '#050811');
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, cardWidth, cardHeight);
+
+            // 顶部装饰光斑
+            ctx.save();
+            const glow = ctx.createRadialGradient(cardWidth / 2, 0, 10, cardWidth / 2, 0, 600);
+            glow.addColorStop(0, 'rgba(34, 211, 238, 0.18)');
+            glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = glow;
+            ctx.fillRect(0, 0, cardWidth, 500);
+            ctx.restore();
+
+            let currentY = padding;
+
+            // 1. 绘制标题 Header
+            ctx.fillStyle = '#22d3ee';
+            ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
+            ctx.fillText('COLOR PALETTE · 调色板', padding, currentY + 32);
+
+            ctx.fillStyle = '#64748b';
+            ctx.font = '18px ui-monospace, Consolas, monospace';
+            ctx.textAlign = 'right';
+            ctx.fillText('tool.6767.chat', cardWidth - padding, currentY + 32);
+            ctx.textAlign = 'left';
+
+            currentY += 60;
+
+            // 2. 绘制原图缩略图（带圆角）
+            ctx.save();
+            this.drawRoundedRect(ctx, padding, currentY, contentWidth, imgHeight, 16);
+            ctx.clip();
+            // 图片居中 contain 绘制
+            ctx.fillStyle = '#090e17';
+            ctx.fillRect(padding, currentY, contentWidth, imgHeight);
+
+            const imgRatio = img.naturalWidth / img.naturalHeight;
+            const containerRatio = contentWidth / imgHeight;
+            let drawW, drawH, drawX, drawY;
+            if (imgRatio > containerRatio) {
+                drawW = contentWidth;
+                drawH = contentWidth / imgRatio;
+                drawX = padding;
+                drawY = currentY + (imgHeight - drawH) / 2;
+            } else {
+                drawH = imgHeight;
+                drawW = imgHeight * imgRatio;
+                drawX = padding + (contentWidth - drawW) / 2;
+                drawY = currentY;
+            }
+            ctx.drawImage(img, drawX, drawY, drawW, drawH);
+            ctx.restore();
+
+            // 绘制原图边框
+            ctx.save();
+            ctx.strokeStyle = 'rgba(51, 65, 85, 0.8)';
+            ctx.lineWidth = 2;
+            this.drawRoundedRect(ctx, padding, currentY, contentWidth, imgHeight, 16);
+            ctx.stroke();
+            ctx.restore();
+
+            currentY += imgHeight + 30;
+
+            // 3. 绘制主色调卡片 Dominant Bar
+            ctx.save();
+            const domHeight = 90;
+            this.drawRoundedRect(ctx, padding, currentY, contentWidth, domHeight, 14);
+            ctx.fillStyle = this.dominantColor.hex;
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            ctx.fillStyle = this.dominantColor.textColor;
+            ctx.font = 'bold 16px system-ui, sans-serif';
+            ctx.fillText('DOMINANT COLOR · 主色调', padding + 24, currentY + 34);
+
+            ctx.font = 'bold 30px ui-monospace, Consolas, monospace';
+            ctx.fillText(this.dominantColor.hex, padding + 24, currentY + 70);
+
+            ctx.font = '16px ui-monospace, Consolas, monospace';
+            ctx.textAlign = 'right';
+            ctx.fillText(this.dominantColor.rgbStr + '   ' + this.dominantColor.hslStr, cardWidth - padding - 24, currentY + 54);
+            ctx.textAlign = 'left';
+            ctx.restore();
+
+            currentY += domHeight + 30;
+
+            // 4. 绘制调色板色彩网格
+            const swatchWidth = (contentWidth - (cols - 1) * swatchGap) / cols;
+            this.paletteColors.forEach((c, i) => {
+                const row = Math.floor(i / cols);
+                const col = i % cols;
+                const sx = padding + col * (swatchWidth + swatchGap);
+                const sy = currentY + row * (swatchBoxHeight + swatchGap);
+
+                ctx.save();
+                // 色块背景
+                this.drawRoundedRect(ctx, sx, sy, swatchWidth, swatchBoxHeight, 12);
+                ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(51, 65, 85, 0.7)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // 上半部分色彩
+                ctx.save();
+                this.drawRoundedRect(ctx, sx + 6, sy + 6, swatchWidth - 12, 60, 8);
+                ctx.fillStyle = c.hex;
+                ctx.fill();
+                ctx.restore();
+
+                // 下半部分文字色值
+                ctx.fillStyle = '#f1f5f9';
+                ctx.font = 'bold 16px ui-monospace, Consolas, monospace';
+                ctx.fillText(c.hex, sx + 10, sy + 90);
+
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '12px ui-monospace, Consolas, monospace';
+                ctx.fillText(c.rgbStr, sx + 10, sy + 108);
+
+                ctx.restore();
+            });
+
+            currentY += paletteGridHeight + 40;
+
+            // 5. 底部版权与时间
+            ctx.fillStyle = '#475569';
+            ctx.font = '14px system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            const dateStr = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            ctx.fillText(`在线工具集 · 图像调色板提取 · 离线安全生成于 ${dateStr}`, cardWidth / 2, currentY + 20);
+
+            // 导出动作
+            if (mode === 'download') {
+                const dataUrl = canvas.toDataURL('image/png', 1.0);
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = `color-palette-${Date.now()}.png`;
+                a.click();
+                this.showToast('调色卡图已生成并下载！');
+            } else if (mode === 'copy') {
+                canvas.toBlob((blob) => {
+                    if (blob && navigator.clipboard && navigator.clipboard.write) {
+                        navigator.clipboard.write([
+                            new ClipboardItem({ 'image/png': blob })
+                        ]).then(() => {
+                            this.showToast('调色卡图已复制到剪贴板！');
+                        }).catch(() => {
+                            ElementPlus.ElMessage.error('浏览器拒绝写入剪贴板图片');
+                        });
+                    } else {
+                        ElementPlus.ElMessage.warning('当前浏览器不支持直接复制图片到剪贴板，请使用下载功能');
+                    }
+                }, 'image/png');
+            }
+        },
+        drawRoundedRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        },
+        loadPreset(type) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 400;
+            const ctx = canvas.getContext('2d');
+
+            if (type === 'sunset') {
+                this.imageName = '霞光落日-示例.png';
+                const grad = ctx.createLinearGradient(0, 0, 640, 400);
+                grad.addColorStop(0, '#f97316');
+                grad.addColorStop(0.35, '#ec4899');
+                grad.addColorStop(0.7, '#8b5cf6');
+                grad.addColorStop(1, '#1e1b4b');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 640, 400);
+
+                // 太阳光球
+                const sun = ctx.createRadialGradient(320, 240, 10, 320, 240, 140);
+                sun.addColorStop(0, '#fef08a');
+                sun.addColorStop(0.4, '#f59e0b');
+                sun.addColorStop(1, 'rgba(239, 68, 68, 0)');
+                ctx.fillStyle = sun;
+                ctx.beginPath();
+                ctx.arc(320, 240, 140, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 远山与水面剪影
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath();
+                ctx.moveTo(0, 340);
+                ctx.bezierCurveTo(180, 290, 300, 350, 450, 300);
+                ctx.lineTo(640, 330);
+                ctx.lineTo(640, 400);
+                ctx.lineTo(0, 400);
+                ctx.closePath();
+                ctx.fill();
+            } else if (type === 'cyberpunk') {
+                this.imageName = '赛博霓虹-示例.png';
+                ctx.fillStyle = '#020617';
+                ctx.fillRect(0, 0, 640, 400);
+
+                const grad = ctx.createLinearGradient(0, 0, 640, 400);
+                grad.addColorStop(0, '#06b6d4');
+                grad.addColorStop(0.5, '#3b82f6');
+                grad.addColorStop(1, '#ec4899');
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 14;
+
+                ctx.beginPath();
+                ctx.arc(320, 200, 110, 0, Math.PI * 2);
+                ctx.stroke();
+
+                ctx.fillStyle = '#f43f5e';
+                ctx.fillRect(160, 280, 320, 20);
+                ctx.fillStyle = '#22d3ee';
+                ctx.fillRect(200, 100, 240, 16);
+            } else if (type === 'forest') {
+                this.imageName = '幽深林海-示例.png';
+                const grad = ctx.createLinearGradient(0, 0, 0, 400);
+                grad.addColorStop(0, '#022c22');
+                grad.addColorStop(0.5, '#065f46');
+                grad.addColorStop(0.8, '#059669');
+                grad.addColorStop(1, '#a7f3d0');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 640, 400);
+
+                ctx.fillStyle = '#064e3b';
+                for (let i = 0; i < 9; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(40 + i * 70, 400);
+                    ctx.lineTo(75 + i * 70, 160 + (i % 3) * 30);
+                    ctx.lineTo(110 + i * 70, 400);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            } else if (type === 'morandi') {
+                this.imageName = '莫兰迪雅灰-示例.png';
+                ctx.fillStyle = '#e2e8f0';
+                ctx.fillRect(0, 0, 640, 400);
+
+                const colors = ['#94a3b8', '#64748b', '#cbd5e1', '#bbf7d0', '#fbcfe8', '#fed7aa'];
+                colors.forEach((c, idx) => {
+                    ctx.fillStyle = c;
+                    ctx.beginPath();
+                    ctx.arc(100 + idx * 85, 200 + (idx % 2 === 0 ? -30 : 30), 45, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+
+            this.currentImageSrc = canvas.toDataURL('image/png');
+        }
+    }
+});
+
+app.use(ElementPlus);
+app.mount('.main-body');
+</script>
+</body>
+</html>

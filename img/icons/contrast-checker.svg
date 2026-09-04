@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-contrast" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#311042"/>
+      <stop offset="50%" stop-color="#6B21A8"/>
+      <stop offset="100%" stop-color="#BE185D"/>
+    </linearGradient>
+    <linearGradient id="meter-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="40%" stop-color="#F59E0B"/>
+      <stop offset="70%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-contrast)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+
+  <!-- Split Contrast Disc -->
+  <g transform="translate(24, 21)">
+    <!-- Left Dark Half -->
+    <path d="M 0 -13 A 13 13 0 0 0 0 13 Z" fill="#0F172A" stroke="#FFFFFF" stroke-width="1.2"/>
+    <!-- Right Light Half -->
+    <path d="M 0 -13 A 13 13 0 0 1 0 13 Z" fill="#F8FAFC" stroke="#FFFFFF" stroke-width="1.2"/>
+    <!-- Divider -->
+    <line x1="0" y1="-13" x2="0" y2="13" stroke="#FFFFFF" stroke-width="1.2"/>
+    
+    <!-- Letter A on dark side (white text) -->
+    <text x="-6.5" y="4.5" fill="#38BDF8" font-family="system-ui, sans-serif" font-weight="900" font-size="11" text-anchor="middle">A</text>
+    <!-- Letter a on light side (dark text) -->
+    <text x="6.5" y="4.5" fill="#0F172A" font-family="system-ui, sans-serif" font-weight="900" font-size="11" text-anchor="middle">a</text>
+  </g>
+
+  <!-- WCAG Score Meter Bar at Bottom -->
+  <rect x="8" y="37.5" width="32" height="4.5" rx="2.25" fill="url(#meter-grad)"/>
+  <circle cx="31" cy="39.75" r="3.2" fill="#FFFFFF" stroke="#0F172A" stroke-width="1"/>
+  
+  <!-- AAA Pass Badge at Top-Right -->
+  <g transform="translate(32, 6)">
+    <rect width="11" height="6.5" rx="2" fill="#10B981" stroke="#FFFFFF" stroke-width="0.8"/>
+    <text x="5.5" y="4.8" fill="#FFFFFF" font-family="monospace" font-weight="900" font-size="3.8" text-anchor="middle">AAA</text>
+  </g>
+
+  <!-- Ratio Text at Top-Left -->
+  <text x="6" y="11.5" fill="#FDE047" font-family="monospace" font-weight="900" font-size="4.6">7.5:1</text>
+</svg>

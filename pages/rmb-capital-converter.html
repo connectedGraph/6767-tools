@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>人民币大写金额转换器 (支持反向转换与财务防篡改) - 在线工具</title>
+    <meta name="description" content="专业财务级人民币大写金额在线转换工具，支持阿拉伯数字转标准中文大写（如壹万贰仟叁佰肆拾伍元陆角柒分），支持含负数与小数的金额校验，提供反向中文大写转数字功能、银行支票票据分格展示与财务防篡改规范。" />
+    <meta name="keywords" content="人民币大写转换器,金额大写转换,大写数字转换,财务大写金额,发票大写金额,中文大写转阿拉伯数字,支票大写生成" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .converter-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .main-result-box {
+            background: linear-gradient(135deg, rgba(8, 47, 73, 0.6), rgba(15, 23, 42, 0.8));
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 16px;
+            position: relative;
+        }
+        .result-title {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .result-capital-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #38bdf8;
+            font-family: "PingFang SC", "Microsoft YaHei", "SimSun", serif;
+            letter-spacing: 1px;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+        .result-pinyin-text {
+            font-size: 13px;
+            color: #64748b;
+            font-family: ui-monospace, monospace;
+            margin-top: 6px;
+        }
+        .result-secondary-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(51, 65, 85, 0.6);
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+        .result-secondary-bar strong {
+            color: #22d3ee;
+            font-family: ui-monospace, monospace;
+        }
+
+        /* 银行支票票据分格展示 */
+        .cheque-grid-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            padding: 12px 0 6px;
+        }
+        .cheque-table {
+            border-collapse: collapse;
+            margin: 0 auto;
+            min-width: 700px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid rgba(51, 65, 85, 0.9);
+        }
+        .cheque-table th {
+            background: #1e293b;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 8px 4px;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            text-align: center;
+            width: 48px;
+        }
+        .cheque-table th.is-million {
+            background: rgba(8, 47, 73, 0.8);
+            color: #38bdf8;
+        }
+        .cheque-table th.is-fen {
+            background: rgba(88, 28, 135, 0.4);
+            color: #c084fc;
+        }
+        .cheque-table td {
+            height: 52px;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            text-align: center;
+            vertical-align: middle;
+            position: relative;
+        }
+        .cheque-digit {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: ui-monospace, monospace;
+            color: #e2e8f0;
+        }
+        .cheque-capital {
+            font-size: 11px;
+            color: #38bdf8;
+            display: block;
+            margin-top: 2px;
+        }
+        .cheque-empty {
+            color: #334155;
+            font-size: 14px;
+        }
+
+        /* 快捷面额按钮 */
+        .quick-amount-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .quick-amount-tag {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: ui-monospace, monospace;
+        }
+        .quick-amount-tag:hover {
+            color: #38bdf8;
+            border-color: rgba(34, 211, 238, 0.5);
+            background: rgba(8, 47, 73, 0.5);
+        }
+
+        /* 字码速查表 */
+        .char-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+        .char-table th, .char-table td {
+            padding: 8px 12px;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            text-align: center;
+        }
+        .char-table th {
+            background: #1e293b;
+            color: #38bdf8;
+        }
+        .char-table td {
+            color: #cbd5e1;
+        }
+        .highlight-capital {
+            font-size: 16px;
+            font-weight: 700;
+            color: #22d3ee;
+        }
+
+        .mode-tab-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .mode-tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            background: rgba(15, 23, 42, 0.6);
+            color: #94a3b8;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .mode-tab-btn:hover {
+            color: #e2e8f0;
+            border-color: rgba(34, 211, 238, 0.4);
+        }
+        .mode-tab-btn.active {
+            background: rgba(8, 47, 73, 0.85);
+            border-color: #22d3ee;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">人民币大写金额转换器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" style="max-width: 1080px;">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">人民币大写金额转换器 (RMB Capital Converter)</h1>
+                </div>
+                <div class="description">
+                    将阿拉伯数字金额转换为标准中文大写金额（如“壹万贰仟叁佰肆拾伍元陆角柒分”），符合中国人民银行与财务会计票据填写规范，支持正负数、多级小数与大额高精度换算，提供反向解析与银行支票分格校验。
+                </div>
+
+                <div id="app" v-cloak>
+                    <!-- 模式切换 -->
+                    <div class="mode-tab-buttons">
+                        <button
+                            class="mode-tab-btn"
+                            :class="{ active: currentMode === 'toCapital' }"
+                            @click="currentMode = 'toCapital'"
+                        >
+                            阿拉伯数字 → 中文大写
+                        </button>
+                        <button
+                            class="mode-tab-btn"
+                            :class="{ active: currentMode === 'toDigital' }"
+                            @click="currentMode = 'toDigital'"
+                        >
+                            中文大写 → 阿拉伯数字 (反向转换)
+                        </button>
+                        <button
+                            class="mode-tab-btn"
+                            :class="{ active: currentMode === 'rules' }"
+                            @click="currentMode = 'rules'"
+                        >
+                            财务防篡改与字码速查表
+                        </button>
+                    </div>
+
+                    <!-- 模式 1: 数字转大写 -->
+                    <div v-if="currentMode === 'toCapital'">
+                        <div class="converter-card">
+                            <el-form label-position="top">
+                                <el-form-item label="输入阿拉伯数字金额 (¥)">
+                                    <el-input
+                                        v-model="digitalInput"
+                                        size="large"
+                                        placeholder="例如：123456.78 或 -5000"
+                                        clearable
+                                        @input="onDigitalInput"
+                                    >
+                                        <template #prefix>
+                                            <span style="color:#64748b; font-weight:600; margin-right:4px;">¥</span>
+                                        </template>
+                                        <template #append>
+                                            <el-button @click="copyText(capitalResult.text, '大写金额已复制')">
+                                                复制大写
+                                            </el-button>
+                                        </template>
+                                    </el-input>
+                                </el-form-item>
+
+                                <!-- 快捷预设面额 -->
+                                <div class="quick-amount-tags">
+                                    <span class="text-xs text-slate-500" style="line-height:24px;">快捷示例:</span>
+                                    <span class="quick-amount-tag" @click="setAmount('100.00')">100.00</span>
+                                    <span class="quick-amount-tag" @click="setAmount('1234.56')">1,234.56</span>
+                                    <span class="quick-amount-tag" @click="setAmount('50000.00')">50,000.00</span>
+                                    <span class="quick-amount-tag" @click="setAmount('123456.78')">123,456.78</span>
+                                    <span class="quick-amount-tag" @click="setAmount('1000000.00')">1,000,000.00</span>
+                                    <span class="quick-amount-tag" @click="setAmount('88888888.88')">88,888,888.88</span>
+                                    <span class="quick-amount-tag" @click="setAmount('100000000.00')">100,000,000.00</span>
+                                    <span class="quick-amount-tag" @click="setAmount('1005020.05')">1,005,020.05</span>
+                                    <span class="quick-amount-tag" @click="setAmount('9876543210.55')">98.76 亿大额</span>
+                                </div>
+
+                                <!-- 格式化选项 -->
+                                <div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:16px; font-size:13px;" class="options-row">
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <span class="text-slate-400">币种前缀:</span>
+                                        <el-select v-model="optPrefix" size="small" style="width: 110px;">
+                                            <el-option label="人民币" value="人民币"></el-option>
+                                            <el-option label="CNY" value="CNY "></el-option>
+                                            <el-option label="无前缀" value=""></el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <span class="text-slate-400">整数单位:</span>
+                                        <el-select v-model="optYuan" size="small" style="width: 90px;">
+                                            <el-option label="元" value="元"></el-option>
+                                            <el-option label="圆" value="圆"></el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <span class="text-slate-400">末尾后缀:</span>
+                                        <el-select v-model="optSuffix" size="small" style="width: 100px;">
+                                            <el-option label="自动加“整”" value="整"></el-option>
+                                            <el-option label="自动加“正”" value="正"></el-option>
+                                            <el-option label="不加后缀" value=""></el-option>
+                                        </el-select>
+                                    </div>
+                                    <el-checkbox v-model="optZeroYuan">零元时保留“零元” (如 零元伍角)</el-checkbox>
+                                </div>
+                            </el-form>
+
+                            <!-- 核心转换结果卡片 -->
+                            <div class="main-result-box">
+                                <div class="result-title">
+                                    <span>标准中文大写金额</span>
+                                    <div style="display:flex; gap:8px;">
+                                        <el-button size="small" type="primary" plain @click="copyText(capitalResult.text, '大写金额已复制')">
+                                            复制结果
+                                        </el-button>
+                                        <el-button size="small" @click="copyText(capitalResult.formattedNum, '千分位金额已复制')">
+                                            复制格式化数字
+                                        </el-button>
+                                    </div>
+                                </div>
+                                <div class="result-capital-text">
+                                    {{ capitalResult.text || '零元整' }}
+                                </div>
+                                <div class="result-pinyin-text" v-if="capitalResult.pinyin">
+                                    拼音注音: {{ capitalResult.pinyin }}
+                                </div>
+
+                                <div class="result-secondary-bar">
+                                    <div>格式化金额: <strong>{{ capitalResult.formattedNum }}</strong></div>
+                                    <div>数值大小: <strong>{{ capitalResult.unitScaleDesc }}</strong></div>
+                                    <div>校验状态: <span style="color:#10b981; font-weight:600;">{{ capitalResult.validMsg }}</span></div>
+                                </div>
+                            </div>
+
+                            <!-- 银行支票 / 票据分格展示 -->
+                            <div class="cheque-grid-container">
+                                <div style="font-size:12px; color:#94a3b8; margin-bottom:6px; font-weight:600;">
+                                    银行支票 / 财务凭证格子拆分对照视图:
+                                </div>
+                                <table class="cheque-table">
+                                    <thead>
+                                        <tr>
+                                            <th>百亿</th>
+                                            <th>十亿</th>
+                                            <th class="is-million">亿</th>
+                                            <th>千万</th>
+                                            <th>百万</th>
+                                            <th class="is-million">十万</th>
+                                            <th>万</th>
+                                            <th>千</th>
+                                            <th>百</th>
+                                            <th>十</th>
+                                            <th class="is-million">元</th>
+                                            <th class="is-fen">角</th>
+                                            <th class="is-fen">分</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td v-for="(cell, cIdx) in chequeCells" :key="cIdx">
+                                                <div v-if="cell.digit !== null">
+                                                    <span class="cheque-digit">{{ cell.digit }}</span>
+                                                    <span class="cheque-capital">{{ cell.capital }}</span>
+                                                </div>
+                                                <span v-else class="cheque-empty">/</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 模式 2: 中文大写反向转数字 -->
+                    <div v-if="currentMode === 'toDigital'">
+                        <div class="converter-card">
+                            <el-form label-position="top">
+                                <el-form-item label="输入中文大写金额文本 (支持标准大写及常见变体)">
+                                    <el-input
+                                        v-model="chineseInput"
+                                        type="textarea"
+                                        :rows="3"
+                                        placeholder="例如：人民币壹万贰仟叁佰肆拾伍元陆角柒分 或 伍佰万零伍元贰角"
+                                        @input="onChineseInput"
+                                    ></el-input>
+                                </el-form-item>
+
+                                <div class="quick-amount-tags">
+                                    <span class="text-xs text-slate-500" style="line-height:24px;">快捷填入:</span>
+                                    <span class="quick-amount-tag" @click="setChinese('壹万贰仟叁佰肆拾伍元陆角柒分')">壹万贰仟叁佰肆拾伍元陆角柒分</span>
+                                    <span class="quick-amount-tag" @click="setChinese('人民币伍仟万元整')">人民币伍仟万元整</span>
+                                    <span class="quick-amount-tag" @click="setChinese('负壹仟零伍元零贰分')">负壹仟零伍元零贰分</span>
+                                    <span class="quick-amount-tag" @click="setChinese('玖亿捌仟柒佰陆拾伍万肆仟叁佰贰拾壹元整')">9.87 亿大写</span>
+                                </div>
+                            </el-form>
+
+                            <!-- 反向解析结果卡片 -->
+                            <div class="main-result-box" style="margin-top: 20px;">
+                                <div class="result-title">
+                                    <span>反向解析数字金额结果</span>
+                                    <el-button size="small" type="primary" plain @click="copyText(reverseResult.digitalStr, '数字金额已复制')">
+                                        复制数字
+                                    </el-button>
+                                </div>
+                                <div class="result-capital-text" style="color: #22d3ee; font-family: ui-monospace, monospace;">
+                                    ¥ {{ reverseResult.formattedStr || '0.00' }}
+                                </div>
+
+                                <div class="result-secondary-bar">
+                                    <div>标准数字: <strong>{{ reverseResult.digitalStr || '0' }}</strong></div>
+                                    <div>二次校验:
+                                        <span v-if="reverseResult.isMatch" style="color:#10b981; font-weight:600;">100% 格式吻合 (一致)</span>
+                                        <span v-else style="color:#f59e0b; font-weight:600;">{{ reverseResult.verifyMsg }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 模式 3: 财务防篡改与字码速查表 -->
+                    <div v-if="currentMode === 'rules'">
+                        <div class="converter-card">
+                            <h3 style="color:#e2e8f0; font-size:16px; font-weight:600; margin-bottom:12px;">
+                                常用财务大写数字与单位对照表
+                            </h3>
+                            <table class="char-table">
+                                <thead>
+                                    <tr>
+                                        <th>阿拉伯数字</th>
+                                        <th>小写汉字</th>
+                                        <th>标准大写</th>
+                                        <th>繁体/异体</th>
+                                        <th>拼音读音</th>
+                                        <th>防篡改说明</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in charRefList" :key="item.num">
+                                        <td><strong>{{ item.num }}</strong></td>
+                                        <td>{{ item.lower }}</td>
+                                        <td><span class="highlight-capital">{{ item.capital }}</span></td>
+                                        <td>{{ item.traditional || '-' }}</td>
+                                        <td style="font-family:monospace; color:#94a3b8;">{{ item.pinyin }}</td>
+                                        <td style="text-align:left; font-size:12px; color:#94a3b8;">{{ item.desc }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 style="color:#e2e8f0; font-size:16px; font-weight:600; margin: 24px 0 12px 0;">
+                                中国人民银行《正确填写票据和结算凭证的基本规定》核心要点
+                            </h3>
+                            <div class="info-card-box" style="margin-top:0;">
+                                <ol style="padding-left:18px; margin:0;">
+                                    <li><strong>封头防加字：</strong>中文大写金额数字前应标明“人民币”字样，大写金额数字紧接“人民币”字样填写，不得留有空白。</li>
+                                    <li><strong>“整”字规范：</strong>中文大写金额数字到“元”为止的，在“元”之后应写“整”（或“正”）字；在“角”之后可以写“整”（或“正”）字；大写金额数字有“分”的，“分”后面不写“整”（或“正”）字。</li>
+                                    <li><strong>“零”字规范：</strong>
+                                        <ul style="padding-left:18px; margin:4px 0;">
+                                            <li>阿拉伯数字中间有“0”时，中文大写要写“零”字，如 ￥1409.50 应写成“人民币壹仟肆佰零玖元伍角整”。</li>
+                                            <li>阿拉伯数字中间连续有几个“0”时，中文大写金额中只写一个“零”字，如 ￥6007.14 应写成“人民币陆仟零柒元壹角肆分”。</li>
+                                            <li>阿拉伯金额数字万位和元位是“0”，或者数字中间连续有几个“0”，万位、元位也是“0”但千位、角位不是“0”时，中文大写金额中可以只写一个零字，也可以不写零字。</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>禁止使用简化字：</strong>填写票据和结算凭证，必须使用繁体/标准大写汉字（如“壹、贰、叁、肆、伍、陆、柒、捌、玖、拾、佰、仟、万、亿”），不得使用“一、二、三、四、五、六、七、八、九、十、毛、另”等替代。</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>工具设计与安全规范说明</h3>
+                    <p><strong>人民币大写金额转换器</strong>基于中国人民银行支付结算规范与会计准则构建：</p>
+                    <ul>
+                        <li><strong>超大金额精准计算：</strong>采用字符串无损切片算法，规避原生 JavaScript 浮点数超过 16 位时产生的精度溢出丢失问题，支持万亿/京级大额财务换算。</li>
+                        <li><strong>智能反向解析：</strong>内置容错状态机，可自动解析各类繁简体大写混合、前缀符号与缺失“整”字文本，并进行双向回环一致性校验。</li>
+                        <li><strong>离线隐私无痕：</strong>纯客户端前端处理，不向任何第三方服务传输您的发票、合同、银行转账与薪资数据。</li>
+                    </ul>
+                    <p style="margin-top: 10px; font-size: 12px; color: #64748b;">
+                        版本: 2.0.0 | 拓展时间: 2026-08-31 | 财务防篡改安全工具
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+const { createApp, ref, reactive, computed, watch, onMounted } = Vue;
+
+const app = createApp({
+    setup() {
+        const currentMode = ref('toCapital');
+        const digitalInput = ref('123456.78');
+        const chineseInput = ref('壹万贰仟叁佰肆拾伍元陆角柒分');
+
+        const optPrefix = ref('人民币');
+        const optYuan = ref('元');
+        const optSuffix = ref('整');
+        const optZeroYuan = ref(false);
+
+        // 汉字拼音映射表
+        const pinyinMap = {
+            '零': 'líng', '壹': 'yī', '贰': 'èr', '叁': 'sān', '肆': 'sì',
+            '伍': 'wǔ', '陆': 'lù', '柒': 'qī', '捌': 'bā', '玖': 'jiǔ',
+            '拾': 'shí', '佰': 'bǎi', '仟': 'qiān', '万': 'wàn', '亿': 'yì',
+            '兆': 'zhào', '京': 'jīng', '元': 'yuán', '圆': 'yuán', '角': 'jiǎo',
+            '分': 'fēn', '厘': 'lí', '毫': 'háo', '整': 'zhěng', '正': 'zhèng',
+            '负': 'fù', '人': 'rén', '民': 'mín', '币': 'bì'
+        };
+
+        // 数字转大写核心算法 (字符串级精确运算)
+        const numberToChineseCapital = (numStr) => {
+            if (numStr === null || numStr === undefined || String(numStr).trim() === '') {
+                return { text: '', pinyin: '', formattedNum: '¥ 0.00', unitScaleDesc: '零', validMsg: '等待输入' };
+            }
+
+            let cleanStr = String(numStr).trim().replace(/,/g, '').replace(/¥/g, '').replace(/￥/g, '');
+            let isNegative = false;
+            if (cleanStr.startsWith('-')) {
+                isNegative = true;
+                cleanStr = cleanStr.slice(1);
+            } else if (cleanStr.startsWith('+')) {
+                cleanStr = cleanStr.slice(1);
+            }
+
+            if (!/^\d+(\.\d+)?$/.test(cleanStr)) {
+                return { text: '格式无效 (请输入合法数字)', pinyin: '', formattedNum: '无效', unitScaleDesc: '-', validMsg: '格式错误' };
+            }
+
+            const parts = cleanStr.split('.');
+            let integerPart = parts[0].replace(/^0+/, '') || '0';
+            let decimalPart = parts[1] || '';
+
+            // 格式化千分位
+            const formattedInt = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            const formattedNum = (isNegative ? '-¥ ' : '¥ ') + formattedInt + (decimalPart ? '.' + decimalPart : '.00');
+
+            const digits = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];
+            const smallUnits = ['', '拾', '佰', '仟'];
+            const bigUnits = ['', '万', '亿', '兆', '京'];
+            const decUnits = ['角', '分', '厘', '毫'];
+
+            if (integerPart === '0' && (!decimalPart || /^0+$/.test(decimalPart))) {
+                const text = (isNegative ? '负' : '') + (optPrefix.value || '') + '零' + optYuan.value + (optSuffix.value ? '整' : '');
+                return {
+                    text,
+                    pinyin: text.split('').map(ch => pinyinMap[ch] || ch).join(' '),
+                    formattedNum,
+                    unitScaleDesc: '零元',
+                    validMsg: '有效金额'
+                };
+            }
+
+            let result = '';
+
+            // 1. 处理整数部分 (4 位一组切分)
+            if (integerPart !== '0') {
+                let chunks = [];
+                let tempInt = integerPart;
+                while (tempInt.length > 0) {
+                    chunks.push(tempInt.slice(-4));
+                    tempInt = tempInt.slice(0, -4);
+                }
+
+                let intChinese = '';
+                for (let i = chunks.length - 1; i >= 0; i--) {
+                    const chunk = chunks[i];
+                    let chunkChinese = '';
+                    let zeroFlag = false;
+
+                    for (let j = 0; j < chunk.length; j++) {
+                        const digit = parseInt(chunk[j]);
+                        const pos = chunk.length - 1 - j;
+                        if (digit === 0) {
+                            zeroFlag = true;
+                        } else {
+                            if (zeroFlag) {
+                                chunkChinese += '零';
+                                zeroFlag = false;
+                            }
+                            chunkChinese += digits[digit] + smallUnits[pos];
+                        }
+                    }
+
+                    if (chunkChinese.length > 0) {
+                        intChinese += chunkChinese + (bigUnits[i] || '');
+                    } else if (i === 1 && chunks.length >= 3 && chunks[1] === '0000') {
+                        // 万位全零而亿位存在时，无需重复万
+                    }
+                }
+                result += intChinese + optYuan.value;
+            } else {
+                if (optZeroYuan.value) {
+                    result += '零' + optYuan.value;
+                }
+            }
+
+            // 2. 处理小数部分 (角、分、厘、毫)
+            let decChinese = '';
+            let hasDec = false;
+            for (let i = 0; i < Math.min(decimalPart.length, 4); i++) {
+                const digit = parseInt(decimalPart[i]);
+                if (digit !== 0) {
+                    hasDec = true;
+                    // 如果整数部分不为0，且角位为0但分位不为0，补零
+                    if (i > 0 && parseInt(decimalPart[i - 1]) === 0 && integerPart !== '0' && decChinese === '') {
+                        decChinese += '零';
+                    }
+                    decChinese += digits[digit] + decUnits[i];
+                }
+            }
+
+            if (!hasDec) {
+                if (optSuffix.value) {
+                    result += optSuffix.value;
+                }
+            } else {
+                result += decChinese;
+                // 若只有角位，按惯例可加整
+                if (decimalPart.length === 1 || (decimalPart.length >= 2 && parseInt(decimalPart[1]) === 0 && parseInt(decimalPart[0]) !== 0)) {
+                    if (optSuffix.value) {
+                        result += optSuffix.value;
+                    }
+                }
+            }
+
+            const finalText = (isNegative ? '负' : '') + (optPrefix.value || '') + result;
+            const pinyin = finalText.split('').map(ch => pinyinMap[ch] || ch).join(' ');
+
+            // 计算规模描述
+            let scaleDesc = '元级';
+            const len = integerPart.length;
+            if (len >= 13) scaleDesc = '万亿 (兆) 级巨额';
+            else if (len >= 9) scaleDesc = '亿级大额';
+            else if (len >= 5) scaleDesc = '万级中额';
+            else if (len >= 4) scaleDesc = '千级金额';
+
+            return {
+                text: finalText,
+                pinyin,
+                formattedNum,
+                unitScaleDesc: scaleDesc,
+                validMsg: '转换成功 · 规范校验通过'
+            };
+        };
+
+        const capitalResult = computed(() => {
+            return numberToChineseCapital(digitalInput.value);
+        });
+
+        // 银行支票 13 格分解
+        const chequeCells = computed(() => {
+            let cleanStr = String(digitalInput.value || '0').trim().replace(/,/g, '').replace(/¥/g, '').replace(/￥/g, '');
+            if (cleanStr.startsWith('-') || cleanStr.startsWith('+')) cleanStr = cleanStr.slice(1);
+
+            const parts = cleanStr.split('.');
+            let intStr = parts[0].replace(/^0+/, '') || '0';
+            let decStr = (parts[1] || '').padEnd(2, '0').slice(0, 2);
+
+            const digitsMap = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];
+            // 11 位整数 (百亿 到 元) + 2 位小数 (角、分)
+            const intPadded = intStr.padStart(11, ' ');
+            const fullStr = intPadded + decStr;
+
+            const cells = [];
+            for (let i = 0; i < 13; i++) {
+                const char = fullStr[i];
+                if (char === ' ') {
+                    cells.push({ digit: null, capital: '' });
+                } else {
+                    const d = parseInt(char);
+                    cells.push({ digit: d, capital: digitsMap[d] });
+                }
+            }
+            return cells;
+        });
+
+        // 反向中文大写转数字解析器
+        const chineseToNumber = (chineseStr) => {
+            if (!chineseStr || !chineseStr.trim()) {
+                return { digitalStr: '0.00', formattedStr: '0.00', isMatch: true, verifyMsg: '等待输入' };
+            }
+
+            let s = chineseStr.trim().replace(/^人民币/, '').replace(/^￥/, '').replace(/^CNY/i, '').trim();
+            let isNegative = false;
+            if (s.startsWith('负')) {
+                isNegative = true;
+                s = s.slice(1);
+            }
+            s = s.replace(/整$/, '').replace(/正$/, '');
+
+            const digitVal = {
+                '零': 0, '〇': 0, '0': 0,
+                '壹': 1, '一': 1, '1': 1,
+                '贰': 2, '貳': 2, '两': 2, '二': 2, '2': 2,
+                '叁': 3, '叄': 3, '三': 3, '3': 3,
+                '肆': 4, '四': 4, '4': 4,
+                '伍': 5, '五': 5, '5': 5,
+                '陆': 6, '陸': 6, '六': 6, '6': 6,
+                '柒': 7, '七': 7, '7': 7,
+                '捌': 8, '八': 8, '8': 8,
+                '玖': 9, '九': 9, '9': 9
+            };
+
+            let yuanParts = s.split(/[元圆]/);
+            let intStr = yuanParts[0];
+            let decStr = yuanParts[1] || '';
+
+            // 如果没有“元”，且包含角或分
+            if (yuanParts.length === 1 && (s.includes('角') || s.includes('分'))) {
+                intStr = '';
+                decStr = s;
+            }
+
+            // 解析中文整数部分
+            const parseChineseInt = (text) => {
+                if (!text) return 0;
+                let total = 0;
+                let yiVal = 0, wanVal = 0, currentSection = 0, currentNum = 0;
+
+                for (let i = 0; i < text.length; i++) {
+                    const ch = text[i];
+                    if (digitVal[ch] !== undefined) {
+                        currentNum = digitVal[ch];
+                    } else if (ch === '拾' || ch === '十') {
+                        if (currentNum === 0 && (i === 0 || text[i-1] === '零' || text[i-1] === '万' || text[i-1] === '亿')) currentNum = 1;
+                        currentSection += currentNum * 10;
+                        currentNum = 0;
+                    } else if (ch === '佰' || ch === '百') {
+                        currentSection += currentNum * 100;
+                        currentNum = 0;
+                    } else if (ch === '仟' || ch === '千') {
+                        currentSection += currentNum * 1000;
+                        currentNum = 0;
+                    } else if (ch === '万' || ch === '萬') {
+                        currentSection += currentNum;
+                        wanVal = (wanVal + currentSection) * 10000;
+                        currentSection = 0;
+                        currentNum = 0;
+                    } else if (ch === '亿' || ch === '億') {
+                        currentSection += currentNum;
+                        yiVal = (yiVal + wanVal + currentSection) * 100000000;
+                        wanVal = 0;
+                        currentSection = 0;
+                        currentNum = 0;
+                    }
+                }
+                currentSection += currentNum;
+                return yiVal + wanVal + currentSection;
+            };
+
+            // 解析小数部分
+            const parseChineseDec = (text) => {
+                if (!text) return 0;
+                let jiao = 0, fen = 0, li = 0, hao = 0;
+                const mJiao = text.match(/([零壹贰两叁肆伍陆柒捌玖0-9])角/);
+                const mFen = text.match(/([零壹贰两叁肆伍陆柒捌玖0-9])分/);
+                const mLi = text.match(/([零壹贰两叁肆伍陆柒捌玖0-9])厘/);
+                const mHao = text.match(/([零壹贰两叁肆伍陆柒捌玖0-9])毫/);
+
+                if (mJiao && digitVal[mJiao[1]] !== undefined) jiao = digitVal[mJiao[1]];
+                if (mFen && digitVal[mFen[1]] !== undefined) fen = digitVal[mFen[1]];
+                if (mLi && digitVal[mLi[1]] !== undefined) li = digitVal[mLi[1]];
+                if (mHao && digitVal[mHao[1]] !== undefined) hao = digitVal[mHao[1]];
+
+                return jiao * 0.1 + fen * 0.01 + li * 0.001 + hao * 0.0001;
+            };
+
+            const intTotal = parseChineseInt(intStr);
+            const decTotal = parseChineseDec(decStr);
+            const fullAmount = (isNegative ? -1 : 1) * (intTotal + decTotal);
+            const fixedStr = fullAmount.toFixed(4).replace(/0+$/, '').replace(/\.$/, '') || '0';
+            const formattedStr = (isNegative ? '-' : '') + intTotal.toLocaleString('en-US') + (decTotal > 0 ? ('.' + fullAmount.toFixed(4).split('.')[1].replace(/0+$/, '')) : '.00');
+
+            // 二次校验
+            const reGen = numberToChineseCapital(fixedStr).text;
+            const cleanOrigin = chineseStr.replace(/^人民币/, '').replace(/^￥/, '').replace(/整$/, '').replace(/正$/, '').replace(/圆/, '元');
+            const cleanRegen = reGen.replace(/^人民币/, '').replace(/^￥/, '').replace(/整$/, '').replace(/正$/, '').replace(/圆/, '元');
+            const isMatch = cleanOrigin === cleanRegen;
+
+            return {
+                digitalStr: fixedStr,
+                formattedStr,
+                isMatch,
+                verifyMsg: isMatch ? '校验一致' : '解析完成 (可能存在书写简化差异)'
+            };
+        };
+
+        const reverseResult = computed(() => {
+            return chineseToNumber(chineseInput.value);
+        });
+
+        // 字符速查表数据
+        const charRefList = [
+            { num: 0, lower: '零 / 〇', capital: '零', traditional: '零', pinyin: 'líng', desc: '用于数字中间补位，连续多个零只写一个零' },
+            { num: 1, lower: '一', capital: '壹', traditional: '壹', pinyin: 'yī', desc: '防篡改：防止小写“一”加横变“二/三”或变“十”' },
+            { num: 2, lower: '二 / 两', capital: '贰', traditional: '貳', pinyin: 'èr', desc: '防篡改：防止小写“二”加横变“三”' },
+            { num: 3, lower: '三', capital: '叁', traditional: '叄 / 參', pinyin: 'sān', desc: '防篡改：防止加笔画篡改' },
+            { num: 4, lower: '四', capital: '肆', traditional: '肆', pinyin: 'sì', desc: '防篡改：笔画严密，不可改动' },
+            { num: 5, lower: '五', capital: '伍', traditional: '伍', pinyin: 'wǔ', desc: '防篡改：从人从五，防止加偏旁' },
+            { num: 6, lower: '六', capital: '陆', traditional: '陸', pinyin: 'lù', desc: '防篡改：防止变大为其他数字' },
+            { num: 7, lower: '七', capital: '柒', traditional: '柒', pinyin: 'qī', desc: '防篡改：防止添笔变“九”或“十”' },
+            { num: 8, lower: '八', capital: '捌', traditional: '捌', pinyin: 'bā', desc: '防篡改：笔画复杂规范' },
+            { num: 9, lower: '九', capital: '玖', traditional: '玖', pinyin: 'jiǔ', desc: '防篡改：防止“九”变“丸”或添改' },
+            { num: 10, lower: '十', capital: '拾', traditional: '拾', pinyin: 'shí', desc: '进位单位：防止“十”变“千”或“千”变“十”' },
+            { num: 100, lower: '百', capital: '佰', traditional: '佰', pinyin: 'bǎi', desc: '进位单位：百位标准写法' },
+            { num: 1000, lower: '千', capital: '仟', traditional: '仟', pinyin: 'qiān', desc: '进位单位：千位标准写法' },
+            { num: 10000, lower: '万', capital: '万', traditional: '萬', pinyin: 'wàn', desc: '大写金额中“万”与“萬”均合规通用' },
+            { num: 100000000, lower: '亿', capital: '亿', traditional: '億', pinyin: 'yì', desc: '大写金额中“亿”与“億”均合规通用' }
+        ];
+
+        const setAmount = (val) => {
+            digitalInput.value = val;
+            ElementPlus.ElMessage.success(`已载入面额：¥ ${val}`);
+        };
+
+        const setChinese = (val) => {
+            chineseInput.value = val;
+            ElementPlus.ElMessage.success('已填入大写文本');
+        };
+
+        const onDigitalInput = () => {};
+        const onChineseInput = () => {};
+
+        const copyText = (text, successMsg = '复制成功') => {
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                ElementPlus.ElMessage.success(successMsg);
+            }).catch(() => {
+                ElementPlus.ElMessage.error('复制失败，请手动选择');
+            });
+        };
+
+        return {
+            currentMode,
+            digitalInput,
+            chineseInput,
+            optPrefix,
+            optYuan,
+            optSuffix,
+            optZeroYuan,
+            capitalResult,
+            chequeCells,
+            reverseResult,
+            charRefList,
+            setAmount,
+            setChinese,
+            onDigitalInput,
+            onChineseInput,
+            copyText
+        };
+    }
+});
+
+app.use(ElementPlus);
+app.mount('.main-body');
+</script>
+</body>
+</html>

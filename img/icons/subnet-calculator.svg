@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-subnet" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#021a2f"/>
+    </linearGradient>
+    <linearGradient id="subnet-cyan" x1="12" y1="12" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="subnet-green" x1="12" y1="12" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-subnet)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#38bdf8" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Network Subnet Grid Blocks -->
+  <rect x="10" y="12" width="13" height="9" rx="2.5" fill="url(#subnet-cyan)" fill-opacity="0.9"/>
+  <rect x="25" y="12" width="13" height="9" rx="2.5" fill="url(#subnet-cyan)" fill-opacity="0.4"/>
+  <rect x="10" y="23" width="13" height="9" rx="2.5" fill="url(#subnet-green)" fill-opacity="0.4"/>
+  <rect x="25" y="23" width="13" height="9" rx="2.5" fill="url(#subnet-green)" fill-opacity="0.9"/>
+
+  <!-- CIDR Slash Line -->
+  <path d="M26 9L22 35" stroke="#f8fafc" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Subnet Node Dots & Connecting Lines -->
+  <circle cx="16.5" cy="16.5" r="1.5" fill="#ffffff"/>
+  <circle cx="31.5" cy="16.5" r="1.5" fill="#38bdf8"/>
+  <circle cx="16.5" cy="27.5" r="1.5" fill="#34d399"/>
+  <circle cx="31.5" cy="27.5" r="1.5" fill="#ffffff"/>
+
+  <!-- Binary Bit Bar at bottom -->
+  <rect x="10" y="36" width="16" height="3" rx="1.5" fill="#38bdf8"/>
+  <rect x="28" y="36" width="10" height="3" rx="1.5" fill="#f59e0b"/>
+</svg>

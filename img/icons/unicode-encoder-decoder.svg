@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-uni" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e102f"/>
+      <stop offset="100%" stop-color="#0a0412"/>
+    </linearGradient>
+    <linearGradient id="u-grad" x1="8" y1="14" x2="22" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="100%" stop-color="#e11d48"/>
+    </linearGradient>
+    <linearGradient id="cn-grad" x1="26" y1="14" x2="40" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-uni)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#f43f5e" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Left: \u tag box -->
+  <rect x="8" y="15" width="14" height="18" rx="3" fill="#4c0519" stroke="url(#u-grad)" stroke-width="1.8"/>
+  <text x="15" y="27" font-family="monospace" font-weight="bold" font-size="7.5" fill="#fecdd3" text-anchor="middle">\u</text>
+
+  <!-- Central Bidirectional Arrows -->
+  <path d="M23 21.5h4M25.5 19.5l2 2-2 2" stroke="#facc15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M27 26.5h-4M24.5 28.5l-2-2 2-2" stroke="#facc15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Right: Chinese Character '中' Box -->
+  <rect x="28" y="15" width="14" height="18" rx="3" fill="#082f49" stroke="url(#cn-grad)" stroke-width="1.8"/>
+  <rect x="31" y="20.5" width="8" height="5.5" rx="0.5" stroke="#bae6fd" stroke-width="1.8" fill="none"/>
+  <line x1="35" y1="17.5" x2="35" y2="29.5" stroke="#bae6fd" stroke-width="1.8" stroke-linecap="round"/>
+</svg>

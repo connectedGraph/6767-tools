@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-crop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="50%" stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-crop)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Highlighted Crop Box Area -->
+  <rect x="14" y="14" width="20" height="20" fill="rgba(255,255,255,0.18)" stroke="#FDE047" stroke-width="1.2"/>
+  <!-- Rule of Thirds Grid Lines -->
+  <line x1="20.6" y1="14" x2="20.6" y2="34" stroke="rgba(255,255,255,0.6)" stroke-width="1" stroke-dasharray="2 1.5"/>
+  <line x1="27.3" y1="14" x2="27.3" y2="34" stroke="rgba(255,255,255,0.6)" stroke-width="1" stroke-dasharray="2 1.5"/>
+  <line x1="14" y1="20.6" x2="34" y2="20.6" stroke="rgba(255,255,255,0.6)" stroke-width="1" stroke-dasharray="2 1.5"/>
+  <line x1="14" y1="27.3" x2="34" y2="27.3" stroke="rgba(255,255,255,0.6)" stroke-width="1" stroke-dasharray="2 1.5"/>
+  <!-- Rule of Thirds Focal Points -->
+  <circle cx="20.6" cy="20.6" r="1.2" fill="#FDE047"/>
+  <circle cx="27.3" cy="20.6" r="1.2" fill="#FDE047"/>
+  <circle cx="20.6" cy="27.3" r="1.2" fill="#FDE047"/>
+  <circle cx="27.3" cy="27.3" r="1.2" fill="#FDE047"/>
+  <!-- Top-Left Crop Framing Blade -->
+  <path d="M8 14h24 M14 8v24" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- Bottom-Right Crop Framing Blade -->
+  <path d="M40 34H16 M34 40V16" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round"/>
+</svg>

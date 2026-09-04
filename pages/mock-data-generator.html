@@ -1,0 +1,702 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>Mock Data 模拟数据生成器 - 在线工具</title>
+    <meta name="description" content="极简现代纯前端测试模拟数据生成器：基于 Mock.js 与中国本土化规则，秒级生成中国姓名、身份证、手机号、银行卡、详细地址等数据。" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        /* 交互式 Command Strip 控制栏 */
+        .command-bar {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* 场景选择标签 */
+        .scenario-pill {
+            padding: 5px 14px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #9ca3af;
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+        .scenario-pill:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .scenario-pill.active {
+            color: #22d3ee;
+            background: rgba(6, 182, 212, 0.12);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        /* 动态字段标签流 */
+        .field-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #6b7280;
+        }
+        .field-chip:hover {
+            color: #d1d5db;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .field-chip.active {
+            color: #ffffff;
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.1);
+        }
+        .field-chip.active .chip-dot {
+            background-color: #22d3ee;
+            box-shadow: 0 0 8px #22d3ee;
+        }
+        .chip-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #4b5563;
+            transition: all 0.15s ease;
+        }
+
+        /* 主生成按钮 */
+        .btn-action-glow {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 8px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .btn-action-glow:hover {
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.45);
+            transform: translateY(-1px);
+        }
+        .btn-action-glow:active {
+            transform: translateY(0);
+        }
+
+        /* 结果展示区 (Hero Canvas) */
+        .data-hero-canvas {
+            background: rgba(11, 17, 32, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+        }
+
+        /* 格式切换导航 */
+        .tab-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(8, 13, 25, 0.6);
+        }
+        .view-switcher {
+            display: flex;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 3px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .view-btn {
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #9ca3af;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+        .view-btn:hover {
+            color: #f3f4f6;
+        }
+        .view-btn.active {
+            color: #22d3ee;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* 纯净现代数据表格 */
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            text-align: left;
+        }
+        .modern-table th {
+            padding: 12px 16px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            background: rgba(8, 13, 25, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            white-space: nowrap;
+        }
+        .modern-table td {
+            padding: 12px 16px;
+            color: #d1d5db;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            white-space: nowrap;
+        }
+        .modern-table tr:hover td {
+            background: rgba(255, 255, 255, 0.025);
+        }
+        .modern-table .cell-mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            color: #38bdf8;
+        }
+        .modern-table .cell-money {
+            font-family: ui-monospace, monospace;
+            color: #34d399;
+            font-weight: 500;
+        }
+
+        /* 代码预览区 */
+        .code-view-container {
+            padding: 20px;
+            background: #030712;
+            font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.82rem;
+            line-height: 1.65;
+            max-height: 520px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: #38bdf8;
+        }
+        .code-view-container.csv { color: #34d399; white-space: pre; overflow-x: auto; }
+        .code-view-container.sql { color: #fbbf24; }
+
+        /* 搜索框与按钮组 */
+        .search-pill {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 0.78rem;
+            color: #f3f4f6;
+            outline: none;
+            width: 200px;
+            transition: all 0.15s ease;
+        }
+        .search-pill:focus {
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
+        }
+        .search-pill::placeholder {
+            color: #4b5563;
+        }
+
+        .action-icon-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .action-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* 滚动条极简处理 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.22); }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶栏 -->
+<header class="tool-topbar">
+    <a href="./" class="tool-topbar-logo" aria-label="首页">
+        <span>在线工具集</span>
+    </a>
+    <span class="tool-topbar-sep">/</span>
+    <span class="tool-topbar-title">Mock Data 模拟数据生成器</span>
+    <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app" v-cloak>
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">Mock Data 模拟数据生成器</h1>
+                </div>
+                <div class="description">极简现代纯前端测试模拟数据生成器：基于 Mock.js 与中国本土化规则，秒级生成中国姓名、身份证、手机号、银行卡、详细地址等数据。</div>
+
+    <!-- 交互式 Command Strip 控制栏 -->
+    <div class="command-bar">
+        <!-- 场景方案与数量控制 -->
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs font-medium text-slate-400 mr-1">预设场景:</span>
+                <button v-for="preset in presets" :key="preset.id"
+                        @click="applyPreset(preset.id)"
+                        :class="['scenario-pill', currentPreset === preset.id ? 'active' : '']">
+                    {{ preset.name }}
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">条数:</span>
+                <div class="flex items-center bg-black/30 border border-white/10 rounded-lg p-0.5">
+                    <button v-for="cnt in [10, 20, 50, 100, 200, 500]" :key="cnt"
+                            @click="generateCount = cnt; handleGenerate()"
+                            :class="['px-2.5 py-1 text-xs rounded-md font-mono transition-all', generateCount === cnt ? 'bg-cyan-500/20 text-cyan-300 font-semibold' : 'text-slate-400 hover:text-white']">
+                        {{ cnt }}
+                    </button>
+                </div>
+
+                <button class="btn-action-glow ml-2" @click="handleGenerate" :disabled="isGenerating">
+                    <span>⚡ 重新生成</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 字段点选胶囊流 (Field Tags) -->
+        <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-white/5">
+            <span class="text-xs text-slate-400 mr-1">字段选择:</span>
+            <div v-for="f in fieldList" :key="f.key"
+                 @click="f.enabled = !f.enabled; handleGenerate()"
+                 :class="['field-chip', f.enabled ? 'active' : '']">
+                <span class="chip-dot"></span>
+                <span>{{ f.label }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果工作画布 (Hero Canvas) -->
+    <div class="data-hero-canvas">
+        <!-- 导航与操作栏 -->
+        <div class="tab-nav">
+            <div class="view-switcher">
+                <div class="view-btn" :class="{ active: activeTab === 'table' }" @click="activeTab = 'table'">表格视图</div>
+                <div class="view-btn" :class="{ active: activeTab === 'json' }" @click="activeTab = 'json'">JSON 数组</div>
+                <div class="view-btn" :class="{ active: activeTab === 'csv' }" @click="activeTab = 'csv'">CSV 文件</div>
+                <div class="view-btn" :class="{ active: activeTab === 'sql' }" @click="activeTab = 'sql'">SQL INSERT</div>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <input v-if="activeTab === 'table'" v-model="filterKeyword" placeholder="检索数据..." class="search-pill" />
+                <input v-if="activeTab === 'sql'" v-model="sqlTableName" placeholder="表名 (默认 mock_users)" class="search-pill !w-44" />
+                
+                <button class="action-icon-btn" @click="copyActive">
+                    <span>复制</span>
+                </button>
+                <button class="action-icon-btn !text-emerald-400 !border-emerald-500/20 hover:!bg-emerald-500/10" @click="downloadActive">
+                    <span>下载文件</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 1. 表格视图 -->
+        <div v-show="activeTab === 'table'" class="overflow-x-auto">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px; text-align: center;">#</th>
+                        <th v-for="col in activeColumns" :key="col.prop">{{ col.label }}</th>
+                        <th style="width: 70px; text-align: center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(row, idx) in pagedList" :key="idx">
+                        <td style="text-align: center;" class="text-slate-500 font-mono text-xs">{{ (currentPage - 1) * pageSize + idx + 1 }}</td>
+                        <td v-for="col in activeColumns" :key="col.prop">
+                            <span v-if="col.prop === 'id_card' || col.prop === 'phone' || col.prop === 'bank_card' || col.prop === 'trade_no'" class="cell-mono">{{ row[col.prop] }}</span>
+                            <span v-else-if="col.prop === 'salary'" class="cell-money">¥{{ row[col.prop] }}</span>
+                            <span v-else-if="col.prop === 'email'" class="text-indigo-300 font-mono text-xs">{{ row[col.prop] }}</span>
+                            <span v-else>{{ row[col.prop] }}</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <button @click="copyRow(row)" class="text-xs text-cyan-400 hover:text-cyan-300 font-medium">复制行</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 表格底部简易分页 -->
+            <div class="flex items-center justify-between px-5 py-3 border-t border-white/5 text-xs text-slate-400">
+                <span>显示 {{ filteredList.length }} 条记录</span>
+                <div class="flex items-center gap-2">
+                    <button @click="currentPage > 1 && currentPage--" :disabled="currentPage === 1" class="action-icon-btn disabled:opacity-30">上一页</button>
+                    <span class="font-mono text-slate-300 px-2">{{ currentPage }} / {{ Math.ceil(filteredList.length / pageSize) || 1 }}</span>
+                    <button @click="currentPage < Math.ceil(filteredList.length / pageSize) && currentPage++" :disabled="currentPage >= Math.ceil(filteredList.length / pageSize)" class="action-icon-btn disabled:opacity-30">下一页</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. JSON 视图 -->
+        <div v-show="activeTab === 'json'">
+            <div class="code-view-container">{{ jsonString }}</div>
+        </div>
+
+        <!-- 3. CSV 视图 -->
+        <div v-show="activeTab === 'csv'">
+            <div class="code-view-container csv">{{ csvString }}</div>
+        </div>
+
+        <!-- 4. SQL 视图 -->
+        <div v-show="activeTab === 'sql'">
+            <div class="code-view-container sql">{{ sqlString }}</div>
+        </div>
+    </div>
+                <div class="divider"></div>
+                <div class="content">
+                    <h3>介绍</h3>
+                    <p>Mock Data 数据生成器深度集成 Mock.js 核心引擎，并扩展了中国本土化算法（含符合 GB11643 标准的真实身份证校验码计算、Luhn 算法银行卡校验、真实三大运营商手机号段及全国三级省市区地址）。支持一键导出为 JSON、CSV 表格与 SQL Insert 脚本，满足研发测试与演示数据填充需求。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comment :relate-id="307" :comment-class="2"></comment>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/mock/mock.min.js"></script>
+
+<script>
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    // 中国本土化 Mock 规则扩展
+    if (typeof Mock !== 'undefined' && Mock.Random) {
+        const AREA_CODES = [
+            '110101','110105','110108','120101','130102','140105','150102',
+            '210102','210202','220102','230102','310101','310104','310115',
+            '320102','320505','330102','330203','340102','350102','350203',
+            '360102','370102','370202','410102','420102','430102','440104',
+            '440305','450102','460105','500103','510104','520102','530102',
+            '610113','620102','630102','640104','650102'
+        ];
+        const MOBILE_PREFIXES = [
+            '134','135','136','137','138','139','147','150','151','152','157','158','159','172','178','182','183','184','187','188','195','197','198',
+            '130','131','132','145','155','156','166','175','176','185','186','196',
+            '133','149','153','173','177','180','181','189','190','191','193','199','192'
+        ];
+        const BANK_BINS = [
+            { name: '中国工商银行', bin: '622202' }, { name: '中国农业银行', bin: '622848' },
+            { name: '中国建设银行', bin: '622700' }, { name: '中国银行', bin: '621661' },
+            { name: '招商银行', bin: '622588' },   { name: '交通银行', bin: '622260' },
+            { name: '邮政储蓄银行', bin: '621799' }
+        ];
+
+        Mock.Random.extend({
+            phone: function () {
+                const p = this.pick(MOBILE_PREFIXES);
+                return p + String(this.natural(10000000, 99999999));
+            },
+            idcard: function () {
+                const area = this.pick(AREA_CODES);
+                const birth = this.date('yyyyMMdd');
+                const seq = String(this.natural(100, 999));
+                const first17 = area + birth + seq;
+                const weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+                const checkMap = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'];
+                let sum = 0;
+                for (let i = 0; i < 17; i++) sum += parseInt(first17.charAt(i), 10) * weights[i];
+                return first17 + checkMap[sum % 11];
+            },
+            bankcard: function () {
+                const b = this.pick(BANK_BINS);
+                const prefix = b.bin;
+                const bodyLen = 16 - prefix.length - 1;
+                let body = '';
+                for (let i = 0; i < bodyLen; i++) body += String(this.natural(0, 9));
+                const partial = prefix + body;
+                let sum = 0;
+                for (let i = 0; i < partial.length; i++) {
+                    let d = parseInt(partial.charAt(partial.length - 1 - i), 10);
+                    if (i % 2 === 0) {
+                        d *= 2;
+                        if (d > 9) d -= 9;
+                    }
+                    sum += d;
+                }
+                const check = (10 - (sum % 10)) % 10;
+                return partial + check;
+            },
+            c_company: function () {
+                const city = this.pick(['北京', '上海', '深圳', '杭州', '广州', '成都', '武汉', '南京']);
+                const name = this.pick(['盛达', '华策', '领航', '智创', '极客', '云图', '启明星', '凌云']);
+                const field = this.pick(['软件开发', '网络科技', '信息安全', '智能硬件', '数据技术']);
+                return city + name + field + '有限公司';
+            },
+            c_job: function () {
+                return this.pick(['前端工程师', '后端开发专家', '全栈架构师', 'DevOps专家', '产品总监', 'AI算法工程师', '数据分析师']);
+            },
+            c_address: function () {
+                const county = this.county(true);
+                const road = this.pick(['科技大道', '建国路', '中山路', '人民南路', '滨江大道', '世纪大道']);
+                const num = this.natural(1, 888) + '号';
+                const bldg = this.pick(['创新大厦', '未来智慧园区', '国际商务中心']) + ' ' + this.natural(101, 2808) + '室';
+                return county + ' ' + road + num + ' ' + bldg;
+            },
+            trade_no: function () {
+                return 'T' + this.date('yyyyMMddHHmmss') + String(this.natural(1000, 9999));
+            }
+        });
+    }
+
+    createApp({
+        setup() {
+            const generateCount = ref(20);
+            const isGenerating = ref(false);
+            const activeTab = ref('table');
+            const filterKeyword = ref('');
+            const sqlTableName = ref('mock_users');
+            const costTime = ref(0);
+            const currentPreset = ref('user');
+
+            const currentPage = ref(1);
+            const pageSize = ref(12);
+            const generatedData = ref([]);
+
+            const presets = [
+                { id: 'user', name: '用户画像' },
+                { id: 'kyc', name: '实名认证' },
+                { id: 'order', name: '电商交易' },
+                { id: 'hr', name: '企业员工' },
+                { id: 'finance', name: '资金流水' }
+            ];
+
+            const fieldList = ref([
+                { key: 'name', label: '姓名', rule: '@cname', enabled: true },
+                { key: 'gender', label: '性别', rule: '@pick(["男", "女"])', enabled: true },
+                { key: 'age', label: '年龄', rule: '@integer(18, 65)', enabled: true },
+                { key: 'phone', label: '手机号', rule: '@phone', enabled: true },
+                { key: 'id_card', label: '身份证号', rule: '@idcard', enabled: true },
+                { key: 'bank_card', label: '银行卡号', rule: '@bankcard', enabled: true },
+                { key: 'company', label: '公司企业', rule: '@c_company', enabled: true },
+                { key: 'job', label: '职位', rule: '@c_job', enabled: true },
+                { key: 'salary', label: '月薪 (¥)', rule: '@float(6000, 50000, 2, 2)', enabled: true },
+                { key: 'address', label: '详细地址', rule: '@c_address', enabled: true },
+                { key: 'email', label: '邮箱', rule: '@email', enabled: true },
+                { key: 'trade_no', label: '交易号', rule: '@trade_no', enabled: false },
+                { key: 'status', label: '状态', rule: '@pick(["正常", "已停用", "待激活"])', enabled: false }
+            ]);
+
+            const activeColumns = computed(() => {
+                return fieldList.value
+                    .filter(f => f.enabled)
+                    .map(f => ({ prop: f.key, label: f.label }));
+            });
+
+            const filteredList = computed(() => {
+                const q = filterKeyword.value.trim().toLowerCase();
+                if (!q) return generatedData.value;
+                return generatedData.value.filter(row => {
+                    return Object.values(row).some(v => String(v).toLowerCase().includes(q));
+                });
+            });
+
+            const pagedList = computed(() => {
+                const start = (currentPage.value - 1) * pageSize.value;
+                return filteredList.value.slice(start, start + pageSize.value);
+            });
+
+            const handleGenerate = () => {
+                isGenerating.value = true;
+                const startT = performance.now();
+
+                try {
+                    const template = {};
+                    const enabledList = fieldList.value.filter(f => f.enabled);
+                    enabledList.forEach(f => {
+                        template[f.key] = f.rule;
+                    });
+
+                    const wrapper = {};
+                    wrapper['list|' + generateCount.value] = [template];
+                    const res = Mock.mock(wrapper);
+                    generatedData.value = res.list || [];
+                    currentPage.value = 1;
+                    costTime.value = Math.round(performance.now() - startT);
+                } catch (e) {
+                    ElementPlus.ElMessage.error('生成数据失败: ' + e.message);
+                } finally {
+                    isGenerating.value = false;
+                }
+            };
+
+            const applyPreset = (presetId) => {
+                currentPreset.value = presetId;
+                const map = {
+                    user: ['name', 'gender', 'age', 'phone', 'email', 'address'],
+                    kyc: ['name', 'id_card', 'phone', 'bank_card', 'address'],
+                    order: ['name', 'phone', 'salary', 'address', 'trade_no', 'status'],
+                    hr: ['name', 'gender', 'company', 'job', 'salary', 'email'],
+                    finance: ['name', 'bank_card', 'salary', 'trade_no', 'status']
+                };
+                const activeKeys = map[presetId] || [];
+                fieldList.value.forEach(f => {
+                    f.enabled = activeKeys.includes(f.key);
+                });
+                handleGenerate();
+            };
+
+            const jsonString = computed(() => JSON.stringify(generatedData.value, null, 2));
+
+            const csvString = computed(() => {
+                if (generatedData.value.length === 0) return '';
+                const headers = Object.keys(generatedData.value[0]);
+                const rows = generatedData.value.map(row => {
+                    return headers.map(h => {
+                        const val = row[h] === undefined ? '' : String(row[h]);
+                        return '"' + val.replace(/"/g, '""') + '"';
+                    }).join(',');
+                });
+                return [headers.join(','), ...rows].join('\n');
+            });
+
+            const sqlString = computed(() => {
+                if (generatedData.value.length === 0) return '';
+                const tbl = sqlTableName.value.trim() || 'mock_users';
+                const headers = Object.keys(generatedData.value[0]);
+                const cols = headers.join(', ');
+                return generatedData.value.map(row => {
+                    const vals = headers.map(h => {
+                        const v = row[h];
+                        if (typeof v === 'number') return v;
+                        return "'" + String(v).replace(/'/g, "\\'") + "'";
+                    }).join(', ');
+                    return 'INSERT INTO ' + tbl + ' (' + cols + ') VALUES (' + vals + ');';
+                }).join('\n');
+            });
+
+            const copyActive = () => {
+                let text = '';
+                if (activeTab.value === 'table' || activeTab.value === 'json') text = jsonString.value;
+                else if (activeTab.value === 'csv') text = csvString.value;
+                else if (activeTab.value === 'sql') text = sqlString.value;
+
+                navigator.clipboard.writeText(text).then(() => {
+                    ElementPlus.ElMessage.success('已复制到剪贴板！');
+                });
+            };
+
+            const copyRow = (row) => {
+                navigator.clipboard.writeText(JSON.stringify(row, null, 2)).then(() => {
+                    ElementPlus.ElMessage.success('单行 JSON 已复制！');
+                });
+            };
+
+            const downloadActive = () => {
+                let content = '', ext = 'json', mime = 'application/json;charset=utf-8';
+                if (activeTab.value === 'table' || activeTab.value === 'json') {
+                    content = jsonString.value;
+                    ext = 'json';
+                } else if (activeTab.value === 'csv') {
+                    content = '\uFEFF' + csvString.value;
+                    ext = 'csv';
+                    mime = 'text/csv;charset=utf-8';
+                } else if (activeTab.value === 'sql') {
+                    content = sqlString.value;
+                    ext = 'sql';
+                    mime = 'text/plain;charset=utf-8';
+                }
+
+                const blob = new Blob([content], { type: mime });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'mock_data_' + Date.now() + '.' + ext;
+                a.click();
+                URL.revokeObjectURL(url);
+                ElementPlus.ElMessage.success('开始下载文件');
+            };
+
+            onMounted(() => {
+                handleGenerate();
+            });
+
+            return {
+                generateCount,
+                isGenerating,
+                activeTab,
+                filterKeyword,
+                sqlTableName,
+                costTime,
+                currentPreset,
+                currentPage,
+                pageSize,
+                presets,
+                fieldList,
+                activeColumns,
+                generatedData,
+                filteredList,
+                pagedList,
+                handleGenerate,
+                applyPreset,
+                jsonString,
+                csvString,
+                sqlString,
+                copyActive,
+                copyRow,
+                downloadActive
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

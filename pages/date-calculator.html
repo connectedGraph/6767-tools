@@ -1,0 +1,927 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>日期间隔与重要日子倒计时 - 在线工具</title>
+    <meta name="description" content="全功能在线日期计算与纪念日倒计时工具：支持计算两日期相差天数、周数、月数、年数与工作日天数；支持按天/周/月/年/工作日前后精准推算目标日期与星期；内置高考、考研、节假日及自定义纪念日/倒数日实时动态倒计时卡片。" />
+    <meta name="keywords" content="日期间隔计算器,日期推算,工作日计算器,倒计时卡片,高考倒计时,考研倒计时,节假日倒计时,纪念日倒数日,在线工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .date-calc-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 12px;
+            padding: 16px 18px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+        .stat-card:hover {
+            border-color: rgba(34, 211, 238, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+        .stat-card.primary::before { background: #22d3ee; }
+        .stat-card.success::before { background: #10b981; }
+        .stat-card.warning::before { background: #f59e0b; }
+        .stat-card.danger::before { background: #f43f5e; }
+        .stat-card.purple::before { background: #a855f7; }
+
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stat-card .value {
+            font-size: 1.55rem;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            color: #f1f5f9;
+            letter-spacing: -0.5px;
+        }
+        .stat-card .sub-text {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .preset-chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .preset-chip {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preset-chip:hover {
+            border-color: #22d3ee;
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.1);
+        }
+        .preset-chip.active {
+            background: rgba(34, 211, 238, 0.18);
+            border-color: #22d3ee;
+            color: #22d3ee;
+            font-weight: 600;
+        }
+
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .countdown-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            border-radius: 12px;
+            padding: 18px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+        .countdown-card:hover {
+            border-color: rgba(34, 211, 238, 0.7);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+            transform: translateY(-2px);
+        }
+        .countdown-card.is-pinned {
+            border-color: rgba(245, 158, 11, 0.8);
+            background: rgba(245, 158, 11, 0.04);
+        }
+        .countdown-card.is-past {
+            opacity: 0.88;
+        }
+        .cd-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        .cd-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cd-target-date {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        .cd-body {
+            text-align: center;
+            padding: 12px 0;
+        }
+        .cd-days-num {
+            font-size: 2.3rem;
+            font-weight: 800;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+        .cd-days-unit {
+            font-size: 0.85rem;
+            font-weight: normal;
+            margin-left: 4px;
+            color: #94a3b8;
+        }
+        .cd-live-timer {
+            font-size: 0.8rem;
+            font-family: ui-monospace, monospace;
+            color: #cbd5e1;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+        .cd-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(51, 65, 85, 0.4);
+            padding-top: 10px;
+            margin-top: 6px;
+            font-size: 0.76rem;
+            color: #64748b;
+        }
+
+        .badge-cyan {
+            background: rgba(34, 211, 238, 0.15);
+            color: #22d3ee;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+        .badge-gold {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+        .badge-purple {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.75rem;
+        }
+
+        .section-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin: 20px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 14px;
+            background: #22d3ee;
+            border-radius: 2px;
+        }
+
+        .helper-tip {
+            font-size: 0.78rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <a href="./life" class="tool-topbar-cat">生活实用</a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">日期间隔与重要日子倒计时</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+  <div class="tool-body date-calc-container">
+    <div class="card-model">
+      <div class="card-body">
+        <div class="tool-head">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h1 class="title" style="margin-bottom: 0;">日期间隔与重要日子倒计时</h1>
+            <span class="badge-cyan">拓展时间: 2026-08-31 · 纯前端离线运行</span>
+          </div>
+        </div>
+        <div class="description" style="margin-top: 8px;">
+          精确计算任意两日期之间的相隔天数、周数、月数与工作日天数；支持从指定日期推算前/后 N 天/周/月/年；提供高考、考研、节假日及自定义纪念日动态倒计时卡片。
+        </div>
+
+        <!-- 选项卡切换 -->
+        <el-tabs v-model="activeTab" class="tool-tabs" @tab-change="onTabChange">
+          
+          <!-- TAB 1: 日期间隔计算器 -->
+          <el-tab-pane label="📅 日期间隔计算器" name="interval">
+            <div class="section-title">选择起止日期</div>
+            
+            <div class="preset-chip-group">
+              <span class="preset-chip" @click="setIntervalPreset('today-endyear')">
+                📌 今天 到 今年年末
+              </span>
+              <span class="preset-chip" @click="setIntervalPreset('startyear-today')">
+                📅 今年元旦 到 今天
+              </span>
+              <span class="preset-chip" @click="setIntervalPreset('lastyear-today')">
+                ⏳ 去年今日 到 今天 (整年)
+              </span>
+              <span class="preset-chip" @click="setIntervalPreset('today-nextyear')">
+                🚀 今天 到 明年今日
+              </span>
+            </div>
+
+            <el-form :model="intervalForm" label-position="top" class="tool-form" style="margin-top: 12px;">
+              <el-row :gutter="18">
+                <el-col :xs="24" :sm="12" :md="8">
+                  <el-form-item label="开始日期 (Start Date)">
+                    <el-date-picker v-model="intervalForm.startDate" type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="选择开始日期" class="w100" @change="computeInterval" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12" :md="8">
+                  <el-form-item label="结束日期 (End Date)">
+                    <el-date-picker v-model="intervalForm.endDate" type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="选择结束日期" class="w100" @change="computeInterval" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12" :md="8">
+                  <el-form-item label="计算口径">
+                    <el-select v-model="intervalForm.includeMode" class="w100" @change="computeInterval">
+                      <el-option label="算头不算尾 (默认，相隔自然天数)" value="exclude-end"></el-option>
+                      <el-option label="算头又算尾 (包含开始与结束当天 +1天)" value="include-both"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+
+            <div class="divider"></div>
+
+            <!-- 日期间隔指标看板 -->
+            <div class="section-title">计算结果精算看板</div>
+            <div class="stats-grid">
+              <div class="stat-card primary">
+                <div class="label">
+                  <span>相差总天数</span>
+                  <span class="badge-cyan">{{ intervalResult.daysSign }}</span>
+                </div>
+                <div class="value">{{ intervalResult.totalDays.toLocaleString() }} <span style="font-size: 0.9rem; font-weight: normal; color: #94a3b8;">天</span></div>
+                <div class="sub-text">跨越 {{ intervalResult.calendarSpan }}</div>
+              </div>
+
+              <div class="stat-card success">
+                <div class="label">
+                  <span>工作日天数 (排除双休)</span>
+                  <span>占比 {{ intervalResult.workdayRatio }}%</span>
+                </div>
+                <div class="value" style="color: #34d399;">{{ intervalResult.workdays.toLocaleString() }} <span style="font-size: 0.9rem; font-weight: normal; color: #94a3b8;">天</span></div>
+                <div class="sub-text">包含周末天数: {{ intervalResult.weekendDays }} 天</div>
+              </div>
+
+              <div class="stat-card warning">
+                <div class="label">
+                  <span>周数表达</span>
+                  <span>周 + 零天</span>
+                </div>
+                <div class="value" style="color: #fbbf24;">{{ intervalResult.weeks }} <span style="font-size: 0.9rem; font-weight: normal; color: #94a3b8;">周</span> {{ intervalResult.remainDays }} <span style="font-size: 0.9rem; font-weight: normal; color: #94a3b8;">天</span></div>
+                <div class="sub-text">约合 {{ (intervalResult.totalDays / 7).toFixed(2) }} 周</div>
+              </div>
+
+              <div class="stat-card purple">
+                <div class="label">
+                  <span>复合年月表达</span>
+                  <span>自然月年换算</span>
+                </div>
+                <div class="value" style="font-size: 1.25rem; color: #c084fc;">
+                  {{ intervalResult.ymdText }}
+                </div>
+                <div class="sub-text">按公历月份天数精确进位</div>
+              </div>
+            </div>
+
+            <!-- 更多时间维度转换 -->
+            <div class="chart-section" style="margin-top: 10px;">
+              <div style="font-size: 0.92rem; font-weight: 600; color: #e2e8f0; margin-bottom: 12px;">
+                更多时间刻度折算
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; font-family: ui-monospace, monospace; font-size: 0.88rem;">
+                <div style="background: rgba(30,41,59,0.4); padding: 10px; border-radius: 8px; border: 1px solid rgba(51,65,85,0.4);">
+                  <span style="color: #94a3b8;">折合小时：</span> <strong style="color: #22d3ee;">{{ (intervalResult.totalDays * 24).toLocaleString() }}</strong> 小时
+                </div>
+                <div style="background: rgba(30,41,59,0.4); padding: 10px; border-radius: 8px; border: 1px solid rgba(51,65,85,0.4);">
+                  <span style="color: #94a3b8;">折合分钟：</span> <strong style="color: #34d399;">{{ (intervalResult.totalDays * 24 * 60).toLocaleString() }}</strong> 分钟
+                </div>
+                <div style="background: rgba(30,41,59,0.4); padding: 10px; border-radius: 8px; border: 1px solid rgba(51,65,85,0.4);">
+                  <span style="color: #94a3b8;">折合秒数：</span> <strong style="color: #fbbf24;">{{ (intervalResult.totalDays * 24 * 3600).toLocaleString() }}</strong> 秒
+                </div>
+              </div>
+            </div>
+          </el-tab-pane>
+
+          <!-- TAB 2: 日期推算与推移 -->
+          <el-tab-pane label="🧭 日期推算与推移" name="offset">
+            <div class="section-title">基准日期与推算参数</div>
+
+            <div class="preset-chip-group">
+              <span class="preset-chip" @click="setOffsetPreset(30, 'days', 'forward')">+30 天</span>
+              <span class="preset-chip" @click="setOffsetPreset(100, 'days', 'forward')">+100 天</span>
+              <span class="preset-chip" @click="setOffsetPreset(200, 'days', 'forward')">+200 天</span>
+              <span class="preset-chip" @click="setOffsetPreset(365, 'days', 'forward')">+365 天 (1年)</span>
+              <span class="preset-chip" @click="setOffsetPreset(10, 'workdays', 'forward')">+10 个工作日</span>
+              <span class="preset-chip" @click="setOffsetPreset(3, 'months', 'forward')">+3 个月</span>
+              <span class="preset-chip" @click="setOffsetPreset(30, 'days', 'backward')">-30 天 (过去)</span>
+              <span class="preset-chip" @click="setOffsetPreset(100, 'days', 'backward')">-100 天 (过去)</span>
+            </div>
+
+            <el-form :model="offsetForm" label-position="top" class="tool-form" style="margin-top: 12px;">
+              <el-row :gutter="18">
+                <el-col :xs="24" :sm="12" :md="6">
+                  <el-form-item label="基准日期">
+                    <el-date-picker v-model="offsetForm.baseDate" type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="选择基准日期" class="w100" @change="computeOffset" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12" :md="6">
+                  <el-form-item label="推算方向">
+                    <el-select v-model="offsetForm.direction" class="w100" @change="computeOffset">
+                      <el-option label="向后推算 (未来 ➡️)" value="forward"></el-option>
+                      <el-option label="向前推算 (过去 ⬅️)" value="backward"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12" :md="6">
+                  <el-form-item label="推算数值">
+                    <el-input-number v-model="offsetForm.amount" :min="1" :max="10000" :step="1" class="w100" @change="computeOffset" />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :sm="12" :md="6">
+                  <el-form-item label="推算单位">
+                    <el-select v-model="offsetForm.unit" class="w100" @change="computeOffset">
+                      <el-option label="自然天 (Days)" value="days"></el-option>
+                      <el-option label="工作日 (自动跳过周末)" value="workdays"></el-option>
+                      <el-option label="周 (Weeks)" value="weeks"></el-option>
+                      <el-option label="月 (Months)" value="months"></el-option>
+                      <el-option label="年 (Years)" value="years"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+
+            <div class="divider"></div>
+
+            <!-- 日期推算结果卡片 -->
+            <div class="section-title">推算目标日期结果</div>
+            <div class="stats-grid">
+              <div class="stat-card primary">
+                <div class="label">
+                  <span>目标公历日期</span>
+                  <span class="badge-cyan">{{ offsetResult.weekDayName }}</span>
+                </div>
+                <div class="value" style="font-size: 1.6rem; color: #22d3ee;">{{ offsetResult.targetDate }}</div>
+                <div class="sub-text">{{ offsetResult.directionDesc }}</div>
+              </div>
+
+              <div class="stat-card warning">
+                <div class="label">
+                  <span>年份与周期属性</span>
+                  <span>{{ offsetResult.isLeapYear ? '闰年 (366天)' : '平年 (365天)' }}</span>
+                </div>
+                <div class="value" style="font-size: 1.35rem; color: #fbbf24;">第 {{ offsetResult.dayOfYear }} 天</div>
+                <div class="sub-text">属于该年度第 {{ offsetResult.weekOfYear }} 周</div>
+              </div>
+
+              <div class="stat-card success">
+                <div class="label">
+                  <span>距今时间状态</span>
+                  <span>相对今天</span>
+                </div>
+                <div class="value" style="font-size: 1.35rem; color: #34d399;">{{ offsetResult.relativeToToday }}</div>
+                <div class="sub-text">实时动态判定</div>
+              </div>
+            </div>
+          </el-tab-pane>
+
+          <!-- TAB 3: 重要日子倒计时 & 纪念日卡片 -->
+          <el-tab-pane label="⏱️ 重要日子倒计时 & 纪念日" name="countdown">
+            
+            <!-- 操作栏 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+              <div class="section-title" style="margin: 0;">中国重要公共节点 & 自定义纪念日</div>
+              <el-button type="primary" size="small" @click="showAddDialog = true">
+                ➕ 添加自定义纪念日 / 倒数日
+              </el-button>
+            </div>
+
+            <!-- 分类筛选 -->
+            <div class="preset-chip-group">
+              <span class="preset-chip" :class="{active: cdFilter === 'all'}" @click="cdFilter = 'all'">全部卡片</span>
+              <span class="preset-chip" :class="{active: cdFilter === 'public'}" @click="cdFilter = 'public'">🇨🇳 公共考试与节假日</span>
+              <span class="preset-chip" :class="{active: cdFilter === 'custom'}" @click="cdFilter = 'custom'">⭐ 个人自定义</span>
+              <span class="preset-chip" :class="{active: cdFilter === 'exam'}" @click="cdFilter = 'exam'">🎓 考试相关</span>
+              <span class="preset-chip" :class="{active: cdFilter === 'holiday'}" @click="cdFilter = 'holiday'">🎉 节假日</span>
+            </div>
+
+            <!-- 卡片网格 -->
+            <div class="countdown-grid">
+              <div v-for="item in filteredCountdownList" :key="item.id" 
+                   class="countdown-card" 
+                   :class="{'is-pinned': item.pinned, 'is-past': item.isPast}">
+                
+                <div class="cd-header">
+                  <div>
+                    <div class="cd-title">
+                      <span>{{ item.title }}</span>
+                      <span v-if="item.pinned" title="已置顶" style="color: #f59e0b; font-size: 0.8rem;">📌</span>
+                    </div>
+                    <div class="cd-target-date">
+                      目标日期: {{ item.date }} ({{ item.weekDay }})
+                    </div>
+                  </div>
+                  <span :class="item.tagClass">{{ item.category }}</span>
+                </div>
+
+                <div class="cd-body">
+                  <div style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 4px;">
+                    {{ item.isPast ? '已经过去' : '距离目标还剩' }}
+                  </div>
+                  <div class="cd-days-num" :style="{color: item.isPast ? '#94a3b8' : item.color}">
+                    {{ item.diffDays }}<span class="cd-days-unit">天</span>
+                  </div>
+                  <div class="cd-live-timer" v-if="!item.isPast">
+                    {{ item.liveHours }}小时 {{ item.liveMinutes }}分 {{ item.liveSeconds }}秒
+                  </div>
+                  <div class="cd-live-timer" v-else style="color: #64748b;">
+                    已圆满度过
+                  </div>
+                </div>
+
+                <div class="cd-footer">
+                  <span>{{ item.isCustom ? '个人私有 (Local)' : '公共内置节点' }}</span>
+                  <div v-if="item.isCustom" style="display: flex; gap: 8px;">
+                    <span style="color: #22d3ee; cursor: pointer;" @click="togglePin(item)">{{ item.pinned ? '取消置顶' : '置顶' }}</span>
+                    <span style="color: #f43f5e; cursor: pointer;" @click="deleteCustomItem(item.id)">删除</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </el-tab-pane>
+        </el-tabs>
+
+        <!-- 添加自定义事件对话框 -->
+        <el-dialog v-model="showAddDialog" title="添加自定义纪念日 / 倒数日" width="460px">
+          <el-form :model="addForm" label-position="top">
+            <el-form-item label="事件名称" :rules="[{required: true, message: '请输入事件名称'}]">
+              <el-input v-model="addForm.title" placeholder="例如：我的生日、结婚纪念日、转正答辩" />
+            </el-form-item>
+            <el-form-item label="目标日期" :rules="[{required: true, message: '请选择日期'}]">
+              <el-date-picker v-model="addForm.date" type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="选择目标日期" class="w100" />
+            </el-form-item>
+            <el-form-item label="分类">
+              <el-select v-model="addForm.category" class="w100">
+                <el-option label="🎂 生日" value="生日"></el-option>
+                <el-option label="💍 纪念日" value="纪念日"></el-option>
+                <el-option label="🎓 考试/学习" value="考试"></el-option>
+                <el-option label="💼 工作/里程碑" value="工作"></el-option>
+                <el-option label="🌱 生活日常" value="生活"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-checkbox v-model="addForm.pinned">置顶展示在前面</el-checkbox>
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <el-button @click="showAddDialog = false">取消</el-button>
+            <el-button type="primary" @click="saveCustomItem">保存卡片</el-button>
+          </template>
+        </el-dialog>
+
+        <div class="divider"></div>
+
+        <!-- 日期常识与公历闰年规则说明 -->
+        <div class="content">
+          <h3>公历历法与工作日计算规则说明</h3>
+          <p>
+            <strong>1. 公历闰年判定规则：</strong><br />
+            普通年份能被 4 整除且不能被 100 整除为闰年（如 2024、2028 年）；世纪年份必须能被 400 整除才是闰年（如 2000 年是闰年，2100 年是平年）。闰年 2 月有 29 天，全年共 366 天。
+          </p>
+          <p>
+            <strong>2. 工作日天数计算原理：</strong><br />
+            本工具工作日计算算法纯本地执行，严格遍历统计两日期区间内排除所有周六、周日后的自然工作日天数，适用于工程周期排期、试用期天数测算与法定工作日规划。
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/moment/moment.min.js"></script>
+<script>
+  const { createApp, ref, reactive, computed, onMounted, onUnmounted } = Vue;
+
+  const app = createApp({
+    setup() {
+      const activeTab = ref('interval');
+      const todayStr = moment().format('YYYY-MM-DD');
+
+      // ── TAB 1: 日期间隔 ──
+      const intervalForm = reactive({
+        startDate: todayStr,
+        endDate: moment().endOf('year').format('YYYY-MM-DD'),
+        includeMode: 'exclude-end'
+      });
+
+      const intervalResult = reactive({
+        totalDays: 0,
+        daysSign: '未来',
+        calendarSpan: '',
+        workdays: 0,
+        weekendDays: 0,
+        workdayRatio: '0.0',
+        weeks: 0,
+        remainDays: 0,
+        ymdText: ''
+      });
+
+      const setIntervalPreset = (preset) => {
+        const now = moment();
+        if (preset === 'today-endyear') {
+          intervalForm.startDate = now.format('YYYY-MM-DD');
+          intervalForm.endDate = now.endOf('year').format('YYYY-MM-DD');
+        } else if (preset === 'startyear-today') {
+          intervalForm.startDate = now.startOf('year').format('YYYY-MM-DD');
+          intervalForm.endDate = todayStr;
+        } else if (preset === 'lastyear-today') {
+          intervalForm.startDate = now.clone().subtract(1, 'year').format('YYYY-MM-DD');
+          intervalForm.endDate = todayStr;
+        } else if (preset === 'today-nextyear') {
+          intervalForm.startDate = todayStr;
+          intervalForm.endDate = now.clone().add(1, 'year').format('YYYY-MM-DD');
+        }
+        computeInterval();
+      };
+
+      const computeInterval = () => {
+        if (!intervalForm.startDate || !intervalForm.endDate) return;
+        const mStart = moment(intervalForm.startDate);
+        const mEnd = moment(intervalForm.endDate);
+
+        const isReverse = mEnd.isBefore(mStart);
+        const d1 = isReverse ? mEnd : mStart;
+        const d2 = isReverse ? mStart : mEnd;
+
+        let diffDays = d2.diff(d1, 'days');
+        if (intervalForm.includeMode === 'include-both') {
+          diffDays += 1;
+        }
+
+        intervalResult.totalDays = diffDays;
+        intervalResult.daysSign = isReverse ? '过去时段' : (d1.isSame(d2, 'day') ? '同一天' : '未来时段');
+        intervalResult.calendarSpan = `${d1.format('YYYY.MM.DD')} ~ ${d2.format('YYYY.MM.DD')}`;
+
+        // Calculate workdays (Mon-Fri)
+        let workCount = 0;
+        let weekendCount = 0;
+        const cur = d1.clone();
+        const limit = intervalForm.includeMode === 'include-both' ? d2.clone().add(1, 'day') : d2.clone();
+
+        while (cur.isBefore(limit, 'day')) {
+          const dayOfWeek = cur.day(); // 0 is Sunday, 6 is Saturday
+          if (dayOfWeek === 0 || dayOfWeek === 6) {
+            weekendCount++;
+          } else {
+            workCount++;
+          }
+          cur.add(1, 'day');
+        }
+
+        intervalResult.workdays = workCount;
+        intervalResult.weekendDays = weekendCount;
+        intervalResult.workdayRatio = diffDays > 0 ? ((workCount / diffDays) * 100).toFixed(1) : '0.0';
+
+        intervalResult.weeks = Math.floor(diffDays / 7);
+        intervalResult.remainDays = diffDays % 7;
+
+        // Compound Year Month Day
+        let y = d2.year() - d1.year();
+        let m = d2.month() - d1.month();
+        let d = d2.date() - d1.date();
+
+        if (d < 0) {
+          m -= 1;
+          const prevMonthDays = d2.clone().subtract(1, 'month').daysInMonth();
+          d += prevMonthDays;
+        }
+        if (m < 0) {
+          y -= 1;
+          m += 12;
+        }
+
+        const parts = [];
+        if (y > 0) parts.push(`${y}年`);
+        if (m > 0) parts.push(`${m}个月`);
+        if (d > 0 || parts.length === 0) parts.push(`${d}天`);
+        intervalResult.ymdText = parts.join(' ');
+      };
+
+      // ── TAB 2: 日期推算 ──
+      const offsetForm = reactive({
+        baseDate: todayStr,
+        direction: 'forward',
+        amount: 30,
+        unit: 'days'
+      });
+
+      const offsetResult = reactive({
+        targetDate: '',
+        weekDayName: '',
+        directionDesc: '',
+        dayOfYear: 0,
+        weekOfYear: 0,
+        isLeapYear: false,
+        relativeToToday: ''
+      });
+
+      const setOffsetPreset = (num, unit, dir) => {
+        offsetForm.amount = num;
+        offsetForm.unit = unit;
+        offsetForm.direction = dir;
+        computeOffset();
+      };
+
+      const computeOffset = () => {
+        if (!offsetForm.baseDate) return;
+        const base = moment(offsetForm.baseDate);
+        const amount = Number(offsetForm.amount) || 0;
+        let target = base.clone();
+
+        if (offsetForm.unit === 'workdays') {
+          let step = offsetForm.direction === 'forward' ? 1 : -1;
+          let added = 0;
+          while (added < amount) {
+            target.add(step, 'day');
+            const dw = target.day();
+            if (dw !== 0 && dw !== 6) {
+              added++;
+            }
+          }
+        } else {
+          if (offsetForm.direction === 'forward') {
+            target.add(amount, offsetForm.unit);
+          } else {
+            target.subtract(amount, offsetForm.unit);
+          }
+        }
+
+        offsetResult.targetDate = target.format('YYYY-MM-DD');
+        const weekDaysZh = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        offsetResult.weekDayName = weekDaysZh[target.day()];
+        offsetResult.directionDesc = `从 ${base.format('YYYY-MM-DD')} ${offsetForm.direction === 'forward' ? '往后' : '往前'} ${amount} ${offsetForm.unit}`;
+        offsetResult.dayOfYear = target.dayOfYear();
+        offsetResult.weekOfYear = target.isoWeek();
+        offsetResult.isLeapYear = target.isLeapYear();
+
+        const diffToday = target.diff(moment(todayStr), 'days');
+        if (diffToday === 0) offsetResult.relativeToToday = '目标日期就是今天';
+        else if (diffToday > 0) offsetResult.relativeToToday = `距离今天还有 ${diffToday} 天 (未来)`;
+        else offsetResult.relativeToToday = `距今已过去 ${Math.abs(diffToday)} 天 (历史)`;
+      };
+
+      // ── TAB 3: 倒计时与纪念日 ──
+      const cdFilter = ref('all');
+      const showAddDialog = ref(false);
+      const addForm = reactive({
+        title: '',
+        date: '',
+        category: '生活',
+        pinned: false
+      });
+
+      const PUBLIC_EVENTS = [
+        { id: 'p1', title: '2027年全国普通高考', date: '2027-06-07', category: '考试', color: '#22d3ee', tagClass: 'badge-cyan', isCustom: false, pinned: true },
+        { id: 'p2', title: '2027年全国硕士研究生招生考试', date: '2026-12-26', category: '考试', color: '#a855f7', tagClass: 'badge-purple', isCustom: false, pinned: true },
+        { id: 'p3', title: '2027年元旦', date: '2027-01-01', category: '节假日', color: '#10b981', tagClass: 'badge-gold', isCustom: false, pinned: false },
+        { id: 'p4', title: '2027年除夕 & 春节', date: '2027-02-06', category: '节假日', color: '#f43f5e', tagClass: 'badge-gold', isCustom: false, pinned: true },
+        { id: 'p5', title: '2026年国庆节', date: '2026-10-01', category: '节假日', color: '#f59e0b', tagClass: 'badge-gold', isCustom: false, pinned: true },
+        { id: 'p6', title: '2026年中秋节', date: '2026-09-25', category: '节假日', color: '#fbbf24', tagClass: 'badge-gold', isCustom: false, pinned: false },
+        { id: 'p7', title: '2027年清明节', date: '2027-04-05', category: '节假日', color: '#10b981', tagClass: 'badge-gold', isCustom: false, pinned: false },
+        { id: 'p8', title: '2027年劳动节', date: '2027-05-01', category: '节假日', color: '#22d3ee', tagClass: 'badge-gold', isCustom: false, pinned: false },
+        { id: 'p9', title: '2027年端午节', date: '2027-06-09', category: '节假日', color: '#10b981', tagClass: 'badge-gold', isCustom: false, pinned: false }
+      ];
+
+      const customEvents = ref([]);
+      const STORAGE_KEY = 'TOOL_6767_DATE_CUSTOM_EVENTS';
+
+      const loadCustomEvents = () => {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            customEvents.value = JSON.parse(raw);
+          } else {
+            // Default samples
+            customEvents.value = [
+              { id: 'c1', title: '🎉 我的下一个生日', date: moment().add(45, 'days').format('YYYY-MM-DD'), category: '生日', color: '#f43f5e', tagClass: 'badge-cyan', isCustom: true, pinned: false },
+              { id: 'c2', title: '💼 年度述职与晋升答辩', date: moment().add(80, 'days').format('YYYY-MM-DD'), category: '工作', color: '#22d3ee', tagClass: 'badge-purple', isCustom: true, pinned: false }
+            ];
+            saveCustomToStorage();
+          }
+        } catch (e) {
+          customEvents.value = [];
+        }
+      };
+
+      const saveCustomToStorage = () => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(customEvents.value));
+      };
+
+      const saveCustomItem = () => {
+        if (!addForm.title || !addForm.date) {
+          ElementPlus.ElMessage.warning('请完整填写事件名称与目标日期');
+          return;
+        }
+        customEvents.value.unshift({
+          id: 'c_' + Date.now(),
+          title: addForm.title,
+          date: addForm.date,
+          category: addForm.category,
+          color: '#22d3ee',
+          tagClass: 'badge-cyan',
+          isCustom: true,
+          pinned: addForm.pinned
+        });
+        saveCustomToStorage();
+        showAddDialog.value = false;
+        addForm.title = '';
+        addForm.date = '';
+        addForm.pinned = false;
+        ElementPlus.ElMessage.success('纪念日已保存');
+      };
+
+      const deleteCustomItem = (id) => {
+        customEvents.value = customEvents.value.filter(item => item.id !== id);
+        saveCustomToStorage();
+        ElementPlus.ElMessage.success('已删除');
+      };
+
+      const togglePin = (item) => {
+        item.pinned = !item.pinned;
+        saveCustomToStorage();
+      };
+
+      // Live Timer State
+      const nowTimestamp = ref(Date.now());
+      let timerInterval = null;
+
+      const processedCountdowns = computed(() => {
+        const list = [...PUBLIC_EVENTS, ...customEvents.value];
+        const now = moment(nowTimestamp.value);
+        const weekDaysZh = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+        return list.map(item => {
+          const target = moment(item.date + ' 00:00:00');
+          const isPast = target.isBefore(now, 'day');
+          const diffDays = Math.abs(target.diff(now.clone().startOf('day'), 'days'));
+
+          let liveHours = 0, liveMinutes = 0, liveSeconds = 0;
+          if (!isPast) {
+            const diffMs = Math.max(0, target.valueOf() - now.valueOf());
+            const dur = moment.duration(diffMs);
+            liveHours = Math.floor(dur.asHours()) % 24;
+            liveMinutes = dur.minutes();
+            liveSeconds = dur.seconds();
+          }
+
+          return {
+            ...item,
+            weekDay: weekDaysZh[target.day()],
+            isPast: isPast,
+            diffDays: diffDays,
+            liveHours: String(liveHours).padStart(2, '0'),
+            liveMinutes: String(liveMinutes).padStart(2, '0'),
+            liveSeconds: String(liveSeconds).padStart(2, '0')
+          };
+        }).sort((a, b) => {
+          if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+          if (a.isPast !== b.isPast) return a.isPast ? 1 : -1;
+          return a.diffDays - b.diffDays;
+        });
+      });
+
+      const filteredCountdownList = computed(() => {
+        const filter = cdFilter.value;
+        if (filter === 'all') return processedCountdowns.value;
+        if (filter === 'public') return processedCountdowns.value.filter(i => !i.isCustom);
+        if (filter === 'custom') return processedCountdowns.value.filter(i => i.isCustom);
+        if (filter === 'exam') return processedCountdowns.value.filter(i => i.category === '考试');
+        if (filter === 'holiday') return processedCountdowns.value.filter(i => i.category === '节假日');
+        return processedCountdowns.value;
+      });
+
+      const onTabChange = (name) => {
+        if (name === 'interval') computeInterval();
+        else if (name === 'offset') computeOffset();
+      };
+
+      onMounted(() => {
+        computeInterval();
+        computeOffset();
+        loadCustomEvents();
+        timerInterval = setInterval(() => {
+          nowTimestamp.value = Date.now();
+        }, 1000);
+      });
+
+      onUnmounted(() => {
+        if (timerInterval) clearInterval(timerInterval);
+      });
+
+      return {
+        activeTab,
+        intervalForm,
+        intervalResult,
+        setIntervalPreset,
+        computeInterval,
+        offsetForm,
+        offsetResult,
+        setOffsetPreset,
+        computeOffset,
+        cdFilter,
+        showAddDialog,
+        addForm,
+        saveCustomItem,
+        deleteCustomItem,
+        togglePin,
+        filteredCountdownList,
+        onTabChange
+      };
+    }
+  });
+
+  app.use(ElementPlus);
+  app.mount('.main-body');
+</script>
+</body>
+</html>

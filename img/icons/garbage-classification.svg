@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="gc-bg" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="gc-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#gc-bg)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="#10b981" stroke-opacity="0.25" stroke-width="1.5"/>
+  <g filter="url(#gc-glow)">
+    <!-- 4 Colored MOHURD Waste Category Quadrants -->
+    <!-- Top Left: Blue (可回收物 Recyclable) -->
+    <rect x="11" y="11" width="11.5" height="11.5" rx="3" fill="#2563eb"/>
+    <path d="M15 16.5 L17 14.5 L19 16.5 M17 14.5 V19" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+    <!-- Top Right: Green (厨余垃圾 Kitchen Waste) -->
+    <rect x="25.5" y="11" width="11.5" height="11.5" rx="3" fill="#10b981"/>
+    <!-- Leaf / Apple core icon -->
+    <path d="M31.25 14 C33.5 14 34.5 16 34.5 18 C32.5 18 31.25 17 31.25 14 Z" fill="#ffffff"/>
+    <path d="M31.25 14 C29 14 28 16 28 18 C30 18 31.25 17 31.25 14 Z" fill="#d1fae5"/>
+    <path d="M31.25 14 V19" stroke="#ffffff" stroke-width="1" stroke-linecap="round"/>
+
+    <!-- Bottom Left: Red (有害垃圾 Hazardous Waste) -->
+    <rect x="11" y="25.5" width="11.5" height="11.5" rx="3" fill="#ef4444"/>
+    <!-- Crossed battery / hazard icon -->
+    <rect x="14.5" y="29.5" width="4.5" height="5" rx="0.5" fill="none" stroke="#ffffff" stroke-width="1.2"/>
+    <rect x="15.8" y="28.2" width="2" height="1.3" rx="0.3" fill="#ffffff"/>
+    <line x1="16.75" y1="31" x2="16.75" y2="33" stroke="#ffffff" stroke-width="1"/>
+
+    <!-- Bottom Right: Grey (其他垃圾 Other Waste) -->
+    <rect x="25.5" y="25.5" width="11.5" height="11.5" rx="3" fill="#64748b"/>
+    <!-- Trash bin / triangle -->
+    <path d="M29 29.5 H33.5 L32.8 35.5 H29.7 Z" fill="#ffffff" fill-opacity="0.9"/>
+    <line x1="28.5" y1="28.5" x2="34" y2="28.5" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- Center Hub / Connection Badge -->
+    <circle cx="24" cy="24" r="3.2" fill="#0f172a" stroke="#cbd5e1" stroke-width="1"/>
+    <circle cx="24" cy="24" r="1.2" fill="#38bdf8"/>
+  </g>
+</svg>

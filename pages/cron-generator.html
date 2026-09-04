@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>Cron 表达式生成与预测器 - 在线工具</title>
+    <meta name="description" content="在线可视化生成标准 5段 / 6段 / 7段 Cron 表达式，支持秒、分、时、日、月、周、年交互式配置，反向语法解析与未来 10 次触发时间精确预测。" />
+    <meta name="keywords" content="Cron表达式生成器, Cron在线解析, Quartz Cron, 定时任务, Linux Crontab, Cron未来时间, Cron测试" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="dns-prefetch" href="" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .cron-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* 顶部主表达式卡片 */
+        .cron-display-card {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 10px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+        .cron-exp-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .cron-main-input {
+            flex: 1;
+            min-width: 260px;
+        }
+        .cron-main-input input {
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #22d3ee !important;
+            letter-spacing: 0.05em;
+            background: rgba(15, 23, 42, 0.8) !important;
+            border-color: rgba(51, 65, 85, 0.8) !important;
+            text-align: center;
+        }
+
+        /* 字段拆解标签条 */
+        .cron-segments-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .cron-chip {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 6px;
+            padding: 4px 10px;
+            min-width: 60px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .cron-chip:hover, .cron-chip.active {
+            border-color: rgba(34, 211, 238, 0.8);
+            background: rgba(8, 47, 73, 0.6);
+        }
+        .cron-chip .chip-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+        .cron-chip .chip-val {
+            font-family: ui-monospace, monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #38bdf8;
+        }
+
+        /* 自然语言解释条 */
+        .human-readable-bar {
+            margin-top: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(34, 211, 238, 0.25);
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .human-readable-bar .badge {
+            background: rgba(34, 211, 238, 0.15);
+            color: #22d3ee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* 配置表单行 */
+        .config-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            font-size: 0.88rem;
+            color: #cbd5e1;
+        }
+        .config-row:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 数字勾选网格 */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+            gap: 6px;
+            margin-top: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 6px;
+        }
+        .checkbox-grid-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 4px;
+            padding: 4px 0;
+            font-family: ui-monospace, monospace;
+            font-size: 0.82rem;
+            color: #94a3b8;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s;
+        }
+        .checkbox-grid-item:hover {
+            border-color: rgba(34, 211, 238, 0.6);
+            color: #e2e8f0;
+        }
+        .checkbox-grid-item.active {
+            background: rgba(34, 211, 238, 0.25);
+            border-color: #22d3ee;
+            color: #ecfeff;
+            font-weight: 600;
+        }
+
+        /* 未来执行时间表 */
+        .times-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            font-family: ui-monospace, monospace;
+        }
+        .times-table th {
+            background: rgba(30, 41, 59, 0.9);
+            color: #38bdf8;
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .times-table td {
+            padding: 8px 12px;
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            color: #cbd5e1;
+        }
+        .times-table tr:nth-child(even) td {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        .times-table .order-badge {
+            background: rgba(34, 211, 238, 0.15);
+            color: #22d3ee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* 预设卡片网格 */
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 10px;
+        }
+        .preset-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .preset-card:hover {
+            border-color: rgba(34, 211, 238, 0.7);
+            transform: translateY(-2px);
+            background: rgba(15, 23, 42, 0.95);
+            box-shadow: 0 4px 14px rgba(34, 211, 238, 0.15);
+        }
+        .preset-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+        }
+        .preset-exp {
+            font-family: ui-monospace, monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #38bdf8;
+            background: rgba(30, 41, 59, 0.7);
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+        .preset-desc {
+            font-size: 0.78rem;
+            color: #64748b;
+        }
+
+        .meta-footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #475569;
+            font-family: ui-monospace, monospace;
+            border-top: 1px solid rgba(51, 65, 85, 0.4);
+            padding-top: 12px;
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="Cron 表达式生成与预测器 - 在线工具" />
+    <meta property="og:description" content="在线可视化生成标准 5段 / 6段 / 7段 Cron 表达式，支持秒、分、时、日、月、周、年交互式配置，反向语法解析与未来 10 次触发时间精确预测。" />
+    <meta property="og:url" content="https://tool.6767.chat/cron-generator" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cron 表达式生成与预测器 - 在线工具" />
+    <meta name="twitter:description" content="在线可视化生成标准 5段 / 6段 / 7段 Cron 表达式，支持秒、分、时、日、月、周、年交互式配置，反向语法解析与未来 10 次触发时间精确预测。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/cron-generator" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">Cron 表达式生成与预测器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app" v-cloak>
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">Cron 表达式生成与预测器</h1>
+                </div>
+                <div class="description">
+                    可视化交互式配置“秒、分、时、日、月、周、年”生成标准 5/6/7 段 Cron 表达式，支持反向解析已有的 Cron 表达式，并计算预测未来 10 次的具体触发时间点。
+                </div>
+
+                <div class="cron-container">
+                    <!-- 1. 顶部表达式总览与格式切换 -->
+                    <div class="cron-display-card">
+                        <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-semibold text-slate-300">格式标准:</span>
+                                <el-radio-group v-model="cronMode" size="small" @change="onModeChange">
+                                    <el-radio-button label="quartz6">6段式 (Quartz/Spring/Node)</el-radio-button>
+                                    <el-radio-button label="linux5">5段式 (Linux Crontab)</el-radio-button>
+                                    <el-radio-button label="quartz7">7段式 (Quartz含年份)</el-radio-button>
+                                </el-radio-group>
+                            </div>
+                            <div class="space-x-2">
+                                <el-button size="small" type="primary" @click="copyCron">复制表达式</el-button>
+                                <el-button size="small" @click="resetCron">重置</el-button>
+                            </div>
+                        </div>
+
+                        <!-- 表达式主输入与同步栏 -->
+                        <div class="cron-exp-row">
+                            <div class="cron-main-input">
+                                <el-input 
+                                    v-model="cronExpression" 
+                                    placeholder="输入或生成的 Cron 表达式" 
+                                    @input="onExpressionInput"
+                                >
+                                    <template #append>
+                                        <el-button @click="parseExpressionToUI">反向解析至界面</el-button>
+                                    </template>
+                                </el-input>
+                            </div>
+                        </div>
+
+                        <!-- 字段分段徽章 -->
+                        <div class="cron-segments-bar">
+                            <div 
+                                v-for="seg in visibleSegments" 
+                                :key="seg.key"
+                                :class="['cron-chip', { active: activeTab === seg.key }]"
+                                @click="activeTab = seg.key"
+                            >
+                                <span class="chip-label">{{ seg.label }}</span>
+                                <span class="chip-val">{{ seg.val }}</span>
+                            </div>
+                        </div>
+
+                        <!-- 中文语义解释 -->
+                        <div class="human-readable-bar">
+                            <span class="badge">语义说明</span>
+                            <span>{{ humanExplanation }}</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. 可视化字段配置标签页 -->
+                    <el-tabs v-model="activeTab" type="border-card">
+                        <!-- 秒 (仅 6/7 段模式) -->
+                        <el-tab-pane label="秒 (Seconds)" name="second" v-if="cronMode !== 'linux5'">
+                            <div class="p-2 space-y-3">
+                                <div class="config-row">
+                                    <el-radio v-model="second.type" label="every" @change="buildExpression">每一秒 (*)</el-radio>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="second.type" label="range" @change="buildExpression">周期：</el-radio>
+                                    <span>从</span>
+                                    <el-input-number v-model="second.rangeStart" :min="0" :max="58" size="small" @change="buildExpression" />
+                                    <span>秒至</span>
+                                    <el-input-number v-model="second.rangeEnd" :min="1" :max="59" size="small" @change="buildExpression" />
+                                    <span>秒</span>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="second.type" label="step" @change="buildExpression">步进：</el-radio>
+                                    <span>从第</span>
+                                    <el-input-number v-model="second.stepStart" :min="0" :max="59" size="small" @change="buildExpression" />
+                                    <span>秒开始，每隔</span>
+                                    <el-input-number v-model="second.stepInterval" :min="1" :max="59" size="small" @change="buildExpression" />
+                                    <span>秒执行一次</span>
+                                </div>
+                                <div>
+                                    <div class="config-row">
+                                        <el-radio v-model="second.type" label="specific" @change="buildExpression">指定具体秒数 (支持多选)：</el-radio>
+                                    </div>
+                                    <div class="checkbox-grid" v-if="second.type === 'specific'">
+                                        <div 
+                                            v-for="n in 60" 
+                                            :key="n - 1" 
+                                            :class="['checkbox-grid-item', { active: second.specific.includes(n - 1) }]"
+                                            @click="toggleSpecific(second, n - 1)"
+                                        >
+                                            {{ String(n - 1).padStart(2, '0') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+
+                        <!-- 分 -->
+                        <el-tab-pane label="分 (Minutes)" name="minute">
+                            <div class="p-2 space-y-3">
+                                <div class="config-row">
+                                    <el-radio v-model="minute.type" label="every" @change="buildExpression">每一分钟 (*)</el-radio>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="minute.type" label="range" @change="buildExpression">周期：</el-radio>
+                                    <span>从</span>
+                                    <el-input-number v-model="minute.rangeStart" :min="0" :max="58" size="small" @change="buildExpression" />
+                                    <span>分至</span>
+                                    <el-input-number v-model="minute.rangeEnd" :min="1" :max="59" size="small" @change="buildExpression" />
+                                    <span>分</span>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="minute.type" label="step" @change="buildExpression">步进：</el-radio>
+                                    <span>从第</span>
+                                    <el-input-number v-model="minute.stepStart" :min="0" :max="59" size="small" @change="buildExpression" />
+                                    <span>分开始，每隔</span>
+                                    <el-input-number v-model="minute.stepInterval" :min="1" :max="59" size="small" @change="buildExpression" />
+                                    <span>分钟执行一次</span>
+                                </div>
+                                <div>
+                                    <div class="config-row">
+                                        <el-radio v-model="minute.type" label="specific" @change="buildExpression">指定具体分钟 (支持多选)：</el-radio>
+                                    </div>
+                                    <div class="checkbox-grid" v-if="minute.type === 'specific'">
+                                        <div 
+                                            v-for="n in 60" 
+                                            :key="n - 1" 
+                                            :class="['checkbox-grid-item', { active: minute.specific.includes(n - 1) }]"
+                                            @click="toggleSpecific(minute, n - 1)"
+                                        >
+                                            {{ String(n - 1).padStart(2, '0') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+
+                        <!-- 时 -->
+                        <el-tab-pane label="时 (Hours)" name="hour">
+                            <div class="p-2 space-y-3">
+                                <div class="config-row">
+                                    <el-radio v-model="hour.type" label="every" @change="buildExpression">每一小时 (*)</el-radio>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="hour.type" label="range" @change="buildExpression">周期：</el-radio>
+                                    <span>从</span>
+                                    <el-input-number v-model="hour.rangeStart" :min="0" :max="22" size="small" @change="buildExpression" />
+                                    <span>点至</span>
+                                    <el-input-number v-model="hour.rangeEnd" :min="1" :max="23" size="small" @change="buildExpression" />
+                                    <span>点</span>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="hour.type" label="step" @change="buildExpression">步进：</el-radio>
+                                    <span>从第</span>
+                                    <el-input-number v-model="hour.stepStart" :min="0" :max="23" size="small" @change="buildExpression" />
+                                    <span>点开始，每隔</span>
+                                    <el-input-number v-model="hour.stepInterval" :min="1" :max="23" size="small" @change="buildExpression" />
+                                    <span>小时执行一次</span>
+                                </div>
+                                <div>
+                                    <div class="config-row">
+                                        <el-radio v-model="hour.type" label="specific" @change="buildExpression">指定具体小时 (支持多选)：</el-radio>
+                                    </div>
+                                    <div class="checkbox-grid" v-if="hour.type === 'specific'">
+                                        <div 
+                                            v-for="n in 24" 
+                                            :key="n - 1" 
+                                            :class="['checkbox-grid-item', { active: hour.specific.includes(n - 1) }]"
+                                            @click="toggleSpecific(hour, n - 1)"
+                                        >
+                                            {{ String(n - 1).padStart(2, '0') }}点
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+
+                        <!-- 日 -->
+                        <el-tab-pane label="日 (Day of Month)" name="day">
+                            <div class="p-2 space-y-3">
+                                <div class="config-row">
+                                    <el-radio v-model="day.type" label="every" @change="onDayEvery">每日 (*)</el-radio>
+                                </div>
+                                <div class="config-row" v-if="cronMode !== 'linux5'">
+                                    <el-radio v-model="day.type" label="unspecified" @change="buildExpression">不指定 (?) (用于按周指定时)</el-radio>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="day.type" label="range" @change="buildExpression">周期：</el-radio>
+                                    <span>从</span>
+                                    <el-input-number v-model="day.rangeStart" :min="1" :max="30" size="small" @change="buildExpression" />
+                                    <span>号至</span>
+                                    <el-input-number v-model="day.rangeEnd" :min="2" :max="31" size="small" @change="buildExpression" />
+                                    <span>号</span>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="day.type" label="step" @change="buildExpression">步进：</el-radio>
+                                    <span>从第</span>
+                                    <el-input-number v-model="day.stepStart" :min="1" :max="31" size="small" @change="buildExpression" />
+                                    <span>号开始，每隔</span>
+                                    <el-input-number v-model="day.stepInterval" :min="1" :max="31" size="small" @change="buildExpression" />
+                                    <span>天执行一次</span>
+                                </div>
+                                <div class="config-row" v-if="cronMode !== 'linux5'">
+                                    <el-radio v-model="day.type" label="lastDay" @change="buildExpression">每月最后一天 (L)</el-radio>
+                                </div>
+                                <div class="config-row" v-if="cronMode !== 'linux5'">
+                                    <el-radio v-model="day.type" label="lastWorkDay" @change="buildExpression">每月最后一个工作日 (LW)</el-radio>
+                                </div>
+                                <div class="config-row" v-if="cronMode !== 'linux5'">
+                                    <el-radio v-model="day.type" label="workDay" @change="buildExpression">每月最近工作日：</el-radio>
+                                    <span>最接近</span>
+                                    <el-input-number v-model="day.workDayVal" :min="1" :max="31" size="small" @change="buildExpression" />
+                                    <span>号的工作日 (W)</span>
+                                </div>
+                                <div>
+                                    <div class="config-row">
+                                        <el-radio v-model="day.type" label="specific" @change="buildExpression">指定具体日期 (支持多选)：</el-radio>
+                                    </div>
+                                    <div class="checkbox-grid" v-if="day.type === 'specific'">
+                                        <div 
+                                            v-for="n in 31" 
+                                            :key="n" 
+                                            :class="['checkbox-grid-item', { active: day.specific.includes(n) }]"
+                                            @click="toggleSpecific(day, n)"
+                                        >
+                                            {{ n }}日
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+
+                        <!-- 月 -->
+                        <el-tab-pane label="月 (Month)" name="month">
+                            <div class="p-2 space-y-3">
+                                <div class="config-row">
+                                    <el-radio v-model="month.type" label="every" @change="buildExpression">每月 (*)</el-radio>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="month.type" label="range" @change="buildExpression">周期：</el-radio>
+                                    <span>从</span>
+                                    <el-input-number v-model="month.rangeStart" :min="1" :max="11" size="small" @change="buildExpression" />
+                                    <span>月至</span>
+                                    <el-input-number v-model="month.rangeEnd" :min="2" :max="12" size="small" @change="buildExpression" />
+                                    <span>月</span>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="month.type" label="step" @change="buildExpression">步进：</el-radio>
+                                    <span>从第</span>
+                                    <el-input-number v-model="month.stepStart" :min="1" :max="12" size="small" @change="buildExpression" />
+                                    <span>月开始，每隔</span>
+                                    <el-input-number v-model="month.stepInterval" :min="1" :max="12" size="small" @change="buildExpression" />
+                                    <span>个月执行一次</span>
+                                </div>
+                                <div>
+                                    <div class="config-row">
+                                        <el-radio v-model="month.type" label="specific" @change="buildExpression">指定具体月份 (支持多选)：</el-radio>
+                                    </div>
+                                    <div class="checkbox-grid" v-if="month.type === 'specific'">
+                                        <div 
+                                            v-for="n in 12" 
+                                            :key="n" 
+                                            :class="['checkbox-grid-item', { active: month.specific.includes(n) }]"
+                                            @click="toggleSpecific(month, n)"
+                                        >
+                                            {{ n }}月
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+
+                        <!-- 周 -->
+                        <el-tab-pane label="周 (Day of Week)" name="week">
+                            <div class="p-2 space-y-3">
+                                <div class="config-row">
+                                    <el-radio v-model="week.type" label="every" @change="onWeekEvery">每周 (*)</el-radio>
+                                </div>
+                                <div class="config-row" v-if="cronMode !== 'linux5'">
+                                    <el-radio v-model="week.type" label="unspecified" @change="buildExpression">不指定 (?) (用于按日指定时)</el-radio>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="week.type" label="range" @change="buildExpression">周期：</el-radio>
+                                    <span>从星期</span>
+                                    <el-select v-model="week.rangeStart" size="small" style="width: 100px;" @change="buildExpression">
+                                        <el-option v-for="w in weekOptions" :key="w.val" :label="w.label" :value="w.val" />
+                                    </el-select>
+                                    <span>至星期</span>
+                                    <el-select v-model="week.rangeEnd" size="small" style="width: 100px;" @change="buildExpression">
+                                        <el-option v-for="w in weekOptions" :key="w.val" :label="w.label" :value="w.val" />
+                                    </el-select>
+                                </div>
+                                <div class="config-row" v-if="cronMode !== 'linux5'">
+                                    <el-radio v-model="week.type" label="nthWeek" @change="buildExpression">第几周：</el-radio>
+                                    <span>本月第</span>
+                                    <el-input-number v-model="week.nthNum" :min="1" :max="5" size="small" @change="buildExpression" />
+                                    <span>个星期</span>
+                                    <el-select v-model="week.nthDay" size="small" style="width: 100px;" @change="buildExpression">
+                                        <el-option v-for="w in weekOptions" :key="w.val" :label="w.label" :value="w.val" />
+                                    </el-select>
+                                </div>
+                                <div class="config-row" v-if="cronMode !== 'linux5'">
+                                    <el-radio v-model="week.type" label="lastWeek" @change="buildExpression">本月最后一个星期</el-radio>
+                                    <el-select v-model="week.lastDayVal" size="small" style="width: 100px;" @change="buildExpression">
+                                        <el-option v-for="w in weekOptions" :key="w.val" :label="w.label" :value="w.val" />
+                                    </el-select>
+                                </div>
+                                <div>
+                                    <div class="config-row">
+                                        <el-radio v-model="week.type" label="specific" @change="buildExpression">指定具体星期 (支持多选)：</el-radio>
+                                    </div>
+                                    <div class="checkbox-grid" v-if="week.type === 'specific'" style="grid-template-columns: repeat(7, 1fr);">
+                                        <div 
+                                            v-for="w in weekOptions" 
+                                            :key="w.val" 
+                                            :class="['checkbox-grid-item', { active: week.specific.includes(w.val) }]"
+                                            @click="toggleSpecific(week, w.val)"
+                                        >
+                                            {{ w.label }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+
+                        <!-- 年 (仅 7 段模式) -->
+                        <el-tab-pane label="年 (Year)" name="year" v-if="cronMode === 'quartz7'">
+                            <div class="p-2 space-y-3">
+                                <div class="config-row">
+                                    <el-radio v-model="year.type" label="every" @change="buildExpression">每年 (*)</el-radio>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="year.type" label="unspecified" @change="buildExpression">不指定 (留空)</el-radio>
+                                </div>
+                                <div class="config-row">
+                                    <el-radio v-model="year.type" label="range" @change="buildExpression">周期：</el-radio>
+                                    <span>从</span>
+                                    <el-input-number v-model="year.rangeStart" :min="2024" :max="2098" size="small" @change="buildExpression" />
+                                    <span>年至</span>
+                                    <el-input-number v-model="year.rangeEnd" :min="2025" :max="2099" size="small" @change="buildExpression" />
+                                    <span>年</span>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
+
+                    <!-- 3. 未来 10 次执行时间预测 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-cyan-400 font-mono">◈ 未来 10 次触发时间预测 (Next 10 Triggers)</span>
+                            <span class="text-xs text-slate-400">基于当前基准时间即时推算</span>
+                        </div>
+                        <div class="overflow-x-auto rounded border border-slate-700 bg-slate-900/60 p-1">
+                            <table class="times-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 70px;">序号</th>
+                                        <th>计划执行具体时间 (Local Time)</th>
+                                        <th style="width: 100px;">星期</th>
+                                        <th style="width: 160px;">距今倒计时</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-if="nextTriggerTimes.length === 0">
+                                        <td colspan="4" class="text-center py-6 text-slate-500 font-mono">
+                                            未匹配到近期执行时间或表达式无效
+                                        </td>
+                                    </tr>
+                                    <tr v-for="(t, i) in nextTriggerTimes" :key="i">
+                                        <td><span class="order-badge">#{{ i + 1 }}</span></td>
+                                        <td class="font-bold text-slate-200">{{ t.formatted }}</td>
+                                        <td class="text-slate-400">{{ t.dayOfWeek }}</td>
+                                        <td class="text-cyan-400">{{ t.relative }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 4. 常用 Cron 表达式预设库 -->
+                    <div>
+                        <div class="text-sm font-semibold text-cyan-400 font-mono mb-2">◈ 常用 Cron 预设模版 (点击一键填入)</div>
+                        <div class="preset-grid">
+                            <div 
+                                v-for="p in presets" 
+                                :key="p.title" 
+                                class="preset-card"
+                                @click="applyPreset(p)"
+                            >
+                                <div>
+                                    <div class="preset-title">{{ p.title }}</div>
+                                    <div class="preset-exp">{{ p.exp }}</div>
+                                    <div class="preset-desc">{{ p.desc }}</div>
+                                </div>
+                                <div class="mt-2 text-right">
+                                    <span class="text-xs text-cyan-400 hover:underline">一键套用 &#8594;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. 语法与规则指南 -->
+                    <el-collapse>
+                        <el-collapse-item title="Cron 语法符号与常用规则说明" name="guide">
+                            <div class="text-xs text-slate-400 space-y-2 leading-relaxed">
+                                <p><strong class="text-slate-300">标准字段顺序：</strong></p>
+                                <ul class="list-disc pl-5 space-y-1 font-mono text-cyan-300">
+                                    <li>Linux 5段式: [分 0-59] [时 0-23] [日 1-31] [月 1-12] [周 0-7 (0/7=周日)]</li>
+                                    <li>Quartz 6段式: [秒 0-59] [分 0-59] [时 0-23] [日 1-31] [月 1-12] [周 1-7 (1=周日)]</li>
+                                    <li>Quartz 7段式: [秒 0-59] [分 0-59] [时 0-23] [日 1-31] [月 1-12] [周 1-7] [年 1970-2099]</li>
+                                </ul>
+                                <p><strong class="text-slate-300">常用特殊符号：</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li><code class="text-cyan-400 font-bold">*</code>：通配符，表示字段允许的任意值（如每分、每秒）。</li>
+                                    <li><code class="text-cyan-400 font-bold">?</code>：不指定值，仅在“日”和“周”字段中使用，避免日与周冲突。</li>
+                                    <li><code class="text-cyan-400 font-bold">-</code>：范围区间，如 <code>9-17</code> 表示 9点到 17点。</li>
+                                    <li><code class="text-cyan-400 font-bold">/</code>：步进间隔，如 <code>0/15</code> 表示从 0 开始每 15 个单位。</li>
+                                    <li><code class="text-cyan-400 font-bold">,</code>：枚举列表，如 <code>1,3,5</code> 表示指定值。</li>
+                                    <li><code class="text-cyan-400 font-bold">L</code>：Last 最后，在“日”中表示月末最后一天，在“周”中如 <code>5L</code> 表示本月最后一个周四。</li>
+                                    <li><code class="text-cyan-400 font-bold">W</code>：工作日（周一至周五），如 <code>15W</code> 表示最接近 15 号的工作日。</li>
+                                    <li><code class="text-cyan-400 font-bold">#</code>：序号，如 <code>2#3</code> 表示本月的第 3 个星期一。</li>
+                                </ul>
+                            </div>
+                        </el-collapse-item>
+                    </el-collapse>
+
+                    <!-- 卡片底部元信息 -->
+                    <div class="meta-footer">
+                        <span>在线工具集 · 程序员工具系列</span>
+                        <span>拓展时间: 2026-08-31</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+    const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+    const app = createApp({
+        setup() {
+            const cronMode = ref('quartz6'); // 'quartz6' | 'linux5' | 'quartz7'
+            const activeTab = ref('second');
+            const cronExpression = ref('0 */15 * * * ?');
+            const humanExplanation = ref('');
+            const nextTriggerTimes = ref([]);
+
+            const weekOptions = [
+                { label: '周日 (1/SUN)', val: 1 },
+                { label: '周一 (2/MON)', val: 2 },
+                { label: '周二 (3/TUE)', val: 3 },
+                { label: '周三 (4/WED)', val: 4 },
+                { label: '周四 (5/THU)', val: 5 },
+                { label: '周五 (6/FRI)', val: 6 },
+                { label: '周六 (7/SAT)', val: 7 }
+            ];
+
+            const second = reactive({
+                type: 'specific',
+                rangeStart: 0,
+                rangeEnd: 59,
+                stepStart: 0,
+                stepInterval: 5,
+                specific: [0]
+            });
+
+            const minute = reactive({
+                type: 'step',
+                rangeStart: 0,
+                rangeEnd: 59,
+                stepStart: 0,
+                stepInterval: 15,
+                specific: [0]
+            });
+
+            const hour = reactive({
+                type: 'every',
+                rangeStart: 0,
+                rangeEnd: 23,
+                stepStart: 0,
+                stepInterval: 1,
+                specific: [0]
+            });
+
+            const day = reactive({
+                type: 'every',
+                rangeStart: 1,
+                rangeEnd: 31,
+                stepStart: 1,
+                stepInterval: 1,
+                workDayVal: 1,
+                specific: [1]
+            });
+
+            const month = reactive({
+                type: 'every',
+                rangeStart: 1,
+                rangeEnd: 12,
+                stepStart: 1,
+                stepInterval: 1,
+                specific: [1]
+            });
+
+            const week = reactive({
+                type: 'unspecified',
+                rangeStart: 2,
+                rangeEnd: 6,
+                nthNum: 1,
+                nthDay: 2,
+                lastDayVal: 6,
+                specific: [2, 3, 4, 5, 6]
+            });
+
+            const year = reactive({
+                type: 'every',
+                rangeStart: 2026,
+                rangeEnd: 2030
+            });
+
+            const presets = [
+                { title: '每分钟执行一次', exp: '0 * * * * ?', desc: '每分钟的第 0 秒执行' },
+                { title: '每 5 分钟执行一次', exp: '0 */5 * * * ?', desc: '整除 5 分钟时执行' },
+                { title: '每 15 分钟执行一次', exp: '0 */15 * * * ?', desc: '常用于轮询或定时检查' },
+                { title: '每 30 分钟执行一次', exp: '0 0/30 * * * ?', desc: '半小时定时任务' },
+                { title: '每小时整点执行', exp: '0 0 * * * ?', desc: '在每个小时的 00分00秒 执行' },
+                { title: '每天凌晨 00:00 执行', exp: '0 0 0 * * ?', desc: '每日定时结转/重置任务' },
+                { title: '每天凌晨 02:30 执行', exp: '0 30 2 * * ?', desc: '夜间数据库备份与清洗' },
+                { title: '工作日早晨 09:00', exp: '0 0 9 ? * 2-6', desc: '周一至周五工作日定时早报' },
+                { title: '工作日傍晚 18:00', exp: '0 0 18 ? * 2-6', desc: '周一至周五下班打卡提醒' },
+                { title: '每周日凌晨 03:00', exp: '0 0 3 ? * 1', desc: '每周系统例行维护与归档' },
+                { title: '每月 1 号凌晨 01:00', exp: '0 0 1 1 * ?', desc: '每月初账单计算与统计' },
+                { title: '每月最后一天 23:59', exp: '59 59 23 L * ?', desc: '月末最后一秒结算' }
+            ];
+
+            const toggleSpecific = (target, val) => {
+                if (!target.specific) target.specific = [];
+                const idx = target.specific.indexOf(val);
+                if (idx > -1) {
+                    if (target.specific.length > 1) {
+                        target.specific.splice(idx, 1);
+                    }
+                } else {
+                    target.specific.push(val);
+                    target.specific.sort((a, b) => a - b);
+                }
+                buildExpression();
+            };
+
+            const onDayEvery = () => {
+                if (cronMode.value !== 'linux5') {
+                    week.type = 'unspecified';
+                }
+                buildExpression();
+            };
+
+            const onWeekEvery = () => {
+                if (cronMode.value !== 'linux5') {
+                    day.type = 'unspecified';
+                }
+                buildExpression();
+            };
+
+            const formatField = (field, key) => {
+                switch (field.type) {
+                    case 'every':
+                        return '*';
+                    case 'unspecified':
+                        return '?';
+                    case 'range':
+                        return `${field.rangeStart}-${field.rangeEnd}`;
+                    case 'step':
+                        return `${field.stepStart}/${field.stepInterval}`;
+                    case 'specific':
+                        return field.specific.length ? field.specific.join(',') : '*';
+                    case 'lastDay':
+                        return 'L';
+                    case 'lastWorkDay':
+                        return 'LW';
+                    case 'workDay':
+                        return `${field.workDayVal}W`;
+                    case 'nthWeek':
+                        return `${field.nthDay}#${field.nthNum}`;
+                    case 'lastWeek':
+                        return `${field.lastDayVal}L`;
+                    default:
+                        return '*';
+                }
+            };
+
+            const visibleSegments = computed(() => {
+                const parts = cronExpression.value.trim().split(/\s+/);
+                if (cronMode.value === 'linux5') {
+                    return [
+                        { key: 'minute', label: '分', val: parts[0] || '*' },
+                        { key: 'hour', label: '时', val: parts[1] || '*' },
+                        { key: 'day', label: '日', val: parts[2] || '*' },
+                        { key: 'month', label: '月', val: parts[3] || '*' },
+                        { key: 'week', label: '周', val: parts[4] || '*' }
+                    ];
+                } else if (cronMode.value === 'quartz7') {
+                    return [
+                        { key: 'second', label: '秒', val: parts[0] || '*' },
+                        { key: 'minute', label: '分', val: parts[1] || '*' },
+                        { key: 'hour', label: '时', val: parts[2] || '*' },
+                        { key: 'day', label: '日', val: parts[3] || '*' },
+                        { key: 'month', label: '月', val: parts[4] || '*' },
+                        { key: 'week', label: '周', val: parts[5] || '?' },
+                        { key: 'year', label: '年', val: parts[6] || '*' }
+                    ];
+                } else {
+                    return [
+                        { key: 'second', label: '秒', val: parts[0] || '*' },
+                        { key: 'minute', label: '分', val: parts[1] || '*' },
+                        { key: 'hour', label: '时', val: parts[2] || '*' },
+                        { key: 'day', label: '日', val: parts[3] || '*' },
+                        { key: 'month', label: '月', val: parts[4] || '*' },
+                        { key: 'week', label: '周', val: parts[5] || '?' }
+                    ];
+                }
+            });
+
+            // 从界面状态构建 Cron 表达式
+            const buildExpression = () => {
+                let exp = '';
+                const s = formatField(second, 'second');
+                const m = formatField(minute, 'minute');
+                const h = formatField(hour, 'hour');
+                const d = formatField(day, 'day');
+                const mon = formatField(month, 'month');
+                const w = formatField(week, 'week');
+                const y = formatField(year, 'year');
+
+                if (cronMode.value === 'linux5') {
+                    exp = `${m} ${h} ${d === '?' ? '*' : d} ${mon} ${w === '?' ? '*' : w}`;
+                } else if (cronMode.value === 'quartz7') {
+                    exp = `${s} ${m} ${h} ${d} ${mon} ${w} ${y}`;
+                } else {
+                    exp = `${s} ${m} ${h} ${d} ${mon} ${w}`;
+                }
+
+                cronExpression.value = exp;
+                generateExplanation();
+                calculateNextRuns();
+            };
+
+            const onModeChange = () => {
+                if (cronMode.value === 'linux5' && activeTab.value === 'second') {
+                    activeTab.value = 'minute';
+                }
+                buildExpression();
+            };
+
+            const onExpressionInput = () => {
+                generateExplanation();
+                calculateNextRuns();
+            };
+
+            // 反向解析 Cron 字符串到可视化 UI 组件状态
+            const parseExpressionToUI = () => {
+                const parts = cronExpression.value.trim().split(/\s+/);
+                if (parts.length < 5 || parts.length > 7) {
+                    ElementPlus.ElMessage.error('表达式字段数不符合规范 (支持 5、6 或 7 段)');
+                    return;
+                }
+
+                if (parts.length === 5) {
+                    cronMode.value = 'linux5';
+                    parseField(minute, parts[0]);
+                    parseField(hour, parts[1]);
+                    parseField(day, parts[2]);
+                    parseField(month, parts[3]);
+                    parseField(week, parts[4]);
+                } else if (parts.length === 6) {
+                    cronMode.value = 'quartz6';
+                    parseField(second, parts[0]);
+                    parseField(minute, parts[1]);
+                    parseField(hour, parts[2]);
+                    parseField(day, parts[3]);
+                    parseField(month, parts[4]);
+                    parseField(week, parts[5]);
+                } else if (parts.length === 7) {
+                    cronMode.value = 'quartz7';
+                    parseField(second, parts[0]);
+                    parseField(minute, parts[1]);
+                    parseField(hour, parts[2]);
+                    parseField(day, parts[3]);
+                    parseField(month, parts[4]);
+                    parseField(week, parts[5]);
+                    parseField(year, parts[6]);
+                }
+
+                ElementPlus.ElMessage.success('已反向解析并同步至配置界面');
+                generateExplanation();
+                calculateNextRuns();
+            };
+
+            const parseField = (target, token) => {
+                if (!token || token === '*') {
+                    target.type = 'every';
+                } else if (token === '?') {
+                    target.type = 'unspecified';
+                } else if (token === 'L') {
+                    target.type = 'lastDay';
+                } else if (token === 'LW') {
+                    target.type = 'lastWorkDay';
+                } else if (token.endsWith('W')) {
+                    target.type = 'workDay';
+                    target.workDayVal = parseInt(token) || 1;
+                } else if (token.endsWith('L') && token.length > 1) {
+                    target.type = 'lastWeek';
+                    target.lastDayVal = parseInt(token) || 1;
+                } else if (token.includes('#')) {
+                    target.type = 'nthWeek';
+                    const [d, n] = token.split('#').map(Number);
+                    target.nthDay = d || 1;
+                    target.nthNum = n || 1;
+                } else if (token.includes('-')) {
+                    target.type = 'range';
+                    const [start, end] = token.split('-').map(Number);
+                    target.rangeStart = start;
+                    target.rangeEnd = end;
+                } else if (token.includes('/')) {
+                    target.type = 'step';
+                    const [start, interval] = token.split('/');
+                    target.stepStart = start === '*' ? 0 : Number(start);
+                    target.stepInterval = Number(interval);
+                } else {
+                    target.type = 'specific';
+                    target.specific = token.split(',').map(Number).filter(n => !isNaN(n));
+                }
+            };
+
+            // 生成人类友好的中文自然语言解说
+            const generateExplanation = () => {
+                const parts = cronExpression.value.trim().split(/\s+/);
+                if (parts.length < 5 || parts.length > 7) {
+                    humanExplanation.value = '无效的 Cron 表达式格式';
+                    return;
+                }
+
+                let s = '0', m = '*', h = '*', d = '*', mon = '*', w = '*', y = '*';
+                if (parts.length === 5) {
+                    [m, h, d, mon, w] = parts;
+                    s = '0';
+                } else if (parts.length === 6) {
+                    [s, m, h, d, mon, w] = parts;
+                } else if (parts.length === 7) {
+                    [s, m, h, d, mon, w, y] = parts;
+                }
+
+                let text = '';
+                if (y !== '*' && y !== '?') text += `${y}年 `;
+                if (mon !== '*' && mon !== '?') text += `${mon}月 `;
+
+                if (d === 'L') text += '月末最后一天 ';
+                else if (d === 'LW') text += '月末最后一个工作日 ';
+                else if (d.endsWith('W')) text += `最接近${d.replace('W','')}号的工作日 `;
+                else if (d !== '*' && d !== '?') text += `${d}号 `;
+
+                if (w.includes('#')) {
+                    const [dayNum, nth] = w.split('#');
+                    const weekMap = { '1': '日', '2': '一', '3': '二', '4': '三', '5': '四', '6': '五', '7': '六' };
+                    text += `第${nth}个星期${weekMap[dayNum] || dayNum} `;
+                } else if (w.endsWith('L')) {
+                    const dayNum = w.replace('L','');
+                    const weekMap = { '1': '日', '2': '一', '3': '二', '4': '三', '5': '四', '6': '五', '7': '六' };
+                    text += `最后一个星期${weekMap[dayNum] || dayNum} `;
+                } else if (w !== '*' && w !== '?') {
+                    text += `星期${w} `;
+                }
+
+                if (h === '*' && m === '*' && s === '*') {
+                    text += '每秒执行一次';
+                } else if (h === '*' && m === '*') {
+                    text += s === '0' ? '每分钟整点执行' : `每分钟的第 ${s} 秒执行`;
+                } else if (h === '*') {
+                    text += `每小时的 ${m} 分 ${s} 秒执行`;
+                } else if (m.includes('/')) {
+                    const [start, step] = m.split('/');
+                    text += `在 ${h} 点期间，从第 ${start === '*' ? 0 : start} 分起每隔 ${step} 分钟执行`;
+                } else {
+                    text += `在 ${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} 执行`;
+                }
+
+                humanExplanation.value = text;
+            };
+
+            // 精准计算预测未来 10 次的触发时间点 (Pure JS Cron Matcher)
+            const calculateNextRuns = () => {
+                const parts = cronExpression.value.trim().split(/\s+/);
+                if (parts.length < 5 || parts.length > 7) {
+                    nextTriggerTimes.value = [];
+                    return;
+                }
+
+                let secExp = '0', minExp = '*', hourExp = '*', domExp = '*', monExp = '*', dowExp = '*', yearExp = '*';
+                if (parts.length === 5) {
+                    [minExp, hourExp, domExp, monExp, dowExp] = parts;
+                } else if (parts.length === 6) {
+                    [secExp, minExp, hourExp, domExp, monExp, dowExp] = parts;
+                } else if (parts.length === 7) {
+                    [secExp, minExp, hourExp, domExp, monExp, dowExp, yearExp] = parts;
+                }
+
+                const parseMatcher = (token, minVal, maxVal) => {
+                    if (token === '*' || token === '?') return () => true;
+                    if (token.includes(',')) {
+                        const set = new Set(token.split(',').map(Number));
+                        return (val) => set.has(val);
+                    }
+                    if (token.includes('-')) {
+                        const [s, e] = token.split('-').map(Number);
+                        return (val) => val >= s && val <= e;
+                    }
+                    if (token.includes('/')) {
+                        const [sStr, intStr] = token.split('/');
+                        const start = sStr === '*' ? minVal : Number(sStr);
+                        const interval = Number(intStr);
+                        return (val) => val >= start && (val - start) % interval === 0;
+                    }
+                    const num = Number(token);
+                    if (!isNaN(num)) return (val) => val === num;
+                    return () => true;
+                };
+
+                const matchSec = parseMatcher(secExp, 0, 59);
+                const matchMin = parseMatcher(minExp, 0, 59);
+                const matchHour = parseMatcher(hourExp, 0, 23);
+                const matchMon = parseMatcher(monExp, 1, 12);
+                const matchYear = parseMatcher(yearExp, 2024, 2099);
+
+                // 日期与星期匹配器
+                const matchDay = (d) => {
+                    const dayOfMonth = d.getDate();
+                    const dayOfWeekQuartz = d.getDay() + 1; // 1=Sun, 2=Mon...
+                    const dayOfWeekLinux = d.getDay();     // 0=Sun, 1=Mon...
+
+                    let domOk = true;
+                    if (domExp === 'L') {
+                        const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+                        domOk = (dayOfMonth === lastDay);
+                    } else if (domExp === 'LW') {
+                        const lastDate = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+                        let day = lastDate.getDay();
+                        let lDay = lastDate.getDate();
+                        if (day === 6) lDay -= 1; // Saturday -> Friday
+                        else if (day === 0) lDay -= 2; // Sunday -> Friday
+                        domOk = (dayOfMonth === lDay);
+                    } else if (domExp.endsWith('W')) {
+                        const target = parseInt(domExp);
+                        const checkDate = new Date(d.getFullYear(), d.getMonth(), target);
+                        let day = checkDate.getDay();
+                        let res = target;
+                        if (day === 6) res = target > 1 ? target - 1 : target + 2;
+                        else if (day === 0) res = target < 31 ? target + 1 : target - 2;
+                        domOk = (dayOfMonth === res);
+                    } else {
+                        domOk = parseMatcher(domExp, 1, 31)(dayOfMonth);
+                    }
+
+                    let dowOk = true;
+                    if (dowExp.endsWith('L') && dowExp.length > 1) {
+                        const targetDow = parseInt(dowExp);
+                        if (dayOfWeekQuartz !== targetDow) {
+                            dowOk = false;
+                        } else {
+                            const nextWeek = new Date(d.getFullYear(), d.getMonth(), dayOfMonth + 7);
+                            dowOk = (nextWeek.getMonth() !== d.getMonth());
+                        }
+                    } else if (dowExp.includes('#')) {
+                        const [targetDow, nth] = dowExp.split('#').map(Number);
+                        if (dayOfWeekQuartz !== targetDow) {
+                            dowOk = false;
+                        } else {
+                            const curNth = Math.ceil(dayOfMonth / 7);
+                            dowOk = (curNth === nth);
+                        }
+                    } else {
+                        const targetVal = (cronMode.value === 'linux5') ? dayOfWeekLinux : dayOfWeekQuartz;
+                        dowOk = parseMatcher(dowExp, 1, 7)(targetVal);
+                    }
+
+                    if (domExp === '?' || domExp === '*') return dowOk;
+                    if (dowExp === '?' || dowExp === '*') return domOk;
+                    return domOk || dowOk;
+                };
+
+                const results = [];
+                const now = new Date();
+                let cur = new Date(now.getTime() + 1000);
+                cur.setMilliseconds(0);
+
+                let iterations = 0;
+                const maxIterations = 50000;
+
+                while (results.length < 10 && iterations < maxIterations) {
+                    iterations++;
+                    const y = cur.getFullYear();
+                    if (y > 2099) break;
+
+                    if (!matchYear(y)) {
+                        cur = new Date(y + 1, 0, 1, 0, 0, 0);
+                        continue;
+                    }
+
+                    const m = cur.getMonth() + 1;
+                    if (!matchMon(m)) {
+                        cur = new Date(y, cur.getMonth() + 1, 1, 0, 0, 0);
+                        continue;
+                    }
+
+                    if (!matchDay(cur)) {
+                        cur = new Date(y, cur.getMonth(), cur.getDate() + 1, 0, 0, 0);
+                        continue;
+                    }
+
+                    const h = cur.getHours();
+                    if (!matchHour(h)) {
+                        cur = new Date(y, cur.getMonth(), cur.getDate(), h + 1, 0, 0);
+                        continue;
+                    }
+
+                    const min = cur.getMinutes();
+                    if (!matchMin(min)) {
+                        cur = new Date(y, cur.getMonth(), cur.getDate(), h, min + 1, 0);
+                        continue;
+                    }
+
+                    const sec = cur.getSeconds();
+                    if (!matchSec(sec)) {
+                        cur.setSeconds(sec + 1);
+                        continue;
+                    }
+
+                    // 匹配成功
+                    const dateObj = new Date(cur.getTime());
+                    const weekStr = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][dateObj.getDay()];
+                    const pad = (n) => String(n).padStart(2, '0');
+                    const formatted = `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())} ${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:${pad(dateObj.getSeconds())}`;
+
+                    // 相对时间计算
+                    const diffMs = dateObj.getTime() - now.getTime();
+                    let relative = '';
+                    const diffSec = Math.floor(diffMs / 1000);
+                    if (diffSec < 60) relative = `${diffSec} 秒后`;
+                    else if (diffSec < 3600) relative = `${Math.floor(diffSec / 60)} 分钟后`;
+                    else if (diffSec < 86400) relative = `${Math.floor(diffSec / 3600)} 小时 ${Math.floor((diffSec % 3600) / 60)} 分后`;
+                    else relative = `${Math.floor(diffSec / 86400)} 天 ${Math.floor((diffSec % 86400) / 3600)} 小时后`;
+
+                    results.push({
+                        formatted,
+                        dayOfWeek: weekStr,
+                        relative
+                    });
+
+                    cur.setSeconds(cur.getSeconds() + 1);
+                }
+
+                nextTriggerTimes.value = results;
+            };
+
+            const applyPreset = (preset) => {
+                cronExpression.value = preset.exp;
+                if (preset.exp.trim().split(/\s+/).length === 5) {
+                    cronMode.value = 'linux5';
+                } else if (preset.exp.trim().split(/\s+/).length === 7) {
+                    cronMode.value = 'quartz7';
+                } else {
+                    cronMode.value = 'quartz6';
+                }
+                parseExpressionToUI();
+                ElementPlus.ElMessage.success(`已载入预设: ${preset.title}`);
+            };
+
+            const copyCron = () => {
+                if (!cronExpression.value) return;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(cronExpression.value).then(() => {
+                        ElementPlus.ElMessage.success('已复制 Cron 表达式');
+                    }).catch(() => {
+                        fallbackCopy(cronExpression.value);
+                    });
+                } else {
+                    fallbackCopy(cronExpression.value);
+                }
+            };
+
+            const fallbackCopy = (val) => {
+                const ta = document.createElement('textarea');
+                ta.value = val;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                    ElementPlus.ElMessage.success('已复制 Cron 表达式');
+                } catch (e) {
+                    ElementPlus.ElMessage.error('复制失败');
+                }
+                document.body.removeChild(ta);
+            };
+
+            const resetCron = () => {
+                cronMode.value = 'quartz6';
+                cronExpression.value = '0 */15 * * * ?';
+                parseExpressionToUI();
+                ElementPlus.ElMessage.info('已重置为默认配置');
+            };
+
+            onMounted(() => {
+                buildExpression();
+            });
+
+            return {
+                cronMode,
+                activeTab,
+                cronExpression,
+                humanExplanation,
+                nextTriggerTimes,
+                weekOptions,
+                second,
+                minute,
+                hour,
+                day,
+                month,
+                week,
+                year,
+                presets,
+                visibleSegments,
+                toggleSpecific,
+                onDayEvery,
+                onWeekEvery,
+                buildExpression,
+                onModeChange,
+                onExpressionInput,
+                parseExpressionToUI,
+                applyPreset,
+                copyCron,
+                resetCron
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('#app');
+</script>
+</body>
+</html>

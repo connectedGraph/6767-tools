@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="loan-bg" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#065f46"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+    <linearGradient id="loan-bank" x1="8" y1="10" x2="32" y2="38" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#a7f3d0"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="loan-coin" x1="26" y1="20" x2="42" y2="38" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="loan-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#loan-bg)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="#34d399" stroke-opacity="0.25" stroke-width="1.5"/>
+  <g filter="url(#loan-glow)">
+    <!-- Bank Pediment (Roof) -->
+    <path d="M7 19 L21 10 L35 19 H7 Z" fill="url(#loan-bank)" stroke="#ffffff" stroke-width="1.2" stroke-linejoin="round"/>
+    
+    <!-- Bank Columns & Entablature -->
+    <rect x="9" y="19" width="24" height="2" fill="#ecfdf5"/>
+    <rect x="10" y="22" width="3.5" height="12" rx="0.5" fill="#ecfdf5"/>
+    <rect x="16" y="22" width="3.5" height="12" rx="0.5" fill="#ecfdf5"/>
+    <rect x="22" y="22" width="3.5" height="12" rx="0.5" fill="#ecfdf5"/>
+    <rect x="28" y="22" width="3.5" height="12" rx="0.5" fill="#ecfdf5"/>
+    <!-- Base -->
+    <rect x="7" y="34" width="28" height="3" rx="1" fill="url(#loan-bank)"/>
+
+    <!-- Large Loan Percentage Coin Badge -->
+    <circle cx="33" cy="27" r="9" fill="url(#loan-coin)" stroke="#ffffff" stroke-width="1.5"/>
+    <path d="M29.5 30.5 L36.5 23.5" stroke="#78350f" stroke-width="1.75" stroke-linecap="round"/>
+    <circle cx="31" cy="25" r="1.3" fill="#78350f"/>
+    <circle cx="35" cy="29" r="1.3" fill="#78350f"/>
+  </g>
+</svg>

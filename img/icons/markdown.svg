@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-md" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="md-stroke" x1="10" y1="12" x2="38" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-md)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#38bdf8" stroke-opacity="0.2" stroke-width="1"/>
+
+  <!-- Markdown Outer Box Frame -->
+  <rect x="9" y="13" width="30" height="22" rx="4" stroke="url(#md-stroke)" stroke-width="2" fill="#1e293b" fill-opacity="0.5"/>
+
+  <!-- 'M' Vector -->
+  <path d="M14 28V20l4.5 5 4.5-5v8" stroke="#f8fafc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Downward Arrow ↓ -->
+  <path d="M32 20v8M29 25l3 3 3-3" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Subtle # hashtag badge floating top right -->
+  <circle cx="36" cy="12" r="4.5" fill="#3b82f6"/>
+  <text x="36" y="14.5" font-family="sans-serif" font-weight="900" font-size="7" fill="#ffffff" text-anchor="middle">#</text>
+</svg>

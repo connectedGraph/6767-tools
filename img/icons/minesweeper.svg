@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-mine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <radialGradient id="mine-sphere" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </radialGradient>
+    <linearGradient id="flag-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-mine)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(239,68,68,0.25)" stroke-width="1"/>
+  
+  <!-- Number 1 Grid Tile Hint in Top Left -->
+  <rect x="7" y="7" width="9" height="9" rx="2" fill="#0f172a" stroke="#3b82f6" stroke-width="1"/>
+  <text x="11.5" y="14" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="6.5" font-weight="900" fill="#38bdf8">1</text>
+  
+  <!-- Classic Naval Spiked Mine -->
+  <g transform="translate(1, 1)">
+    <!-- Mine Spikes (8 directions) -->
+    <path d="M21 16 V11 M21 36 V41 M11 26 H6 M31 26 H36 M14 19 L10 15 M28 33 L32 37 M14 33 L10 37 M28 19 L32 15" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round"/>
+    
+    <!-- Central Spherical Shell -->
+    <circle cx="21" cy="26" r="8.5" fill="url(#mine-sphere)" stroke="#475569" stroke-width="1.2"/>
+    <!-- Specular Highlight -->
+    <circle cx="18" cy="23" r="2.2" fill="#ffffff" opacity="0.4"/>
+    <!-- Steel Rivets -->
+    <circle cx="17" cy="28" r="0.7" fill="#94a3b8"/>
+    <circle cx="24" cy="29" r="0.7" fill="#94a3b8"/>
+    <circle cx="24" cy="23" r="0.7" fill="#94a3b8"/>
+  </g>
+  
+  <!-- Triangular Red Hazard Flag on Pole -->
+  <path d="M36 10 V38" stroke="#cbd5e1" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M33 38 H39" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="36,11 24,17 36,23" fill="url(#flag-grad)" stroke="#dc2626" stroke-width="0.8"/>
+</svg>

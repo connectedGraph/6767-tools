@@ -1,0 +1,2031 @@
+<!-- Tool Created: 2026-08-31 | Upgraded by Antigravity Agent with ipaddr.js -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>IP 子网掩码与 CIDR 计算器 (IPv4 / IPv6) - 在线工具</title>
+    <meta name="description" content="专业 IPv4 / IPv6 子网掩码与 CIDR 计算器，基于 ipaddr.js 权威库开发。支持网络地址、广播地址、首末可用主机、通配符掩码自动推导，32位与128位二进制比特位展开高亮可视化，多子网划分规划与 IP 归属检测。" />
+    <meta name="keywords" content="子网掩码计算器,CIDR计算器,IPv6子网计算器,ipaddr.js,IP子网划分,网络地址,广播地址,通配符掩码,可用主机范围,32位二进制比特,128位IPv6,网络工程师工具" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+
+        .page-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .engine-badge {
+            font-size: 0.75rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            background: rgba(6, 182, 212, 0.1);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            font-weight: 500;
+        }
+
+        .subnet-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.35fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        @media (max-width: 1024px) {
+            .subnet-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .glass-panel {
+            background: rgba(11, 17, 32, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .glass-header {
+            padding: 12px 18px;
+            background: rgba(8, 13, 25, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+            gap: 10px;
+            padding: 16px;
+        }
+        .metric-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 10px 14px;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .metric-card:hover {
+            border-color: rgba(6, 182, 212, 0.4);
+            background: rgba(6, 182, 212, 0.04);
+        }
+        .metric-label {
+            font-size: 0.73rem;
+            color: #94a3b8;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: ui-monospace, monospace;
+        }
+        .metric-value {
+            font-family: "JetBrains Mono", ui-monospace, monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            word-break: break-all;
+        }
+        .metric-value.cyan { color: #22d3ee; }
+        .metric-value.emerald { color: #34d399; }
+        .metric-value.amber { color: #fbbf24; }
+
+        .binary-byte-box {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: #030712;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-family: "JetBrains Mono", ui-monospace, monospace;
+        }
+        .bit-net { color: #22d3ee; font-weight: 700; }
+        .bit-host { color: #6b7280; }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="IP 子网掩码与 CIDR 计算器 (IPv4 / IPv6) - 在线工具" />
+    <meta property="og:description" content="基于 ipaddr.js 权威库打造的专业 IPv4 与 IPv6 子网掩码与 CIDR 计算器，支持 32/128 位二进制展开高亮、子网规划与 IP 归属检测。" />
+    <meta property="og:url" content="https://tool.6767.chat/subnet-calculator" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IP 子网掩码与 CIDR 计算器 (IPv4 / IPv6) - 在线工具" />
+    <meta name="twitter:description" content="基于 ipaddr.js 权威库打造的专业 IPv4 与 IPv6 子网掩码与 CIDR 计算器，支持 32/128 位二进制展开高亮、子网规划与 IP 归属检测。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/subnet-calculator" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 标准顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">IP 子网掩码与 CIDR 计算器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">IP 子网掩码与 CIDR 计算器 (Subnet Calculator)</h1>
+                </div>
+                <div class="description">
+                    专为网络工程师、云计算运维与网络开发者打造的专业 IP 计算器，深度集成 <strong style="color: #38bdf8;">ipaddr.js</strong> 权威 IP 解析库。全面支持 <strong style="color: #38bdf8;">IPv4</strong> 与 <strong style="color: #34d399;">IPv6</strong> 网段自动推导、网络/广播地址、首末可用主机、通配符反掩码、32位与128位二进制比特展开高亮、多级子网划分规划器与 IP 归属检测。
+                </div>
+
+                <!-- 顶层预设与快捷操作栏 -->
+                <div class="toolbar-strip">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 0.78rem; color: #94a3b8; font-weight: 600;">协议版本:</span>
+                        <el-radio-group v-model="ipVersion" size="small" @change="handleVersionSwitch">
+                            <el-radio-button label="ipv4">IPv4 (32-bit)</el-radio-button>
+                            <el-radio-button label="ipv6">IPv6 (128-bit)</el-radio-button>
+                        </el-radio-group>
+                    </div>
+
+                    <el-dropdown @command="loadPreset" trigger="click">
+                        <el-button size="small" type="primary">
+                            常用网络预设 <i class="el-icon--right">▼</i>
+                        </el-button>
+                        <template #dropdown>
+                            <el-dropdown-menu>
+                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_homeC">Class C 典型局域网 (192.168.1.0/24)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_corpB">Class B 企业办公网 (172.16.0.0/16)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_cloudA">Class A 大型云专网 (10.0.0.0/8)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_k8s">K8s/Docker 容器集群网段 (172.20.0.0/20)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_p2p">点对点路由互联链路 (192.168.10.1/30)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_rfc3021">RFC 3021 31位链路 (10.0.0.0/31)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_cgnat">运营商级 CGNAT 网段 (100.64.0.1/10)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_publicDns">Google DNS 单主机 (8.8.8.8/32)</el-dropdown-item>
+
+                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_gua64">全球单播 GUA 标准子网 (2001:db8:1::1/64)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_corp48">企业总部分配前缀 (2001:db8:acad::/48)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_isp56">宽带运营商分配 (240e:380:1234::/56)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_ula">RFC 4193 唯一私有 ULA (fd00:abcd:1234::1/64)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_linkLocal">链路本地 Link-Local (fe80::1/64)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_cfDns">Cloudflare DNS (2606:4700:4700::1111/128)</el-dropdown-item>
+                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_loopback">IPv6 回环地址 (::1/128)</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+
+                    <el-button size="small" type="success" plain @click="copyAllSummary">复制全部计算参数</el-button>
+                    <el-button size="small" type="info" plain @click="exportMarkdown">导出 Markdown 报告</el-button>
+                    <el-button size="small" type="danger" plain @click="resetForm">重置</el-button>
+
+                    <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 0.75rem; color: #94a3b8;">功能视图:</span>
+                        <el-radio-group v-model="activeTab" size="small">
+                            <el-radio-button label="calc">子网推导计算</el-radio-button>
+                            <el-radio-button label="subnetting">子网划分规划</el-radio-button>
+                            <el-radio-button label="checker">IP 归属检测</el-radio-button>
+                            <el-radio-button label="reference">CIDR 速查表</el-radio-button>
+                        </el-radio-group>
+                    </div>
+                </div>
+
+                <!-- 视图一：主计算器与二进制展开 -->
+                <div v-show="activeTab === 'calc'" class="subnet-grid">
+                    <!-- 左侧：输入与控制面板 -->
+                    <div class="glass-panel">
+                        <div class="glass-header">
+                            
+                            <span style="font-size: 0.72rem; color: #38bdf8; font-family: ui-monospace, monospace;">
+                                Powered by ipaddr.js
+                            </span>
+                        </div>
+
+                        <!-- IPv4 输入界面 -->
+                        <div v-if="ipVersion === 'ipv4'" style="padding: 16px; background: #090f1d; display: flex; flex-direction: column; gap: 14px;">
+                            <div>
+                                <label style="display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace;">
+                                    IPv4 地址 (支持带 /CIDR 如 192.168.1.1/24)
+                                </label>
+                                <el-input
+                                    v-model="inputIpStr"
+                                    @input="handleIpChange"
+                                    placeholder="例如 192.168.1.1 或 10.0.0.1/16"
+                                    clearable
+                                >
+                                    <template #prepend>IPv4</template>
+                                </el-input>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <label style="font-size: 0.78rem; color: #94a3b8; font-family: ui-monospace, monospace;">
+                                        CIDR 掩码位: <span style="color: #38bdf8; font-weight: 700; font-size: 0.92rem;">/{{ v4Cidr }}</span>
+                                    </label>
+                                    <span style="font-size: 0.75rem; color: #34d399; font-family: 'JetBrains Mono', monospace;">{{ v4MaskDec }}</span>
+                                </div>
+                                <el-slider
+                                    v-model="v4Cidr"
+                                    :min="1"
+                                    :max="32"
+                                    :step="1"
+                                    show-stops
+                                    @change="handleCidrChange"
+                                ></el-slider>
+                                <div class="quick-btn-group">
+                                    <button
+                                        v-for="q in [8, 16, 20, 24, 26, 28, 29, 30, 31, 32]"
+                                        :key="'q-'+q"
+                                        :class="['quick-btn', v4Cidr === q ? 'active' : '']"
+                                        @click="v4Cidr = q; handleCidrChange()"
+                                    >/{{ q }}</button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label style="display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace;">
+                                    或者选择/输入点分十进制子网掩码 (Subnet Mask)
+                                </label>
+                                <el-select v-model="v4Cidr" @change="handleCidrChange" style="width: 100%;">
+                                    <el-option
+                                        v-for="item in v4MaskOptions"
+                                        :key="item.cidr"
+                                        :label="'/' + item.cidr + ' — ' + item.mask + ' (' + item.hostsDesc + ')'"
+                                        :value="item.cidr"
+                                    ></el-option>
+                                </el-select>
+                            </div>
+
+                            <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px; padding: 12px;">
+                                <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; font-weight: 600;">IPv4 属性诊断与分类:</div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+                                    <span :class="['type-badge', v4IpAnalysis.badgeClass]">{{ v4IpAnalysis.type }}</span>
+                                    <span class="type-badge badge-special" v-if="v4IpAnalysis.isPrivate">RFC 1918 私网</span>
+                                    <span class="type-badge badge-public" v-else-if="v4IpAnalysis.isPublic">公网可路由</span>
+                                    <span style="font-size: 0.75rem; color: #cbd5e1; font-family: 'JetBrains Mono', monospace; margin-left: auto;">
+                                        16进制: 0x{{ v4HexIp }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div v-if="parseError" style="color: #f87171; font-size: 0.76rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; padding: 8px;">
+                                ⚠️ {{ parseError }}
+                            </div>
+                        </div>
+
+                        <!-- IPv6 输入界面 -->
+                        <div v-else style="padding: 16px; background: #090f1d; display: flex; flex-direction: column; gap: 14px;">
+                            <div>
+                                <label style="display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace;">
+                                    IPv6 地址 (支持带 /Prefix 如 2001:db8::1/64)
+                                </label>
+                                <el-input
+                                    v-model="inputV6Str"
+                                    @input="handleV6Change"
+                                    placeholder="例如 2001:db8::1 或 fd00:abcd:1234::/48"
+                                    clearable
+                                >
+                                    <template #prepend>IPv6</template>
+                                </el-input>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <label style="font-size: 0.78rem; color: #94a3b8; font-family: ui-monospace, monospace;">
+                                        CIDR 前缀长度: <span style="color: #38bdf8; font-weight: 700; font-size: 0.92rem;">/{{ v6Prefix }}</span>
+                                    </label>
+                                    <span style="font-size: 0.75rem; color: #34d399; font-family: 'JetBrains Mono', monospace;">
+                                        主机位数: {{ 128 - v6Prefix }} bits
+                                    </span>
+                                </div>
+                                <el-slider
+                                    v-model="v6Prefix"
+                                    :min="1"
+                                    :max="128"
+                                    :step="1"
+                                    @change="handleV6PrefixChange"
+                                ></el-slider>
+                                <div class="quick-btn-group">
+                                    <button
+                                        v-for="q in [32, 48, 52, 56, 60, 64, 80, 96, 112, 120, 128]"
+                                        :key="'v6q-'+q"
+                                        :class="['quick-btn', v6Prefix === q ? 'active' : '']"
+                                        @click="v6Prefix = q; handleV6PrefixChange()"
+                                    >/{{ q }}</button>
+                                </div>
+                            </div>
+
+                            <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px; padding: 12px;">
+                                <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; font-weight: 600;">IPv6 属性诊断与作用域:</div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+                                    <span :class="['type-badge', v6IpAnalysis.badgeClass]">{{ v6IpAnalysis.type }}</span>
+                                    <span class="type-badge badge-special" v-if="v6IpAnalysis.scope">{{ v6IpAnalysis.scope }}</span>
+                                    <span style="font-size: 0.75rem; color: #cbd5e1; font-family: 'JetBrains Mono', monospace; margin-left: auto;">
+                                        RFC 规范: {{ v6IpAnalysis.rfc }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div v-if="parseError" style="color: #f87171; font-size: 0.76rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; padding: 8px;">
+                                ⚠️ {{ parseError }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧：核心推导指标与二进制展开看板 -->
+                    <div class="glass-panel">
+                        <div class="glass-header">
+                            
+                            <span style="font-size: 0.72rem; color: #34d399; font-family: 'JetBrains Mono', monospace;">
+                                {{ ipVersion === 'ipv4' ? calcResultV4.cidrNotation : calcResultV6.cidrNotation }}
+                            </span>
+                        </div>
+
+                        <!-- IPv4 结果卡片网格 -->
+                        <div v-if="ipVersion === 'ipv4'" class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">网络地址 (Network ID) <el-button type="text" size="small" @click="copyText(calcResultV4.networkIp)">复制</el-button></div>
+                                <div class="metric-value">{{ calcResultV4.networkIp || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">广播地址 (Broadcast) <el-button type="text" size="small" @click="copyText(calcResultV4.broadcastIp)">复制</el-button></div>
+                                <div class="metric-value metric-val-rose">{{ calcResultV4.broadcastIp || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">首个可用主机 (First Host) <el-button type="text" size="small" @click="copyText(calcResultV4.firstHost)">复制</el-button></div>
+                                <div class="metric-value metric-val-green">{{ calcResultV4.firstHost || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">末尾可用主机 (Last Host) <el-button type="text" size="small" @click="copyText(calcResultV4.lastHost)">复制</el-button></div>
+                                <div class="metric-value metric-val-green">{{ calcResultV4.lastHost || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">可用主机总数 (Usable Hosts)</div>
+                                <div class="metric-value metric-val-amber">{{ calcResultV4.usableHostsFormatted }} <span style="font-size: 0.7rem; color: #94a3b8; font-weight: normal;">台</span></div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">掩码总 IP 数 (Total IPs)</div>
+                                <div class="metric-value">{{ calcResultV4.totalIpsFormatted }} <span style="font-size: 0.7rem; color: #94a3b8; font-weight: normal;">个</span></div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">十进制子网掩码 (Subnet Mask) <el-button type="text" size="small" @click="copyText(calcResultV4.subnetMask)">复制</el-button></div>
+                                <div class="metric-value">{{ calcResultV4.subnetMask || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">通配符反掩码 (Wildcard Mask) <el-button type="text" size="small" @click="copyText(calcResultV4.wildcardMask)">复制</el-button></div>
+                                <div class="metric-value metric-val-purple">{{ calcResultV4.wildcardMask || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">十六进制掩码 (Hex Mask)</div>
+                                <div class="metric-value" style="font-size: 0.85rem;">0x{{ calcResultV4.hexMask || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">反向 DNS 指针 (in-addr.arpa)</div>
+                                <div class="metric-value" style="font-size: 0.73rem; color: #cbd5e1;">{{ calcResultV4.inAddrArpa || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">IPv4 映射 IPv6 (IPv4-Mapped) <el-button type="text" size="small" @click="copyText(calcResultV4.ipv4Mapped)">复制</el-button></div>
+                                <div class="metric-value metric-val-cyan" style="font-size: 0.82rem;">{{ calcResultV4.ipv4Mapped || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">整数形式 (32-bit Integer)</div>
+                                <div class="metric-value" style="font-size: 0.82rem; color: #94a3b8;">{{ calcResultV4.ipInt !== undefined ? calcResultV4.ipInt : '—' }}</div>
+                            </div>
+                        </div>
+
+                        <!-- IPv6 结果卡片网格 -->
+                        <div v-else class="metrics-grid">
+                            <div class="metric-card" style="grid-column: span 2;">
+                                <div class="metric-label">标准压缩格式 (Compressed RFC 5952) <el-button type="text" size="small" @click="copyText(calcResultV6.compressed)">复制</el-button></div>
+                                <div class="metric-value metric-val-cyan">{{ calcResultV6.compressed || '—' }}</div>
+                            </div>
+                            <div class="metric-card" style="grid-column: span 2;">
+                                <div class="metric-label">完整展开格式 (Expanded 32-Hex) <el-button type="text" size="small" @click="copyText(calcResultV6.expanded)">复制</el-button></div>
+                                <div class="metric-value" style="font-size: 0.78rem;">{{ calcResultV6.expanded || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">网络前缀起始 (Prefix Start) <el-button type="text" size="small" @click="copyText(calcResultV6.network)">复制</el-button></div>
+                                <div class="metric-value metric-val-green" style="font-size: 0.82rem;">{{ calcResultV6.network || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">网段末尾边界 (Range End) <el-button type="text" size="small" @click="copyText(calcResultV6.lastAddress)">复制</el-button></div>
+                                <div class="metric-value metric-val-rose" style="font-size: 0.82rem;">{{ calcResultV6.lastAddress || '—' }}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">前缀 / 掩码十六进制</div>
+                                <div class="metric-value" style="font-size: 0.76rem;">/{{ v6Prefix }} ({{ calcResultV6.maskShort }})</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">可划分 /64 子网数</div>
+                                <div class="metric-value metric-val-amber" style="font-size: 0.85rem;">{{ calcResultV6.subnets64Count }}</div>
+                            </div>
+                            <div class="metric-card" style="grid-column: span 2;">
+                                <div class="metric-label">地址总容量 (Total Address Space: 2^{{ 128 - v6Prefix }})</div>
+                                <div class="metric-value metric-val-purple" style="font-size: 0.8rem;">
+                                    {{ calcResultV6.totalIpsText }}
+                                </div>
+                            </div>
+                            <div class="metric-card" style="grid-column: span 2;">
+                                <div class="metric-label">反向 DNS 指针记录 (ip6.arpa PTR) <el-button type="text" size="small" @click="copyText(calcResultV6.ip6Arpa)">复制</el-button></div>
+                                <div class="metric-value" style="font-size: 0.7rem; color: #cbd5e1;">{{ calcResultV6.ip6Arpa || '—' }}</div>
+                            </div>
+                        </div>
+
+                        <!-- IPv4 32位 二进制展开对比图 -->
+                        <div v-if="ipVersion === 'ipv4'" class="bit-container">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 700; font-family: ui-monospace, monospace;">
+                                    32 位二进制比特展开结构 (32-Bit Binary Breakdown)
+                                </span>
+                                <div style="display: flex; gap: 12px; font-size: 0.72rem; font-family: ui-monospace, monospace;">
+                                    <span style="color: #38bdf8; display: flex; align-items: center; gap: 4px;">
+                                        <span style="width: 8px; height: 8px; background: #38bdf8; border-radius: 2px; display: inline-block;"></span> 网络位 (Network: {{ v4Cidr }} bits)
+                                    </span>
+                                    <span style="color: #fbbf24; display: flex; align-items: center; gap: 4px;">
+                                        <span style="width: 8px; height: 8px; background: #fbbf24; border-radius: 2px; display: inline-block;"></span> 主机位 (Host: {{ 32 - v4Cidr }} bits)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- IP 二进制 -->
+                            <div class="bit-row">
+                                <div class="bit-row-label">IP 地址:</div>
+                                <div class="bit-groups">
+                                    <div class="bit-byte" v-for="(byte, bIdx) in binaryBreakdownV4.ip" :key="'ip-b-'+bIdx">
+                                        <span
+                                            v-for="(bit, bitIdx) in byte"
+                                            :key="'ip-bit-'+bIdx+'-'+bitIdx"
+                                            :class="['bit-cell', (bIdx * 8 + bitIdx < v4Cidr) ? 'bit-net' : 'bit-host']"
+                                        >{{ bit }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 子网掩码 二进制 -->
+                            <div class="bit-row">
+                                <div class="bit-row-label">子网掩码:</div>
+                                <div class="bit-groups">
+                                    <div class="bit-byte" v-for="(byte, bIdx) in binaryBreakdownV4.mask" :key="'mask-b-'+bIdx">
+                                        <span
+                                            v-for="(bit, bitIdx) in byte"
+                                            :key="'mask-bit-'+bIdx+'-'+bitIdx"
+                                            :class="['bit-cell', bit === '1' ? 'bit-mask-1' : 'bit-mask-0']"
+                                        >{{ bit }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 网络地址 二进制 -->
+                            <div class="bit-row">
+                                <div class="bit-row-label">网络地址:</div>
+                                <div class="bit-groups">
+                                    <div class="bit-byte" v-for="(byte, bIdx) in binaryBreakdownV4.net" :key="'net-b-'+bIdx">
+                                        <span
+                                            v-for="(bit, bitIdx) in byte"
+                                            :key="'net-bit-'+bIdx+'-'+bitIdx"
+                                            :class="['bit-cell', (bIdx * 8 + bitIdx < v4Cidr) ? 'bit-net' : 'bit-mask-0']"
+                                        >{{ bit }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 广播地址 二进制 -->
+                            <div class="bit-row">
+                                <div class="bit-row-label">广播地址:</div>
+                                <div class="bit-groups">
+                                    <div class="bit-byte" v-for="(byte, bIdx) in binaryBreakdownV4.bcast" :key="'bcast-b-'+bIdx">
+                                        <span
+                                            v-for="(bit, bitIdx) in byte"
+                                            :key="'bcast-bit-'+bIdx+'-'+bitIdx"
+                                            :class="['bit-cell', (bIdx * 8 + bitIdx < v4Cidr) ? 'bit-net' : 'bit-host']"
+                                        >{{ bit }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 通配符反掩码 二进制 -->
+                            <div class="bit-row">
+                                <div class="bit-row-label">反掩码:</div>
+                                <div class="bit-groups">
+                                    <div class="bit-byte" v-for="(byte, bIdx) in binaryBreakdownV4.wildcard" :key="'wild-b-'+bIdx">
+                                        <span
+                                            v-for="(bit, bitIdx) in byte"
+                                            :key="'wild-bit-'+bIdx+'-'+bitIdx"
+                                            :class="['bit-cell', bit === '1' ? 'bit-host' : 'bit-mask-0']"
+                                        >{{ bit }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- IPv6 128位 8-Hextet 比特可视化看板 -->
+                        <div v-else class="bit-container">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 700; font-family: ui-monospace, monospace;">
+                                    128 位 IPv6 字段结构 (8 Hextets / 128-Bit Structure)
+                                </span>
+                                <div style="display: flex; gap: 12px; font-size: 0.72rem; font-family: ui-monospace, monospace;">
+                                    <span style="color: #38bdf8; display: flex; align-items: center; gap: 4px;">
+                                        <span style="width: 8px; height: 8px; background: #38bdf8; border-radius: 2px; display: inline-block;"></span> 网络前缀 (Prefix: {{ v6Prefix }} bits)
+                                    </span>
+                                    <span style="color: #fbbf24; display: flex; align-items: center; gap: 4px;">
+                                        <span style="width: 8px; height: 8px; background: #fbbf24; border-radius: 2px; display: inline-block;"></span> 接口标识/主机位 (Interface ID: {{ 128 - v6Prefix }} bits)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- 8个 16位 字段卡片 -->
+                            <div class="v6-hextet-grid">
+                                <div
+                                    v-for="(hexItem, hIdx) in v6HextetBreakdown"
+                                    :key="'hextet-'+hIdx"
+                                    :class="['v6-hextet-card', hexItem.typeClass]"
+                                >
+                                    <div style="font-size: 0.68rem; color: #94a3b8; margin-bottom: 2px;">
+                                        段 {{ hIdx + 1 }} ({{ hIdx * 16 }}~{{ (hIdx + 1) * 16 - 1 }})
+                                    </div>
+                                    <div style="font-size: 0.95rem; font-weight: 700; color: #cbd5e1;">
+                                        {{ hexItem.hex }}
+                                    </div>
+                                    <div style="font-size: 0.65rem; color: #64748b; margin-top: 2px; letter-spacing: 0.5px;">
+                                        <span style="color: #38bdf8;">{{ hexItem.prefixBits }}b</span> / <span style="color: #fbbf24;">{{ hexItem.hostBits }}b</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 视图二：子网划分规划器 (Subnetting Planner) -->
+                <div v-show="activeTab === 'subnetting'" class="glass-panel" style="margin-top: 16px;">
+                    <div class="glass-header">
+                        
+                        <span style="font-size: 0.72rem; color: #fbbf24; font-family: 'JetBrains Mono', monospace;">
+                            基准网段: {{ ipVersion === 'ipv4' ? calcResultV4.networkIp + '/' + v4Cidr : calcResultV6.network + '/' + v6Prefix }}
+                        </span>
+                    </div>
+
+                    <div style="padding: 16px; background: #090f1d;">
+                        <!-- IPv4 规划器控制 -->
+                        <div v-if="ipVersion === 'ipv4'" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 0.78rem; color: #94a3b8;">规划划分方式:</span>
+                                <el-radio-group v-model="v4SubnettingMode" size="small" @change="recomputeV4Subnets">
+                                    <el-radio-button label="byCount">按所需子网数量划分</el-radio-button>
+                                    <el-radio-button label="byHosts">按每个子网所需主机数划分</el-radio-button>
+                                    <el-radio-button label="byCidr">指定新子网 CIDR</el-radio-button>
+                                </el-radio-group>
+                            </div>
+
+                            <div v-if="v4SubnettingMode === 'byCount'" style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 0.78rem; color: #94a3b8;">需要划分的子网数:</span>
+                                <el-select v-model="v4TargetSubnetCount" size="small" style="width: 130px;" @change="recomputeV4Subnets">
+                                    <el-option v-for="n in v4AvailableSubnetCounts" :key="n" :label="n + ' 个子网'" :value="n"></el-option>
+                                </el-select>
+                            </div>
+
+                            <div v-if="v4SubnettingMode === 'byHosts'" style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 0.78rem; color: #94a3b8;">每个子网所需主机数:</span>
+                                <el-input-number v-model="v4TargetHostsPerSubnet" :min="1" :max="Math.max(1, calcResultV4.usableHosts)" size="small" @change="recomputeV4Subnets"></el-input-number>
+                            </div>
+
+                            <div v-if="v4SubnettingMode === 'byCidr'" style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 0.78rem; color: #94a3b8;">目标子网掩码:</span>
+                                <el-select v-model="v4PlannedCidr" size="small" style="width: 140px;" @change="recomputeV4Subnets">
+                                    <el-option
+                                        v-for="c in v4SelectablePlannedCidrs"
+                                        :key="'pc-'+c"
+                                        :label="'/' + c + ' (' + Math.max(0, Math.pow(2, 32 - c) - (c >= 31 ? (c === 31 ? -2 : -1) : 2)) + ' 主机)'"
+                                        :value="c"
+                                    ></el-option>
+                                </el-select>
+                            </div>
+
+                            <div style="margin-left: auto; display: flex; gap: 8px;">
+                                <el-button size="small" type="success" plain @click="copySubnetTableCsv">复制为 CSV</el-button>
+                                <el-button size="small" type="primary" plain @click="downloadSubnetCsv">导出 CSV 文件</el-button>
+                            </div>
+                        </div>
+
+                        <!-- IPv6 规划器控制 -->
+                        <div v-else style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 0.78rem; color: #94a3b8;">划分目标子网前缀:</span>
+                                <el-select v-model="v6PlannedPrefix" size="small" style="width: 160px;" @change="recomputeV6Subnets">
+                                    <el-option
+                                        v-for="p in v6SelectablePrefixes"
+                                        :key="'v6p-'+p"
+                                        :label="'/' + p + ' (' + getV6SubnetDesc(p) + ')'"
+                                        :value="p"
+                                    ></el-option>
+                                </el-select>
+                            </div>
+
+                            <div style="margin-left: auto; display: flex; gap: 8px;">
+                                <el-button size="small" type="success" plain @click="copyV6SubnetTableCsv">复制为 CSV</el-button>
+                                <el-button size="small" type="primary" plain @click="downloadV6SubnetCsv">导出 CSV 文件</el-button>
+                            </div>
+                        </div>
+
+                        <!-- 规划总结说明 -->
+                        <div v-if="ipVersion === 'ipv4'" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.8rem; color: #cbd5e1;">
+                            IPv4 规划结果：将 <span style="color: #38bdf8; font-weight: 600;">{{ calcResultV4.networkIp }}/{{ v4Cidr }}</span> 划分为
+                            <span style="color: #fbbf24; font-weight: 600;">{{ v4GeneratedSubnets.length }}</span> 个子网，
+                            新子网掩码为 <span style="color: #34d399; font-weight: 600;">/{{ v4PlannedCidr }} ({{ v4PlannedMaskDec }})</span>，
+                            每个子网拥有 <span style="color: #c084fc; font-weight: 600;">{{ v4PlannedUsableHosts }}</span> 台可用主机。
+                        </div>
+                        <div v-else style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.8rem; color: #cbd5e1;">
+                            IPv6 规划结果：将 <span style="color: #38bdf8; font-weight: 600;">{{ calcResultV6.network }}/{{ v6Prefix }}</span> 划分为
+                            <span style="color: #fbbf24; font-weight: 600;">{{ v6PlannedTotalSubnetsText }}</span> 个 <span style="color: #34d399; font-weight: 600;">/{{ v6PlannedPrefix }}</span> 子网，
+                            每个子网拥有 <span style="color: #c084fc; font-weight: 600;">2^{{ 128 - v6PlannedPrefix }}</span> 个 IPv6 地址（下方展示前 128 个分配明细）。
+                        </div>
+
+                        <!-- IPv4 子网明细表格 -->
+                        <div v-if="ipVersion === 'ipv4'" style="overflow-x: auto; max-height: 440px; border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px;">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>子网 CIDR</th>
+                                        <th>网络地址 (Network)</th>
+                                        <th>首个可用主机</th>
+                                        <th>末尾可用主机</th>
+                                        <th>广播地址 (Broadcast)</th>
+                                        <th>可用主机数</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(sub, sIdx) in v4GeneratedSubnets" :key="'v4sub-'+sIdx">
+                                        <td style="color: #94a3b8;">{{ sIdx + 1 }}</td>
+                                        <td style="color: #38bdf8; font-weight: 600;">{{ sub.cidrStr }}</td>
+                                        <td>{{ sub.network }}</td>
+                                        <td style="color: #34d399;">{{ sub.firstHost }}</td>
+                                        <td style="color: #34d399;">{{ sub.lastHost }}</td>
+                                        <td style="color: #fb7185;">{{ sub.broadcast }}</td>
+                                        <td style="color: #fbbf24;">{{ sub.usableHosts }}</td>
+                                    </tr>
+                                    <tr v-if="v4GeneratedSubnets.length === 0">
+                                        <td colspan="7" style="text-align: center; color: #64748b; padding: 20px;">当前网段掩码过大（如 /31, /32），无法再继续细分子网</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- IPv6 子网明细表格 -->
+                        <div v-else style="overflow-x: auto; max-height: 440px; border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px;">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>子网前缀 (Prefix)</th>
+                                        <th>起始网络地址 (Start)</th>
+                                        <th>末尾地址边界 (End)</th>
+                                        <th>子网地址容量 (Total IPs)</th>
+                                        <th>规划建议用途</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(sub, sIdx) in v6GeneratedSubnets" :key="'v6sub-'+sIdx">
+                                        <td style="color: #94a3b8;">{{ sIdx + 1 }}</td>
+                                        <td style="color: #38bdf8; font-weight: 600;">{{ sub.cidrStr }}</td>
+                                        <td style="color: #34d399;">{{ sub.network }}</td>
+                                        <td style="color: #fb7185;">{{ sub.lastAddr }}</td>
+                                        <td style="color: #c084fc;">{{ sub.capacityText }}</td>
+                                        <td style="color: #94a3b8; font-size: 0.75rem;">{{ sub.usageNote }}</td>
+                                    </tr>
+                                    <tr v-if="v6GeneratedSubnets.length === 0">
+                                        <td colspan="6" style="text-align: center; color: #64748b; padding: 20px;">目标前缀必须大于当前前缀 /{{ v6Prefix }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 视图三：IP 归属与包含性检测 -->
+                <div v-show="activeTab === 'checker'" class="glass-panel" style="margin-top: 16px;">
+                    <div class="glass-header">
+                        
+                        <span style="font-size: 0.72rem; color: #34d399; font-family: 'JetBrains Mono', monospace;">
+                            当前基准网段: {{ ipVersion === 'ipv4' ? calcResultV4.networkIp + '/' + v4Cidr : calcResultV6.network + '/' + v6Prefix }}
+                        </span>
+                    </div>
+
+                    <div style="padding: 16px; background: #090f1d;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <!-- 单 IP 实时快速检测 -->
+                            <div>
+                                <label style="display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace;">
+                                    单目标 IP 归属检测 (输入 IPv4 或 IPv6):
+                                </label>
+                                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                                    <el-input v-model="targetCheckIp" placeholder="例如 192.168.1.55 或 2001:db8::55" clearable @keyup.enter="checkIpBelongs"></el-input>
+                                    <el-button type="primary" @click="checkIpBelongs">立即检测</el-button>
+                                </div>
+
+                                <div v-if="checkResultStatus" :style="{
+                                    padding: '14px',
+                                    borderRadius: '6px',
+                                    background: checkResultStatus.isInside ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                                    border: '1px solid ' + (checkResultStatus.isInside ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'),
+                                    fontFamily: 'ui-monospace, monospace'
+                                }">
+                                    <div style="font-size: 0.95rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">
+                                        {{ checkResultStatus.isInside ? '✅ 目标 IP 属于当前基准网段！' : '❌ 目标 IP 不在当前基准网段内！' }}
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.6;">
+                                        测试 IP: <span style="font-weight: 600; color: #38bdf8;">{{ checkResultStatus.testedIp }}</span><br/>
+                                        基准网段: <span style="color: #34d399;">{{ checkResultStatus.baseCidr }}</span><br/>
+                                        网段地址范围: <span style="color: #fbbf24;">{{ checkResultStatus.rangeText }}</span><br/>
+                                        IP 角色判定: <span style="color: #c084fc;">{{ checkResultStatus.role }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 批量 IP 快速诊断 -->
+                            <div>
+                                <label style="display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace;">
+                                    批量 IP 归属快速诊断 (每行一个 IP):
+                                </label>
+                                <el-input
+                                    type="textarea"
+                                    :rows="3"
+                                    v-model="batchCheckIpText"
+                                    placeholder="每行输入一个待检测的 IP 地址"
+                                    style="margin-bottom: 8px;"
+                                ></el-input>
+                                <el-button size="small" type="primary" @click="runBatchCheck">执行批量检测</el-button>
+
+                                <div v-if="batchCheckResults.length > 0" style="margin-top: 10px; max-height: 180px; overflow-y: auto; border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 4px;">
+                                    <table class="custom-table" style="font-size: 0.75rem;">
+                                        <thead>
+                                            <tr>
+                                                <th>IP 地址</th>
+                                                <th>归属状态</th>
+                                                <th>判定角色</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(b, bIdx) in batchCheckResults" :key="'b-'+bIdx">
+                                                <td style="color: #38bdf8;">{{ b.ip }}</td>
+                                                <td>
+                                                    <span :class="['type-badge', b.isInside ? 'badge-private' : 'badge-reserved']">
+                                                        {{ b.isInside ? '✅ 包含' : '❌ 未包含' }}
+                                                    </span>
+                                                </td>
+                                                <td style="color: #cbd5e1;">{{ b.role }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 视图四：CIDR 掩码速查全量表 -->
+                <div v-show="activeTab === 'reference'" class="glass-panel" style="margin-top: 16px;">
+                    <div class="glass-header">
+                        
+                        <span style="font-size: 0.72rem; color: #94a3b8;">点击任意行可快速载入该掩码</span>
+                    </div>
+
+                    <!-- IPv4 速查表 -->
+                    <div v-if="ipVersion === 'ipv4'" style="padding: 14px; background: #090f1d; overflow-x: auto; max-height: 520px;">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>CIDR</th>
+                                    <th>子网掩码 (Subnet Mask)</th>
+                                    <th>通配符反掩码 (Wildcard)</th>
+                                    <th>总 IP 数</th>
+                                    <th>可用主机数</th>
+                                    <th>二进制掩码展开</th>
+                                    <th>常见用途 / 行业标准</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="item in v4MaskReferenceList"
+                                    :key="'ref-'+item.cidr"
+                                    :style="item.cidr === v4Cidr ? 'background: rgba(56, 189, 248, 0.15);' : ''"
+                                >
+                                    <td style="color: #38bdf8; font-weight: 700;">/{{ item.cidr }}</td>
+                                    <td>{{ item.mask }}</td>
+                                    <td style="color: #c084fc;">{{ item.wildcard }}</td>
+                                    <td>{{ item.totalIps }}</td>
+                                    <td style="color: #34d399; font-weight: 600;">{{ item.usableHosts }}</td>
+                                    <td style="font-size: 0.72rem; color: #64748b;">{{ item.binary }}</td>
+                                    <td style="color: #cbd5e1; font-size: 0.75rem;">{{ item.note }}</td>
+                                    <td>
+                                        <el-button type="text" size="small" @click="applyReferenceCidr(item.cidr)">应用</el-button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- IPv6 速查表 -->
+                    <div v-else style="padding: 14px; background: #090f1d; overflow-x: auto; max-height: 520px;">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>前缀 (Prefix)</th>
+                                    <th>前缀长度说明</th>
+                                    <th>子网总地址数</th>
+                                    <th>可划分 /64 子网数</th>
+                                    <th>标准分配场景 / 规划说明</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="item in v6PrefixReferenceList"
+                                    :key="'v6ref-'+item.prefix"
+                                    :style="item.prefix === v6Prefix ? 'background: rgba(56, 189, 248, 0.15);' : ''"
+                                >
+                                    <td style="color: #38bdf8; font-weight: 700;">/{{ item.prefix }}</td>
+                                    <td style="color: #34d399;">{{ item.name }}</td>
+                                    <td style="color: #c084fc;">{{ item.capacity }}</td>
+                                    <td style="color: #fbbf24;">{{ item.subnets64 }}</td>
+                                    <td style="color: #cbd5e1; font-size: 0.75rem;">{{ item.description }}</td>
+                                    <td>
+                                        <el-button type="text" size="small" @click="applyReferenceV6Prefix(item.prefix)">应用</el-button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/ipaddr/ipaddr.min.js"></script>
+<script src="./js/common.js"></script>
+
+<script>
+    const { createApp, ref, reactive, computed, watch, onMounted } = Vue;
+
+    const app = createApp({
+        setup() {
+            const ipVersion = ref('ipv4');
+            const activeTab = ref('calc');
+
+            // IPv4 State
+            const inputIpStr = ref('192.168.1.100');
+            const v4Cidr = ref(24);
+            const parseError = ref('');
+
+            // IPv6 State
+            const inputV6Str = ref('2001:db8:1::1');
+            const v6Prefix = ref(64);
+
+            // Subnetting Planner State (IPv4)
+            const v4SubnettingMode = ref('byCount');
+            const v4TargetSubnetCount = ref(4);
+            const v4TargetHostsPerSubnet = ref(30);
+            const v4PlannedCidr = ref(26);
+            const v4GeneratedSubnets = ref([]);
+
+            // Subnetting Planner State (IPv6)
+            const v6PlannedPrefix = ref(64);
+            const v6GeneratedSubnets = ref([]);
+
+            // IP Checker State
+            const targetCheckIp = ref('192.168.1.55');
+            const checkResultStatus = ref(null);
+            const batchCheckIpText = ref('192.168.1.1\n192.168.1.254\n192.168.2.1\n10.0.0.1');
+            const batchCheckResults = ref([]);
+
+            // Helper: BigInt 2^n
+            const pow2BigInt = (n) => 2n ** BigInt(Math.max(0, n));
+
+            // Helper: IPv4 Int Conversions
+            const ipToInt = (ip) => {
+                try {
+                    const parsed = ipaddr.IPv4.parse(ip.trim());
+                    const octets = parsed.toByteArray();
+                    return ((octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3]) >>> 0;
+                } catch (e) {
+                    return null;
+                }
+            };
+
+            const intToIp = (num) => {
+                num = num >>> 0;
+                return [
+                    (num >>> 24) & 255,
+                    (num >>> 16) & 255,
+                    (num >>> 8) & 255,
+                    num & 255
+                ].join('.');
+            };
+
+            const cidrToMaskInt = (c) => {
+                if (c === 0) return 0;
+                return (~((1 << (32 - c)) - 1)) >>> 0;
+            };
+
+            const intToBinary8 = (n) => {
+                return (n >>> 0).toString(2).padStart(8, '0');
+            };
+
+            // Format BigInt with Commas or Human Text
+            const formatBigIntText = (bi, exponent) => {
+                const s = bi.toString();
+                if (s.length <= 15) {
+                    return bi.toLocaleString() + ' 个地址 (2^' + exponent + ')';
+                }
+                const approx = (Number(s.slice(0, 4)) / 1000).toFixed(2);
+                const exp10 = s.length - 1;
+                return `2^${exponent} (约 ${approx} × 10^${exp10} 个地址)\n精确值: ${s}`;
+            };
+
+            // Version Switching
+            const handleVersionSwitch = (val) => {
+                parseError.value = '';
+                if (val === 'ipv4') {
+                    targetCheckIp.value = '192.168.1.55';
+                    batchCheckIpText.value = '192.168.1.1\n192.168.1.254\n192.168.2.1\n10.0.0.1';
+                    recomputeV4Subnets();
+                } else {
+                    targetCheckIp.value = '2001:db8:1::55';
+                    batchCheckIpText.value = '2001:db8:1::1\n2001:db8:1::ffff\n2001:db8:2::1\nfe80::1';
+                    recomputeV6Subnets();
+                }
+                checkIpBelongs();
+            };
+
+            // ==========================================
+            // IPv4 COMPUTATIONS & METRICS
+            // ==========================================
+            const v4MaskOptions = computed(() => {
+                const list = [];
+                for (let c = 1; c <= 32; c++) {
+                    const maskStr = ipaddr.IPv4.subnetMaskFromPrefixLength(c).toString();
+                    let hCount = Math.pow(2, 32 - c);
+                    let usable = c >= 31 ? (c === 31 ? 2 : 1) : Math.max(0, hCount - 2);
+                    list.push({
+                        cidr: c,
+                        mask: maskStr,
+                        hostsDesc: usable.toLocaleString() + ' 主机'
+                    });
+                }
+                return list;
+            });
+
+            const v4MaskDec = computed(() => {
+                try {
+                    return ipaddr.IPv4.subnetMaskFromPrefixLength(v4Cidr.value).toString();
+                } catch (e) {
+                    return '255.255.255.0';
+                }
+            });
+
+            const v4IpAnalysis = computed(() => {
+                let raw = inputIpStr.value.trim().split('/')[0].trim();
+                try {
+                    const addr = ipaddr.IPv4.parse(raw);
+                    const rangeName = addr.range();
+                    const ipInt = ipToInt(raw);
+                    const b0 = (ipInt >>> 24) & 255;
+                    const b1 = (ipInt >>> 16) & 255;
+
+                    let type = '公网可路由 IPv4 (Public Unicast)';
+                    let isPrivate = false;
+                    let isPublic = true;
+                    let badgeClass = 'badge-public';
+
+                    if (rangeName === 'loopback' || b0 === 127) {
+                        type = '回环地址 (Loopback 127.0.0.0/8)';
+                        isPublic = false;
+                        badgeClass = 'badge-special';
+                    } else if (rangeName === 'private') {
+                        isPrivate = true;
+                        isPublic = false;
+                        badgeClass = 'badge-private';
+                        if (b0 === 10) type = 'A 类私有地址 (RFC 1918 10.0.0.0/8)';
+                        else if (b0 === 172) type = 'B 类私有地址 (RFC 1918 172.16.0.0/12)';
+                        else if (b0 === 192) type = 'C 类私有地址 (RFC 1918 192.168.0.0/16)';
+                    } else if (rangeName === 'linkLocal' || (b0 === 169 && b1 === 254)) {
+                        type = '链路本地 APIPA (RFC 3927 169.254.0.0/16)';
+                        isPublic = false;
+                        badgeClass = 'badge-linklocal';
+                    } else if (rangeName === 'carrierGradeNat' || (b0 === 100 && b1 >= 64 && b1 <= 127)) {
+                        type = '运营商级 NAT (CGNAT RFC 6598 100.64.0.0/10)';
+                        isPublic = false;
+                        badgeClass = 'badge-special';
+                    } else if (rangeName === 'multicast' || (b0 >= 224 && b0 <= 239)) {
+                        type = 'D 类组播/多播 (RFC 3171 224.0.0.0/4)';
+                        isPublic = false;
+                        badgeClass = 'badge-reserved';
+                    } else if (rangeName === 'reserved' || b0 >= 240) {
+                        type = 'E 类保留实验地址 (RFC 5735 240.0.0.0/4)';
+                        isPublic = false;
+                        badgeClass = 'badge-reserved';
+                    } else if (b0 === 0) {
+                        type = '当前本网络 (RFC 1122 0.0.0.0/8)';
+                        isPublic = false;
+                        badgeClass = 'badge-reserved';
+                    }
+
+                    return { type, isPrivate, isPublic, badgeClass };
+                } catch (e) {
+                    return { type: '格式错误 / 未知', isPrivate: false, isPublic: false, badgeClass: 'badge-reserved' };
+                }
+            });
+
+            const v4HexIp = computed(() => {
+                if (!calcResultV4.value.valid) return '00000000';
+                return calcResultV4.value.ipInt.toString(16).toUpperCase().padStart(8, '0');
+            });
+
+            const calcResultV4 = computed(() => {
+                let raw = inputIpStr.value.trim();
+                let cleanIp = raw.split('/')[0].trim();
+                const c = v4Cidr.value;
+
+                try {
+                    const parsedIp = ipaddr.IPv4.parse(cleanIp);
+                    const cidrStr = `${cleanIp}/${c}`;
+                    const netAddr = ipaddr.IPv4.networkAddressFromCIDR(cidrStr);
+                    const bcastAddr = ipaddr.IPv4.broadcastAddressFromCIDR(cidrStr);
+                    const maskAddr = ipaddr.IPv4.subnetMaskFromPrefixLength(c);
+
+                    const ipInt = ipToInt(cleanIp);
+                    const netInt = ipToInt(netAddr.toString());
+                    const bcastInt = ipToInt(bcastAddr.toString());
+                    const maskInt = ipToInt(maskAddr.toString());
+                    const wildcardInt = (~maskInt) >>> 0;
+                    const wildcardStr = intToIp(wildcardInt);
+
+                    const totalIps = Math.pow(2, 32 - c);
+                    let usableHosts = 0;
+                    let firstHostInt = netInt + 1;
+                    let lastHostInt = bcastInt - 1;
+
+                    if (c === 32) {
+                        usableHosts = 1;
+                        firstHostInt = netInt;
+                        lastHostInt = netInt;
+                    } else if (c === 31) {
+                        usableHosts = 2; // RFC 3021 Point-to-Point
+                        firstHostInt = netInt;
+                        lastHostInt = bcastInt;
+                    } else {
+                        usableHosts = Math.max(0, totalIps - 2);
+                    }
+
+                    const octets = cleanIp.split('.');
+                    const inAddr = `${octets[3]}.${octets[2]}.${octets[1]}.${octets[0]}.in-addr.arpa`;
+                    const ipv4Mapped = parsedIp.toIPv4MappedAddress().toString();
+
+                    return {
+                        valid: true,
+                        cleanIp,
+                        ipInt,
+                        netInt,
+                        bcastInt,
+                        cidrNotation: cidrStr,
+                        networkIp: netAddr.toString(),
+                        broadcastIp: bcastAddr.toString(),
+                        firstHost: intToIp(firstHostInt),
+                        lastHost: intToIp(lastHostInt),
+                        usableHosts,
+                        usableHostsFormatted: usableHosts.toLocaleString(),
+                        totalIps,
+                        totalIpsFormatted: totalIps.toLocaleString(),
+                        subnetMask: maskAddr.toString(),
+                        wildcardMask: wildcardStr,
+                        hexMask: maskInt.toString(16).toUpperCase().padStart(8, '0'),
+                        inAddrArpa: inAddr,
+                        ipv4Mapped
+                    };
+                } catch (e) {
+                    return {
+                        valid: false,
+                        cidrNotation: '—',
+                        networkIp: '',
+                        broadcastIp: '',
+                        firstHost: '',
+                        lastHost: '',
+                        usableHosts: 0,
+                        usableHostsFormatted: '0',
+                        totalIps: 0,
+                        totalIpsFormatted: '0',
+                        subnetMask: '',
+                        wildcardMask: '',
+                        hexMask: '',
+                        inAddrArpa: '',
+                        ipv4Mapped: ''
+                    };
+                }
+            });
+
+            const binaryBreakdownV4 = computed(() => {
+                if (!calcResultV4.value.valid) {
+                    return { ip: [], mask: [], net: [], bcast: [], wildcard: [] };
+                }
+                const to4Bytes = (num) => [
+                    intToBinary8((num >>> 24) & 255),
+                    intToBinary8((num >>> 16) & 255),
+                    intToBinary8((num >>> 8) & 255),
+                    intToBinary8(num & 255)
+                ];
+
+                const maskInt = cidrToMaskInt(v4Cidr.value);
+                const wildInt = (~maskInt) >>> 0;
+                return {
+                    ip: to4Bytes(calcResultV4.value.ipInt),
+                    mask: to4Bytes(maskInt),
+                    net: to4Bytes(calcResultV4.value.netInt),
+                    bcast: to4Bytes(calcResultV4.value.bcastInt),
+                    wildcard: to4Bytes(wildInt)
+                };
+            });
+
+            // ==========================================
+            // IPv6 COMPUTATIONS & METRICS
+            // ==========================================
+            const v6IpAnalysis = computed(() => {
+                let raw = inputV6Str.value.trim().split('/')[0].trim();
+                try {
+                    const addr = ipaddr.IPv6.parse(raw);
+                    const rangeName = addr.range();
+
+                    let type = '全球单播地址 (Global Unicast GUA)';
+                    let scope = '2000::/3 全球可路由';
+                    let rfc = 'RFC 4291';
+                    let badgeClass = 'badge-public';
+
+                    if (rangeName === 'loopback') {
+                        type = '回环地址 (Loopback)';
+                        scope = '::1/128 本地回环';
+                        rfc = 'RFC 4291';
+                        badgeClass = 'badge-special';
+                    } else if (rangeName === 'unspecified') {
+                        type = '未指定地址 (Unspecified)';
+                        scope = '::/128';
+                        rfc = 'RFC 4291';
+                        badgeClass = 'badge-reserved';
+                    } else if (rangeName === 'linkLocal') {
+                        type = '链路本地地址 (Link-Local)';
+                        scope = 'fe80::/10 单链路内有效';
+                        rfc = 'RFC 4291';
+                        badgeClass = 'badge-linklocal';
+                    } else if (rangeName === 'uniqueLocal') {
+                        type = '唯一本地私有地址 (ULA)';
+                        scope = 'fc00::/7 (fd00::/8 私网网段)';
+                        rfc = 'RFC 4193';
+                        badgeClass = 'badge-private';
+                    } else if (rangeName === 'multicast') {
+                        type = '组播/多播地址 (Multicast)';
+                        scope = 'ff00::/8 组播组';
+                        rfc = 'RFC 4291';
+                        badgeClass = 'badge-reserved';
+                    } else if (rangeName === 'ipv4Mapped') {
+                        type = 'IPv4 映射 IPv6 (IPv4-Mapped)';
+                        scope = '::ffff:0:0/96';
+                        rfc = 'RFC 4291';
+                        badgeClass = 'badge-special';
+                    } else if (rangeName === 'reserved' || raw.toLowerCase().startsWith('2001:db8')) {
+                        type = '文档与示例专用网段 (Documentation)';
+                        scope = '2001:db8::/32';
+                        rfc = 'RFC 3849';
+                        badgeClass = 'badge-special';
+                    } else if (rangeName === '6to4') {
+                        type = '6to4 自动化隧道';
+                        scope = '2002::/16';
+                        rfc = 'RFC 3056';
+                        badgeClass = 'badge-special';
+                    } else if (rangeName === 'teredo') {
+                        type = 'Teredo 穿透隧道';
+                        scope = '2001::/32';
+                        rfc = 'RFC 4380';
+                        badgeClass = 'badge-special';
+                    }
+
+                    return { type, scope, rfc, badgeClass };
+                } catch (e) {
+                    return { type: '格式错误 / 未知', scope: '—', rfc: '—', badgeClass: 'badge-reserved' };
+                }
+            });
+
+            const calcResultV6 = computed(() => {
+                let raw = inputV6Str.value.trim();
+                let cleanIp = raw.split('/')[0].trim();
+                const p = v6Prefix.value;
+
+                try {
+                    const parsedIp = ipaddr.IPv6.parse(cleanIp);
+                    const cidrStr = `${cleanIp}/${p}`;
+                    const netAddr = ipaddr.IPv6.networkAddressFromCIDR(cidrStr);
+                    const lastAddr = ipaddr.IPv6.broadcastAddressFromCIDR(cidrStr);
+                    const maskAddr = ipaddr.IPv6.subnetMaskFromPrefixLength(p);
+
+                    // Reverse DNS ip6.arpa
+                    const hexNoColons = parsedIp.toFixedLengthString().replace(/:/g, '');
+                    const ip6Arpa = hexNoColons.split('').reverse().join('.') + '.ip6.arpa';
+
+                    // Subnet count for /64
+                    let subnets64Count = '—';
+                    if (p <= 64) {
+                        const biSub64 = pow2BigInt(64 - p);
+                        subnets64Count = biSub64 <= 1000000n ? biSub64.toLocaleString() + ' 个 /64 子网' : `2^${64-p} (约 ${biSub64.toString()} 个)`;
+                    } else {
+                        subnets64Count = '已细于 /64 前缀';
+                    }
+
+                    const hostBits = 128 - p;
+                    const totalIpsBi = pow2BigInt(hostBits);
+                    const totalIpsText = formatBigIntText(totalIpsBi, hostBits);
+
+                    return {
+                        valid: true,
+                        cleanIp,
+                        cidrNotation: `${netAddr.toString()}/${p}`,
+                        compressed: parsedIp.toString(),
+                        expanded: parsedIp.toFixedLengthString(),
+                        network: netAddr.toString(),
+                        networkExpanded: netAddr.toFixedLengthString(),
+                        lastAddress: lastAddr.toString(),
+                        lastAddressExpanded: lastAddr.toFixedLengthString(),
+                        maskExpanded: maskAddr.toFixedLengthString(),
+                        maskShort: maskAddr.toString(),
+                        totalIpsBi,
+                        totalIpsText,
+                        subnets64Count,
+                        ip6Arpa,
+                        parsedIp,
+                        netAddr,
+                        lastAddr
+                    };
+                } catch (e) {
+                    return {
+                        valid: false,
+                        cidrNotation: '—',
+                        compressed: '',
+                        expanded: '',
+                        network: '',
+                        networkExpanded: '',
+                        lastAddress: '',
+                        lastAddressExpanded: '',
+                        maskExpanded: '',
+                        maskShort: '',
+                        totalIpsBi: 0n,
+                        totalIpsText: '—',
+                        subnets64Count: '—',
+                        ip6Arpa: ''
+                    };
+                }
+            });
+
+            // IPv6 Hextet Breakdown (8 hextets * 16 bits)
+            const v6HextetBreakdown = computed(() => {
+                if (!calcResultV6.value.valid) return [];
+                const parts = calcResultV6.value.parsedIp.parts;
+                const p = v6Prefix.value;
+                const list = [];
+
+                for (let i = 0; i < 8; i++) {
+                    const startBit = i * 16;
+                    const endBit = (i + 1) * 16;
+                    let prefixBits = 0;
+                    let hostBits = 0;
+                    let typeClass = 'is-host';
+
+                    if (p >= endBit) {
+                        prefixBits = 16;
+                        hostBits = 0;
+                        typeClass = 'is-net';
+                    } else if (p <= startBit) {
+                        prefixBits = 0;
+                        hostBits = 16;
+                        typeClass = 'is-host';
+                    } else {
+                        prefixBits = p - startBit;
+                        hostBits = 16 - prefixBits;
+                        typeClass = 'is-mixed';
+                    }
+
+                    list.push({
+                        hextetIdx: i + 1,
+                        hex: parts[i].toString(16).padStart(4, '0'),
+                        prefixBits,
+                        hostBits,
+                        typeClass
+                    });
+                }
+                return list;
+            });
+
+            // Input handlers
+            const handleIpChange = (val) => {
+                parseError.value = '';
+                const raw = val.trim();
+                if (raw.includes(':')) {
+                    // Auto switch to IPv6 mode!
+                    ipVersion.value = 'ipv6';
+                    inputV6Str.value = raw;
+                    handleV6Change(raw);
+                    return;
+                }
+                if (raw.includes('/')) {
+                    const [ipPart, cidrPart] = raw.split('/');
+                    const cNum = parseInt(cidrPart, 10);
+                    if (!isNaN(cNum) && cNum >= 1 && cNum <= 32) {
+                        v4Cidr.value = cNum;
+                    }
+                }
+                const clean = raw.split('/')[0].trim();
+                if (clean && !ipaddr.IPv4.isValid(clean)) {
+                    parseError.value = '请输入合法的点分十进制 IPv4 地址 (例如 192.168.1.1)';
+                } else {
+                    recomputeV4Subnets();
+                }
+            };
+
+            const handleCidrChange = () => {
+                recomputeV4Subnets();
+            };
+
+            const handleV6Change = (val) => {
+                parseError.value = '';
+                const raw = val.trim();
+                if (raw.includes('/') && !raw.includes('::/')) {
+                    const [ipPart, cidrPart] = raw.split('/');
+                    const pNum = parseInt(cidrPart, 10);
+                    if (!isNaN(pNum) && pNum >= 1 && pNum <= 128) {
+                        v6Prefix.value = pNum;
+                    }
+                }
+                const clean = raw.split('/')[0].trim();
+                if (clean && !ipaddr.IPv6.isValid(clean)) {
+                    parseError.value = '请输入合法的冒号十六进制 IPv6 地址 (例如 2001:db8::1)';
+                } else {
+                    recomputeV6Subnets();
+                }
+            };
+
+            const handleV6PrefixChange = () => {
+                recomputeV6Subnets();
+            };
+
+            // Preset loader
+            const loadPreset = (cmd) => {
+                if (cmd.startsWith('v4_')) {
+                    ipVersion.value = 'ipv4';
+                    if (cmd === 'v4_homeC') { inputIpStr.value = '192.168.1.100'; v4Cidr.value = 24; }
+                    else if (cmd === 'v4_corpB') { inputIpStr.value = '172.16.10.1'; v4Cidr.value = 16; }
+                    else if (cmd === 'v4_cloudA') { inputIpStr.value = '10.0.8.20'; v4Cidr.value = 8; }
+                    else if (cmd === 'v4_k8s') { inputIpStr.value = '172.20.0.1'; v4Cidr.value = 20; }
+                    else if (cmd === 'v4_p2p') { inputIpStr.value = '192.168.10.1'; v4Cidr.value = 30; }
+                    else if (cmd === 'v4_rfc3021') { inputIpStr.value = '10.0.0.0'; v4Cidr.value = 31; }
+                    else if (cmd === 'v4_cgnat') { inputIpStr.value = '100.64.0.1'; v4Cidr.value = 10; }
+                    else if (cmd === 'v4_publicDns') { inputIpStr.value = '8.8.8.8'; v4Cidr.value = 32; }
+                    handleIpChange(inputIpStr.value);
+                } else if (cmd.startsWith('v6_')) {
+                    ipVersion.value = 'ipv6';
+                    if (cmd === 'v6_gua64') { inputV6Str.value = '2001:db8:1::1'; v6Prefix.value = 64; }
+                    else if (cmd === 'v6_corp48') { inputV6Str.value = '2001:db8:acad::'; v6Prefix.value = 48; }
+                    else if (cmd === 'v6_isp56') { inputV6Str.value = '240e:380:1234::'; v6Prefix.value = 56; }
+                    else if (cmd === 'v6_ula') { inputV6Str.value = 'fd00:abcd:1234::1'; v6Prefix.value = 64; }
+                    else if (cmd === 'v6_linkLocal') { inputV6Str.value = 'fe80::1'; v6Prefix.value = 64; }
+                    else if (cmd === 'v6_cfDns') { inputV6Str.value = '2606:4700:4700::1111'; v6Prefix.value = 128; }
+                    else if (cmd === 'v6_loopback') { inputV6Str.value = '::1'; v6Prefix.value = 128; }
+                    handleV6Change(inputV6Str.value);
+                }
+                ElementPlus.ElMessage.success('已载入网络预设');
+            };
+
+            const resetForm = () => {
+                if (ipVersion.value === 'ipv4') {
+                    inputIpStr.value = '192.168.1.1';
+                    v4Cidr.value = 24;
+                    parseError.value = '';
+                    recomputeV4Subnets();
+                } else {
+                    inputV6Str.value = '2001:db8::1';
+                    v6Prefix.value = 64;
+                    parseError.value = '';
+                    recomputeV6Subnets();
+                }
+                ElementPlus.ElMessage.info('已重置表单');
+            };
+
+            // Copy & Export Tools
+            const copyText = (text) => {
+                if (!text) return;
+                navigator.clipboard.writeText(text).then(() => {
+                    ElementPlus.ElMessage.success('已复制到剪贴板: ' + text);
+                });
+            };
+
+            const copyAllSummary = () => {
+                if (ipVersion.value === 'ipv4') {
+                    if (!calcResultV4.value.valid) return;
+                    const r = calcResultV4.value;
+                    const summary = [
+                        `[IPv4 子网计算结果 - 在线工具集]`,
+                        `基准网络: ${r.cidrNotation}`,
+                        `IP 属性分类: ${v4IpAnalysis.value.type}`,
+                        `网络地址: ${r.networkIp}`,
+                        `广播地址: ${r.broadcastIp}`,
+                        `首个可用主机: ${r.firstHost}`,
+                        `末尾可用主机: ${r.lastHost}`,
+                        `可用主机总数: ${r.usableHostsFormatted} 台`,
+                        `掩码总 IP 数: ${r.totalIpsFormatted} 个`,
+                        `子网掩码: ${r.subnetMask}`,
+                        `通配符反掩码: ${r.wildcardMask}`,
+                        `十六进制掩码: 0x${r.hexMask}`,
+                        `反向 DNS PTR: ${r.inAddrArpa}`,
+                        `IPv4-Mapped IPv6: ${r.ipv4Mapped}`
+                    ].join('\n');
+                    copyText(summary);
+                } else {
+                    if (!calcResultV6.value.valid) return;
+                    const r = calcResultV6.value;
+                    const summary = [
+                        `[IPv6 子网计算结果 - 在线工具集]`,
+                        `标准压缩格式: ${r.compressed}`,
+                        `完整展开格式: ${r.expanded}`,
+                        `网络前缀起始: ${r.network}/${v6Prefix.value}`,
+                        `网段末尾边界: ${r.lastAddress}`,
+                        `前缀长度/掩码: /${v6Prefix.value} (${r.maskShort})`,
+                        `作用域与分类: ${v6IpAnalysis.value.type} (${v6IpAnalysis.value.scope})`,
+                        `可划分 /64 子网数: ${r.subnets64Count}`,
+                        `地址总空间容量: 2^${128 - v6Prefix.value} (${r.totalIpsBi.toString()} 个)`,
+                        `反向 DNS PTR: ${r.ip6Arpa}`
+                    ].join('\n');
+                    copyText(summary);
+                }
+            };
+
+            const exportMarkdown = () => {
+                if (ipVersion.value === 'ipv4') {
+                    if (!calcResultV4.value.valid) return;
+                    const r = calcResultV4.value;
+                    const md = `# IPv4 子网规划报告 (${r.cidrNotation})\n\n`
+                        + `| 参数项 | 数值 |\n`
+                        + `| :--- | :--- |\n`
+                        + `| **输入 IP** | \`${r.cleanIp}\` |\n`
+                        + `| **CIDR 前缀** | \`/${v4Cidr.value}\` |\n`
+                        + `| **网络地址 (Network)** | \`${r.networkIp}\` |\n`
+                        + `| **广播地址 (Broadcast)** | \`${r.broadcastIp}\` |\n`
+                        + `| **首个可用主机** | \`${r.firstHost}\` |\n`
+                        + `| **末尾可用主机** | \`${r.lastHost}\` |\n`
+                        + `| **可用主机总数** | **${r.usableHostsFormatted}** 台 |\n`
+                        + `| **子网总 IP 数** | ${r.totalIpsFormatted} 个 |\n`
+                        + `| **子网掩码 (Mask)** | \`${r.subnetMask}\` |\n`
+                        + `| **反掩码 (Wildcard)** | \`${r.wildcardMask}\` |\n`
+                        + `| **IP 属性分类** | ${v4IpAnalysis.value.type} |\n`
+                        + `| **反向 DNS PTR** | \`${r.inAddrArpa}\` |\n\n`
+                        + `*生成时间: ${new Date().toLocaleString()} · 在线工具集 (ipaddr.js 引擎)*`;
+
+                    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `subnet-ipv4-${r.cleanIp}_${v4Cidr.value}.md`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    ElementPlus.ElMessage.success('IPv4 Markdown 报告已下载');
+                } else {
+                    if (!calcResultV6.value.valid) return;
+                    const r = calcResultV6.value;
+                    const md = `# IPv6 子网规划报告 (${r.cidrNotation})\n\n`
+                        + `| 参数项 | 数值 |\n`
+                        + `| :--- | :--- |\n`
+                        + `| **压缩地址 (RFC 5952)** | \`${r.compressed}\` |\n`
+                        + `| **展开完整形式** | \`${r.expanded}\` |\n`
+                        + `| **前缀长度** | \`/${v6Prefix.value}\` |\n`
+                        + `| **网络前缀起始** | \`${r.network}\` |\n`
+                        + `| **网段末尾边界** | \`${r.lastAddress}\` |\n`
+                        + `| **作用域类型** | ${v6IpAnalysis.value.type} |\n`
+                        + `| **可划分 /64 子网数** | ${r.subnets64Count} |\n`
+                        + `| **地址总容量** | 2^${128 - v6Prefix.value} 个地址 |\n`
+                        + `| **反向 DNS PTR** | \`${r.ip6Arpa}\` |\n\n`
+                        + `*生成时间: ${new Date().toLocaleString()} · 在线工具集 (ipaddr.js 引擎)*`;
+
+                    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `subnet-ipv6-${v6Prefix.value}.md`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    ElementPlus.ElMessage.success('IPv6 Markdown 报告已下载');
+                }
+            };
+
+            // ==========================================
+            // IPv4 SUBNETTING PLANNER LOGIC
+            // ==========================================
+            const v4AvailableSubnetCounts = computed(() => {
+                const maxBits = 30 - v4Cidr.value;
+                if (maxBits <= 0) return [1];
+                const list = [];
+                for (let i = 1; i <= Math.min(7, maxBits); i++) {
+                    list.push(Math.pow(2, i));
+                }
+                return list;
+            });
+
+            const v4SelectablePlannedCidrs = computed(() => {
+                const list = [];
+                for (let c = v4Cidr.value + 1; c <= 30; c++) {
+                    list.push(c);
+                }
+                return list;
+            });
+
+            const v4PlannedMaskDec = computed(() => {
+                try {
+                    return ipaddr.IPv4.subnetMaskFromPrefixLength(v4PlannedCidr.value).toString();
+                } catch (e) {
+                    return '255.255.255.0';
+                }
+            });
+
+            const v4PlannedUsableHosts = computed(() => {
+                const c = v4PlannedCidr.value;
+                if (c >= 31) return c === 31 ? 2 : 1;
+                return Math.max(0, Math.pow(2, 32 - c) - 2);
+            });
+
+            const recomputeV4Subnets = () => {
+                if (!calcResultV4.value.valid) return;
+                const baseNetInt = calcResultV4.value.netInt;
+                const parentCidr = v4Cidr.value;
+
+                if (parentCidr >= 30) {
+                    v4GeneratedSubnets.value = [];
+                    v4PlannedCidr.value = parentCidr;
+                    return;
+                }
+
+                let newCidr = parentCidr;
+                let count = 2;
+
+                if (v4SubnettingMode.value === 'byCount') {
+                    count = v4TargetSubnetCount.value;
+                    const addBits = Math.ceil(Math.log2(count));
+                    newCidr = Math.min(30, parentCidr + addBits);
+                } else if (v4SubnettingMode.value === 'byHosts') {
+                    const needed = v4TargetHostsPerSubnet.value;
+                    const hostBits = Math.ceil(Math.log2(needed + 2));
+                    newCidr = Math.max(parentCidr + 1, Math.min(30, 32 - hostBits));
+                } else {
+                    newCidr = Math.max(parentCidr + 1, v4PlannedCidr.value);
+                }
+
+                v4PlannedCidr.value = newCidr;
+                const step = Math.pow(2, 32 - newCidr);
+                const totalSubnets = Math.min(256, Math.pow(2, newCidr - parentCidr));
+
+                const list = [];
+                for (let i = 0; i < totalSubnets; i++) {
+                    const subNet = (baseNetInt + i * step) >>> 0;
+                    const subBcast = (subNet + step - 1) >>> 0;
+                    const usable = newCidr >= 31 ? (newCidr === 31 ? 2 : 1) : Math.max(0, step - 2);
+
+                    list.push({
+                        cidrStr: `${intToIp(subNet)}/${newCidr}`,
+                        network: intToIp(subNet),
+                        broadcast: intToIp(subBcast),
+                        firstHost: intToIp(newCidr === 32 ? subNet : subNet + 1),
+                        lastHost: intToIp(newCidr === 32 ? subNet : subBcast - 1),
+                        usableHosts: usable.toLocaleString()
+                    });
+                }
+                v4GeneratedSubnets.value = list;
+            };
+
+            const copySubnetTableCsv = () => {
+                if (v4GeneratedSubnets.value.length === 0) return;
+                const headers = ['Subnet CIDR', 'Network IP', 'First Host', 'Last Host', 'Broadcast IP', 'Usable Hosts'];
+                const rows = v4GeneratedSubnets.value.map(s => [s.cidrStr, s.network, s.firstHost, s.lastHost, s.broadcast, s.usableHosts]);
+                const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                copyText(csv);
+            };
+
+            const downloadSubnetCsv = () => {
+                if (v4GeneratedSubnets.value.length === 0) return;
+                const headers = ['Subnet CIDR', 'Network IP', 'First Host', 'Last Host', 'Broadcast IP', 'Usable Hosts'];
+                const rows = v4GeneratedSubnets.value.map(s => [s.cidrStr, s.network, s.firstHost, s.lastHost, s.broadcast, s.usableHosts]);
+                const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `subnets-plan-${calcResultV4.value.networkIp}_${v4Cidr.value}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                ElementPlus.ElMessage.success('CSV 已成功导出');
+            };
+
+            // ==========================================
+            // IPv6 SUBNETTING PLANNER LOGIC
+            // ==========================================
+            const v6SelectablePrefixes = computed(() => {
+                const list = [];
+                const baseP = v6Prefix.value;
+                const candidates = [36, 40, 44, 48, 52, 56, 60, 64, 72, 80, 96, 112, 120, 128];
+                for (let c of candidates) {
+                    if (c > baseP) list.push(c);
+                }
+                if (list.length === 0 && baseP < 128) list.push(baseP + 4);
+                return list;
+            });
+
+            const getV6SubnetDesc = (p) => {
+                if (p === 64) return '标准终端/LAN 子网';
+                if (p === 60) return '家庭网关/小型企业';
+                if (p === 56) return '典型宽带租约分配';
+                if (p === 48) return '大型企业站点';
+                if (p === 128) return '单主机路由';
+                return `2^${128 - p} 地址`;
+            };
+
+            const v6PlannedTotalSubnetsText = computed(() => {
+                const diff = v6PlannedPrefix.value - v6Prefix.value;
+                if (diff <= 0) return '1';
+                const bi = pow2BigInt(diff);
+                return bi.toLocaleString();
+            });
+
+            const recomputeV6Subnets = () => {
+                if (!calcResultV6.value.valid) return;
+                const baseP = v6Prefix.value;
+                let targetP = v6PlannedPrefix.value;
+                if (targetP <= baseP) {
+                    targetP = Math.min(128, baseP + 4);
+                    v6PlannedPrefix.value = targetP;
+                }
+
+                const netAddr = calcResultV6.value.netAddr;
+                const parts = netAddr.parts.slice();
+                const diffBits = targetP - baseP;
+                const totalSubnets = pow2BigInt(diffBits);
+
+                const limit = 128;
+                const count = Number(totalSubnets < BigInt(limit) ? totalSubnets : BigInt(limit));
+
+                const list = [];
+                // Convert 8 parts to BigInt
+                let baseVal = 0n;
+                for (let p = 0; p < 8; p++) {
+                    baseVal = (baseVal << 16n) | BigInt(parts[p]);
+                }
+
+                for (let i = 0; i < count; i++) {
+                    const carry = BigInt(i) << BigInt(128 - targetP);
+                    const currentVal = baseVal + carry;
+                    const finalParts = [];
+                    for (let p = 7; p >= 0; p--) {
+                        finalParts[p] = Number((currentVal >> BigInt(16 * (7 - p))) & 0xffffn);
+                    }
+                    const subNet = new ipaddr.IPv6(finalParts);
+                    const subCidr = `${subNet.toString()}/${targetP}`;
+                    const subLast = ipaddr.IPv6.broadcastAddressFromCIDR(subCidr);
+
+                    let note = '常规分配子网';
+                    if (targetP === 64) note = '标准 IPv6 终端广播域 (SLAAC/DHCPv6)';
+                    else if (targetP === 60) note = '客户路由器前缀委托 (PD)';
+                    else if (targetP === 56) note = '区域分支机构分配';
+
+                    list.push({
+                        cidrStr: subCidr,
+                        network: subNet.toString(),
+                        lastAddr: subLast.toString(),
+                        capacityText: `2^${128 - targetP} 地址`,
+                        usageNote: note
+                    });
+                }
+                v6GeneratedSubnets.value = list;
+            };
+
+            const copyV6SubnetTableCsv = () => {
+                if (v6GeneratedSubnets.value.length === 0) return;
+                const headers = ['Subnet Prefix', 'Start Network IP', 'End Range IP', 'Capacity', 'Usage Note'];
+                const rows = v6GeneratedSubnets.value.map(s => [s.cidrStr, s.network, s.lastAddr, s.capacityText, s.usageNote]);
+                const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                copyText(csv);
+            };
+
+            const downloadV6SubnetCsv = () => {
+                if (v6GeneratedSubnets.value.length === 0) return;
+                const headers = ['Subnet Prefix', 'Start Network IP', 'End Range IP', 'Capacity', 'Usage Note'];
+                const rows = v6GeneratedSubnets.value.map(s => [s.cidrStr, s.network, s.lastAddr, s.capacityText, s.usageNote]);
+                const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `subnets-ipv6-plan-${v6Prefix.value}_to_${v6PlannedPrefix.value}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                ElementPlus.ElMessage.success('IPv6 CSV 已成功导出');
+            };
+
+            // ==========================================
+            // IP CHECKER LOGIC (IPv4 & IPv6)
+            // ==========================================
+            const checkIpBelongs = () => {
+                const tIp = targetCheckIp.value.trim();
+                if (!tIp) return;
+
+                if (ipVersion.value === 'ipv4') {
+                    if (!calcResultV4.value.valid) return;
+                    if (!ipaddr.IPv4.isValid(tIp)) {
+                        ElementPlus.ElMessage.error('目标 IPv4 地址格式错误');
+                        return;
+                    }
+                    const parsed = ipaddr.IPv4.parse(tIp);
+                    const netAddr = ipaddr.IPv4.parse(calcResultV4.value.networkIp);
+                    const isInside = parsed.match(netAddr, v4Cidr.value);
+
+                    const tInt = ipToInt(tIp);
+                    const net = calcResultV4.value.netInt;
+                    const bcast = calcResultV4.value.bcastInt;
+
+                    let role = '常规可用主机地址 (Host IP)';
+                    if (tInt === net) role = '网络标识地址 (Network ID)';
+                    else if (tInt === bcast) role = '广播地址 (Broadcast Address)';
+                    else if (tInt === net + 1) role = '网段首地址 (典型网关 Gateway)';
+
+                    checkResultStatus.value = {
+                        testedIp: tIp,
+                        isInside,
+                        baseCidr: calcResultV4.value.cidrNotation,
+                        rangeText: `${calcResultV4.value.networkIp} ~ ${calcResultV4.value.broadcastIp}`,
+                        role: isInside ? role : '超出当前子网网段范围'
+                    };
+                } else {
+                    if (!calcResultV6.value.valid) return;
+                    if (!ipaddr.IPv6.isValid(tIp)) {
+                        ElementPlus.ElMessage.error('目标 IPv6 地址格式错误');
+                        return;
+                    }
+                    const parsed = ipaddr.IPv6.parse(tIp);
+                    const netAddr = calcResultV6.value.netAddr;
+                    const isInside = parsed.match(netAddr, v6Prefix.value);
+
+                    let role = '常规 IPv6 节点地址 (Host/Node)';
+                    if (parsed.toString() === netAddr.toString()) role = '网络前缀标识地址 (Subnet Anycast / Network)';
+                    else if (parsed.toString() === calcResultV6.value.lastAddress) role = '子网最高边界地址 (Subnet High Boundary)';
+
+                    checkResultStatus.value = {
+                        testedIp: tIp,
+                        isInside,
+                        baseCidr: calcResultV6.value.cidrNotation,
+                        rangeText: `${calcResultV6.value.network} ~ ${calcResultV6.value.lastAddress}`,
+                        role: isInside ? role : '超出当前 IPv6 前缀范围'
+                    };
+                }
+            };
+
+            const runBatchCheck = () => {
+                const lines = batchCheckIpText.value.split('\n').map(l => l.trim()).filter(Boolean);
+                const results = [];
+
+                if (ipVersion.value === 'ipv4') {
+                    if (!calcResultV4.value.valid) return;
+                    const netAddr = ipaddr.IPv4.parse(calcResultV4.value.networkIp);
+                    const net = calcResultV4.value.netInt;
+                    const bcast = calcResultV4.value.bcastInt;
+
+                    for (let line of lines) {
+                        if (!ipaddr.IPv4.isValid(line)) {
+                            results.push({ ip: line, isInside: false, role: '无效 IPv4 格式' });
+                            continue;
+                        }
+                        const p = ipaddr.IPv4.parse(line);
+                        const isInside = p.match(netAddr, v4Cidr.value);
+                        const tInt = ipToInt(line);
+                        let role = '常规主机 (Host)';
+                        if (tInt === net) role = '网络地址 (Network)';
+                        else if (tInt === bcast) role = '广播地址 (Broadcast)';
+                        else if (tInt === net + 1) role = '网关首地址 (Gateway)';
+                        results.push({ ip: line, isInside, role: isInside ? role : '不在网段内' });
+                    }
+                } else {
+                    if (!calcResultV6.value.valid) return;
+                    const netAddr = calcResultV6.value.netAddr;
+
+                    for (let line of lines) {
+                        if (!ipaddr.IPv6.isValid(line)) {
+                            results.push({ ip: line, isInside: false, role: '无效 IPv6 格式' });
+                            continue;
+                        }
+                        const p = ipaddr.IPv6.parse(line);
+                        const isInside = p.match(netAddr, v6Prefix.value);
+                        let role = 'IPv6 节点';
+                        if (p.toString() === netAddr.toString()) role = '网络起始前缀';
+                        results.push({ ip: line, isInside, role: isInside ? role : '不在前缀内' });
+                    }
+                }
+                batchCheckResults.value = results;
+                ElementPlus.ElMessage.success(`批量检测完成: 共 ${results.length} 个 IP`);
+            };
+
+            // ==========================================
+            // CHEATSHEET & REFERENCE DATA
+            // ==========================================
+            const v4MaskReferenceList = computed(() => {
+                const list = [];
+                const notes = {
+                    0: '默认路由 (Default Route 0.0.0.0/0)',
+                    1: '单网覆盖半个 IPv4 互联网空间 (128.0.0.0)',
+                    8: '原 Class A 标准大网 (1677万主机)',
+                    10: 'RFC 6598 运营商级 NAT (CGNAT 419万主机)',
+                    12: 'RFC 1918 Class B 私网全段 (104万主机)',
+                    16: '原 Class B 标准中型企业网 (65534主机)',
+                    20: '典型 Kubernetes Pod 容器集群网段 (4094主机)',
+                    24: '原 Class C 经典局域网 (254主机)',
+                    26: '中型部门/VLAN 子网 (62主机)',
+                    27: '小型部门/业务段 (30主机)',
+                    28: '公网服务器段/小微机房 (14主机)',
+                    29: '公网点对多服务器 (6主机)',
+                    30: '传统点对点互联链路 (2主机)',
+                    31: 'RFC 3021 现代点对点直连 (2主机)',
+                    32: '单机独立主机路由 (Single Host / Loopback)'
+                };
+                for (let c = 0; c <= 32; c++) {
+                    const maskInt = cidrToMaskInt(c);
+                    const wildInt = (~maskInt) >>> 0;
+                    const total = Math.pow(2, 32 - c);
+                    let usable = 0;
+                    if (c === 32) usable = 1;
+                    else if (c === 31) usable = 2;
+                    else usable = Math.max(0, total - 2);
+
+                    const toBinaryStr = (num) => [
+                        intToBinary8((num >>> 24) & 255),
+                        intToBinary8((num >>> 16) & 255),
+                        intToBinary8((num >>> 8) & 255),
+                        intToBinary8(num & 255)
+                    ].join('.');
+
+                    list.push({
+                        cidr: c,
+                        mask: intToIp(maskInt),
+                        wildcard: intToIp(wildInt),
+                        totalIps: total.toLocaleString(),
+                        usableHosts: usable.toLocaleString(),
+                        binary: toBinaryStr(maskInt),
+                        note: notes[c] || '常规 CIDR 子网划分'
+                    });
+                }
+                return list;
+            });
+
+            const v6PrefixReferenceList = computed(() => {
+                return [
+                    { prefix: 128, name: '单主机 / 接口', capacity: '1 个 IP', subnets64: '—', description: '设备 Loopback、容器独立 IP、DNS 服务单播目标' },
+                    { prefix: 127, name: '点对点链路 (RFC 6164)', capacity: '2 个 IP', subnets64: '—', description: '路由器与交换机间点对点直连接口，防止邻居发现耗尽' },
+                    { prefix: 120, name: '极小微子网', capacity: '256 个 IP', subnets64: '—', description: '专用小微隔离网络 (8 bits 主机)' },
+                    { prefix: 112, name: '小微服务网段', capacity: '65,536 个 IP', subnets64: '—', description: '基础设施内网小集群' },
+                    { prefix: 64, name: '标准终端/LAN 网段', capacity: '2^64 (约 1.84×10^19)', subnets64: '1 个标准子网', description: 'IETF 标准单广播域大小，SLAAC 无状态自动配置最低要求' },
+                    { prefix: 60, name: '小型企业/家庭路由', capacity: '2^68 (16 个 /64)', subnets64: '16 个 /64 子网', description: '宽带运营商向家庭路由器通过 DHCPv6-PD 下发的标准前缀' },
+                    { prefix: 56, name: '宽带标准租约 / 园区网', capacity: '2^72 (256 个 /64)', subnets64: '256 个 /64 子网', description: '主流 ISP (中国电信/联通/移动等) 分配给光猫或中小企业的标准块' },
+                    { prefix: 52, name: '中型机构 / 区域数据中心', capacity: '2^76 (4,096 个 /64)', subnets64: '4,096 个 /64 子网', description: '多楼宇办公区、中型云 VPC 专网' },
+                    { prefix: 48, name: '大型企业站点 / 数据中心', capacity: '2^80 (65,536 个 /64)', subnets64: '65,536 个 /64 子网', description: 'RIR (APNIC/ARIN等) 分配给单一企业站点的标准全局路由前缀' },
+                    { prefix: 32, name: '互联网服务提供商 (ISP)', capacity: '2^96 (65,536 个 /48)', subnets64: '42.9 亿个 /64', description: 'RIR 分配给大型 ISP/电信运营商的初始标准分配块' },
+                    { prefix: 23, name: '大型运营商 / 云厂商', capacity: '2^105', subnets64: '5,497 亿个 /64', description: '顶级云服务商与骨干网络运营商基础设施段' }
+                ];
+            });
+
+            const applyReferenceCidr = (c) => {
+                ipVersion.value = 'ipv4';
+                v4Cidr.value = c;
+                handleCidrChange();
+                activeTab.value = 'calc';
+                ElementPlus.ElMessage.success(`已切换至 IPv4 /${c} 掩码`);
+            };
+
+            const applyReferenceV6Prefix = (p) => {
+                ipVersion.value = 'ipv6';
+                v6Prefix.value = p;
+                handleV6PrefixChange();
+                activeTab.value = 'calc';
+                ElementPlus.ElMessage.success(`已切换至 IPv6 /${p} 前缀`);
+            };
+
+            onMounted(() => {
+                recomputeV4Subnets();
+                recomputeV6Subnets();
+                checkIpBelongs();
+            });
+
+            return {
+                ipVersion,
+                activeTab,
+                // IPv4
+                inputIpStr,
+                v4Cidr,
+                v4MaskOptions,
+                v4MaskDec,
+                v4HexIp,
+                v4IpAnalysis,
+                calcResultV4,
+                binaryBreakdownV4,
+                // IPv6
+                inputV6Str,
+                v6Prefix,
+                v6IpAnalysis,
+                calcResultV6,
+                v6HextetBreakdown,
+                // Actions & Events
+                parseError,
+                handleVersionSwitch,
+                handleIpChange,
+                handleCidrChange,
+                handleV6Change,
+                handleV6PrefixChange,
+                loadPreset,
+                resetForm,
+                copyText,
+                copyAllSummary,
+                exportMarkdown,
+                // IPv4 Subnetting
+                v4SubnettingMode,
+                v4TargetSubnetCount,
+                v4TargetHostsPerSubnet,
+                v4PlannedCidr,
+                v4AvailableSubnetCounts,
+                v4SelectablePlannedCidrs,
+                v4PlannedMaskDec,
+                v4PlannedUsableHosts,
+                v4GeneratedSubnets,
+                recomputeV4Subnets,
+                copySubnetTableCsv,
+                downloadSubnetCsv,
+                // IPv6 Subnetting
+                v6PlannedPrefix,
+                v6SelectablePrefixes,
+                getV6SubnetDesc,
+                v6PlannedTotalSubnetsText,
+                v6GeneratedSubnets,
+                recomputeV6Subnets,
+                copyV6SubnetTableCsv,
+                downloadV6SubnetCsv,
+                // Checker
+                targetCheckIp,
+                checkResultStatus,
+                batchCheckIpText,
+                batchCheckResults,
+                checkIpBelongs,
+                runBatchCheck,
+                // Cheatsheet
+                v4MaskReferenceList,
+                v6PrefixReferenceList,
+                applyReferenceCidr,
+                applyReferenceV6Prefix
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('.main-body');
+</script>
+</body>
+</html>

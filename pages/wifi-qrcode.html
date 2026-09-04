@@ -1,0 +1,1505 @@
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>WiFi 扫码直连二维码与台卡生成器 - 在线工具</title>
+    <meta name="description" content="专业 WiFi 扫码直连二维码与精美台卡生成器：全面支持 qr-code-styling 高颜值点阵、定位角形状、单色/渐变色彩定制与中心 WiFi Logo 嵌入；遵循标准 WiFi 协议免密直连；提供极简科技、咖啡厅、商务会议、深色霓虹 4 款精美台卡模板，支持单面/双面折叠立牌一键打印与导出高清 PNG/SVG 矢量图。" />
+    <meta name="keywords" content="WiFi二维码生成器,WiFi扫码直连,无线网络二维码,WiFi台卡生成,咖啡厅WiFi桌牌,会议室WiFi台卡,折叠立牌打印,WiFi一键连接,qr-code-styling,WiFi矢量SVG" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        /* 预览外框 */
+        .stand-preview-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 28px 16px;
+            background: #040810;
+            border-radius: 14px;
+            border: 1px dashed rgba(51, 65, 85, 0.8);
+            min-height: 520px;
+            overflow-x: auto;
+        }
+
+        /* 基础台卡卡片容器 */
+        .stand-card {
+            width: 350px;
+            border-radius: 20px;
+            padding: 28px 24px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.8);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        /* 模板 1: 极简科技 (Tech Minimal) */
+        .theme-tech {
+            background: linear-gradient(145deg, #091322 0%, #030712 100%);
+            border: 1.5px solid rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 35px rgba(56, 189, 248, 0.15), 0 20px 40px rgba(0,0,0,0.85);
+            color: #f8fafc;
+        }
+        .theme-tech .stand-badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 999px;
+            padding: 4px 14px;
+            font-size: 11px;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        .theme-tech .qr-wrap {
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 16px;
+            display: inline-block;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+        }
+
+        /* 模板 2: 咖啡厅复古优雅 (Cafe & Bistro) */
+        .theme-cafe {
+            background: linear-gradient(160deg, #1c140d 0%, #0f0a06 100%);
+            border: 1.5px solid rgba(217, 119, 6, 0.45);
+            box-shadow: 0 0 35px rgba(245, 158, 11, 0.15), 0 20px 40px rgba(0,0,0,0.85);
+            color: #fef3c7;
+        }
+        .theme-cafe .stand-badge {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.16);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            border-radius: 8px;
+            padding: 4px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+        .theme-cafe .qr-wrap {
+            background: #fffbeb;
+            padding: 10px;
+            border-radius: 16px;
+            display: inline-block;
+            border: 2px solid #d97706;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55);
+        }
+
+        /* 模板 3: 商务尊享 (Business Executive) */
+        .theme-business {
+            background: linear-gradient(145deg, #0f172a 0%, #020617 100%);
+            border: 1.5px solid rgba(234, 179, 8, 0.45);
+            box-shadow: 0 0 35px rgba(234, 179, 8, 0.12), 0 20px 40px rgba(0,0,0,0.85);
+            color: #f8fafc;
+        }
+        .theme-business .stand-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #ca8a04, #eab308);
+            color: #0f172a;
+            border-radius: 6px;
+            padding: 3px 12px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+        }
+        .theme-business .qr-wrap {
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 14px;
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+        }
+
+        /* 模板 4: 赛博霓虹 (Cyber Neon) */
+        .theme-neon {
+            background: linear-gradient(145deg, #19092c 0%, #070210 100%);
+            border: 1.5px solid #ec4899;
+            box-shadow: 0 0 35px rgba(236, 72, 153, 0.28), 0 0 18px rgba(168, 85, 247, 0.22);
+            color: #fae8ff;
+        }
+        .theme-neon .stand-badge {
+            display: inline-block;
+            background: rgba(236, 72, 153, 0.2);
+            color: #f472b6;
+            border: 1px solid #ec4899;
+            border-radius: 999px;
+            padding: 4px 14px;
+            font-size: 11px;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            font-weight: 700;
+        }
+        .theme-neon .qr-wrap {
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 16px;
+            display: inline-block;
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.35);
+        }
+
+        /* QR Code 内部画布与 SVG 自适应 */
+        .qr-wrap canvas, .qr-wrap svg {
+            display: block;
+            border-radius: 8px;
+        }
+
+        /* 折叠立牌辅助线 */
+        .fold-divider {
+            width: 100%;
+            border-top: 2px dashed rgba(148, 163, 184, 0.5);
+            margin: 16px 0;
+            position: relative;
+            text-align: center;
+        }
+        .fold-divider span {
+            background: #040810;
+            padding: 2px 10px;
+            color: #94a3b8;
+            font-size: 11px;
+            position: relative;
+            top: -10px;
+            border-radius: 4px;
+            font-family: ui-monospace, monospace;
+        }
+
+        .fold-tab {
+            width: 100%;
+            height: 38px;
+            border: 1.5px dashed rgba(148, 163, 184, 0.4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 11px;
+            font-family: ui-monospace, monospace;
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* 自定义 Element 标签页深色适配 */
+        .tool-tabs .el-tabs__header {
+            margin-bottom: 16px;
+        }
+        .tool-tabs .el-tabs__nav-wrap::after {
+            background-color: rgba(51, 65, 85, 0.5);
+        }
+        .tool-tabs .el-tabs__item {
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .tool-tabs .el-tabs__item.is-active {
+            color: #22d3ee;
+            font-weight: 600;
+        }
+        .tool-tabs .el-tabs__active-bar {
+            background-color: #22d3ee;
+        }
+
+        /* 打印专用 CSS */
+        @media print {
+            @page {
+                size: portrait;
+                margin: 10mm;
+            }
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            body * {
+                visibility: hidden;
+            }
+            .grid-bg, .tool-topbar, .tool-head, .tool-form-col, .action-buttons-bar, .description, .header-hint, .tips-box {
+                display: none !important;
+            }
+            #printableStandArea, #printableStandArea * {
+                visibility: visible;
+            }
+            #printableStandArea {
+                position: absolute;
+                left: 50%;
+                top: 0;
+                transform: translateX(-50%);
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                page-break-inside: avoid;
+            }
+            .stand-card {
+                box-shadow: none !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .fold-divider span {
+                background: #ffffff !important;
+                color: #475569 !important;
+            }
+        }
+    </style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="在线工具集" />
+    <meta property="og:title" content="WiFi 扫码直连二维码与台卡生成器 - 在线工具" />
+    <meta property="og:description" content="基于 qr-code-styling 强大视觉定制引擎，生成 WiFi 扫码直连二维码与 4 款精美可打印台卡模板，支持高清 PNG 与 SVG 矢量导出。" />
+    <meta property="og:url" content="https://tool.6767.chat/wifi-qrcode" />
+    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="WiFi 扫码直连二维码与台卡生成器 - 在线工具" />
+    <meta name="twitter:description" content="基于 qr-code-styling 强大视觉定制引擎，生成 WiFi 扫码直连二维码与 4 款精美台卡模板，支持打印与高清导出。" />
+    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
+    <link rel="canonical" href="https://tool.6767.chat/wifi-qrcode" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- 统一顶部导航 -->
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">WiFi 扫码直连与台卡生成器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <!-- 页面标题 -->
+                <div class="tool-head flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h1 class="title text-xl md:text-2xl font-bold text-slate-100 mb-1">WiFi 扫码直连二维码与台卡生成器</h1>
+                        <p class="description text-slate-400 text-sm mb-0">
+                            全面接入 <code class="text-cyan-400 font-mono text-xs">qr-code-styling</code> 视觉定制引擎，支持圆角点阵/定位角形状/色彩渐变/WiFi Logo 嵌入，遵循国际标准 WiFi 协议扫码直连，提供 4 款精美台卡排版与折叠立牌打印导出。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 主操作区: 左侧参数控制选项卡 / 右侧台卡实时预览 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    <!-- 左侧: 5 栅格控制面板 -->
+                    <div class="lg:col-span-5 space-y-4 tool-form-col">
+                        <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-700/70">
+                            
+                            <el-tabs v-model="activeTab" class="tool-tabs">
+                                <!-- 选项卡 1: WiFi 连接参数 -->
+                                <el-tab-pane label="📶 WiFi 参数" name="wifi">
+                                    <div class="space-y-4 pt-1">
+                                        <!-- 快捷场景预设 -->
+                                        <div>
+                                            <div class="text-xs text-slate-400 mb-1.5 flex items-center justify-between">
+                                                <span>快捷网络场景预设:</span>
+                                                <span class="text-[11px] text-cyan-400/80">点击一键载入</span>
+                                            </div>
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <button v-for="p in networkPresets" :key="p.label"
+                                                        @click="applyNetworkPreset(p)"
+                                                        class="px-2.5 py-1 rounded bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs transition">
+                                                    {{ p.label }}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <el-form label-position="top" size="small">
+                                            <el-form-item label="无线网络名称 (SSID)" required>
+                                                <el-input v-model="form.ssid" placeholder="例如: StarCoffee_5G / Hotel_VIP_WiFi" clearable>
+                                                    <template #prefix><span class="text-slate-400">📶</span></template>
+                                                </el-input>
+                                            </el-form-item>
+
+                                            <el-form-item label="加密认证类型 (Security)">
+                                                <el-radio-group v-model="form.encryption">
+                                                    <el-radio-button label="WPA">WPA/WPA2/WPA3</el-radio-button>
+                                                    <el-radio-button label="WEP">WEP</el-radio-button>
+                                                    <el-radio-button label="nopass">无密码</el-radio-button>
+                                                </el-radio-group>
+                                            </el-form-item>
+
+                                            <el-form-item v-if="form.encryption !== 'nopass'" label="WiFi 连接密码 (Password)" required>
+                                                <el-input v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="请输入无线密码" clearable>
+                                                    <template #prefix><span class="text-slate-400">🔑</span></template>
+                                                    <template #suffix>
+                                                        <span class="cursor-pointer text-xs text-slate-400 hover:text-cyan-400" @click="showPassword = !showPassword">
+                                                            {{ showPassword ? '隐藏' : '显示' }}
+                                                        </span>
+                                                    </template>
+                                                </el-input>
+                                            </el-form-item>
+
+                                            <div class="flex items-center justify-between pt-1 pb-1">
+                                                <div>
+                                                    <div class="text-xs text-slate-300 font-medium">隐藏网络 (Hidden SSID)</div>
+                                                    <div class="text-[11px] text-slate-500">SSID 不广播时请开启此项</div>
+                                                </div>
+                                                <el-switch v-model="form.hidden" />
+                                            </div>
+                                        </el-form>
+
+                                        <!-- 原始协议字符串预览 -->
+                                        <div class="p-3 rounded-lg bg-slate-950/90 border border-slate-800 text-xs">
+                                            <div class="flex items-center justify-between mb-1.5">
+                                                <span class="font-mono text-slate-400 text-[11px]">标准 WiFi 协议载荷:</span>
+                                                <el-button link size="small" type="primary" @click="copyRawString">复制协议串</el-button>
+                                            </div>
+                                            <div class="font-mono text-cyan-300 break-all bg-slate-900/90 p-2 rounded border border-slate-800/80 text-[11px]">
+                                                {{ rawWifiString }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-tab-pane>
+
+                                <!-- 选项卡 2: 二维码视觉定制 -->
+                                <el-tab-pane label="🎨 二维码视觉" name="styling">
+                                    <div class="space-y-4 pt-1">
+                                        <!-- 点阵形状定制 -->
+                                        <div>
+                                            <div class="text-xs text-slate-300 font-medium mb-1.5">点阵样式 (Dots Pattern):</div>
+                                            <el-radio-group v-model="qrConfig.dotsType" size="small" class="w-full">
+                                                <div class="grid grid-cols-3 gap-1.5 w-full">
+                                                    <el-radio-button label="rounded">圆角 (Rounded)</el-radio-button>
+                                                    <el-radio-button label="dots">圆点 (Dots)</el-radio-button>
+                                                    <el-radio-button label="classy">雅致 (Classy)</el-radio-button>
+                                                    <el-radio-button label="classy-rounded">雅致圆 (Soft)</el-radio-button>
+                                                    <el-radio-button label="square">方块 (Square)</el-radio-button>
+                                                    <el-radio-button label="extra-rounded">流动 (Flow)</el-radio-button>
+                                                </div>
+                                            </el-radio-group>
+                                        </div>
+
+                                        <!-- 定位角形状定制 -->
+                                        <div class="grid grid-cols-2 gap-3 pt-1 border-t border-slate-800">
+                                            <div>
+                                                <div class="text-xs text-slate-300 font-medium mb-1.5">外框定位角:</div>
+                                                <el-select v-model="qrConfig.cornersSquareType" size="small" class="w-full">
+                                                    <el-option label="圆角框 (Extra-Rounded)" value="extra-rounded"></el-option>
+                                                    <el-option label="经典方框 (Square)" value="square"></el-option>
+                                                    <el-option label="圆形框 (Dot)" value="dot"></el-option>
+                                                </el-select>
+                                            </div>
+                                            <div>
+                                                <div class="text-xs text-slate-300 font-medium mb-1.5">定位角内芯:</div>
+                                                <el-select v-model="qrConfig.cornersDotType" size="small" class="w-full">
+                                                    <el-option label="圆芯 (Dot)" value="dot"></el-option>
+                                                    <el-option label="方芯 (Square)" value="square"></el-option>
+                                                </el-select>
+                                            </div>
+                                        </div>
+
+                                        <!-- 快捷配色预设 -->
+                                        <div class="pt-1 border-t border-slate-800">
+                                            <div class="text-xs text-slate-400 mb-1.5">快捷推荐配色:</div>
+                                            <div class="grid grid-cols-3 gap-1.5">
+                                                <button v-for="cp in colorPresets" :key="cp.name"
+                                                        @click="applyColorPreset(cp)"
+                                                        class="p-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-left text-[11px] flex items-center gap-1.5 transition">
+                                                    <span class="w-3 h-3 rounded-full shrink-0" :style="{ background: cp.mode === 'single' ? cp.color : `linear-gradient(135deg, ${cp.start}, ${cp.end})` }"></span>
+                                                    <span class="text-slate-300 truncate">{{ cp.name }}</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- 色彩渐变与模式选择 -->
+                                        <div class="space-y-2.5 pt-1 border-t border-slate-800">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-xs text-slate-300 font-medium">色彩渲染模式:</span>
+                                                <el-radio-group v-model="qrConfig.colorMode" size="small">
+                                                    <el-radio-button label="single">单色</el-radio-button>
+                                                    <el-radio-button label="linear">线性渐变</el-radio-button>
+                                                    <el-radio-button label="radial">径向渐变</el-radio-button>
+                                                </el-radio-group>
+                                            </div>
+
+                                            <!-- 单色模式拾色器 -->
+                                            <div v-if="qrConfig.colorMode === 'single'" class="flex items-center justify-between p-2 rounded bg-slate-950/60 border border-slate-800">
+                                                <span class="text-xs text-slate-400">主体前景色:</span>
+                                                <el-color-picker v-model="qrConfig.dotsColor" size="small" />
+                                            </div>
+
+                                            <!-- 渐变模式配置 -->
+                                            <div v-else class="p-2.5 rounded bg-slate-950/60 border border-slate-800 space-y-2">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-xs text-slate-400">起始色 / 终止色:</span>
+                                                    <div class="flex items-center gap-2">
+                                                        <el-color-picker v-model="qrConfig.gradientStart" size="small" />
+                                                        <span class="text-xs text-slate-500">→</span>
+                                                        <el-color-picker v-model="qrConfig.gradientEnd" size="small" />
+                                                    </div>
+                                                </div>
+                                                <div v-if="qrConfig.colorMode === 'linear'" class="flex items-center justify-between gap-3 pt-1">
+                                                    <span class="text-xs text-slate-400 shrink-0">渐变角度: {{ qrConfig.gradientRotation }}°</span>
+                                                    <el-slider v-model="qrConfig.gradientRotation" :min="0" :max="360" :step="15" size="small" class="w-36" />
+                                                </div>
+                                            </div>
+
+                                            <!-- 二维码底色 -->
+                                            <div class="flex items-center justify-between p-2 rounded bg-slate-950/60 border border-slate-800">
+                                                <span class="text-xs text-slate-400">二维码画框背景色:</span>
+                                                <el-color-picker v-model="qrConfig.bgColor" size="small" />
+                                            </div>
+
+                                            <!-- 独立定位角配色高级开关 -->
+                                            <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800 space-y-2">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-xs text-slate-300 font-medium">独立定制定位角颜色</span>
+                                                    <el-switch v-model="qrConfig.customCorners" size="small" />
+                                                </div>
+                                                <div v-if="qrConfig.customCorners" class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/80">
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="text-[11px] text-slate-400">外框颜色:</span>
+                                                        <el-color-picker v-model="qrConfig.cornersSquareColor" size="small" />
+                                                    </div>
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="text-[11px] text-slate-400">内芯颜色:</span>
+                                                        <el-color-picker v-model="qrConfig.cornersDotColor" size="small" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 中心 Logo 嵌入 -->
+                                        <div class="space-y-2.5 pt-1 border-t border-slate-800">
+                                            <div class="text-xs text-slate-300 font-medium">中心嵌入 WiFi Logo:</div>
+                                            <div class="grid grid-cols-3 gap-1.5">
+                                                <button v-for="lg in builtInLogos" :key="lg.id"
+                                                        @click="selectLogo(lg.id)"
+                                                        :class="['p-2 rounded border text-center text-xs transition flex flex-col items-center gap-1', qrConfig.logoType === lg.id ? 'border-cyan-400 bg-cyan-500/15 text-cyan-200' : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:text-slate-200']">
+                                                    <span class="text-base">{{ lg.icon }}</span>
+                                                    <span class="text-[10px]">{{ lg.name }}</span>
+                                                </button>
+                                            </div>
+
+                                            <div v-if="qrConfig.logoType === 'custom'" class="p-2 rounded bg-slate-950/60 border border-slate-800 space-y-1.5">
+                                                <div class="text-xs text-slate-400">上传本地 Logo 图片:</div>
+                                                <input type="file" accept="image/*" @change="handleCustomLogoUpload" class="text-xs text-slate-400 block w-full file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-cyan-600 file:text-white hover:file:bg-cyan-500" />
+                                            </div>
+
+                                            <div v-if="qrConfig.logoType !== 'none'" class="p-2.5 rounded bg-slate-950/60 border border-slate-800 space-y-2 text-xs">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-slate-400">Logo 尺寸缩放:</span>
+                                                    <el-slider v-model="qrConfig.imageSize" :min="0.18" :max="0.45" :step="0.01" size="small" class="w-32" />
+                                                </div>
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-slate-400">清除 Logo 下方点阵:</span>
+                                                    <el-switch v-model="qrConfig.hideBackgroundDots" size="small" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 容错等级 -->
+                                        <div class="flex items-center justify-between pt-1 border-t border-slate-800 text-xs">
+                                            <span class="text-slate-400">纠错级别 (Error Level):</span>
+                                            <el-radio-group v-model="qrConfig.errorCorrectionLevel" size="small">
+                                                <el-radio-button label="M">M(15%)</el-radio-button>
+                                                <el-radio-button label="Q">Q(25%)</el-radio-button>
+                                                <el-radio-button label="H">H(30%)</el-radio-button>
+                                            </el-radio-group>
+                                        </div>
+                                    </div>
+                                </el-tab-pane>
+
+                                <!-- 选项卡 3: 台卡文案与模板排版 -->
+                                <el-tab-pane label="🪧 台卡排版" name="stand">
+                                    <div class="space-y-4 pt-1">
+                                        <!-- 模板选择 -->
+                                        <div>
+                                            <div class="text-xs text-slate-300 font-medium mb-1.5">选择台卡主题风格:</div>
+                                            <div class="grid grid-cols-2 gap-2">
+                                                <button v-for="t in templates" :key="t.id"
+                                                        @click="selectTemplate(t.id)"
+                                                        :class="['p-2.5 rounded-lg border text-left text-xs font-medium transition flex items-center gap-2', currentTemplate === t.id ? 'border-cyan-400 bg-cyan-500/15 text-cyan-200' : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:text-slate-200']">
+                                                    <span class="text-base">{{ t.icon }}</span>
+                                                    <div>
+                                                        <div class="font-semibold">{{ t.name }}</div>
+                                                        <div class="text-[10px] opacity-70">{{ t.desc }}</div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- 台卡版型选择 (单面 / 双面折叠立牌) -->
+                                        <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800 space-y-1.5">
+                                            <div class="text-xs text-slate-300 font-medium mb-1">台卡版型模式:</div>
+                                            <el-radio-group v-model="form.standType" size="small" class="w-full">
+                                                <el-radio-button label="single">单面台卡 / 亚克力相框卡</el-radio-button>
+                                                <el-radio-button label="fold">双面折叠立牌 (免相框直立)</el-radio-button>
+                                            </el-radio-group>
+                                        </div>
+
+                                        <el-form label-position="top" size="small">
+                                            <el-form-item label="顶部徽章文字">
+                                                <el-input v-model="form.badgeText" placeholder="例如: FREE HIGH-SPEED WI-FI 6" />
+                                            </el-form-item>
+
+                                            <el-form-item label="台卡主标题">
+                                                <el-input v-model="form.title" placeholder="例如: 欢迎连接极速 WiFi" />
+                                            </el-form-item>
+
+                                            <el-form-item label="扫码引导文案">
+                                                <el-input v-model="form.tip" placeholder="例如: 打开微信或手机相机扫一扫，免输密码直接连网" />
+                                            </el-form-item>
+
+                                            <el-form-item label="底部附注 / 标语">
+                                                <el-input v-model="form.footerNote" placeholder="例如: 2.4G / 5G 双频合一 · 畅享千兆光纤" />
+                                            </el-form-item>
+                                        </el-form>
+
+                                        <div class="flex items-center justify-between text-xs text-slate-400 pt-1 border-t border-slate-800">
+                                            <span>台卡展示栏显示明文密码</span>
+                                            <el-switch v-model="form.showPasswordOnCard" />
+                                        </div>
+                                    </div>
+                                </el-tab-pane>
+                            </el-tabs>
+
+                        </div>
+                    </div>
+
+                    <!-- 右侧: 7 栅格台卡实时渲染预览与操作栏 -->
+                    <div class="lg:col-span-7 space-y-4">
+                        <!-- 操作栏 -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-slate-900/80 border border-slate-700/70 action-buttons-bar">
+                            <div class="text-xs font-mono text-cyan-400 font-semibold flex items-center gap-1.5">
+                                <span>⚡</span>
+                                <span>实时排版渲染预览 (Live Preview)</span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <el-button size="small" @click="printStand">
+                                    <span>🖨️</span> 打印台卡
+                                </el-button>
+                                <el-button size="small" type="primary" @click="exportStandPng" :loading="isExporting">
+                                    <span>🖼️</span> 导出台卡 PNG
+                                </el-button>
+                                <el-dropdown size="small" trigger="click" @command="handleExportCommand">
+                                    <el-button size="small">
+                                        更多导出 <span class="el-icon--right">▼</span>
+                                    </el-button>
+                                    <template #dropdown>
+                                        <el-dropdown-menu>
+                                            <el-dropdown-item command="qr-png">📥 单独导出二维码 PNG (高清)</el-dropdown-item>
+                                            <el-dropdown-item command="qr-svg">📐 单独导出二维码 SVG (矢量)</el-dropdown-item>
+                                            <el-dropdown-item command="copy-card">📋 复制台卡图片到剪贴板</el-dropdown-item>
+                                            <el-dropdown-item command="copy-raw">📋 复制标准 WiFi 协议串</el-dropdown-item>
+                                        </el-dropdown-menu>
+                                    </template>
+                                </el-dropdown>
+                            </div>
+                        </div>
+
+                        <!-- 打印 / 预览容器 -->
+                        <div class="stand-preview-wrapper" id="printableStandArea">
+                            
+                            <!-- 单面台卡模式 -->
+                            <div v-if="form.standType === 'single'" id="singleStandCard" :class="['stand-card', 'theme-' + currentTemplate]">
+                                <!-- 顶部徽章 -->
+                                <div class="mb-3">
+                                    <span class="stand-badge">{{ form.badgeText || getBadgeText() }}</span>
+                                </div>
+
+                                <!-- 台卡标题 -->
+                                <h2 class="text-lg font-bold tracking-wide mb-1">{{ form.title || '欢迎连接无线网络' }}</h2>
+                                <p class="text-xs opacity-75 mb-3 px-2">{{ form.tip || '使用手机相机或微信扫一扫，自动连接 WiFi' }}</p>
+
+                                <!-- 二维码容器 (QRCodeStyling 挂载节点) -->
+                                <div class="qr-wrap mb-3.5" :style="{ background: qrConfig.bgColor }">
+                                    <div id="qrCodeContainer" class="w-[200px] h-[200px] flex items-center justify-center"></div>
+                                </div>
+
+                                <!-- 网络名称与密码展示栏 -->
+                                <div class="bg-black/35 backdrop-blur rounded-xl p-3 border border-white/10 space-y-1.5 text-xs text-left mb-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="opacity-70">网络名称 (SSID):</span>
+                                        <span class="font-mono font-bold truncate max-w-[170px]" :title="form.ssid">{{ form.ssid || '未设置' }}</span>
+                                    </div>
+                                    <div v-if="form.encryption !== 'nopass'" class="flex items-center justify-between">
+                                        <span class="opacity-70">无线密码 (PWD):</span>
+                                        <span class="font-mono font-bold">
+                                            {{ form.showPasswordOnCard ? (form.password || '无') : '●●●●●●●●' }}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-[11px] opacity-60 pt-0.5 border-t border-white/5">
+                                        <span>加密模式: {{ form.encryption }}</span>
+                                        <span>📶 2.4G/5G 双频合一</span>
+                                    </div>
+                                </div>
+
+                                <!-- 底部品牌或附注 -->
+                                <div class="text-[11px] opacity-60 font-mono">
+                                    {{ form.footerNote || '扫码即连 · 畅享极速网络' }}
+                                </div>
+                            </div>
+
+                            <!-- 双面折叠立牌模式 (A4 对折桌牌) -->
+                            <div v-else id="foldStandContainer" class="flex flex-col items-center w-[350px]">
+                                
+                                <!-- 背面 (对侧顾客视角 - 可翻转预览) -->
+                                <div :class="['stand-card', 'theme-' + currentTemplate, isFlippedTop ? 'rotate-180' : '']" style="transform-origin: center;">
+                                    <div class="mb-3">
+                                        <span class="stand-badge">{{ form.badgeText || getBadgeText() }}</span>
+                                    </div>
+                                    <h2 class="text-lg font-bold tracking-wide mb-1">{{ form.title || '欢迎连接无线网络' }}</h2>
+                                    <p class="text-xs opacity-75 mb-3 px-2">{{ form.tip || '使用手机相机或微信扫一扫，自动连接 WiFi' }}</p>
+
+                                    <div class="qr-wrap mb-3.5" :style="{ background: qrConfig.bgColor }">
+                                        <canvas id="qrCodeMirrorCanvas" width="200" height="200" class="w-[200px] h-[200px] block"></canvas>
+                                    </div>
+
+                                    <div class="bg-black/35 backdrop-blur rounded-xl p-3 border border-white/10 space-y-1.5 text-xs text-left mb-3">
+                                        <div class="flex items-center justify-between">
+                                            <span class="opacity-70">网络名称 (SSID):</span>
+                                            <span class="font-mono font-bold truncate max-w-[170px]">{{ form.ssid || '未设置' }}</span>
+                                        </div>
+                                        <div v-if="form.encryption !== 'nopass'" class="flex items-center justify-between">
+                                            <span class="opacity-70">无线密码 (PWD):</span>
+                                            <span class="font-mono font-bold">{{ form.showPasswordOnCard ? (form.password || '无') : '●●●●●●●●' }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-[11px] opacity-60 font-mono">
+                                        {{ form.footerNote || '扫码即连 · 畅享极速网络' }}
+                                    </div>
+                                </div>
+
+                                <!-- 中间对折分割线 -->
+                                <div class="fold-divider">
+                                    <span>✂️ 顶部对折线 (FOLD LINE)</span>
+                                </div>
+
+                                <!-- 正面 (本侧顾客视角) -->
+                                <div :class="['stand-card', 'theme-' + currentTemplate]">
+                                    <div class="mb-3">
+                                        <span class="stand-badge">{{ form.badgeText || getBadgeText() }}</span>
+                                    </div>
+                                    <h2 class="text-lg font-bold tracking-wide mb-1">{{ form.title || '欢迎连接无线网络' }}</h2>
+                                    <p class="text-xs opacity-75 mb-3 px-2">{{ form.tip || '使用手机相机或微信扫一扫，自动连接 WiFi' }}</p>
+
+                                    <div class="qr-wrap mb-3.5" :style="{ background: qrConfig.bgColor }">
+                                        <div id="qrCodeContainer" class="w-[200px] h-[200px] flex items-center justify-center"></div>
+                                    </div>
+
+                                    <div class="bg-black/35 backdrop-blur rounded-xl p-3 border border-white/10 space-y-1.5 text-xs text-left mb-3">
+                                        <div class="flex items-center justify-between">
+                                            <span class="opacity-70">网络名称 (SSID):</span>
+                                            <span class="font-mono font-bold truncate max-w-[170px]">{{ form.ssid || '未设置' }}</span>
+                                        </div>
+                                        <div v-if="form.encryption !== 'nopass'" class="flex items-center justify-between">
+                                            <span class="opacity-70">无线密码 (PWD):</span>
+                                            <span class="font-mono font-bold">{{ form.showPasswordOnCard ? (form.password || '无') : '●●●●●●●●' }}</span>
+                                        </div>
+                                        <div class="flex items-center justify-between text-[11px] opacity-60 pt-0.5 border-t border-white/5">
+                                            <span>加密模式: {{ form.encryption }}</span>
+                                            <span>📶 2.4G/5G 双频合一</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-[11px] opacity-60 font-mono">
+                                        {{ form.footerNote || '扫码即连 · 畅享极速网络' }}
+                                    </div>
+                                </div>
+
+                                <!-- 底部粘合固定台基 -->
+                                <div class="fold-tab">
+                                    📎 底部贴合固定区 (STAND BASE GLUE TAB)
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- 扫码支持指南 -->
+                        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400 space-y-2 tips-box">
+                            <div class="font-semibold text-slate-300 flex items-center gap-1.5">
+                                <span>💡</span>
+                                <span>标准协议扫码直连与打印说明:</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                                <div class="p-2.5 rounded bg-slate-950/70 border border-slate-800/80">
+                                    <div class="font-medium text-slate-200 mb-1">🍎 iOS (iPhone/iPad)</div>
+                                    <div class="text-[11px] leading-relaxed text-slate-400">打开自带【相机】对准二维码，顶部立即弹出“加入无线局域网”，点击即可直连。</div>
+                                </div>
+                                <div class="p-2.5 rounded bg-slate-950/70 border border-slate-800/80">
+                                    <div class="font-medium text-slate-200 mb-1">🤖 华为 / 小米 / 安卓</div>
+                                    <div class="text-[11px] leading-relaxed text-slate-400">系统相机或控制中心【扫一扫】对准识别，一键自动接入 WiFi；微信扫码亦可一键授权直连。</div>
+                                </div>
+                                <div class="p-2.5 rounded bg-slate-950/70 border border-slate-800/80">
+                                    <div class="font-medium text-slate-200 mb-1">🖨️ 打印与装配建议</div>
+                                    <div class="text-[11px] leading-relaxed text-slate-400">单面卡适合 10×15cm (6寸照片纸) 放入透明亚克力架；折叠立牌用 A4 铜版纸打印直接对折立桌。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/qr-code-styling/qr-code-styling.js"></script>
+
+<script>
+    const { createApp, ref, computed, watch, onMounted, nextTick } = Vue;
+
+    // 内置高清矢量 WiFi Logo DataURIs (100% 离线)
+    const LOGO_WIFI_CLASSIC = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" rx="24" fill="%230284c7"/><path d="M50 20c-15.5 0-29.5 6.3-39.7 16.5l6.6 6.6C25.4 34.6 37 29.3 50 29.3s24.6 5.3 33.1 13.8l6.6-6.6C79.5 26.3 65.5 20 50 20zm0 18.7c-10.3 0-19.7 4.2-26.5 11l6.6 6.6c5.1-5.1 12.1-8.3 19.9-8.3s14.8 3.2 19.9 8.3l6.6-6.6c-6.8-6.8-16.2-11-26.5-11zm0 18.7c-5.2 0-9.8 2.1-13.2 5.5L50 76l13.2-13.1c-3.4-3.4-8-5.5-13.2-5.5z" fill="%23ffffff"/></svg>`;
+    const LOGO_WIFI_6 = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><defs><linearGradient id="g6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%25" stop-color="%230284c7"/><stop offset="100%25" stop-color="%2338bdf8"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="url(%23g6)"/><path d="M50 18c-12 0-23 4.8-31 12.6l5.5 5.5C31 29.5 40 25.5 50 25.5s19 4 25.5 10.6l5.5-5.5C73 22.8 62 18 50 18zm0 15c-8 0-15.5 3.3-21 8.8l5.5 5.5c4-4 9.5-6.5 15.5-6.5s11.5 2.5 15.5 6.5l5.5-5.5C65.5 36.3 58 33 50 33zm0 15c-4 0-7.8 1.6-10.5 4.3L50 63l10.5-10.7c-2.7-2.7-6.5-4.3-10.5-4.3z" fill="%23ffffff"/><rect x="62" y="56" width="26" height="26" rx="6" fill="%23ffffff"/><text x="75" y="76" font-family="Arial,sans-serif" font-weight="900" font-size="20" text-anchor="middle" fill="%230284c7">6</text></svg>`;
+    const LOGO_WIFI_LOCK = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" rx="24" fill="%23ca8a04"/><path d="M50 20c-15.5 0-29.5 6.3-39.7 16.5l6.6 6.6C25.4 34.6 37 29.3 50 29.3s24.6 5.3 33.1 13.8l6.6-6.6C79.5 26.3 65.5 20 50 20zm0 18.7c-10.3 0-19.7 4.2-26.5 11l6.6 6.6c5.1-5.1 12.1-8.3 19.9-8.3s14.8 3.2 19.9 8.3l6.6-6.6c-6.8-6.8-16.2-11-26.5-11z" fill="%23ffffff"/><rect x="36" y="56" width="28" height="24" rx="4" fill="%23ffffff"/><path d="M42 56v-6a8 8 0 0 1 16 0v6h-4v-6a4 4 0 0 0-8 0v6z" fill="%23ffffff"/><circle cx="50" cy="67" r="3" fill="%23ca8a04"/></svg>`;
+    const LOGO_WIFI_CAFE = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" rx="24" fill="%23d97706"/><path d="M50 18c-12 0-23 4.8-31 12.6l5.5 5.5C31 29.5 40 25.5 50 25.5s19 4 25.5 10.6l5.5-5.5C73 22.8 62 18 50 18zm0 14c-8 0-15.5 3.3-21 8.8l5.5 5.5c4-4 9.5-6.5 15.5-6.5s11.5 2.5 15.5 6.5l5.5-5.5C65.5 35.3 58 32 50 32z" fill="%23ffffff"/><path d="M26 52h40v18a12 12 0 0 1-12 12H38a12 12 0 0 1-12-12V52zm40 6h4a6 6 0 0 1 6 6v2a6 6 0 0 1-6 6h-4v-14zm-44 26h56a2 2 0 0 1 0 4H22a2 2 0 0 1 0-4z" fill="%23ffffff"/></svg>`;
+    const LOGO_WIFI_NEON = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><defs><linearGradient id="gn" x1="0" y1="0" x2="1" y2="1"><stop offset="0%25" stop-color="%23ec4899"/><stop offset="100%25" stop-color="%238b5cf6"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="url(%23gn)"/><path d="M50 20c-15.5 0-29.5 6.3-39.7 16.5l6.6 6.6C25.4 34.6 37 29.3 50 29.3s24.6 5.3 33.1 13.8l6.6-6.6C79.5 26.3 65.5 20 50 20zm0 18.7c-10.3 0-19.7 4.2-26.5 11l6.6 6.6c5.1-5.1 12.1-8.3 19.9-8.3s14.8 3.2 19.9 8.3l6.6-6.6c-6.8-6.8-16.2-11-26.5-11zm0 18.7c-5.2 0-9.8 2.1-13.2 5.5L50 76l13.2-13.1c-3.4-3.4-8-5.5-13.2-5.5z" fill="%23ffffff"/></svg>`;
+
+    createApp({
+        setup() {
+            const activeTab = ref('wifi');
+            const showPassword = ref(false);
+            const isExporting = ref(false);
+            const currentTemplate = ref('tech');
+            const customLogoDataUrl = ref('');
+            const isFlippedTop = ref(true);
+
+            let qrCodeInstance = null;
+
+            // 表单与文案
+            const form = ref({
+                ssid: 'StarWiFi_5G',
+                password: 'superpassword888',
+                encryption: 'WPA',
+                hidden: false,
+                standType: 'single', // 'single' | 'fold'
+                badgeText: 'FREE HIGH-SPEED WI-FI 6',
+                title: '欢迎连接高速 Wi-Fi',
+                tip: '打开微信或手机相机扫一扫，免输密码直接连接',
+                footerNote: '2.4G / 5G 双频合一 · 畅享千兆光纤网络',
+                showPasswordOnCard: true
+            });
+
+            // 二维码 QRCodeStyling 视觉定制参数
+            const qrConfig = ref({
+                dotsType: 'classy-rounded', // 'rounded' | 'dots' | 'classy' | 'classy-rounded' | 'square' | 'extra-rounded'
+                cornersSquareType: 'extra-rounded', // 'extra-rounded' | 'square' | 'dot'
+                cornersDotType: 'dot', // 'dot' | 'square'
+                colorMode: 'linear', // 'single' | 'linear' | 'radial'
+                dotsColor: '#0284c7',
+                gradientStart: '#0284c7',
+                gradientEnd: '#38bdf8',
+                gradientRotation: 45,
+                customCorners: false,
+                cornersSquareColor: '#0284c7',
+                cornersDotColor: '#38bdf8',
+                bgColor: '#ffffff',
+                margin: 6,
+                errorCorrectionLevel: 'Q', // 'L' | 'M' | 'Q' | 'H'
+                logoType: 'wifi-6', // 'wifi-classic' | 'wifi-6' | 'wifi-lock' | 'wifi-cafe' | 'wifi-neon' | 'custom' | 'none'
+                imageSize: 0.35,
+                imageMargin: 4,
+                hideBackgroundDots: true
+            });
+
+            // 4 款模板定义
+            const templates = ref([
+                { id: 'tech', name: '极简科技卡片', icon: '⚡', desc: '荧光蓝调 · 极客现代' },
+                { id: 'cafe', name: '咖啡餐饮台卡', icon: '☕', desc: '暖棕琥珀 · 悠闲复古' },
+                { id: 'business', name: '商务会议台卡', icon: '💼', desc: '黑金雅致 · 会议尊享' },
+                { id: 'neon', name: '深色霓虹海报', icon: '🔮', desc: '赛博紫粉 · 潮流炫酷' }
+            ]);
+
+            // 预设网络参数
+            const networkPresets = [
+                { label: '☕ 咖啡厅/餐厅', ssid: 'StarCoffee_Guest', password: 'coffee_guest_88', enc: 'WPA', template: 'cafe' },
+                { label: '🏢 企业/会议室', ssid: 'VIP_Conference_5G', password: 'BoardRoom_Pass2026', enc: 'WPA', template: 'business' },
+                { label: '⚡ 极客/家庭', ssid: 'Matrix_Cyber_WiFi', password: 'cyber_pass_2026', enc: 'WPA', template: 'tech' },
+                { label: '🔮 潮流/派对', ssid: 'NEON_PARTY_ZONE', password: 'neon_night_888', enc: 'WPA', template: 'neon' },
+                { label: '🌐 免密开放网络', ssid: 'Public_Free_WiFi', password: '', enc: 'nopass', template: 'tech' }
+            ];
+
+            // 快速色彩预设
+            const colorPresets = [
+                { name: '科技极光蓝', mode: 'linear', start: '#0284c7', end: '#38bdf8', rotation: 45, bg: '#ffffff' },
+                { name: '赛博紫霓虹', mode: 'linear', start: '#db2777', end: '#8b5cf6', rotation: 45, bg: '#ffffff' },
+                { name: '琥珀咖啡金', mode: 'linear', start: '#78350f', end: '#d97706', rotation: 90, bg: '#fffbeb' },
+                { name: '黑金尊享', mode: 'linear', start: '#1e293b', end: '#ca8a04', rotation: 135, bg: '#ffffff' },
+                { name: '极客矩阵绿', mode: 'linear', start: '#065f46', end: '#10b981', rotation: 45, bg: '#ffffff' },
+                { name: '经典雅致黑', mode: 'single', color: '#0f172a', bg: '#ffffff' }
+            ];
+
+            // 内置 Logo 列表
+            const builtInLogos = [
+                { id: 'wifi-6', name: 'WiFi 6 极速', icon: '📶' },
+                { id: 'wifi-classic', name: '经典 WiFi', icon: '🌐' },
+                { id: 'wifi-lock', name: '安全锁 WiFi', icon: '🔒' },
+                { id: 'wifi-cafe', name: '咖啡 WiFi', icon: '☕' },
+                { id: 'wifi-neon', name: '赛博霓虹', icon: '🔮' },
+                { id: 'custom', name: '自定义图片', icon: '🖼️' },
+                { id: 'none', name: '无 Logo', icon: '🚫' }
+            ];
+
+            // 转义 WiFi 协议特殊字符
+            const escapeWifi = (str) => {
+                if (!str) return '';
+                return String(str)
+                    .replace(/\\/g, '\\\\')
+                    .replace(/;/g, '\\;')
+                    .replace(/,/g, '\\,')
+                    .replace(/:/g, '\\:')
+                    .replace(/"/g, '\\"');
+            };
+
+            // 计算标准 WiFi 字符串载荷
+            const rawWifiString = computed(() => {
+                const s = escapeWifi(form.value.ssid);
+                const p = form.value.encryption === 'nopass' ? '' : escapeWifi(form.value.password);
+                const t = form.value.encryption;
+                const h = form.value.hidden ? 'true' : 'false';
+                return `WIFI:T:${t};S:${s};P:${p};H:${h};;`;
+            });
+
+            const getBadgeText = () => {
+                if (currentTemplate.value === 'tech') return 'FREE HIGH-SPEED WI-FI 6';
+                if (currentTemplate.value === 'cafe') return '☕ COFFEE & RELAX';
+                if (currentTemplate.value === 'business') return '★ VIP GUEST NETWORK';
+                return '⚡ CYBER NEON CONNECT';
+            };
+
+            // 获取当前 Logo 图片 DataURL
+            const getLogoImage = () => {
+                if (qrConfig.value.logoType === 'custom') return customLogoDataUrl.value || undefined;
+                if (qrConfig.value.logoType === 'wifi-6') return LOGO_WIFI_6;
+                if (qrConfig.value.logoType === 'wifi-classic') return LOGO_WIFI_CLASSIC;
+                if (qrConfig.value.logoType === 'wifi-lock') return LOGO_WIFI_LOCK;
+                if (qrConfig.value.logoType === 'wifi-cafe') return LOGO_WIFI_CAFE;
+                if (qrConfig.value.logoType === 'wifi-neon') return LOGO_WIFI_NEON;
+                return undefined;
+            };
+
+            // 构造 QRCodeStyling 配置对象
+            const buildQRCodeOptions = (size = 200) => {
+                const data = rawWifiString.value || 'WIFI:T:WPA;S:WiFi;P:;;';
+                const logo = getLogoImage();
+
+                // dotsOptions
+                const dotsOptions = {
+                    type: qrConfig.value.dotsType
+                };
+                if (qrConfig.value.colorMode === 'single') {
+                    dotsOptions.color = qrConfig.value.dotsColor || '#000000';
+                } else {
+                    dotsOptions.gradient = {
+                        type: qrConfig.value.colorMode,
+                        rotation: (qrConfig.value.gradientRotation * Math.PI) / 180,
+                        colorStops: [
+                            { offset: 0, color: qrConfig.value.gradientStart || '#0284c7' },
+                            { offset: 1, color: qrConfig.value.gradientEnd || '#38bdf8' }
+                        ]
+                    };
+                }
+
+                // cornersSquareOptions
+                const cornersSquareOptions = {
+                    type: qrConfig.value.cornersSquareType
+                };
+                if (qrConfig.value.customCorners) {
+                    cornersSquareOptions.color = qrConfig.value.cornersSquareColor || '#0284c7';
+                } else if (qrConfig.value.colorMode === 'single') {
+                    cornersSquareOptions.color = qrConfig.value.dotsColor || '#000000';
+                } else {
+                    cornersSquareOptions.gradient = {
+                        type: qrConfig.value.colorMode,
+                        rotation: (qrConfig.value.gradientRotation * Math.PI) / 180,
+                        colorStops: [
+                            { offset: 0, color: qrConfig.value.gradientStart || '#0284c7' },
+                            { offset: 1, color: qrConfig.value.gradientEnd || '#38bdf8' }
+                        ]
+                    };
+                }
+
+                // cornersDotOptions
+                const cornersDotOptions = {
+                    type: qrConfig.value.cornersDotType
+                };
+                if (qrConfig.value.customCorners) {
+                    cornersDotOptions.color = qrConfig.value.cornersDotColor || '#38bdf8';
+                } else if (qrConfig.value.colorMode === 'single') {
+                    cornersDotOptions.color = qrConfig.value.dotsColor || '#000000';
+                } else {
+                    cornersDotOptions.gradient = {
+                        type: qrConfig.value.colorMode,
+                        rotation: (qrConfig.value.gradientRotation * Math.PI) / 180,
+                        colorStops: [
+                            { offset: 0, color: qrConfig.value.gradientStart || '#0284c7' },
+                            { offset: 1, color: qrConfig.value.gradientEnd || '#38bdf8' }
+                        ]
+                    };
+                }
+
+                return {
+                    width: size,
+                    height: size,
+                    type: 'canvas',
+                    data: data,
+                    margin: qrConfig.value.margin,
+                    qrOptions: {
+                        typeNumber: 0,
+                        errorCorrectionLevel: qrConfig.value.errorCorrectionLevel
+                    },
+                    dotsOptions,
+                    cornersSquareOptions,
+                    cornersDotOptions,
+                    backgroundOptions: {
+                        color: qrConfig.value.bgColor || '#ffffff'
+                    },
+                    image: logo,
+                    imageOptions: {
+                        hideBackgroundDots: qrConfig.value.hideBackgroundDots,
+                        imageSize: qrConfig.value.imageSize,
+                        margin: qrConfig.value.imageMargin,
+                        crossOrigin: 'anonymous'
+                    }
+                };
+            };
+
+            // 实时更新二维码渲染
+            const updateQRCode = () => {
+                nextTick(() => {
+                    const container = document.getElementById('qrCodeContainer');
+                    if (!container) return;
+
+                    const options = buildQRCodeOptions(200);
+
+                    if (!qrCodeInstance) {
+                        qrCodeInstance = new QRCodeStyling(options);
+                        container.innerHTML = '';
+                        qrCodeInstance.append(container);
+                    } else {
+                        qrCodeInstance.update(options);
+                    }
+
+                    // 如果处于折叠桌牌模式，同步镜像绘制到背面 Canvas
+                    if (form.value.standType === 'fold') {
+                        setTimeout(() => {
+                            const mirrorCanvas = document.getElementById('qrCodeMirrorCanvas');
+                            const sourceCanvas = container.querySelector('canvas');
+                            if (mirrorCanvas && sourceCanvas) {
+                                const ctx = mirrorCanvas.getContext('2d');
+                                ctx.clearRect(0, 0, 200, 200);
+                                ctx.drawImage(sourceCanvas, 0, 0, 200, 200);
+                            }
+                        }, 80);
+                    }
+                });
+            };
+
+            // 深度监听所有配置变动并触发更新
+            watch([form, qrConfig, customLogoDataUrl, currentTemplate], () => {
+                updateQRCode();
+            }, { deep: true });
+
+            // 模板切换与默认配置联动
+            const selectTemplate = (tid) => {
+                currentTemplate.value = tid;
+                if (tid === 'tech') {
+                    form.value.badgeText = 'FREE HIGH-SPEED WI-FI 6';
+                    form.value.title = '极速无线网络连接';
+                    form.value.tip = '打开微信或手机相机扫一扫，免输密码直接连网';
+                    form.value.footerNote = '千兆光纤 · Wi-Fi 6 双频合一 · 极速冲浪';
+                    qrConfig.value.dotsType = 'classy-rounded';
+                    qrConfig.value.cornersSquareType = 'extra-rounded';
+                    qrConfig.value.cornersDotType = 'dot';
+                    qrConfig.value.colorMode = 'linear';
+                    qrConfig.value.gradientStart = '#0284c7';
+                    qrConfig.value.gradientEnd = '#38bdf8';
+                    qrConfig.value.gradientRotation = 45;
+                    qrConfig.value.bgColor = '#ffffff';
+                    qrConfig.value.logoType = 'wifi-6';
+                } else if (tid === 'cafe') {
+                    form.value.badgeText = '☕ COFFEE & RELAX';
+                    form.value.title = '慢享时光 · 畅享咖啡与网络';
+                    form.value.tip = '扫码立即连网，享受悠闲下午茶时光';
+                    form.value.footerNote = 'StarCoffee · 2.4G/5G 双频覆盖 · 欢迎光临';
+                    qrConfig.value.dotsType = 'dots';
+                    qrConfig.value.cornersSquareType = 'extra-rounded';
+                    qrConfig.value.cornersDotType = 'dot';
+                    qrConfig.value.colorMode = 'linear';
+                    qrConfig.value.gradientStart = '#78350f';
+                    qrConfig.value.gradientEnd = '#d97706';
+                    qrConfig.value.gradientRotation = 90;
+                    qrConfig.value.bgColor = '#fffbeb';
+                    qrConfig.value.logoType = 'wifi-cafe';
+                } else if (tid === 'business') {
+                    form.value.badgeText = '★ VIP GUEST NETWORK';
+                    form.value.title = '贵宾商务专线网络';
+                    form.value.tip = '请对准二维码扫码直连，尊享千兆专线体验';
+                    form.value.footerNote = '企业会议室专用 · 加密传输 · 商务高速通道';
+                    qrConfig.value.dotsType = 'square';
+                    qrConfig.value.cornersSquareType = 'square';
+                    qrConfig.value.cornersDotType = 'square';
+                    qrConfig.value.colorMode = 'linear';
+                    qrConfig.value.gradientStart = '#854d0e';
+                    qrConfig.value.gradientEnd = '#eab308';
+                    qrConfig.value.gradientRotation = 135;
+                    qrConfig.value.bgColor = '#ffffff';
+                    qrConfig.value.logoType = 'wifi-lock';
+                } else if (tid === 'neon') {
+                    form.value.badgeText = '⚡ CYBER NEON CONNECT';
+                    form.value.title = '赛博空间 · 极速接入';
+                    form.value.tip = '拿起手机扫描二维码，即刻接入未来元宇宙';
+                    form.value.footerNote = 'CYBERSPACE 2077 · GUEST ACCESS GRANTED';
+                    qrConfig.value.dotsType = 'extra-rounded';
+                    qrConfig.value.cornersSquareType = 'extra-rounded';
+                    qrConfig.value.cornersDotType = 'dot';
+                    qrConfig.value.colorMode = 'linear';
+                    qrConfig.value.gradientStart = '#db2777';
+                    qrConfig.value.gradientEnd = '#8b5cf6';
+                    qrConfig.value.gradientRotation = 45;
+                    qrConfig.value.bgColor = '#ffffff';
+                    qrConfig.value.logoType = 'wifi-neon';
+                }
+            };
+
+            const selectLogo = (lid) => {
+                qrConfig.value.logoType = lid;
+            };
+
+            const applyNetworkPreset = (p) => {
+                form.value.ssid = p.ssid;
+                form.value.password = p.password;
+                form.value.encryption = p.enc;
+                selectTemplate(p.template);
+                ElementPlus.ElMessage.success(`已载入网络预设: ${p.label}`);
+            };
+
+            const applyColorPreset = (cp) => {
+                if (cp.mode === 'single') {
+                    qrConfig.value.colorMode = 'single';
+                    qrConfig.value.dotsColor = cp.color;
+                } else {
+                    qrConfig.value.colorMode = cp.mode;
+                    qrConfig.value.gradientStart = cp.start;
+                    qrConfig.value.gradientEnd = cp.end;
+                    qrConfig.value.gradientRotation = cp.rotation;
+                }
+                if (cp.bg) qrConfig.value.bgColor = cp.bg;
+                ElementPlus.ElMessage.success(`已应用配色方案: ${cp.name}`);
+            };
+
+            const handleCustomLogoUpload = (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    customLogoDataUrl.value = evt.target.result;
+                    qrConfig.value.logoType = 'custom';
+                    ElementPlus.ElMessage.success('自定义 Logo 图片上传成功！');
+                };
+                reader.readAsDataURL(file);
+            };
+
+            const copyRawString = () => {
+                navigator.clipboard.writeText(rawWifiString.value).then(() => {
+                    ElementPlus.ElMessage.success('WiFi 标准协议串已复制到剪贴板！');
+                });
+            };
+
+            const printStand = () => {
+                window.print();
+            };
+
+            // 圆角矩形绘制通用辅助
+            const drawRoundRect = (ctx, x, y, w, h, r) => {
+                if (ctx.roundRect) {
+                    ctx.beginPath();
+                    ctx.roundRect(x, y, w, h, r);
+                    return;
+                }
+                ctx.beginPath();
+                ctx.moveTo(x + r, y);
+                ctx.arcTo(x + w, y, x + w, y + h, r);
+                ctx.arcTo(x + w, y + h, x, y + h, r);
+                ctx.arcTo(x, y + h, x, y, r);
+                ctx.arcTo(x, y, x + w, y, r);
+                ctx.closePath();
+            };
+
+            // 绘制单个台卡面到 Canvas
+            const drawSingleCardFace = (ctx, x, y, cardWidth, cardHeight, scale, qrImg) => {
+                ctx.save();
+                ctx.translate(x, y);
+
+                // 1. 卡片外框背景
+                const tid = currentTemplate.value;
+                const grad = ctx.createLinearGradient(0, 0, cardWidth, cardHeight);
+
+                if (tid === 'tech') {
+                    grad.addColorStop(0, '#091322');
+                    grad.addColorStop(1, '#030712');
+                    ctx.fillStyle = grad;
+                    drawRoundRect(ctx, 0, 0, cardWidth, cardHeight, 18 * scale);
+                    ctx.fill();
+
+                    // 高光科技边框
+                    ctx.strokeStyle = '#38bdf8';
+                    ctx.lineWidth = 3 * scale;
+                    drawRoundRect(ctx, 4 * scale, 4 * scale, cardWidth - 8 * scale, cardHeight - 8 * scale, 16 * scale);
+                    ctx.stroke();
+
+                    // 顶部徽章
+                    ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
+                    drawRoundRect(ctx, (cardWidth - 190 * scale) / 2, 24 * scale, 190 * scale, 24 * scale, 12 * scale);
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+                    ctx.lineWidth = 1 * scale;
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.font = `bold ${10 * scale}px monospace`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(form.value.badgeText || getBadgeText(), cardWidth / 2, 40 * scale);
+                } else if (tid === 'cafe') {
+                    grad.addColorStop(0, '#1c140d');
+                    grad.addColorStop(1, '#0f0a06');
+                    ctx.fillStyle = grad;
+                    drawRoundRect(ctx, 0, 0, cardWidth, cardHeight, 18 * scale);
+                    ctx.fill();
+
+                    ctx.strokeStyle = '#d97706';
+                    ctx.lineWidth = 3 * scale;
+                    drawRoundRect(ctx, 4 * scale, 4 * scale, cardWidth - 8 * scale, cardHeight - 8 * scale, 16 * scale);
+                    ctx.stroke();
+
+                    ctx.fillStyle = 'rgba(245, 158, 11, 0.15)';
+                    drawRoundRect(ctx, (cardWidth - 170 * scale) / 2, 24 * scale, 170 * scale, 24 * scale, 6 * scale);
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(245, 158, 11, 0.5)';
+                    ctx.lineWidth = 1 * scale;
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.font = `bold ${10.5 * scale}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(form.value.badgeText || getBadgeText(), cardWidth / 2, 40 * scale);
+                } else if (tid === 'business') {
+                    grad.addColorStop(0, '#0f172a');
+                    grad.addColorStop(1, '#020617');
+                    ctx.fillStyle = grad;
+                    drawRoundRect(ctx, 0, 0, cardWidth, cardHeight, 18 * scale);
+                    ctx.fill();
+
+                    ctx.strokeStyle = '#eab308';
+                    ctx.lineWidth = 3 * scale;
+                    drawRoundRect(ctx, 4 * scale, 4 * scale, cardWidth - 8 * scale, cardHeight - 8 * scale, 16 * scale);
+                    ctx.stroke();
+
+                    const bgG = ctx.createLinearGradient(0, 0, 160 * scale, 0);
+                    bgG.addColorStop(0, '#ca8a04');
+                    bgG.addColorStop(1, '#eab308');
+                    ctx.fillStyle = bgG;
+                    drawRoundRect(ctx, (cardWidth - 160 * scale) / 2, 24 * scale, 160 * scale, 24 * scale, 5 * scale);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#0f172a';
+                    ctx.font = `bold ${10.5 * scale}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(form.value.badgeText || getBadgeText(), cardWidth / 2, 40 * scale);
+                } else {
+                    grad.addColorStop(0, '#19092c');
+                    grad.addColorStop(1, '#070210');
+                    ctx.fillStyle = grad;
+                    drawRoundRect(ctx, 0, 0, cardWidth, cardHeight, 18 * scale);
+                    ctx.fill();
+
+                    ctx.strokeStyle = '#ec4899';
+                    ctx.lineWidth = 3 * scale;
+                    drawRoundRect(ctx, 4 * scale, 4 * scale, cardWidth - 8 * scale, cardHeight - 8 * scale, 16 * scale);
+                    ctx.stroke();
+
+                    ctx.fillStyle = 'rgba(236, 72, 153, 0.2)';
+                    drawRoundRect(ctx, (cardWidth - 190 * scale) / 2, 24 * scale, 190 * scale, 24 * scale, 12 * scale);
+                    ctx.fill();
+                    ctx.strokeStyle = '#ec4899';
+                    ctx.lineWidth = 1 * scale;
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#f472b6';
+                    ctx.font = `bold ${10 * scale}px monospace`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(form.value.badgeText || getBadgeText(), cardWidth / 2, 40 * scale);
+                }
+
+                // 2. 主标题与副标题
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold ${19 * scale}px sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.fillText(form.value.title || '欢迎连接无线网络', cardWidth / 2, 76 * scale);
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+                ctx.font = `${10.5 * scale}px sans-serif`;
+                ctx.fillText(form.value.tip || '使用手机相机或微信扫一扫直接连网', cardWidth / 2, 98 * scale);
+
+                // 3. 二维码白色/自定义背景底盒
+                const qrBoxSize = 208 * scale;
+                const qrBoxX = (cardWidth - qrBoxSize) / 2;
+                const qrBoxY = 116 * scale;
+                ctx.fillStyle = qrConfig.value.bgColor || '#ffffff';
+                drawRoundRect(ctx, qrBoxX, qrBoxY, qrBoxSize, qrBoxSize, 14 * scale);
+                ctx.fill();
+
+                if (qrImg) {
+                    ctx.drawImage(qrImg, qrBoxX + 4 * scale, qrBoxY + 4 * scale, qrBoxSize - 8 * scale, qrBoxSize - 8 * scale);
+                }
+
+                // 4. 网络参数展示胶囊盒
+                const infoY = 340 * scale;
+                const infoW = cardWidth - 48 * scale;
+                const infoH = 88 * scale;
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+                drawRoundRect(ctx, 24 * scale, infoY, infoW, infoH, 10 * scale);
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+                ctx.lineWidth = 1 * scale;
+                ctx.stroke();
+
+                // SSID
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+                ctx.font = `${11.5 * scale}px sans-serif`;
+                ctx.textAlign = 'left';
+                ctx.fillText('网络名称 (SSID):', 36 * scale, infoY + 28 * scale);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold ${13 * scale}px monospace`;
+                ctx.textAlign = 'right';
+                ctx.fillText(form.value.ssid || '未设置', cardWidth - 36 * scale, infoY + 28 * scale);
+
+                // PWD
+                if (form.value.encryption !== 'nopass') {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+                    ctx.font = `${11.5 * scale}px sans-serif`;
+                    ctx.textAlign = 'left';
+                    ctx.fillText('无线密码 (PWD):', 36 * scale, infoY + 54 * scale);
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = `bold ${13 * scale}px monospace`;
+                    ctx.textAlign = 'right';
+                    const pwdStr = form.value.showPasswordOnCard ? (form.value.password || '无') : '●●●●●●●●';
+                    ctx.fillText(pwdStr, cardWidth - 36 * scale, infoY + 54 * scale);
+                }
+
+                // 加密模式小注脚
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.font = `${9.5 * scale}px monospace`;
+                ctx.textAlign = 'left';
+                ctx.fillText(`加密: ${form.value.encryption}`, 36 * scale, infoY + 76 * scale);
+                ctx.textAlign = 'right';
+                ctx.fillText('📶 2.4G/5G 双频合一', cardWidth - 36 * scale, infoY + 76 * scale);
+
+                // 5. 底部品牌 / 备注
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.font = `${10 * scale}px monospace`;
+                ctx.textAlign = 'center';
+                ctx.fillText(form.value.footerNote || '扫码即连 · 畅享极速网络', cardWidth / 2, cardHeight - 20 * scale);
+
+                ctx.restore();
+            };
+
+            // 获取生成的二维码 Image 对象
+            const getQRImage = async () => {
+                if (!qrCodeInstance) return null;
+                const blob = await qrCodeInstance.getRawData('png');
+                if (!blob) return null;
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.onerror = () => resolve(null);
+                    img.src = URL.createObjectURL(blob);
+                });
+            };
+
+            // 渲染高清台卡 Canvas
+            const generateStandCanvas = async () => {
+                const scale = 2.5; // 2.5x 高清渲染
+                const cardWidth = 350 * scale;
+                const cardHeight = 490 * scale;
+                const isFold = form.value.standType === 'fold';
+
+                const exportCanvas = document.createElement('canvas');
+                const ctx = exportCanvas.getContext('2d');
+                const qrImg = await getQRImage();
+
+                if (!isFold) {
+                    exportCanvas.width = cardWidth;
+                    exportCanvas.height = cardHeight;
+                    drawSingleCardFace(ctx, 0, 0, cardWidth, cardHeight, scale, qrImg);
+                } else {
+                    // 双面折叠桌牌画布
+                    const foldDividerH = 34 * scale;
+                    const baseTabH = 34 * scale;
+                    const totalH = cardHeight * 2 + foldDividerH + baseTabH;
+                    exportCanvas.width = cardWidth;
+                    exportCanvas.height = totalH;
+
+                    // 背景白底方便打印
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, cardWidth, totalH);
+
+                    // 1. 顶部背面 (倒置渲染以实现对折后两面朝外直立)
+                    ctx.save();
+                    ctx.translate(cardWidth, cardHeight);
+                    ctx.rotate(Math.PI);
+                    drawSingleCardFace(ctx, 0, 0, cardWidth, cardHeight, scale, qrImg);
+                    ctx.restore();
+
+                    // 2. 中部对折线
+                    const lineY = cardHeight + foldDividerH / 2;
+                    ctx.save();
+                    ctx.setLineDash([8 * scale, 6 * scale]);
+                    ctx.strokeStyle = '#94a3b8';
+                    ctx.lineWidth = 1.5 * scale;
+                    ctx.beginPath();
+                    ctx.moveTo(10 * scale, lineY);
+                    ctx.lineTo(cardWidth - 10 * scale, lineY);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#64748b';
+                    ctx.font = `bold ${10 * scale}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('✂️ 顶部对折裁切线 (FOLD HERE)', cardWidth / 2, lineY - 6 * scale);
+                    ctx.restore();
+
+                    // 3. 底部正面 (正向渲染)
+                    drawSingleCardFace(ctx, 0, cardHeight + foldDividerH, cardWidth, cardHeight, scale, qrImg);
+
+                    // 4. 底部粘合固定台基
+                    const tabY = cardHeight * 2 + foldDividerH;
+                    ctx.save();
+                    ctx.setLineDash([6 * scale, 6 * scale]);
+                    ctx.strokeStyle = '#cbd5e1';
+                    ctx.lineWidth = 1 * scale;
+                    ctx.strokeRect(10 * scale, tabY + 4 * scale, cardWidth - 20 * scale, baseTabH - 8 * scale);
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.font = `${9 * scale}px monospace`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('📎 底部贴合固定台基 (STAND BASE)', cardWidth / 2, tabY + 20 * scale);
+                    ctx.restore();
+                }
+
+                return exportCanvas;
+            };
+
+            // 导出高清台卡 PNG
+            const exportStandPng = async () => {
+                try {
+                    isExporting.value = true;
+                    const canvas = await generateStandCanvas();
+                    const a = document.createElement('a');
+                    a.download = `WiFi_Stand_${form.value.ssid || 'network'}_${Date.now()}.png`;
+                    a.href = canvas.toDataURL('image/png');
+                    a.click();
+                    ElementPlus.ElMessage.success('高清台卡图片已成功导出！');
+                } catch (err) {
+                    console.error('Export error:', err);
+                    ElementPlus.ElMessage.error('导出失败，请重试');
+                } finally {
+                    isExporting.value = false;
+                }
+            };
+
+            // 导出二维码 PNG
+            const exportQrPng = () => {
+                if (!qrCodeInstance) return;
+                const fileName = `WiFi_${form.value.ssid || 'QRCode'}_QR`;
+                qrCodeInstance.download({ name: fileName, extension: 'png' });
+                ElementPlus.ElMessage.success('高清二维码 PNG 已开始下载！');
+            };
+
+            // 导出二维码 SVG 矢量图
+            const exportQrSvg = () => {
+                if (!qrCodeInstance) return;
+                const fileName = `WiFi_${form.value.ssid || 'QRCode'}_QR`;
+                qrCodeInstance.download({ name: fileName, extension: 'svg' });
+                ElementPlus.ElMessage.success('二维码 SVG 矢量图已开始下载！');
+            };
+
+            // 复制台卡图片到系统剪贴板
+            const copyCardImage = async () => {
+                try {
+                    const canvas = await generateStandCanvas();
+                    canvas.toBlob(async (blob) => {
+                        if (!blob) {
+                            ElementPlus.ElMessage.error('生成图片数据失败');
+                            return;
+                        }
+                        if (navigator.clipboard && window.ClipboardItem) {
+                            await navigator.clipboard.write([
+                                new ClipboardItem({ 'image/png': blob })
+                            ]);
+                            ElementPlus.ElMessage.success('台卡图片已成功复制到剪贴板！');
+                        } else {
+                            ElementPlus.ElMessage.warning('当前浏览器环境不支持直接复制图片，请使用导出 PNG 功能');
+                        }
+                    });
+                } catch (err) {
+                    console.error('Copy error:', err);
+                    ElementPlus.ElMessage.error('复制图片失败: ' + err.message);
+                }
+            };
+
+            // 更多操作下拉处理
+            const handleExportCommand = (cmd) => {
+                if (cmd === 'qr-png') exportQrPng();
+                else if (cmd === 'qr-svg') exportQrSvg();
+                else if (cmd === 'copy-card') copyCardImage();
+                else if (cmd === 'copy-raw') copyRawString();
+            };
+
+            onMounted(() => {
+                updateQRCode();
+            });
+
+            return {
+                activeTab,
+                showPassword,
+                isExporting,
+                currentTemplate,
+                customLogoDataUrl,
+                isFlippedTop,
+                form,
+                qrConfig,
+                templates,
+                networkPresets,
+                colorPresets,
+                builtInLogos,
+                rawWifiString,
+                getBadgeText,
+                selectTemplate,
+                selectLogo,
+                applyNetworkPreset,
+                applyColorPreset,
+                handleCustomLogoUpload,
+                copyRawString,
+                printStand,
+                exportStandPng,
+                exportQrPng,
+                exportQrSvg,
+                copyCardImage,
+                handleExportCommand
+            };
+        }
+    }).use(ElementPlus).mount('#app');
+</script>
+</body>
+</html>

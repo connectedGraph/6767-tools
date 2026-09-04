@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
+<html lang="zh" class="dark">
+<head>
+    <script src="./js/theme.js"></script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>数据存储单位与进阶度量衡换算器 - 在线工具</title>
+    <meta name="description" content="专业数据存储单位与工程度量衡换算器：支持 Bit、Byte、KB、KiB、MB、MiB、GB、GiB、TB、TiB、PB、PiB 的 1000 进制与 1024 进制精准双向换算；同时支持压强 (Pa/bar/psi/atm)、功率 (W/kW/hp)、速度 (m/s, km/h, knot, mach) 多维换算与硬盘容量折算、网络下载耗时估算。" />
+    <meta name="keywords" content="数据单位换算,1024进制,1000进制,KB转KiB,MB转MiB,GB转GiB,硬盘缩水计算,压强换算,功率换算,马力换算,速度换算,马赫换算" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./css/6767-tailwind.css?v=20260813" rel="stylesheet" />
+    <link href="./css/6767-site.css?v=20260813" rel="stylesheet" />
+    <link href="./css/tool-dark.css?v=20260813" rel="stylesheet" />
+
+    <style>
+        .converter-wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* 自定义 Tab 选项卡终端风格 */
+        .conv-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+            padding-bottom: 8px;
+            overflow-x: auto;
+        }
+        .conv-tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #94a3b8;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .conv-tab-btn:hover {
+            color: #f1f5f9;
+            border-color: rgba(34, 211, 238, 0.4);
+            background: rgba(30, 41, 59, 0.8);
+        }
+        .conv-tab-btn.active {
+            color: #38bdf8;
+            border-color: #38bdf8;
+            background: rgba(8, 47, 73, 0.5);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+        }
+
+        /* 换算输入网格 */
+        .conv-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 720px) {
+            .conv-grid { grid-template-columns: 1fr; }
+        }
+
+        .unit-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 10px;
+            padding: 12px 14px;
+            transition: all 0.2s;
+        }
+        .unit-card:focus-within {
+            border-color: rgba(56, 189, 248, 0.8);
+            background: rgba(15, 23, 42, 0.95);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+        }
+        .unit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .unit-title {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+        .unit-badge {
+            font-size: 0.68rem;
+            font-family: monospace;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: rgba(30, 41, 59, 0.8);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        .unit-badge.iec {
+            color: #c084fc;
+            border-color: rgba(192, 132, 252, 0.3);
+        }
+        .unit-input-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .unit-desc {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 实用小工具卡片 */
+        .assistant-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-top: 24px;
+        }
+        .assistant-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 预设快捷按钮 */
+        .preset-chip {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .preset-chip:hover {
+            border-color: #38bdf8;
+            color: #f1f5f9;
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .diff-tag {
+            font-family: monospace;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+        }
+        .diff-si { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .diff-iec { background: rgba(192, 132, 252, 0.15); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.3); }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header class="tool-topbar">
+  <a href="./" class="tool-topbar-logo" aria-label="首页">
+    <span>在线工具集</span>
+  </a>
+  <span class="tool-topbar-sep">/</span>
+  <span class="tool-topbar-title">数据存储与进阶度量衡换算器</span>
+  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+</header>
+
+<main class="main-body tool-page-body converter-wrap">
+    <div class="card-model" style="margin-bottom: 20px;">
+        <div class="card-body">
+            <div class="tool-head">
+                <h1 class="title">数据存储单位与进阶度量衡换算器</h1>
+            </div>
+            <div class="description">
+                支持 Bit、Byte、KB、KiB、MB、MiB、GB、GiB、TB、TiB、PB、PiB、EB、EiB 的 1000 进制与 1024 进制精准双向即时换算，提供硬盘容量缩水计算与网络下载耗时预测；同时集成工程压强、机械功率与物理航速多维换算。
+                <span class="text-xs text-slate-500 font-mono ml-2">拓展时间: 2026-08-31</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 顶部功能 Tab 切换 -->
+    <div class="conv-tabs">
+        <button 
+            class="conv-tab-btn" 
+            :class="{ active: currentTab === 'data' }"
+            @click="switchTab('data')"
+        >
+            <span>💾 数据存储 (Bit ~ EiB)</span>
+        </button>
+        <button 
+            class="conv-tab-btn" 
+            :class="{ active: currentTab === 'pressure' }"
+            @click="switchTab('pressure')"
+        >
+            <span>🎈 压强与压力 (Pa / bar / psi)</span>
+        </button>
+        <button 
+            class="conv-tab-btn" 
+            :class="{ active: currentTab === 'power' }"
+            @click="switchTab('power')"
+        >
+            <span>⚡ 功率与功耗 (W / kW / 马力)</span>
+        </button>
+        <button 
+            class="conv-tab-btn" 
+            :class="{ active: currentTab === 'speed' }"
+            @click="switchTab('speed')"
+        >
+            <span>🚀 速度与航速 (m/s / km/h / 节 / 马赫)</span>
+        </button>
+    </div>
+
+    <!-- ══ TAB 1: 数据存储单位换算 ══ -->
+    <div v-show="currentTab === 'data'">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">标准对照：</span>
+                <span class="diff-tag diff-si">1000 进制 (SI 厂商标称)</span>
+                <span class="diff-tag diff-iec">1024 进制 (IEC 系统底层)</span>
+            </div>
+            <el-button size="small" @click="clearAll('data')">清空输入</el-button>
+        </div>
+
+        <div class="conv-grid">
+            <div 
+                v-for="u in dataUnits" 
+                :key="u.key"
+                class="unit-card"
+            >
+                <div class="unit-header">
+                    <span class="unit-title">{{ u.name }}</span>
+                    <span class="unit-badge" :class="{ iec: u.type === 'iec' }">{{ u.symbol }}</span>
+                </div>
+                <div class="unit-input-row">
+                    <el-input 
+                        v-model="dataValues[u.key]" 
+                        @input="onDataInput(u.key)"
+                        placeholder="0"
+                        clearable
+                        size="large"
+                        class="font-mono text-sm"
+                    ></el-input>
+                    <el-button size="large" @click="copyVal(dataValues[u.key])" title="复制数值">
+                        📋
+                    </el-button>
+                </div>
+                <div class="unit-desc" :title="u.desc">{{ u.desc }}</div>
+            </div>
+        </div>
+
+        <!-- 硬盘真实容量折算器 (SSD/HDD 容量缩水计算) -->
+        <div class="assistant-box">
+            <div class="assistant-title">
+                <span>💽 硬盘/U盘标称容量 与 Windows 系统实际显示折算 (1000进制 vs 1024进制)</span>
+            </div>
+            <div class="text-xs text-slate-400 mb-4 leading-relaxed">
+                存储厂商按 <strong>1000 进制</strong> 生产（1 GB = 10⁹ 字节），而 Windows 等操作系统按 <strong>1024 进制</strong> 统计（1 GiB = 2³⁰ 字节），导致购买的硬盘在系统中显示的“数字”看似缩水约 7%~9%。
+            </div>
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <span class="text-xs text-slate-300">常见标称规格：</span>
+                <button 
+                    v-for="preset in storagePresets" 
+                    :key="preset.label"
+                    class="preset-chip"
+                    @click="selectStoragePreset(preset.val, preset.unit)"
+                >
+                    {{ preset.label }}
+                </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-slate-950/60 border border-slate-800 rounded-lg text-xs">
+                <div>
+                    <span class="text-slate-500 block">厂商标称字节数 (SI):</span>
+                    <span class="font-mono text-cyan-400 font-bold text-sm">{{ calcStorageBytes }} 字节 (Bytes)</span>
+                </div>
+                <div>
+                    <span class="text-slate-500 block">Windows 系统显示 (GiB/TiB):</span>
+                    <span class="font-mono text-purple-400 font-bold text-sm">≈ {{ calcStorageOsDisplay }}</span>
+                </div>
+                <div>
+                    <span class="text-slate-500 block">标称与系统比率差异:</span>
+                    <span class="font-mono text-amber-400 font-bold text-sm">{{ calcStorageDiffPercent }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 网络下载耗时预测计算器 -->
+        <div class="assistant-box">
+            <div class="assistant-title">
+                <span>⏱️ 网络宽带下载速率与耗时估算</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">文件大小 (GB)</label>
+                    <el-input v-model.number="downloadForm.fileSizeGB" type="number" min="0.1" step="1" size="default"></el-input>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">签约宽带速率 (Mbps 兆比特/秒)</label>
+                    <el-input v-model.number="downloadForm.bandwidthMbps" type="number" min="1" step="50" size="default"></el-input>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">线路损耗预估</label>
+                    <el-select v-model="downloadForm.lossRate" size="default" class="w-full">
+                        <el-option label="理想满速 (0% 损耗)" :value="0"></el-option>
+                        <el-option label="常规网络波动 (10% 损耗)" :value="0.1"></el-option>
+                        <el-option label="Wi-Fi 穿墙衰减 (25% 损耗)" :value="0.25"></el-option>
+                    </el-select>
+                </div>
+            </div>
+            <div class="p-3 bg-slate-950/60 border border-slate-800 rounded-lg flex flex-wrap items-center justify-between text-xs">
+                <div>
+                    <span class="text-slate-400">理论最大下载速度：</span>
+                    <span class="font-mono text-cyan-400 font-bold text-sm">{{ calcMaxDownloadSpeed }} MB/s</span>
+                </div>
+                <div>
+                    <span class="text-slate-400">预计下载耗时：</span>
+                    <span class="font-mono text-emerald-400 font-bold text-sm">{{ calcDownloadTimeFormatted }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ TAB 2: 压强与压力换算 ══ -->
+    <div v-show="currentTab === 'pressure'">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">快捷预设：</span>
+                <button class="preset-chip" @click="setPressurePreset(101325)">1 标准大气压 (1 atm)</button>
+                <button class="preset-chip" @click="setPressurePreset(250000)">轿车标准胎压 (2.5 bar)</button>
+                <button class="preset-chip" @click="setPressurePreset(100000)">10米水深水压 (1 bar)</button>
+            </div>
+            <el-button size="small" @click="clearAll('pressure')">清空输入</el-button>
+        </div>
+
+        <div class="conv-grid">
+            <div 
+                v-for="u in pressureUnits" 
+                :key="u.key"
+                class="unit-card"
+            >
+                <div class="unit-header">
+                    <span class="unit-title">{{ u.name }}</span>
+                    <span class="unit-badge">{{ u.symbol }}</span>
+                </div>
+                <div class="unit-input-row">
+                    <el-input 
+                        v-model="pressureValues[u.key]" 
+                        @input="onPressureInput(u.key)"
+                        placeholder="0"
+                        clearable
+                        size="large"
+                        class="font-mono text-sm"
+                    ></el-input>
+                    <el-button size="large" @click="copyVal(pressureValues[u.key])">📋</el-button>
+                </div>
+                <div class="unit-desc" :title="u.desc">{{ u.desc }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ TAB 3: 功率与功耗换算 ══ -->
+    <div v-show="currentTab === 'power'">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">快捷预设：</span>
+                <button class="preset-chip" @click="setPowerPreset(1100)">家用1.5匹空调 (~1100W)</button>
+                <button class="preset-chip" @click="setPowerPreset(150000)">电动汽车电机 (150 kW / ~204 ps)</button>
+                <button class="preset-chip" @click="setPowerPreset(1000)">微波炉加热功率 (1000 W)</button>
+            </div>
+            <el-button size="small" @click="clearAll('power')">清空输入</el-button>
+        </div>
+
+        <div class="conv-grid">
+            <div 
+                v-for="u in powerUnits" 
+                :key="u.key"
+                class="unit-card"
+            >
+                <div class="unit-header">
+                    <span class="unit-title">{{ u.name }}</span>
+                    <span class="unit-badge">{{ u.symbol }}</span>
+                </div>
+                <div class="unit-input-row">
+                    <el-input 
+                        v-model="powerValues[u.key]" 
+                        @input="onPowerInput(u.key)"
+                        placeholder="0"
+                        clearable
+                        size="large"
+                        class="font-mono text-sm"
+                    ></el-input>
+                    <el-button size="large" @click="copyVal(powerValues[u.key])">📋</el-button>
+                </div>
+                <div class="unit-desc" :title="u.desc">{{ u.desc }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ TAB 4: 速度与航速换算 ══ -->
+    <div v-show="currentTab === 'speed'">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">快捷预设：</span>
+                <button class="preset-chip" @click="setSpeedPreset(350 / 3.6)">中国高铁运营时速 (350 km/h)</button>
+                <button class="preset-chip" @click="setSpeedPreset(340.3)">1 马赫音速 (340.3 m/s)</button>
+                <button class="preset-chip" @click="setSpeedPreset(7900)">第一宇宙速度 (7.9 km/s)</button>
+                <button class="preset-chip" @click="setSpeedPreset(900 / 3.6)">民航客机巡航 (900 km/h / ~486 kn)</button>
+            </div>
+            <el-button size="small" @click="clearAll('speed')">清空输入</el-button>
+        </div>
+
+        <div class="conv-grid">
+            <div 
+                v-for="u in speedUnits" 
+                :key="u.key"
+                class="unit-card"
+            >
+                <div class="unit-header">
+                    <span class="unit-title">{{ u.name }}</span>
+                    <span class="unit-badge">{{ u.symbol }}</span>
+                </div>
+                <div class="unit-input-row">
+                    <el-input 
+                        v-model="speedValues[u.key]" 
+                        @input="onSpeedInput(u.key)"
+                        placeholder="0"
+                        clearable
+                        size="large"
+                        class="font-mono text-sm"
+                    ></el-input>
+                    <el-button size="large" @click="copyVal(speedValues[u.key])">📋</el-button>
+                </div>
+                <div class="unit-desc" :title="u.desc">{{ u.desc }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部公式速查卡片 -->
+    <div class="card-model mt-8">
+        <div class="card-body text-xs text-slate-400 space-y-2">
+            <h3 class="text-sm font-bold text-slate-300">📚 进阶度量衡核心换算公式说明</h3>
+            <p>• <strong>数据存储单位</strong>：SI 十进制标准 (KB = 1000 B, MB = 10⁶ B, GB = 10⁹ B, TB = 10¹² B)；IEC 二进制标准 (KiB = 1024 B, MiB = 1048576 B, GiB = 1073741824 B, TiB = 1099511627776 B)。</p>
+            <p>• <strong>工程压强</strong>：1 标准大气压 (atm) = 101,325 Pa = 1.01325 bar = 760 mmHg (Torr) = 14.696 psi = 1.0332 kgf/cm²。</p>
+            <p>• <strong>机械功率</strong>：1 公制马力 (ps) = 735.49875 W；1 英制马力 (hp) = 745.69987 W；1 kW = 1.3596 ps = 1.341 hp。</p>
+            <p>• <strong>物理航速</strong>：1 节 (knot) = 1 海里/小时 = 1.852 km/h ≈ 0.5144 m/s；1 马赫 (Mach, 15℃干燥海平面) ≈ 340.3 m/s = 1225.08 km/h。</p>
+        </div>
+    </div>
+</main>
+
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/element-plus/locale/en.js"></script>
+    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/common.js"></script>
+<script src="./js/tools/study/data-unit-converter.js"></script>
+
+<script>
+const { createApp, ref, reactive, computed } = Vue;
+
+const app = createApp({
+    setup() {
+        const currentTab = ref('data');
+
+        const dataUnits = ref(window.DATA_UNITS || []);
+        const pressureUnits = ref(window.PRESSURE_UNITS || []);
+        const powerUnits = ref(window.POWER_UNITS || []);
+        const speedUnits = ref(window.SPEED_UNITS || []);
+
+        const dataValues = reactive({});
+        const pressureValues = reactive({});
+        const powerValues = reactive({});
+        const speedValues = reactive({});
+
+        // 格式化数字输出，消除浮点误差并保留合适精度
+        const formatNumber = (num) => {
+            if (num === null || isNaN(num) || num === undefined) return '';
+            if (num === 0) return '0';
+            
+            const abs = Math.abs(num);
+            if (abs >= 1e15 || (abs < 1e-6 && abs > 0)) {
+                return num.toExponential(6);
+            }
+            
+            // 正常范围保留有效小数
+            let str = num.toFixed(8);
+            str = str.replace(/\.?0+$/, ''); // 去除末尾多余的0
+            return str;
+        };
+
+        // ══ 数据存储换算逻辑 ══
+        const onDataInput = (fromKey) => {
+            const rawVal = dataValues[fromKey];
+            if (rawVal === '' || rawVal === null || isNaN(Number(rawVal))) {
+                dataUnits.value.forEach(u => {
+                    if (u.key !== fromKey) dataValues[u.key] = '';
+                });
+                return;
+            }
+
+            const fromUnit = dataUnits.value.find(u => u.key === fromKey);
+            if (!fromUnit) return;
+
+            const inputNum = Number(rawVal);
+            const totalBytes = inputNum * fromUnit.bytes;
+
+            dataUnits.value.forEach(u => {
+                if (u.key !== fromKey) {
+                    const converted = totalBytes / u.bytes;
+                    dataValues[u.key] = formatNumber(converted);
+                }
+            });
+        };
+
+        // ══ 压强换算逻辑 ══
+        const onPressureInput = (fromKey) => {
+            const rawVal = pressureValues[fromKey];
+            if (rawVal === '' || rawVal === null || isNaN(Number(rawVal))) {
+                pressureUnits.value.forEach(u => {
+                    if (u.key !== fromKey) pressureValues[u.key] = '';
+                });
+                return;
+            }
+
+            const fromUnit = pressureUnits.value.find(u => u.key === fromKey);
+            if (!fromUnit) return;
+
+            const totalPa = Number(rawVal) * fromUnit.ratio;
+            pressureUnits.value.forEach(u => {
+                if (u.key !== fromKey) {
+                    pressureValues[u.key] = formatNumber(totalPa / u.ratio);
+                }
+            });
+        };
+
+        // ══ 功率换算逻辑 ══
+        const onPowerInput = (fromKey) => {
+            const rawVal = powerValues[fromKey];
+            if (rawVal === '' || rawVal === null || isNaN(Number(rawVal))) {
+                powerUnits.value.forEach(u => {
+                    if (u.key !== fromKey) powerValues[u.key] = '';
+                });
+                return;
+            }
+
+            const fromUnit = powerUnits.value.find(u => u.key === fromKey);
+            if (!fromUnit) return;
+
+            const totalW = Number(rawVal) * fromUnit.ratio;
+            powerUnits.value.forEach(u => {
+                if (u.key !== fromKey) {
+                    powerValues[u.key] = formatNumber(totalW / u.ratio);
+                }
+            });
+        };
+
+        // ══ 速度换算逻辑 ══
+        const onSpeedInput = (fromKey) => {
+            const rawVal = speedValues[fromKey];
+            if (rawVal === '' || rawVal === null || isNaN(Number(rawVal))) {
+                speedUnits.value.forEach(u => {
+                    if (u.key !== fromKey) speedValues[u.key] = '';
+                });
+                return;
+            }
+
+            const fromUnit = speedUnits.value.find(u => u.key === fromKey);
+            if (!fromUnit) return;
+
+            const totalMs = Number(rawVal) * fromUnit.ratio;
+            speedUnits.value.forEach(u => {
+                if (u.key !== fromKey) {
+                    speedValues[u.key] = formatNumber(totalMs / u.ratio);
+                }
+            });
+        };
+
+        // ══ 硬盘容量缩水计算助手 ══
+        const selectedStorage = reactive({ val: 1, unit: 'TB' });
+        const storagePresets = [
+            { label: '128 GB SSD', val: 128, unit: 'GB' },
+            { label: '256 GB SSD', val: 256, unit: 'GB' },
+            { label: '512 GB SSD', val: 512, unit: 'GB' },
+            { label: '1 TB 硬盘', val: 1, unit: 'TB' },
+            { label: '2 TB 硬盘', val: 2, unit: 'TB' },
+            { label: '4 TB 机械盘', val: 4, unit: 'TB' },
+            { label: '8 TB 企业盘', val: 8, unit: 'TB' },
+            { label: '16 TB NAS盘', val: 16, unit: 'TB' }
+        ];
+
+        const selectStoragePreset = (val, unit) => {
+            selectedStorage.val = val;
+            selectedStorage.unit = unit;
+            // 联动到上方换算器
+            dataValues[unit] = String(val);
+            onDataInput(unit);
+        };
+
+        const calcStorageBytes = computed(() => {
+            const multiplier = selectedStorage.unit === 'TB' ? 1e12 : 1e9;
+            const bytes = selectedStorage.val * multiplier;
+            return bytes.toLocaleString();
+        });
+
+        const calcStorageOsDisplay = computed(() => {
+            const multiplier = selectedStorage.unit === 'TB' ? 1e12 : 1e9;
+            const bytes = selectedStorage.val * multiplier;
+            if (selectedStorage.unit === 'TB') {
+                const tib = bytes / 1099511627776;
+                const gib = bytes / 1073741824;
+                return `${tib.toFixed(2)} TiB (${gib.toFixed(1)} GiB)`;
+            } else {
+                const gib = bytes / 1073741824;
+                return `${gib.toFixed(2)} GiB`;
+            }
+        });
+
+        const calcStorageDiffPercent = computed(() => {
+            const base1000 = selectedStorage.unit === 'TB' ? 1e12 : 1e9;
+            const base1024 = selectedStorage.unit === 'TB' ? 1099511627776 : 1073741824;
+            const diff = ((base1024 - base1000) / base1024) * 100;
+            return `显示数值较标称减少 ≈ ${diff.toFixed(2)}%`;
+        });
+
+        // ══ 宽带下载耗时估算 ══
+        const downloadForm = reactive({
+            fileSizeGB: 50,
+            bandwidthMbps: 300,
+            lossRate: 0.1
+        });
+
+        const calcMaxDownloadSpeed = computed(() => {
+            const effectiveMbps = downloadForm.bandwidthMbps * (1 - downloadForm.lossRate);
+            const mBps = effectiveMbps / 8;
+            return mBps.toFixed(2);
+        });
+
+        const calcDownloadTimeFormatted = computed(() => {
+            const totalMB = downloadForm.fileSizeGB * 1024;
+            const speedMBs = Number(calcMaxDownloadSpeed.value);
+            if (speedMBs <= 0) return '∞';
+
+            const totalSeconds = totalMB / speedMBs;
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+
+            let res = '';
+            if (hours > 0) res += `${hours} 小时 `;
+            if (minutes > 0 || hours > 0) res += `${minutes} 分钟 `;
+            res += `${seconds} 秒`;
+            return res;
+        });
+
+        // 快捷预设方法
+        const setPressurePreset = (pa) => {
+            pressureValues['Pa'] = String(pa);
+            onPressureInput('Pa');
+        };
+
+        const setPowerPreset = (w) => {
+            powerValues['W'] = String(w);
+            onPowerInput('W');
+        };
+
+        const setSpeedPreset = (ms) => {
+            speedValues['m_s'] = String(formatNumber(ms));
+            onSpeedInput('m_s');
+        };
+
+        const clearAll = (type) => {
+            if (type === 'data') {
+                dataUnits.value.forEach(u => dataValues[u.key] = '');
+            } else if (type === 'pressure') {
+                pressureUnits.value.forEach(u => pressureValues[u.key] = '');
+            } else if (type === 'power') {
+                powerUnits.value.forEach(u => powerValues[u.key] = '');
+            } else if (type === 'speed') {
+                speedUnits.value.forEach(u => speedValues[u.key] = '');
+            }
+        };
+
+        const copyVal = (val) => {
+            if (!val && val !== 0) {
+                ElementPlus.ElMessage.warning('内容为空');
+                return;
+            }
+            navigator.clipboard.writeText(String(val)).then(() => {
+                ElementPlus.ElMessage.success('复制成功: ' + val);
+            });
+        };
+
+        const switchTab = (tab) => {
+            currentTab.value = tab;
+        };
+
+        // 初始设置一个默认值便于直观体验
+        dataValues['GB'] = '1';
+        onDataInput('GB');
+
+        pressureValues['atm'] = '1';
+        onPressureInput('atm');
+
+        powerValues['kW'] = '1';
+        onPowerInput('kW');
+
+        speedValues['km_h'] = '100';
+        onSpeedInput('km_h');
+
+        return {
+            currentTab,
+            dataUnits,
+            pressureUnits,
+            powerUnits,
+            speedUnits,
+            dataValues,
+            pressureValues,
+            powerValues,
+            speedValues,
+            storagePresets,
+            selectStoragePreset,
+            calcStorageBytes,
+            calcStorageOsDisplay,
+            calcStorageDiffPercent,
+            downloadForm,
+            calcMaxDownloadSpeed,
+            calcDownloadTimeFormatted,
+            onDataInput,
+            onPressureInput,
+            onPowerInput,
+            onSpeedInput,
+            setPressurePreset,
+            setPowerPreset,
+            setSpeedPreset,
+            clearAll,
+            copyVal,
+            switchTab
+        };
+    }
+});
+
+app.use(ElementPlus);
+app.mount('.main-body');
+</script>
+</body>
+</html>

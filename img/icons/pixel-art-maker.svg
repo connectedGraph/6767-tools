@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-px" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="50%" stop-color="#311042"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="pencil-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-px)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(236,72,153,0.25)" stroke-width="1"/>
+
+  <!-- Pixel Canvas Grid (4x4 Blocks) -->
+  <g transform="translate(8, 8)">
+    <!-- Row 0 -->
+    <rect x="0" y="0" width="5.5" height="5.5" fill="#38bdf8"/>
+    <rect x="6.5" y="0" width="5.5" height="5.5" fill="#ec4899"/>
+    <rect x="13" y="0" width="5.5" height="5.5" fill="#ec4899"/>
+    <rect x="19.5" y="0" width="5.5" height="5.5" fill="#38bdf8"/>
+
+    <!-- Row 1 -->
+    <rect x="0" y="6.5" width="5.5" height="5.5" fill="#ec4899"/>
+    <rect x="6.5" y="6.5" width="5.5" height="5.5" fill="#f43f5e"/>
+    <rect x="13" y="6.5" width="5.5" height="5.5" fill="#f43f5e"/>
+    <rect x="19.5" y="6.5" width="5.5" height="5.5" fill="#ec4899"/>
+
+    <!-- Row 2 -->
+    <rect x="0" y="13" width="5.5" height="5.5" fill="#ec4899"/>
+    <rect x="6.5" y="13" width="5.5" height="5.5" fill="#f43f5e"/>
+    <rect x="13" y="13" width="5.5" height="5.5" fill="#f43f5e"/>
+    <rect x="19.5" y="13" width="5.5" height="5.5" fill="#ec4899"/>
+
+    <!-- Row 3 -->
+    <rect x="0" y="19.5" width="5.5" height="5.5" fill="#1e293b"/>
+    <rect x="6.5" y="19.5" width="5.5" height="5.5" fill="#ec4899"/>
+    <rect x="13" y="19.5" width="5.5" height="5.5" fill="#ec4899"/>
+    <rect x="19.5" y="19.5" width="5.5" height="5.5" fill="#1e293b"/>
+  </g>
+
+  <!-- 8-Bit Pixel Stylus / Pencil in bottom right -->
+  <g transform="translate(25, 22) rotate(45)">
+    <rect x="0" y="0" width="4" height="12" fill="url(#pencil-grad)" stroke="#1e293b" stroke-width="0.8"/>
+    <!-- Pencil Tip -->
+    <polygon points="0,12 4,12 2,16" fill="#fde68a"/>
+    <polygon points="1,14 3,14 2,16" fill="#1e293b"/>
+    <!-- Pencil Eraser -->
+    <rect x="0" y="-3" width="4" height="3" fill="#f43f5e"/>
+  </g>
+
+  <!-- Palette dots in bottom left -->
+  <circle cx="10" cy="39" r="2.2" fill="#10b981"/>
+  <circle cx="16" cy="39" r="2.2" fill="#fbbf24"/>
+  <circle cx="22" cy="39" r="2.2" fill="#a855f7"/>
+</svg>

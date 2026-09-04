@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-bcode" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="50%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-bcode)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- White Barcode Label Background -->
+  <rect x="7" y="10" width="34" height="28" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
+  <!-- Barcode Vertical Bars -->
+  <rect x="10" y="14" width="2" height="15" fill="#0F172A"/>
+  <rect x="13" y="14" width="1" height="15" fill="#0F172A"/>
+  <rect x="15" y="14" width="2.8" height="15" fill="#0F172A"/>
+  <rect x="19" y="14" width="1.2" height="15" fill="#0F172A"/>
+  <rect x="21.5" y="14" width="2" height="15" fill="#0F172A"/>
+  <rect x="24.5" y="14" width="1" height="15" fill="#0F172A"/>
+  <rect x="26.5" y="14" width="2.5" height="15" fill="#0F172A"/>
+  <rect x="30" y="14" width="1.2" height="15" fill="#0F172A"/>
+  <rect x="32" y="14" width="2.8" height="15" fill="#0F172A"/>
+  <rect x="36" y="14" width="1.5" height="15" fill="#0F172A"/>
+  <!-- Numeric Baseline -->
+  <text x="24" y="34.5" fill="#0F172A" font-family="monospace" font-weight="bold" font-size="4.2" text-anchor="middle" letter-spacing="0.8">69012345</text>
+  <!-- Red Laser Scanner Beam -->
+  <line x1="4" y1="21.5" x2="44" y2="21.5" stroke="#EF4444" stroke-width="2.4" stroke-linecap="round"/>
+  <line x1="4" y1="21.5" x2="44" y2="21.5" stroke="#FCA5A5" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="6.5" cy="21.5" r="2" fill="#EF4444"/>
+  <circle cx="41.5" cy="21.5" r="2" fill="#EF4444"/>
+</svg>

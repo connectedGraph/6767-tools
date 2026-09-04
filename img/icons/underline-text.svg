@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-underline" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c4a6e"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    <linearGradient id="u-bar-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-underline)" stroke="#38bdf8" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <!-- Letter 'U' -->
+  <path d="M15 11 L15 24 C15 29.5 19 33.5 24 33.5 C29 33.5 33 29.5 33 24 L33 11" fill="none" stroke="#f8fafc" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Bold Underline Bar -->
+  <rect x="10" y="37.5" width="28" height="3.5" rx="1.75" fill="url(#u-bar-grad)" stroke="#67e8f9" stroke-width="0.8"/>
+  <path d="M12 39.25 L36 39.25" stroke="#ffffff" stroke-width="1" stroke-linecap="round" opacity="0.85"/>
+</svg>

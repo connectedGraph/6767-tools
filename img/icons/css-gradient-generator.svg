@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-cgrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4C1D95"/>
+      <stop offset="50%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#DB2777"/>
+    </linearGradient>
+    <linearGradient id="rainbow-swatch" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="25%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="75%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-cgrad)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Angle Compass Indicator at Top -->
+  <circle cx="24" cy="11.5" r="4" fill="rgba(15,23,42,0.7)" stroke="#FDE047" stroke-width="1.2"/>
+  <line x1="24" y1="11.5" x2="26.8" y2="8.7" stroke="#FDE047" stroke-width="1.6" stroke-linecap="round"/>
+  <text x="34" y="13.2" fill="#FFFFFF" font-family="monospace" font-weight="bold" font-size="4.2">135°</text>
+  <!-- Gradient Swatch Track Bar -->
+  <rect x="7" y="17.5" width="34" height="13" rx="6.5" fill="url(#rainbow-swatch)" stroke="#FFFFFF" stroke-width="1.8"/>
+  <!-- 3 Color Stop Handles / Pins -->
+  <!-- Pin 1 -->
+  <g transform="translate(13, 29)">
+    <path d="M0 0l2 2.5v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3L0 0z" fill="#EF4444" stroke="#FFFFFF" stroke-width="1.2"/>
+  </g>
+  <!-- Pin 2 -->
+  <g transform="translate(24, 29)">
+    <path d="M0 0l2 2.5v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3L0 0z" fill="#10B981" stroke="#FFFFFF" stroke-width="1.2"/>
+  </g>
+  <!-- Pin 3 -->
+  <g transform="translate(35, 29)">
+    <path d="M0 0l2 2.5v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3L0 0z" fill="#8B5CF6" stroke="#FFFFFF" stroke-width="1.2"/>
+  </g>
+  <!-- CSS Brackets Indicator -->
+  <text x="7" y="13.5" fill="#38BDF8" font-family="monospace" font-weight="bold" font-size="6">{ ; }</text>
+</svg>

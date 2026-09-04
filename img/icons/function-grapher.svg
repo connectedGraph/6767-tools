@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-fg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#021a2f"/>
+      <stop offset="50%" stop-color="#092640"/>
+      <stop offset="100%" stop-color="#041324"/>
+    </linearGradient>
+    <linearGradient id="curve-cyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#f43f5e"/>
+    </linearGradient>
+    <linearGradient id="curve-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.6"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-fg)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="rgba(56,189,248,0.25)" stroke-width="1"/>
+
+  <!-- Coordinate Grid Lines -->
+  <path d="M12 8 V40 M20 8 V40 M28 8 V40 M36 8 V40" stroke="#1e3a5f" stroke-width="0.8" stroke-dasharray="1.5 1.5" opacity="0.6"/>
+  <path d="M8 14 H40 M8 22 H40 M8 30 H40 M8 38 H40" stroke="#1e3a5f" stroke-width="0.8" stroke-dasharray="1.5 1.5" opacity="0.6"/>
+
+  <!-- Main Axes (X and Y with arrows) -->
+  <path d="M8 26 H40 M38 24 L41 26 L38 28" stroke="#64748b" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24 40 V8 M22 10 L24 7 L26 10" stroke="#64748b" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Mathematical Function Curve: Sine / Damped Wave -->
+  <!-- Glow underlay -->
+  <path d="M7 31 C 12 37, 16 11, 24 22 C 29 29, 34 16, 41 19" fill="none" stroke="url(#curve-glow)" stroke-width="4.5" stroke-linecap="round" opacity="0.35"/>
+  <!-- Primary Sharp Curve -->
+  <path d="M7 31 C 12 37, 16 11, 24 22 C 29 29, 34 16, 41 19" fill="none" stroke="url(#curve-cyan)" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- Highlight Extremum Points -->
+  <circle cx="15" cy="18" r="2.2" fill="#38bdf8" stroke="#ffffff" stroke-width="1"/>
+  <circle cx="34" cy="17.5" r="2.2" fill="#f43f5e" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Subtext f(x) badge in top right -->
+  <rect x="29" y="8" width="12" height="7" rx="2" fill="rgba(15,23,42,0.85)" stroke="#38bdf8" stroke-width="0.8"/>
+  <text x="35" y="13.2" text-anchor="middle" font-family="'JetBrains Mono', Consolas, monospace" font-size="4.2" font-weight="800" fill="#38bdf8">f(x)</text>
+</svg>

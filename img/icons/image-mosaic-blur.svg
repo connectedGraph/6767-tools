@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-mosaic" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="50%" stop-color="#C026D3"/>
+      <stop offset="100%" stop-color="#F43F5E"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-mosaic)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Photo Frame -->
+  <rect x="8" y="10" width="32" height="28" rx="4" fill="rgba(15,23,42,0.72)" stroke="#FFFFFF" stroke-width="1.8"/>
+  <!-- Left Side: Clear Photo Content -->
+  <circle cx="15" cy="17" r="2.5" fill="#FBBF24"/>
+  <path d="M9.5 32l6-7 4.5 5 3-3.5 2 2.5v3h-15.5z" fill="#38BDF8"/>
+  <!-- Right Side: Pixelated Mosaic Grid -->
+  <g>
+    <!-- Row 1 -->
+    <rect x="23" y="13" width="3.5" height="3.5" rx="0.6" fill="#FFFFFF" fill-opacity="0.9"/>
+    <rect x="27.5" y="13" width="3.5" height="3.5" rx="0.6" fill="#F43F5E" fill-opacity="0.8"/>
+    <rect x="32" y="13" width="3.5" height="3.5" rx="0.6" fill="#A855F7" fill-opacity="0.85"/>
+    <rect x="36.5" y="13" width="2" height="3.5" rx="0.6" fill="#38BDF8" fill-opacity="0.75"/>
+    <!-- Row 2 -->
+    <rect x="23" y="17.5" width="3.5" height="3.5" rx="0.6" fill="#FDE047" fill-opacity="0.85"/>
+    <rect x="27.5" y="17.5" width="3.5" height="3.5" rx="0.6" fill="#FFFFFF" fill-opacity="0.95"/>
+    <rect x="32" y="17.5" width="3.5" height="3.5" rx="0.6" fill="#EC4899" fill-opacity="0.8"/>
+    <rect x="36.5" y="17.5" width="2" height="3.5" rx="0.6" fill="#6366F1" fill-opacity="0.85"/>
+    <!-- Row 3 -->
+    <rect x="23" y="22" width="3.5" height="3.5" rx="0.6" fill="#34D399" fill-opacity="0.8"/>
+    <rect x="27.5" y="22" width="3.5" height="3.5" rx="0.6" fill="#38BDF8" fill-opacity="0.9"/>
+    <rect x="32" y="22" width="3.5" height="3.5" rx="0.6" fill="#FFFFFF" fill-opacity="0.85"/>
+    <rect x="36.5" y="22" width="2" height="3.5" rx="0.6" fill="#F43F5E" fill-opacity="0.8"/>
+    <!-- Row 4 -->
+    <rect x="23" y="26.5" width="3.5" height="3.5" rx="0.6" fill="#A855F7" fill-opacity="0.85"/>
+    <rect x="27.5" y="26.5" width="3.5" height="3.5" rx="0.6" fill="#FBBF24" fill-opacity="0.8"/>
+    <rect x="32" y="26.5" width="3.5" height="3.5" rx="0.6" fill="#34D399" fill-opacity="0.75"/>
+    <rect x="36.5" y="26.5" width="2" height="3.5" rx="0.6" fill="#FFFFFF" fill-opacity="0.9"/>
+    <!-- Row 5 -->
+    <rect x="23" y="31" width="3.5" height="3.5" rx="0.6" fill="#F43F5E" fill-opacity="0.75"/>
+    <rect x="27.5" y="31" width="3.5" height="3.5" rx="0.6" fill="#8B5CF6" fill-opacity="0.8"/>
+    <rect x="32" y="31" width="3.5" height="3.5" rx="0.6" fill="#38BDF8" fill-opacity="0.9"/>
+    <rect x="36.5" y="31" width="2" height="3.5" rx="0.6" fill="#FDE047" fill-opacity="0.85"/>
+  </g>
+  <!-- Privacy Shield Badge at Top-Right -->
+  <g transform="translate(28, 5)">
+    <path d="M6 1l4 2v3.5c0 3-2 5-4 6-2-1-4-3-4-6V3l4-2z" fill="#06B6D4" stroke="#FFFFFF" stroke-width="1.2"/>
+    <path d="M4 6.2l1.5 1.5 3-3" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+</svg>

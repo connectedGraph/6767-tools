@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+  <defs>
+    <linearGradient id="bg-fjs" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#261e05"/>
+      <stop offset="100%" stop-color="#100b01"/>
+    </linearGradient>
+    <linearGradient id="js-box" x1="10" y1="12" x2="38" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#facc15"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#bg-fjs)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#facc15" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- JS Code Editor Document Plate -->
+  <rect x="10" y="12" width="28" height="24" rx="3" fill="#1c1917" stroke="url(#js-box)" stroke-width="1.8"/>
+
+  <!-- JS Script Formatted Indented Code Lines -->
+  <line x1="15" y1="18" x2="22" y2="18" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
+  <line x1="18" y1="23" x2="27" y2="23" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+  <line x1="18" y1="28" x2="24" y2="28" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+  <line x1="15" y1="32" x2="19" y2="32" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- JS Badge Top-Right -->
+  <rect x="29" y="14" width="7" height="7" rx="1.5" fill="#facc15"/>
+  <text x="32.5" y="19" font-family="sans-serif" font-weight="900" font-size="4.2" fill="#000000" text-anchor="middle">JS</text>
+
+  <!-- Magic Sparkle ✨ -->
+  <path d="M37 27v4M35 29h4" stroke="#fde047" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="37" cy="29" r="0.8" fill="#ffffff"/>
+</svg>
