@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN" class="dark">
 <head>
-    <script src="./js/theme.js"></script>
-    <script src="./js/i18n.js"></script>
+    <script src="./js/theme.js?v=20260905"></script>
+    <script src="./js/i18n.js?v=20260905"></script>
     <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,9 +12,29 @@
     <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="./img/67.svg" />
     <link rel="apple-touch-icon" href="./img/67.svg" />
-    <link rel="stylesheet" href="./css/6767-tailwind.css?v=20260813">
-    <link rel="stylesheet" href="./css/6767-site.css?v=20260813">
+    <link rel="stylesheet" href="./css/6767-tailwind.css?v=20260905">
+    <link rel="stylesheet" href="./css/6767-site.css?v=20260905">
     <style>
+        /* ── 顶部统一胶囊栏与语言下拉防御性预设（防缓存未命中时的样式坍塌） ── */
+        .site-top-actions {
+            position: fixed;
+            top: calc(var(--lead-notice-height, 36px) + 12px);
+            right: 20px;
+            z-index: 9999;
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            pointer-events: auto;
+        }
+        .lang-dropdown-menu {
+            display: none !important;
+            position: absolute !important;
+        }
+        .lang-dropdown-menu.is-open {
+            display: flex !important;
+        }
+
         /* ── 本站元素：搜索框 ── */
         .search-6767 {
             display: flex;
@@ -259,7 +279,7 @@
     var wp = 'zp';
     var ap = 'qx';
 </script>
-<script src="./js/6767-site.js?v=20260813" defer></script>
+<script src="./js/6767-site.js?v=20260905" defer></script>
 <script>
     /* ── 渲染工具分类（vanilla JS，遍历 toolData，支持 i18n 动态切换） ── */
     (function () {

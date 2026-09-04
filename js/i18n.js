@@ -3070,7 +3070,46 @@
     }
   }
 
+  function injectSwitcherStyles() {
+    if (document.getElementById('i18n-switcher-css')) return;
+    var style = document.createElement('style');
+    style.id = 'i18n-switcher-css';
+    style.textContent = 
+      '.site-top-actions{position:fixed;top:calc(var(--lead-notice-height, 36px) + 12px);right:20px;z-index:9999;display:inline-flex;flex-direction:row;align-items:center;gap:8px;pointer-events:auto;}' +
+      '.lang-toggle-wrap{position:relative;display:inline-flex;align-items:center;flex-shrink:0;}' +
+      '.lang-toggle-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(148,163,184,0.3);background:rgba(255,255,255,0.85);color:inherit;font-size:0.78rem;font-weight:600;cursor:pointer;backdrop-filter:blur(12px);box-shadow:0 4px 14px rgba(0,0,0,0.08);outline:none;user-select:none;transition:all .2s;}' +
+      'html.dark .lang-toggle-btn{background:rgba(15,23,42,0.85);border-color:rgba(56,189,248,0.28);color:#f1f5f9;box-shadow:0 4px 16px rgba(0,0,0,0.4);}' +
+      '.lang-toggle-btn:hover{border-color:#0284c7;color:#0284c7;transform:translateY(-1px);}' +
+      'html.dark .lang-toggle-btn:hover{border-color:#38bdf8;color:#38bdf8;}' +
+      '.lang-toggle-icon{display:inline-flex;align-items:center;justify-content:center;color:#0284c7;}' +
+      'html.dark .lang-toggle-icon{color:#38bdf8;}' +
+      '.lang-chevron{transition:transform .2s ease;opacity:0.7;}' +
+      '.lang-toggle-wrap.is-open .lang-chevron,.lang-toggle-wrap:has(.lang-dropdown-menu.is-open) .lang-chevron{transform:rotate(180deg);}' +
+      '.lang-dropdown-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:100000;min-width:140px;background:#ffffff;border:1px solid rgba(148,163,184,0.3);border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,0.15);padding:5px;display:none;flex-direction:column;gap:3px;backdrop-filter:blur(16px);}' +
+      'html.dark .lang-dropdown-menu{background:rgba(15,23,42,0.96);border-color:rgba(56,189,248,0.3);box-shadow:0 16px 40px rgba(0,0,0,0.6);}' +
+      '.lang-dropdown-menu.is-open{display:flex !important;animation:lang-menu-in .18s cubic-bezier(0.16,1,0.3,1);}' +
+      '@keyframes lang-menu-in{from{opacity:0;transform:translateY(-4px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);}}' +
+      '.lang-menu-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:8px;font-size:0.82rem;color:inherit;cursor:pointer;transition:background .15s,color .15s;text-decoration:none;border:none;background:transparent;width:100%;text-align:left;white-space:nowrap;}' +
+      '.lang-item-content{display:inline-flex;align-items:center;gap:6px;}' +
+      '.lang-flag{font-size:1.1em;}' +
+      '.lang-menu-item:hover{background:rgba(2,132,199,0.1);color:#0284c7;}' +
+      'html.dark .lang-menu-item:hover{background:rgba(56,189,248,0.15);color:#38bdf8;}' +
+      '.lang-menu-item.is-active{font-weight:700;color:#0284c7;background:rgba(2,132,199,0.12);}' +
+      'html.dark .lang-menu-item.is-active{background:rgba(56,189,248,0.2);color:#38bdf8;}' +
+      '.lang-menu-item .lang-check{font-size:12px;font-weight:bold;opacity:0;}' +
+      '.lang-menu-item.is-active .lang-check{opacity:1;}' +
+      '.home-theme-toggle{width:32px;height:32px;border-radius:50%;border:1px solid rgba(148,163,184,0.3);background:rgba(255,255,255,0.85);color:inherit;display:inline-flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);box-shadow:0 4px 14px rgba(0,0,0,0.08);cursor:pointer;flex-shrink:0;transition:all .2s;}' +
+      'html.dark .home-theme-toggle{background:rgba(15,23,42,0.85);border-color:rgba(56,189,248,0.28);color:#f1f5f9;box-shadow:0 4px 16px rgba(0,0,0,0.4);}' +
+      '.home-theme-toggle:hover{border-color:#0284c7;color:#0284c7;transform:translateY(-1px) scale(1.05);}' +
+      'html.dark .home-theme-toggle:hover{border-color:#38bdf8;color:#38bdf8;}' +
+      '.topbar-lang-toggle{margin-left:auto;margin-right:8px;}' +
+      '.topbar-lang-toggle .lang-toggle-btn{height:28px;padding:0 10px;font-size:0.75rem;}' +
+      '@media (max-width:640px){.site-top-actions{top:calc(var(--lead-notice-height, 36px) + 8px);right:10px;gap:6px;}.lang-toggle-btn{height:28px;padding:0 8px;font-size:0.72rem;}.home-theme-toggle{width:28px;height:28px;}}';
+    (document.head || document.documentElement).appendChild(style);
+  }
+
   function createSwitcherElement(variant) {
+    injectSwitcherStyles();
     var wrap = document.createElement('div');
     wrap.className = 'lang-toggle-wrap ' + (variant || '');
 
@@ -3082,7 +3121,7 @@
         '<span class="lang-toggle-label">' + currentItem.short + '</span>' +
         CHEVRON_SVG +
       '</button>' +
-      '<div class="lang-dropdown-menu" role="menu">' +
+      '<div class="lang-dropdown-menu" role="menu" style="display:none;position:absolute;">' +
         LANG_CONFIG.map(function (item) {
           var activeClass = item.code === currentLang ? ' is-active' : '';
           return '<button type="button" class="lang-menu-item' + activeClass + '" data-lang="' + item.code + '" role="menuitem">' +
@@ -3100,9 +3139,14 @@
       e.stopPropagation();
       var openMenus = document.querySelectorAll('.lang-dropdown-menu.is-open');
       for (var m = 0; m < openMenus.length; m++) {
-        if (openMenus[m] !== menu) openMenus[m].classList.remove('is-open');
+        if (openMenus[m] !== menu) {
+          openMenus[m].classList.remove('is-open');
+          openMenus[m].style.display = 'none';
+        }
       }
-      menu.classList.toggle('is-open');
+      var isOpen = menu.classList.toggle('is-open');
+      wrap.classList.toggle('is-open', isOpen);
+      menu.style.display = isOpen ? 'flex' : 'none';
     });
 
     var items = menu.querySelectorAll('.lang-menu-item');
@@ -3112,6 +3156,8 @@
         e.stopPropagation();
         var targetLang = this.getAttribute('data-lang');
         menu.classList.remove('is-open');
+        wrap.classList.remove('is-open');
+        menu.style.display = 'none';
         setLang(targetLang, false);
       });
     }
@@ -3120,6 +3166,7 @@
   }
 
   function mountLanguageSwitcher() {
+    injectSwitcherStyles();
     // 1. 如果已有顶栏 .tool-topbar（各类工具页、分类页、搜索页）
     var topbars = document.querySelectorAll('.tool-topbar');
     if (topbars.length > 0) {
@@ -3168,12 +3215,18 @@
       var menus = document.querySelectorAll('.lang-dropdown-menu.is-open');
       for (var i = 0; i < menus.length; i++) {
         menus[i].classList.remove('is-open');
+        menus[i].style.display = 'none';
+      }
+      var wraps = document.querySelectorAll('.lang-toggle-wrap.is-open');
+      for (var w = 0; w < wraps.length; w++) {
+        wraps[w].classList.remove('is-open');
       }
     }
   });
 
   // 15. 初始化流程
   function init() {
+    try { injectSwitcherStyles(); } catch (e) {}
     document.documentElement.lang = currentLang === 'zh-TW' ? 'zh-TW' : (currentLang === 'en' ? 'en' : 'zh-CN');
     syncElementPlusLocale(currentLang);
 
