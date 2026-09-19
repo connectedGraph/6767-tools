@@ -27,6 +27,1031 @@
     <meta name="twitter:description" content="在线BMI指数计算器，根据公式计算BMI指数，标准体重的好帮手" />
     <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
     <link rel="canonical" href="https://tool.6767.chat/bmi" />
+    <style>
+        /* BMI page: a focused, responsive visual system that remains legible in both themes. */
+        .bmi-card,
+        .bmi-card * ,
+        .bmi-card *::before,
+        .bmi-card *::after {
+            box-sizing: border-box;
+        }
+
+        .bmi-tool-shell {
+            width: 100%;
+            max-width: 1120px;
+            min-width: 0;
+            margin: 0 auto;
+            padding: 0 20px 48px;
+        }
+
+        .bmi-card {
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            border-radius: 14px;
+        }
+
+        html.dark .bmi-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+        }
+
+        html:not(.dark) .bmi-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+        }
+
+        .bmi-card-body {
+            width: 100%;
+            min-width: 0;
+            padding: clamp(24px, 4vw, 46px);
+            overflow: hidden;
+        }
+
+        html.dark .bmi-card-body {
+            --bmi-text: #e2e8f0;
+            --bmi-heading: #f8fafc;
+            --bmi-muted: #94a3b8;
+            --bmi-border: #1e293b;
+            --bmi-border-strong: #334155;
+            --bmi-surface: #0b1120;
+            --bmi-surface-raised: #111c31;
+            --bmi-accent: #38bdf8;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .bmi-card-body {
+            --bmi-text: #334155;
+            --bmi-heading: #0f172a;
+            --bmi-muted: #64748b;
+            --bmi-border: #e2e8f0;
+            --bmi-border-strong: #cbd5e1;
+            --bmi-surface: #f8fafc;
+            --bmi-surface-raised: #ffffff;
+            --bmi-accent: #0284c7;
+            background: #ffffff;
+            color: #334155;
+        }
+
+        .bmi-tool-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px 20px;
+            margin: 0;
+            min-width: 0;
+        }
+
+        .bmi-tool-head .title {
+            min-width: 0;
+            margin: 0;
+            color: var(--bmi-heading);
+            font-size: clamp(1.9rem, 3.6vw, 2.65rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.14;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .bmi-tool-head .title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .bmi-tool-head .title {
+            color: #0f172a;
+        }
+
+        .bmi-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 34px;
+            flex: 0 0 auto;
+            padding: 6px 11px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+
+        html.dark .bmi-status-badge {
+            color: #86efac;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        html:not(.dark) .bmi-status-badge {
+            color: #166534;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .bmi-status-dot {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+        }
+
+        html.dark .bmi-status-dot {
+            background: #4ade80;
+            box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.12);
+        }
+
+        html:not(.dark) .bmi-status-dot {
+            background: #16a34a;
+            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+        }
+
+        .bmi-description {
+            max-width: 760px;
+            margin: 10px 0 0;
+            color: var(--bmi-muted);
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        html.dark .bmi-description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bmi-description {
+            color: #475569;
+        }
+
+        .bmi-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(220px, 326px);
+            align-items: center;
+            gap: clamp(20px, 4vw, 44px);
+            min-width: 0;
+            margin-top: 28px;
+            padding: clamp(20px, 3vw, 30px);
+            border-radius: 14px;
+        }
+
+        html.dark .bmi-hero {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .bmi-hero {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .bmi-hero-copy,
+        .bmi-formula-card {
+            min-width: 0;
+        }
+
+        .bmi-overline,
+        .bmi-card-tag {
+            display: inline-block;
+            margin-bottom: 9px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.3;
+        }
+
+        html.dark .bmi-overline,
+        html.dark .bmi-card-tag {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .bmi-overline,
+        html:not(.dark) .bmi-card-tag {
+            color: #0369a1;
+        }
+
+        .bmi-hero-copy h2 {
+            margin: 0;
+            color: var(--bmi-heading);
+            font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .bmi-hero-copy h2 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .bmi-hero-copy h2 {
+            color: #0f172a;
+        }
+
+        .bmi-hero-copy p {
+            max-width: 600px;
+            margin: 10px 0 0;
+            color: var(--bmi-muted);
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        html.dark .bmi-hero-copy p {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bmi-hero-copy p {
+            color: #475569;
+        }
+
+        .bmi-formula-card {
+            padding: 18px 20px;
+            border-radius: 12px;
+        }
+
+        html.dark .bmi-formula-card {
+            background: #111c31;
+            border: 1px solid #26364d;
+        }
+
+        html:not(.dark) .bmi-formula-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bmi-formula-label {
+            display: block;
+            color: var(--bmi-muted);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        html.dark .bmi-formula-label {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bmi-formula-label {
+            color: #64748b;
+        }
+
+        .bmi-formula-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+            color: var(--bmi-heading);
+            font-size: 15px;
+            line-height: 1.25;
+        }
+
+        html.dark .bmi-formula-row {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .bmi-formula-row {
+            color: #0f172a;
+        }
+
+        .bmi-formula-row > strong {
+            color: var(--bmi-accent);
+            font-size: 20px;
+        }
+
+        html.dark .bmi-formula-row > strong {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .bmi-formula-row > strong {
+            color: #0369a1;
+        }
+
+        .bmi-formula-fraction {
+            display: inline-flex;
+            align-items: center;
+            flex-direction: column;
+            max-width: 100%;
+            gap: 4px;
+            text-align: center;
+        }
+
+        .bmi-formula-line {
+            width: 100%;
+            min-width: 84px;
+            height: 1px;
+        }
+
+        html.dark .bmi-formula-line {
+            background: #64748b;
+        }
+
+        html:not(.dark) .bmi-formula-line {
+            background: #94a3b8;
+        }
+
+        .bmi-calculator-card {
+            min-width: 0;
+            margin-top: 18px;
+            padding: clamp(19px, 3vw, 28px);
+            border-radius: 14px;
+        }
+
+        html.dark .bmi-calculator-card {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .bmi-calculator-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bmi-section-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            min-width: 0;
+        }
+
+        .bmi-section-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            flex: 0 0 40px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+        }
+
+        html.dark .bmi-section-index {
+            color: #bae6fd;
+            background: rgba(14, 116, 144, 0.28);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+        }
+
+        html:not(.dark) .bmi-section-index {
+            color: #0369a1;
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+        }
+
+        .bmi-section-heading > div:last-child {
+            min-width: 0;
+        }
+
+        .bmi-section-heading h2 {
+            margin: 0;
+            color: var(--bmi-heading);
+            font-size: 19px;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+
+        html.dark .bmi-section-heading h2 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .bmi-section-heading h2 {
+            color: #0f172a;
+        }
+
+        .bmi-section-heading p {
+            margin: 4px 0 0;
+            color: var(--bmi-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        html.dark .bmi-section-heading p {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bmi-section-heading p {
+            color: #64748b;
+        }
+
+        .bmi-tool-form {
+            min-width: 0;
+            margin-top: 23px;
+        }
+
+        html.dark .bmi-tool-form {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .bmi-tool-form {
+            color: #334155;
+        }
+
+        .bmi-input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            min-width: 0;
+        }
+
+        .bmi-input-grid > * {
+            min-width: 0;
+        }
+
+        .bmi-form-item {
+            min-width: 0;
+            margin-bottom: 0 !important;
+        }
+
+        .bmi-form-item .el-form-item__content,
+        .bmi-form-item .el-input,
+        .bmi-form-item .w100 {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .bmi-form-item .el-form-item__label {
+            padding: 0 0 8px;
+            color: var(--bmi-text);
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        html.dark .bmi-form-item .el-form-item__label {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .bmi-form-item .el-form-item__label {
+            color: #334155;
+        }
+
+        .bmi-form-item .el-input__wrapper {
+            min-height: 46px;
+            border-radius: 10px;
+            transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+        }
+
+        html.dark .bmi-form-item .el-input__wrapper {
+            background: #0b1120;
+            box-shadow: 0 0 0 1px #334155 inset;
+        }
+
+        html:not(.dark) .bmi-form-item .el-input__wrapper {
+            background: #ffffff;
+            box-shadow: 0 0 0 1px #cbd5e1 inset;
+        }
+
+        html.dark .bmi-form-item .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px #64748b inset;
+        }
+
+        html:not(.dark) .bmi-form-item .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px #94a3b8 inset;
+        }
+
+        html.dark .bmi-form-item .el-input__wrapper.is-focus,
+        html.dark .bmi-form-item .el-input__wrapper:focus-within {
+            box-shadow: 0 0 0 2px #38bdf8 inset, 0 0 0 4px rgba(56, 189, 248, 0.12);
+        }
+
+        html:not(.dark) .bmi-form-item .el-input__wrapper.is-focus,
+        html:not(.dark) .bmi-form-item .el-input__wrapper:focus-within {
+            box-shadow: 0 0 0 2px #0284c7 inset, 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+
+        .bmi-form-item .el-input__inner {
+            min-height: 42px;
+            color: var(--bmi-heading);
+            font-size: 15px;
+        }
+
+        html.dark .bmi-form-item .el-input__inner {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .bmi-form-item .el-input__inner {
+            color: #0f172a;
+        }
+
+        html.dark .bmi-form-item .el-input__inner::placeholder {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bmi-form-item .el-input__inner::placeholder {
+            color: #64748b;
+        }
+
+        html.dark .bmi-form-item.is-error .el-input__wrapper {
+            box-shadow: 0 0 0 1px #fb7185 inset;
+        }
+
+        html:not(.dark) .bmi-form-item.is-error .el-input__wrapper {
+            box-shadow: 0 0 0 1px #e11d48 inset;
+        }
+
+        html.dark .bmi-form-item .el-form-item__error {
+            color: #fda4af;
+        }
+
+        html:not(.dark) .bmi-form-item .el-form-item__error {
+            color: #be123c;
+        }
+
+        .bmi-form-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 20px;
+            min-width: 0;
+        }
+
+        .bmi-helper {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 36px;
+            color: var(--bmi-muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        html.dark .bmi-helper {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bmi-helper {
+            color: #64748b;
+        }
+
+        .bmi-helper-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            flex: 0 0 18px;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        html.dark .bmi-helper-icon {
+            color: #bae6fd;
+            background: rgba(14, 116, 144, 0.28);
+            border: 1px solid #38bdf8;
+        }
+
+        html:not(.dark) .bmi-helper-icon {
+            color: #0369a1;
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+        }
+
+        .bmi-action-btn {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-height: 44px;
+            padding: 9px 18px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+        }
+
+        html.dark .bmi-action-btn {
+            color: #e0f2fe;
+            background: rgba(14, 116, 144, 0.35);
+            border: 1px solid #38bdf8;
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.12);
+        }
+
+        html:not(.dark) .bmi-action-btn {
+            color: #ffffff;
+            background: #0284c7;
+            border: 1px solid #0284c7;
+            box-shadow: 0 8px 18px rgba(2, 132, 199, 0.18);
+        }
+
+        html.dark .bmi-action-btn:hover {
+            color: #ffffff;
+            background: #0284c7;
+            border-color: #38bdf8;
+            transform: translateY(-1px);
+        }
+
+        html:not(.dark) .bmi-action-btn:hover {
+            color: #ffffff;
+            background: #0369a1;
+            border-color: #0369a1;
+            transform: translateY(-1px);
+        }
+
+        html.dark .bmi-action-btn:active,
+        html:not(.dark) .bmi-action-btn:active {
+            transform: translateY(0);
+        }
+
+        html.dark .bmi-action-btn:focus-visible {
+            outline: 3px solid rgba(125, 211, 252, 0.55);
+            outline-offset: 3px;
+        }
+
+        html:not(.dark) .bmi-action-btn:focus-visible {
+            outline: 3px solid rgba(2, 132, 199, 0.3);
+            outline-offset: 3px;
+        }
+
+        .bmi-divider {
+            height: 1px;
+            margin: 32px 0;
+            border: 0;
+        }
+
+        html.dark .bmi-divider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) .bmi-divider {
+            background: #e2e8f0;
+        }
+
+        .bmi-content {
+            min-width: 0;
+            color: var(--bmi-text);
+        }
+
+        .bmi-content-heading {
+            margin-bottom: 19px;
+        }
+
+        .bmi-info-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.88fr);
+            gap: 16px;
+            min-width: 0;
+        }
+
+        .bmi-copy-card,
+        .bmi-standard-card {
+            min-width: 0;
+            padding: clamp(18px, 2.8vw, 25px);
+            border-radius: 12px;
+        }
+
+        html.dark .bmi-copy-card,
+        html.dark .bmi-standard-card {
+            background: #111c31;
+            border: 1px solid #26364d;
+        }
+
+        html:not(.dark) .bmi-copy-card,
+        html:not(.dark) .bmi-standard-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bmi-card-tag {
+            margin-bottom: 8px;
+        }
+
+        .bmi-copy-card h3,
+        .bmi-standard-card h3,
+        .bmi-formula-note h3 {
+            margin: 0;
+            color: var(--bmi-heading);
+            font-size: 16px;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        html.dark .bmi-copy-card h3,
+        html.dark .bmi-standard-card h3,
+        html.dark .bmi-formula-note h3 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .bmi-copy-card h3,
+        html:not(.dark) .bmi-standard-card h3,
+        html:not(.dark) .bmi-formula-note h3 {
+            color: #0f172a;
+        }
+
+        .bmi-copy-card p,
+        .bmi-formula-note p {
+            margin: 12px 0 0;
+            color: var(--bmi-text);
+            font-size: 14px;
+            line-height: 1.85;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .bmi-copy-card p,
+        html.dark .bmi-formula-note p {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .bmi-copy-card p,
+        html:not(.dark) .bmi-formula-note p {
+            color: #475569;
+        }
+
+        .bmi-standard-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .bmi-standard-caption {
+            color: var(--bmi-muted);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        html.dark .bmi-standard-caption {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bmi-standard-caption {
+            color: #64748b;
+        }
+
+        .bmi-standard-table-wrap {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            border-radius: 9px;
+        }
+
+        .bmi-standard-table {
+            width: 100%;
+            max-width: 100%;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .bmi-standard-table th,
+        .bmi-standard-table td {
+            padding: 10px 11px;
+            text-align: left;
+            overflow-wrap: anywhere;
+        }
+
+        .bmi-standard-table th:first-child,
+        .bmi-standard-table td:first-child {
+            width: 45%;
+        }
+
+        html.dark .bmi-standard-table th,
+        html.dark .bmi-standard-table td {
+            border-bottom: 1px solid #26364d;
+        }
+
+        html:not(.dark) .bmi-standard-table th,
+        html:not(.dark) .bmi-standard-table td {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .bmi-standard-table th {
+            font-weight: 800;
+        }
+
+        html.dark .bmi-standard-table th {
+            color: #cbd5e1;
+            background: #17233a;
+        }
+
+        html:not(.dark) .bmi-standard-table th {
+            color: #334155;
+            background: #f8fafc;
+        }
+
+        .bmi-standard-table td {
+            color: var(--bmi-text);
+        }
+
+        html.dark .bmi-standard-table td {
+            color: #cbd5e1;
+            background: #111c31;
+        }
+
+        html:not(.dark) .bmi-standard-table td {
+            color: #475569;
+            background: #ffffff;
+        }
+
+        html.dark .bmi-standard-table tbody tr:last-child td,
+        html:not(.dark) .bmi-standard-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        html.dark .bmi-standard-table tbody tr:hover td {
+            background: #142238;
+        }
+
+        html:not(.dark) .bmi-standard-table tbody tr:hover td {
+            background: #f8fafc;
+        }
+
+        .bmi-category {
+            display: inline-flex;
+            align-items: center;
+            min-height: 25px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        html.dark .bmi-category-thin {
+            color: #7dd3fc;
+            background: rgba(14, 116, 144, 0.25);
+        }
+
+        html:not(.dark) .bmi-category-thin {
+            color: #0369a1;
+            background: #e0f2fe;
+        }
+
+        html.dark .bmi-category-normal {
+            color: #86efac;
+            background: rgba(22, 101, 52, 0.28);
+        }
+
+        html:not(.dark) .bmi-category-normal {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        html.dark .bmi-category-overweight {
+            color: #fde68a;
+            background: rgba(161, 98, 7, 0.28);
+        }
+
+        html:not(.dark) .bmi-category-overweight {
+            color: #92400e;
+            background: #fef3c7;
+        }
+
+        html.dark .bmi-category-obese {
+            color: #fda4af;
+            background: rgba(159, 18, 57, 0.28);
+        }
+
+        html:not(.dark) .bmi-category-obese {
+            color: #9f1239;
+            background: #ffe4e6;
+        }
+
+        .bmi-formula-note {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            align-items: start;
+            gap: 14px;
+            min-width: 0;
+            margin-top: 16px;
+            padding: 18px 20px;
+            border-radius: 12px;
+        }
+
+        html.dark .bmi-formula-note {
+            background: rgba(14, 116, 144, 0.13);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+
+        html:not(.dark) .bmi-formula-note {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+        }
+
+        .bmi-note-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        html.dark .bmi-note-icon {
+            color: #bae6fd;
+            background: rgba(14, 116, 144, 0.35);
+            border: 1px solid #38bdf8;
+        }
+
+        html:not(.dark) .bmi-note-icon {
+            color: #0369a1;
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+        }
+
+        .bmi-visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        html.dark .bmi-visually-hidden {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .bmi-visually-hidden {
+            color: #0f172a;
+        }
+
+        @media (max-width: 820px) {
+            .bmi-hero {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .bmi-info-layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .bmi-tool-shell {
+                padding: 0 12px 32px;
+            }
+
+            .bmi-card-body {
+                padding: 22px 16px 30px;
+            }
+
+            .bmi-tool-head {
+                align-items: flex-start;
+            }
+
+            .bmi-tool-head .title {
+                font-size: clamp(1.75rem, 9vw, 2.25rem);
+            }
+
+            .bmi-hero {
+                gap: 20px;
+                margin-top: 22px;
+                padding: 19px;
+            }
+
+            .bmi-calculator-card {
+                padding: 19px 16px;
+            }
+
+            .bmi-input-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .bmi-form-footer {
+                align-items: stretch;
+            }
+
+            .bmi-helper,
+            .bmi-action-btn {
+                width: 100%;
+            }
+
+            .bmi-action-btn {
+                margin-left: 0 !important;
+            }
+
+            .bmi-formula-note {
+                padding: 17px 16px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bmi-card * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="grid-bg"></div>
@@ -39,30 +1064,113 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
-<div class="tool-body">
-    <div class="card-model">
-        <div class="card-body">
-            <div class="tool-head">
+<div class="tool-body bmi-tool-shell">
+    <div class="card-model bmi-card">
+        <div class="card-body bmi-card-body">
+            <div class="tool-head bmi-tool-head">
                 <h1 class="title">BMI指数计算</h1>
+                <span class="bmi-status-badge" role="status"><span class="bmi-status-dot" aria-hidden="true"></span>即时计算</span>
             </div>
-            <div class="description">在线BMI指数计算器，根据公式计算BMI指数，标准体重的好帮手</div>
-            <el-form :model="formData" ref="computeForm" size="large" class="tool-form">
-                <el-form-item prop="height" :rules="[{required: true, message: `请输入身高`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
-                    <el-input-extend type="number" v-model="formData.height" label="身高(CM)" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-form-item prop="weight" :rules="[{required: true, message: `请输入体重`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
-                    <el-input-extend type="number" v-model="formData.weight" label="体重(KG)" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-button type="primary" v-on:click="compute">计算</el-button>
-            </el-form>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>BMI指数计算器说明</h3><p>BMI即身体质量指数（BMI，Body Mass Index）是国际上常用的衡量人体肥胖程度和是否健康的重要标准，主要用于统计分析。肥胖程度的判断不能采用体重的绝对值，它天然与身高有关。因此，BMI 通过人体体重和身高两个数值获得相对客观的参数，并用这个参数所处范围衡量身体质量。</p><p>在线BMI指数计算器根据标准公式为您计算BMI指数。</p><h3>BMI标准</h3><table style="width: 100%;"><tbody><tr><th>分类</th><th>BMI</th></tr><tr><td>偏瘦</td><td>&lt;= 18.4</td></tr><tr><td>正常</td><td>18.5 ~ 23.9</td></tr><tr><td>过重</td><td>24.0 ~ 27.9</td></tr><tr><td>肥胖</td><td>&gt;= 28.0</td></tr></tbody></table><h3>BMI指数计算公式</h3><p>BMI计算公式：体重指数 BMI = 体重（千克） / 身高（米）的平方即 kg/m2</p><p>一般认为BMI指数在22为最佳身高体重比，当然只要BMI指数在18.5~23.9都是正常的身高体重比，无需刻意减肥或增重。</p>
-            </div>
+            <div class="description bmi-description">在线BMI指数计算器，根据公式计算BMI指数，标准体重的好帮手</div>
+
+            <section class="bmi-hero" aria-labelledby="bmi-hero-title">
+                <div class="bmi-hero-copy">
+                    <span class="bmi-overline">BODY MASS INDEX</span>
+                    <h2 id="bmi-hero-title">读懂你的身体质量指数</h2>
+                    <p>输入身高与体重，快速获得 BMI 参考值。结果仅用于健康趋势参考，不能替代专业医疗建议。</p>
+                </div>
+                <div class="bmi-formula-card" aria-label="BMI计算公式">
+                    <span class="bmi-formula-label">计算公式</span>
+                    <div class="bmi-formula-row">
+                        <strong>BMI</strong>
+                        <span aria-hidden="true">=</span>
+                        <span class="bmi-formula-fraction">
+                            <span>体重 (kg)</span>
+                            <span class="bmi-formula-line" aria-hidden="true"></span>
+                            <span>身高² (m²)</span>
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bmi-calculator-card" aria-labelledby="bmi-input-title">
+                <div class="bmi-section-heading">
+                    <span class="bmi-section-index" aria-hidden="true">01</span>
+                    <div>
+                        <h2 id="bmi-input-title">填写身体数据</h2>
+                        <p>使用常用单位输入，支持小数。</p>
+                    </div>
+                </div>
+                <el-form :model="formData" ref="computeForm" size="large" class="tool-form bmi-tool-form">
+                    <div class="bmi-input-grid">
+                        <el-form-item class="bmi-form-item" prop="height" :rules="[{required: true, message: `请输入身高`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
+                            <el-input-extend type="number" v-model="formData.height" label="身高(CM)" class="w100 bmi-input"></el-input-extend>
+                        </el-form-item>
+                        <el-form-item class="bmi-form-item" prop="weight" :rules="[{required: true, message: `请输入体重`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
+                            <el-input-extend type="number" v-model="formData.weight" label="体重(KG)" class="w100 bmi-input"></el-input-extend>
+                        </el-form-item>
+                    </div>
+                    <div class="bmi-form-footer">
+                        <span class="bmi-helper"><span class="bmi-helper-icon" aria-hidden="true">i</span>请输入大于 0 的数字</span>
+                        <el-button type="primary" class="bmi-action-btn" v-on:click="compute"><span>计算 BMI</span><span aria-hidden="true">→</span></el-button>
+                    </div>
+                </el-form>
+            </section>
+
+            <div class="divider bmi-divider" role="presentation"></div>
+
+            <section class="content bmi-content" aria-labelledby="bmi-info-title">
+                <div class="bmi-section-heading bmi-content-heading">
+                    <span class="bmi-section-index" aria-hidden="true">02</span>
+                    <div>
+                        <h2 id="bmi-info-title">认识 BMI</h2>
+                        <p>了解指标含义与常见成人参考范围。</p>
+                    </div>
+                </div>
+
+                <div class="bmi-info-layout">
+                    <article class="bmi-copy-card">
+                        <span class="bmi-card-tag">QUICK GUIDE</span>
+                        <h3>BMI指数计算器说明</h3>
+                        <p>BMI即身体质量指数（BMI，Body Mass Index）是国际上常用的衡量人体肥胖程度和是否健康的重要标准，主要用于统计分析。肥胖程度的判断不能采用体重的绝对值，它天然与身高有关。因此，BMI 通过人体体重和身高两个数值获得相对客观的参数，并用这个参数所处范围衡量身体质量。</p>
+                        <p>在线BMI指数计算器根据标准公式为您计算BMI指数。</p>
+                    </article>
+
+                    <div class="bmi-standard-card">
+                        <div class="bmi-standard-header">
+                            <h3>BMI标准</h3>
+                            <span class="bmi-standard-caption">成人参考范围</span>
+                        </div>
+                        <div class="bmi-standard-table-wrap">
+                            <table class="bmi-standard-table">
+                                <caption class="bmi-visually-hidden">BMI成人参考分类与范围</caption>
+                                <thead>
+                                    <tr><th scope="col">分类</th><th scope="col">BMI</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><span class="bmi-category bmi-category-thin">偏瘦</span></td><td>&lt;= 18.4</td></tr>
+                                    <tr><td><span class="bmi-category bmi-category-normal">正常</span></td><td>18.5 ~ 23.9</td></tr>
+                                    <tr><td><span class="bmi-category bmi-category-overweight">过重</span></td><td>24.0 ~ 27.9</td></tr>
+                                    <tr><td><span class="bmi-category bmi-category-obese">肥胖</span></td><td>&gt;= 28.0</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bmi-formula-note">
+                    <span class="bmi-note-icon" aria-hidden="true">∑</span>
+                    <div>
+                        <h3>BMI指数计算公式</h3>
+                        <p>BMI计算公式：体重指数 BMI = 体重（千克） / 身高（米）的平方即 kg/m2</p>
+                        <p>一般认为BMI指数在22为最佳身高体重比，当然只要BMI指数在18.5~23.9都是正常的身高体重比，无需刻意减肥或增重。</p>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 </div>
