@@ -130,6 +130,57 @@
             border-color: #10b981;
             color: #34d399;
         }
+
+        /* 通关模态框高质感样式 (明暗双模支持) */
+        .victory-trophy-box {
+            font-size: 42px;
+            line-height: 1;
+            filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.4));
+            animation: victory-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes victory-bounce {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .victory-title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+        html.dark .victory-title {
+            color: #f8fafc;
+        }
+        html:not(.dark) .victory-title {
+            color: #0f172a;
+        }
+        .victory-stats-card {
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        html.dark .victory-stats-card {
+            background: #050a18;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+        }
+        html:not(.dark) .victory-stats-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .stat-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+        html.dark .stat-label {
+            color: #94a3b8;
+        }
+        html:not(.dark) .stat-label {
+            color: #64748b;
+        }
     </style>
 </head>
 <body>
@@ -254,19 +305,32 @@
         </div>
     </el-dialog>
 
-    <!-- 通关胜利模态框 -->
-    <el-dialog v-model="showWinModal" title="🎉 恭喜通关！" width="380px" class="dark-dialog" :show-close="false">
-        <div class="text-center py-3">
-            <div class="text-4xl mb-3">🏆</div>
-            <div class="text-lg font-bold text-white mb-2">已成功通过第 {{ currentLevelIdx + 1 }} 关！</div>
-            <div class="bg-slate-900 p-3 rounded-lg text-xs font-mono text-slate-300 space-y-1 mb-4">
-                <div>本次移动步数: <span class="text-amber-400 font-bold">{{ movesCount }}</span></div>
-                <div>本次推箱次数: <span class="text-sky-400 font-bold">{{ pushesCount }}</span></div>
-                <div>本次通关用时: <span class="text-emerald-400 font-bold">{{ formattedTime }}</span></div>
+    <!-- 通关胜利模态框 (高质感双模适配) -->
+    <el-dialog v-model="showWinModal" title="🎉 恭喜通关！" width="380px" class="dark-dialog victory-dialog" :show-close="false">
+        <div class="text-center py-2">
+            <div class="victory-trophy-box mb-2">
+                <span class="victory-trophy">🏆</span>
             </div>
-            <div class="flex gap-2">
-                <el-button size="small" class="flex-1" @click="restartLevel">再玩一次</el-button>
-                <el-button size="small" type="primary" class="flex-1" @click="nextLevel">进入下一关</el-button>
+            <div class="victory-title mb-3">
+                第 <span class="text-amber-400 font-bold font-mono">{{ currentLevelIdx + 1 }}</span> 关挑战成功！
+            </div>
+            <div class="victory-stats-card mb-4">
+                <div class="stat-row">
+                    <span class="stat-label">本次移动步数</span>
+                    <span class="stat-val text-amber-400 font-bold font-mono">{{ movesCount }} 步</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">本次推箱次数</span>
+                    <span class="stat-val text-sky-400 font-bold font-mono">{{ pushesCount }} 次</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">本次通关用时</span>
+                    <span class="stat-val text-emerald-400 font-bold font-mono">{{ formattedTime }}</span>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <el-button class="flex-1" @click="restartLevel">再玩一次</el-button>
+                <el-button type="primary" class="flex-1" @click="nextLevel">进入下一关</el-button>
             </div>
         </div>
     </el-dialog>
@@ -771,7 +835,7 @@ const sfx = new SoundFx();
 
 const { createApp, ref, reactive, computed, onMounted, onUnmounted } = Vue;
 
-createApp({
+window.sokobanAppInstance = createApp({
     setup() {
         const canvas = ref(null);
         const canvasWrapper = ref(null);
@@ -1211,7 +1275,8 @@ createApp({
             onCanvasClick
         };
     }
-}).use(ElementPlus).mount('#app');
+});
+window.sokobanApp = window.sokobanAppInstance.use(ElementPlus).mount('#app');
 </script>
 </body>
 </html>

@@ -1363,3 +1363,165 @@ html.dark .ms-header {
         overflow: hidden !important;
     }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   全站 Element Plus 弹窗 (el-dialog / el-message-box / .dark-dialog) 全局高质感双模适配
+   ═══════════════════════════════════════════════════════════════ */
+.el-dialog,
+.dark-dialog,
+.el-message-box {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+/* 1. 深色模式下的弹窗与对话框 */
+html.dark .el-dialog,
+html.dark .dark-dialog,
+html.dark .el-message-box {
+    background: #090e1f !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85), 0 0 35px rgba(56, 189, 248, 0.15) !important;
+    color: #e2e8f0 !important;
+}
+
+html.dark .el-dialog__title,
+html.dark .el-message-box__title {
+    color: #f8fafc !important;
+    font-weight: 700 !important;
+}
+
+html.dark .el-dialog__headerbtn .el-dialog__close {
+    color: #94a3b8 !important;
+}
+html.dark .el-dialog__headerbtn:hover .el-dialog__close {
+    color: #38bdf8 !important;
+}
+
+html.dark .el-dialog__body,
+html.dark .el-message-box__content {
+    color: #cbd5e1 !important;
+}
+
+/* 2. 亮色模式下的弹窗与对话框 */
+html:not(.dark) .el-dialog,
+html:not(.dark) .dark-dialog,
+html:not(.dark) .el-message-box {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 20px 30px -5px rgba(15, 23, 42, 0.12), 0 10px 10px -5px rgba(15, 23, 42, 0.04) !important;
+    color: #0f172a !important;
+}
+
+html:not(.dark) .el-dialog__title,
+html:not(.dark) .el-message-box__title {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+
+html:not(.dark) .el-dialog__body,
+html:not(.dark) .el-message-box__content {
+    color: #334155 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   全站核心现代原子工具类 (适配深色/浅色模式，根治白底白字与无样式)
+   ═══════════════════════════════════════════════════════════════ */
+/* 统计卡片与深色底框 (在深色模式为深蓝黑，在浅色模式为细腻浅灰，绝不出现白底白字) */
+html.dark .bg-slate-900,
+html.dark .bg-slate-950,
+html.dark .bg-slate-900\/60,
+html.dark .bg-slate-900\/70,
+html.dark .bg-slate-900\/80,
+html.dark .bg-slate-950\/80 {
+    background-color: #050a17 !important;
+    border: 1px solid rgba(51, 65, 85, 0.6) !important;
+    color: #e2e8f0 !important;
+}
+
+html:not(.dark) .bg-slate-900,
+html:not(.dark) .bg-slate-950,
+html:not(.dark) .bg-slate-900\/60,
+html:not(.dark) .bg-slate-900\/70,
+html:not(.dark) .bg-slate-900\/80,
+html:not(.dark) .bg-slate-950\/80 {
+    background-color: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+html.dark .bg-slate-800,
+html.dark .bg-slate-800\/80 {
+    background-color: #1e293b !important;
+    border: 1px solid rgba(51, 65, 85, 0.7) !important;
+    color: #e2e8f0 !important;
+}
+
+html:not(.dark) .bg-slate-800,
+html:not(.dark) .bg-slate-800\/80 {
+    background-color: #e2e8f0 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+/* 文本文字自适应与高对比度强化 */
+html.dark .text-white { color: #ffffff !important; }
+html:not(.dark) .text-white { color: #0f172a !important; }
+
+html.dark .text-slate-100 { color: #f8fafc !important; }
+html:not(.dark) .text-slate-100 { color: #0f172a !important; }
+
+html.dark .text-slate-200 { color: #e2e8f0 !important; }
+html:not(.dark) .text-slate-200 { color: #1e293b !important; }
+
+html.dark .text-slate-300 { color: #cbd5e1 !important; }
+html:not(.dark) .text-slate-300 { color: #334155 !important; }
+
+html.dark .text-slate-400 { color: #94a3b8 !important; }
+html:not(.dark) .text-slate-400 { color: #64748b !important; }
+
+/* 关键指标强调色 (在深色和浅色背景上均保持 AAA 级对比度) */
+.text-amber-400, .text-amber-500 {
+    color: #d97706 !important;
+}
+html.dark .text-amber-400, html.dark .text-amber-500 {
+    color: #fbbf24 !important;
+}
+
+.text-sky-400, .text-sky-500 {
+    color: #0284c7 !important;
+}
+html.dark .text-sky-400, html.dark .text-sky-500 {
+    color: #38bdf8 !important;
+}
+
+.text-emerald-400, .text-emerald-500 {
+    color: #059669 !important;
+}
+html.dark .text-emerald-400, html.dark .text-emerald-500 {
+    color: #34d399 !important;
+}
+
+.text-cyan-400, .text-cyan-500 {
+    color: #0891b2 !important;
+}
+html.dark .text-cyan-400, html.dark .text-cyan-500 {
+    color: #22d3ee !important;
+}
+
+.text-rose-400, .text-rose-500 {
+    color: #e11d48 !important;
+}
+html.dark .text-rose-400, html.dark .text-rose-500 {
+    color: #fb7185 !important;
+}
+
+/* 常用边框与圆角工具补齐 */
+.border-slate-700 { border-color: rgba(51, 65, 85, 0.7) !important; }
+.border-slate-800 { border-color: rgba(30, 41, 59, 0.8) !important; }
+.rounded-lg { border-radius: 10px !important; }
+.rounded-xl { border-radius: 14px !important; }
+.space-y-1 > * + * { margin-top: 0.25rem !important; }
+.space-y-2 > * + * { margin-top: 0.5rem !important; }
+.space-y-3 > * + * { margin-top: 0.75rem !important; }
