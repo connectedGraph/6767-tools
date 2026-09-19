@@ -18,11 +18,17 @@
     
     <style>
         .op-box{margin-bottom:10px;}
-        .editor-menu { width: 100%; border: 1px solid #808080; border-bottom: 0; display: flex; align-items: center; }
+        .editor-menu { width: 100%; border: 1px solid #808080; border-bottom: 0; display: flex; align-items: center; flex-wrap: wrap; }
         .editor-menu .item{padding:4px;}
         .editor-menu .item:first-child { width: 49%; }
         .editor-menu .item:last-child{flex:1;}
-        #editor-container { width: 100%; height: 600px; border: 1px solid #808080; }
+        #editor-container { width: 100%; height: 600px; border: 1px solid #808080; max-width: 100%; overflow: hidden; }
+        @media (max-width: 768px) {
+            #editor-container, #editor-container * {
+                max-width: 100% !important;
+            }
+            .editor-menu .item:first-child { width: 100% !important; }
+        }
     </style>
 
     <meta property="og:type" content="website" />

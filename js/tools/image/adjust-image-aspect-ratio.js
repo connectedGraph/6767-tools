@@ -84,7 +84,8 @@ Vue.createApp({
       return locales.settingTip3.replace("50%", this.processOptions.percentage + "%");
     },
     demoImgUrl() {
-      return staticSiteHost + "/up/2024/0328/" + this.processOptions.fillType + ".jpg";
+      const idx = Number(this.processOptions.fillType) + 1;
+      return staticSiteHost + "/up/2024/0328/e" + idx + ".jpg";
     }
   },
   watch: {

@@ -134,6 +134,31 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             background: rgba(8, 13, 25, 0.6);
         }
+        @media (max-width: 768px) {
+            .tab-nav {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+                padding: 12px 8px !important;
+            }
+            .tab-nav > div {
+                width: 100% !important;
+                flex-wrap: wrap !important;
+                gap: 6px !important;
+            }
+            .view-switcher {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                width: 100% !important;
+            }
+            .view-btn {
+                text-align: center !important;
+            }
+            .search-pill {
+                flex: 1 1 100% !important;
+                width: 100% !important;
+            }
+        }
         .view-switcher {
             display: flex;
             gap: 4px;

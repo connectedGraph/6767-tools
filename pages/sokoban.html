@@ -156,29 +156,29 @@
         
         <!-- 顶部数码仪表盘与关卡控制 -->
         <div class="sk-dashboard">
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2">
+            <div class="flex items-center flex-wrap gap-3">
+                <div class="flex items-center gap-1.5">
                     <span class="text-xs text-slate-400 font-bold">关卡:</span>
                     <span class="sk-digital-val text-amber-400">第 {{ currentLevelIdx + 1 }} / {{ totalLevels }} 关</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs text-slate-400 font-bold">移动步数:</span>
+                <div class="flex items-center gap-1.5">
+                    <span class="text-xs text-slate-400 font-bold">移动:</span>
                     <span class="sk-digital-val">{{ movesCount }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs text-slate-400 font-bold">推箱次数:</span>
+                <div class="flex items-center gap-1.5">
+                    <span class="text-xs text-slate-400 font-bold">推箱:</span>
                     <span class="sk-digital-val text-sky-400">{{ pushesCount }}</span>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5">
                     <span class="text-xs text-slate-400 font-bold">用时:</span>
                     <span class="sk-digital-val text-emerald-400">{{ formattedTime }}</span>
                 </div>
             </div>
 
             <!-- 控制按钮组 -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center flex-wrap gap-2 mt-2 sm:mt-0">
                 <el-button size="small" type="primary" plain @click="showLevelModal = true">
-                    选关面板 (50关)
+                    选关 (50关)
                 </el-button>
                 <el-button size="small" type="warning" plain @click="undoMove" :disabled="historyStack.length === 0" title="快捷键: Z">
                     撤回 (Z)
@@ -187,7 +187,7 @@
                     重置 (R)
                 </el-button>
                 <el-button size="small" @click="soundEnabled = !soundEnabled" :title="soundEnabled ? '音效开启' : '音效静音'">
-                    {{ soundEnabled ? '🔊 音效' : '🔇 静音' }}
+                    {{ soundEnabled ? '🔊' : '🔇' }}
                 </el-button>
             </div>
         </div>

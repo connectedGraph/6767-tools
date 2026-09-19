@@ -209,6 +209,24 @@
             background-color: #22d3ee;
         }
 
+        @media (max-width: 768px) {
+            .grid, .grid > div, .tool-form-col, .tool-tabs, .card-body, .card-model {
+                min-width: 0 !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .card-body {
+                padding: 16px 8px !important;
+            }
+            .p-4 {
+                padding: 10px !important;
+            }
+            .tool-tabs .el-tabs__item {
+                padding: 0 6px !important;
+                font-size: 12px !important;
+            }
+        }
+
         /* 打印专用 CSS */
         @media print {
             @page {

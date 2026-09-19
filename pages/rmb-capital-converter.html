@@ -110,6 +110,30 @@
             vertical-align: middle;
             position: relative;
         }
+        @media (max-width: 768px) {
+            .cheque-grid-container {
+                max-width: 100% !important;
+                overflow: hidden !important;
+                padding: 0 !important;
+            }
+            .cheque-table {
+                min-width: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                table-layout: fixed !important;
+            }
+            .cheque-table th {
+                width: auto !important;
+                font-size: 9px !important;
+                padding: 4px 1px !important;
+            }
+            .cheque-table td {
+                height: 38px !important;
+            }
+            .cheque-digit {
+                font-size: 14px !important;
+            }
+        }
         .cheque-digit {
             font-size: 20px;
             font-weight: 700;

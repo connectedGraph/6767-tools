@@ -168,23 +168,44 @@
         }
 
         /* 未来执行时间表 */
+        .times-table-wrap {
+            overflow-x: auto;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
         .times-table {
             width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
             border-collapse: collapse;
             font-size: 0.85rem;
             font-family: ui-monospace, monospace;
         }
+        @media (max-width: 640px) {
+            .times-table {
+                font-size: 0.75rem;
+            }
+            .times-table th:nth-child(4),
+            .times-table td:nth-child(4),
+            .countdown-col {
+                display: none !important;
+            }
+            .times-table th, .times-table td {
+                padding: 4px 6px;
+            }
+        }
         .times-table th {
             background: rgba(30, 41, 59, 0.9);
             color: #38bdf8;
-            padding: 8px 12px;
+            padding: 6px 8px;
             text-align: left;
             border: 1px solid rgba(51, 65, 85, 0.6);
         }
         .times-table td {
-            padding: 8px 12px;
+            padding: 6px 8px;
             border: 1px solid rgba(51, 65, 85, 0.4);
             color: #cbd5e1;
+            word-break: break-all;
         }
         .times-table tr:nth-child(even) td {
             background: rgba(15, 23, 42, 0.5);
@@ -640,14 +661,14 @@
                             <span class="text-sm font-semibold text-cyan-400 font-mono">◈ 未来 10 次触发时间预测 (Next 10 Triggers)</span>
                             <span class="text-xs text-slate-400">基于当前基准时间即时推算</span>
                         </div>
-                        <div class="overflow-x-auto rounded border border-slate-700 bg-slate-900/60 p-1">
+                        <div class="times-table-wrap rounded border border-slate-700 bg-slate-900/60">
                             <table class="times-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 70px;">序号</th>
+                                        <th style="width: 50px;">序号</th>
                                         <th>计划执行具体时间 (Local Time)</th>
-                                        <th style="width: 100px;">星期</th>
-                                        <th style="width: 160px;">距今倒计时</th>
+                                        <th style="width: 70px;">星期</th>
+                                        <th class="countdown-col" style="width: 130px;">距今倒计时</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -660,7 +681,7 @@
                                         <td><span class="order-badge">#{{ i + 1 }}</span></td>
                                         <td class="font-bold text-slate-200">{{ t.formatted }}</td>
                                         <td class="text-slate-400">{{ t.dayOfWeek }}</td>
-                                        <td class="text-cyan-400">{{ t.relative }}</td>
+                                        <td class="text-cyan-400 countdown-col">{{ t.relative }}</td>
                                     </tr>
                                 </tbody>
                             </table>

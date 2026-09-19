@@ -143,6 +143,30 @@
             padding: 2px;
             border: 1px solid rgba(51, 65, 85, 0.6);
         }
+        @media (max-width: 768px) {
+            .timeline-strip-wrap {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                max-width: 100%;
+            }
+            .timeline-strip {
+                min-width: 0 !important;
+                width: 100% !important;
+                grid-template-columns: repeat(24, minmax(0, 1fr)) !important;
+                gap: 1px !important;
+                padding: 1px !important;
+                height: 36px !important;
+            }
+            .hour-cell {
+                font-size: 9px !important;
+                padding: 0 !important;
+                min-width: 0 !important;
+            }
+            .hour-cell span {
+                transform: scale(0.85);
+                display: inline-block;
+            }
+        }
         .hour-cell {
             display: flex;
             flex-direction: column;

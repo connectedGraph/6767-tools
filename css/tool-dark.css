@@ -1236,3 +1236,130 @@ html.dark .ms-header {
 .gap-2 { gap: 8px !important; }
 .gap-3 { gap: 12px !important; }
 .gap-4 { gap: 16px !important; }
+
+/* ── 15. 全站移动端响应式与防溢出保护 (Mobile Responsive Guard) ── */
+@media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+    }
+    .tool-page-body, .main-body, .tool-body, .card-model, .card-body {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    /* 代码段与引用防止单行超宽撑破视口 */
+    code, pre {
+        white-space: pre-wrap !important;
+        word-break: break-all !important;
+        overflow-wrap: anywhere !important;
+        max-width: 100% !important;
+    }
+    /* 移动端表格自动固定布局与自适应折行，防止撑破 375px 视口 */
+    table:not(.preview-table) {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: fixed !important;
+        box-sizing: border-box !important;
+    }
+    table:not(.preview-table) td,
+    table:not(.preview-table) th {
+        word-break: break-all !important;
+        overflow-wrap: anywhere !important;
+        padding: 4px 2px !important;
+        font-size: 12px !important;
+    }
+    /* Element Plus 标签导航栏支持自适应换行或弹性压缩 */
+    .el-tabs__nav-wrap, .el-tabs__nav-scroll {
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+    .el-tabs__nav {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        float: none !important;
+        transform: none !important;
+    }
+    .el-tabs__item {
+        padding: 0 8px !important;
+        font-size: 13px !important;
+        flex: 1 1 auto !important;
+        text-align: center !important;
+        min-width: 0 !important;
+    }
+    /* Monaco Editor 移动端保护 */
+    .monaco-editor, .monaco-editor * {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .monaco-editor .overflow-guard {
+        overflow: hidden !important;
+        max-width: 100% !important;
+    }
+    /* 选项卡与芯片按钮弹性折行换行 */
+    .conv-tab-group, .category-tabs, .jf-tab-list, .preset-chips-wrap,
+    .btn-group, [class*="-tabs"], [class*="-chips"], .button-group {
+        flex-wrap: wrap !important;
+    }
+    button.conv-tab-btn, button.category-tab-btn, button.jf-tab-btn, button.preset-chip {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+    /* 表格容器弹性收缩与 header 保护 */
+    .el-table, .el-table__inner-wrapper, .el-table__header-wrapper, .el-table__body-wrapper {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+    .el-table table {
+        max-width: 100% !important;
+    }
+    /* 分页组件移动端自适应 */
+    .el-pagination {
+        max-width: 100% !important;
+        overflow: hidden !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 4px !important;
+    }
+    .el-pagination .el-pager li {
+        min-width: 24px !important;
+        padding: 0 2px !important;
+    }
+    .el-pagination .el-pagination__total, .el-pagination .el-pagination__jump {
+        margin: 4px 0 !important;
+    }
+    /* 顶栏与标题自适应截断 */
+    .tool-topbar {
+        max-width: 100vw !important;
+        overflow: hidden !important;
+        padding: 0 10px !important;
+    }
+    .tool-topbar-title {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+    }
+    .theme-toggle-btn.topbar-theme-toggle {
+        margin-left: auto !important;
+        flex-shrink: 0 !important;
+    }
+    /* Canvas 自适应缩放 */
+    canvas {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    /* 时间轴、支票格与跑马灯容器安全隔离 */
+    .timeline-strip, .timeline-strip-container, .cheque-grid-container {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    .led-marquee-container, .led-marquee-wrap, .led-screen {
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+}
