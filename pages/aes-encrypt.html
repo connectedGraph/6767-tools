@@ -17,13 +17,898 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .tool-body .tool-form { max-width: 600px; }
-        .tool-body .compute-result { max-width: 600px; margin: 15px auto 0 auto; text-align: start; background: #f5f5f5; }
-        .tool-body .compute-result.error{color:#f00;}
-        .tool-body .compute-result .item { display: flex; align-items: center; margin-bottom: 10px; }
-        .tool-body .compute-result .item:last-child { margin-bottom: 0; }
-        .tool-body .compute-result .item .passworld { flex: 1; background: #fff; text-align: start; padding: 5px; border-radius: 4px; word-break: break-all; line-height: 20px; min-height: 32px; border: 1px solid #DCDFE6; max-height: 300px; overflow-y: auto; }
-        .tool-body .compute-result .item a { margin-left: 10px; color: var(--el-color-primary); }
+        /* AES workspace: the page-specific surface is intentionally self-contained. */
+        .tool-page-body .tool-head .title {
+            margin: 0;
+            text-align: left;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .tool-page-body .description {
+            max-width: 980px;
+            margin: 10px auto 0;
+            line-height: 1.7;
+        }
+
+        html.dark .tool-page-body .tool-head .title { color: #f8fafc; }
+        html:not(.dark) .tool-page-body .tool-head .title { color: #0f172a; }
+        html.dark .tool-page-body .description { color: #94a3b8; }
+        html:not(.dark) .tool-page-body .description { color: #475569; }
+
+        .aes-tool,
+        .aes-tool *,
+        .aes-tool *::before,
+        .aes-tool *::after {
+            box-sizing: border-box;
+        }
+
+        .aes-tool {
+            width: 100%;
+            max-width: 980px;
+            min-width: 0;
+            margin: 24px auto 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+
+        html.dark .aes-tool {
+            --aes-ink: #f8fafc;
+            --aes-soft: #cbd5e1;
+            --aes-muted: #94a3b8;
+            --aes-border: #1e293b;
+            --aes-border-strong: #334155;
+            --aes-panel: #0b1120;
+            --aes-panel-alt: #0f172a;
+            --aes-field: #091321;
+            --aes-accent: #38bdf8;
+            --aes-accent-strong: #22d3ee;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .aes-tool {
+            --aes-ink: #0f172a;
+            --aes-soft: #334155;
+            --aes-muted: #64748b;
+            --aes-border: #e2e8f0;
+            --aes-border-strong: #cbd5e1;
+            --aes-panel: #ffffff;
+            --aes-panel-alt: #f8fafc;
+            --aes-field: #ffffff;
+            --aes-accent: #0284c7;
+            --aes-accent-strong: #0369a1;
+            color: #1e293b;
+        }
+
+        .aes-dashboard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            min-width: 0;
+            padding: 15px 17px;
+            border-radius: 12px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .aes-tool .aes-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .aes-tool .aes-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .aes-dashboard__brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1 1 260px;
+            min-width: 0;
+        }
+
+        .aes-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 44px;
+            width: 44px;
+            height: 44px;
+            border-radius: 11px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        html.dark .aes-tool .aes-mark {
+            color: #e0f2fe;
+            background: linear-gradient(145deg, #0e7490, #164e63);
+            border: 1px solid #38bdf8;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.14);
+        }
+
+        html:not(.dark) .aes-tool .aes-mark {
+            color: #075985;
+            background: linear-gradient(145deg, #e0f2fe, #bae6fd);
+            border: 1px solid #0284c7;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.12);
+        }
+
+        .aes-dashboard__copy {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .aes-dashboard__copy strong {
+            overflow-wrap: anywhere;
+            font-size: 15px;
+            line-height: 1.35;
+        }
+
+        .aes-dashboard__sub {
+            overflow-wrap: anywhere;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        html.dark .aes-tool .aes-dashboard__copy strong { color: #f8fafc; }
+        html:not(.dark) .aes-tool .aes-dashboard__copy strong { color: #0f172a; }
+        html.dark .aes-tool .aes-dashboard__sub { color: #94a3b8; }
+        html:not(.dark) .aes-tool .aes-dashboard__sub { color: #64748b; }
+
+        .aes-kicker {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.2;
+        }
+
+        html.dark .aes-tool .aes-kicker { color: #38bdf8; }
+        html:not(.dark) .aes-tool .aes-kicker { color: #0369a1; }
+
+        .aes-dashboard__status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 30px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        html.dark .aes-tool .aes-dashboard__status {
+            color: #a7f3d0;
+            background: rgba(6, 78, 59, 0.32);
+            border: 1px solid rgba(52, 211, 153, 0.35);
+        }
+
+        html:not(.dark) .aes-tool .aes-dashboard__status {
+            color: #047857;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+        }
+
+        .aes-status-dot {
+            display: inline-block;
+            flex: 0 0 7px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.14);
+        }
+
+        .aes-mode-trail {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 6px;
+            width: 100%;
+            margin-top: -2px;
+        }
+
+        .aes-mode-chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 26px;
+            max-width: 100%;
+            padding: 4px 8px;
+            overflow: hidden;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        html.dark .aes-tool .aes-mode-chip {
+            color: #cbd5e1;
+            background: #111b2e;
+            border: 1px solid #26354b;
+        }
+
+        html:not(.dark) .aes-tool .aes-mode-chip {
+            color: #475569;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .aes-form {
+            width: 100%;
+            max-width: none !important;
+            min-width: 0;
+            margin-top: 16px;
+        }
+
+        .aes-input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .aes-panel {
+            min-width: 0;
+            padding: 18px;
+            border-radius: 12px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .aes-tool .aes-panel {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        html:not(.dark) .aes-tool .aes-panel {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .aes-panel:hover {
+            border-color: var(--aes-border-strong);
+        }
+
+        .aes-panel--input {
+            grid-column: 1 / -1;
+        }
+
+        .aes-panel__header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            min-width: 0;
+            margin-bottom: 14px;
+        }
+
+        .aes-panel__heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .aes-panel__index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 28px;
+            width: 28px;
+            height: 28px;
+            margin-top: 1px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        html.dark .aes-tool .aes-panel__index {
+            color: #67e8f9;
+            background: rgba(8, 145, 178, 0.18);
+            border: 1px solid rgba(34, 211, 238, 0.35);
+        }
+
+        html:not(.dark) .aes-tool .aes-panel__index {
+            color: #0369a1;
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+        }
+
+        .aes-panel__title {
+            margin: 0;
+            overflow-wrap: anywhere;
+            font-size: 15px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        .aes-panel__hint {
+            margin: 3px 0 0;
+            overflow-wrap: anywhere;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        html.dark .aes-tool .aes-panel__title { color: #f8fafc; }
+        html:not(.dark) .aes-tool .aes-panel__title { color: #0f172a; }
+        html.dark .aes-tool .aes-panel__hint { color: #94a3b8; }
+        html:not(.dark) .aes-tool .aes-panel__hint { color: #64748b; }
+
+        .aes-panel__badge {
+            display: inline-flex;
+            align-items: center;
+            flex: 0 0 auto;
+            min-height: 24px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            white-space: nowrap;
+        }
+
+        html.dark .aes-tool .aes-panel__badge {
+            color: #bae6fd;
+            background: rgba(14, 116, 144, 0.22);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+
+        html:not(.dark) .aes-tool .aes-panel__badge {
+            color: #075985;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+        }
+
+        .aes-tool .el-form-item {
+            min-width: 0;
+            margin-bottom: 0;
+        }
+
+        .aes-tool .el-form-item__label {
+            min-height: 22px;
+            padding-bottom: 7px;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        html.dark .aes-tool .el-form-item__label { color: #cbd5e1; }
+        html:not(.dark) .aes-tool .el-form-item__label { color: #334155; }
+
+        .aes-tool .el-form-item__content,
+        .aes-tool .el-input,
+        .aes-tool .el-select,
+        .aes-tool .el-textarea {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .aes-tool .el-input__wrapper {
+            min-height: 44px;
+            padding: 1px 12px;
+            border-radius: 9px;
+            transition: box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+
+        html.dark .aes-tool .el-input__wrapper {
+            background: #091321;
+            box-shadow: 0 0 0 1px #26354b inset;
+        }
+
+        html:not(.dark) .aes-tool .el-input__wrapper {
+            background: #ffffff;
+            box-shadow: 0 0 0 1px #cbd5e1 inset;
+        }
+
+        html.dark .aes-tool .el-input__wrapper:hover { box-shadow: 0 0 0 1px #64748b inset; }
+        html:not(.dark) .aes-tool .el-input__wrapper:hover { box-shadow: 0 0 0 1px #94a3b8 inset; }
+
+        .aes-tool .el-input__inner {
+            min-height: 40px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        html.dark .aes-tool .el-input__inner,
+        html.dark .aes-tool .el-textarea__inner { color: #f8fafc; }
+        html:not(.dark) .aes-tool .el-input__inner,
+        html:not(.dark) .aes-tool .el-textarea__inner { color: #0f172a; }
+
+        .aes-tool .el-textarea__inner {
+            display: block;
+            width: 100%;
+            min-height: 164px;
+            padding: 12px 14px;
+            resize: vertical;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.65;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+
+        html.dark .aes-tool .el-textarea__inner {
+            background: #091321;
+            border: 1px solid #26354b;
+            box-shadow: none;
+        }
+
+        html:not(.dark) .aes-tool .el-textarea__inner {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            box-shadow: none;
+        }
+
+        html.dark .aes-tool .el-textarea__inner:hover { border-color: #64748b; }
+        html:not(.dark) .aes-tool .el-textarea__inner:hover { border-color: #94a3b8; }
+
+        html.dark .aes-tool .el-input__wrapper:focus-within,
+        html.dark .aes-tool .el-textarea__inner:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.22), 0 0 0 1px #38bdf8 inset !important;
+        }
+
+        html:not(.dark) .aes-tool .el-input__wrapper:focus-within,
+        html:not(.dark) .aes-tool .el-textarea__inner:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.16), 0 0 0 1px #0284c7 inset !important;
+        }
+
+        html.dark .aes-tool input::placeholder,
+        html.dark .aes-tool textarea::placeholder { color: #64748b; }
+        html:not(.dark) .aes-tool input::placeholder,
+        html:not(.dark) .aes-tool textarea::placeholder { color: #94a3b8; }
+
+        html.dark .aes-tool .el-input__icon,
+        html.dark .aes-tool .el-select__caret { color: #94a3b8; }
+        html:not(.dark) .aes-tool .el-input__icon,
+        html:not(.dark) .aes-tool .el-select__caret { color: #64748b; }
+
+        html.dark .aes-tool .el-select__selected-item { color: #f8fafc; }
+        html:not(.dark) .aes-tool .el-select__selected-item { color: #0f172a; }
+        html.dark .aes-tool .el-select__placeholder { color: #64748b; }
+        html:not(.dark) .aes-tool .el-select__placeholder { color: #94a3b8; }
+
+        .aes-field-hint {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            margin-top: 8px;
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        html.dark .aes-tool .aes-field-hint { color: #64748b; }
+        html:not(.dark) .aes-tool .aes-field-hint { color: #64748b; }
+
+        .aes-actionbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            min-width: 0;
+            margin-top: 14px;
+            padding: 14px 16px;
+            border-radius: 12px;
+        }
+
+        html.dark .aes-tool .aes-actionbar {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .aes-tool .aes-actionbar {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .aes-actionbar__copy {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .aes-actionbar__copy strong {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .aes-actionbar__copy span {
+            overflow-wrap: anywhere;
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        html.dark .aes-tool .aes-actionbar__copy strong { color: #e2e8f0; }
+        html:not(.dark) .aes-tool .aes-actionbar__copy strong { color: #1e293b; }
+        html.dark .aes-tool .aes-actionbar__copy span { color: #94a3b8; }
+        html:not(.dark) .aes-tool .aes-actionbar__copy span { color: #64748b; }
+
+        .aes-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 9px;
+            min-width: 0;
+            margin-left: auto;
+        }
+
+        .aes-tool .aes-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 8px 17px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 750;
+            line-height: 1.2;
+            cursor: pointer;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        html.dark .aes-tool .aes-action--primary {
+            color: #e0f2fe;
+            background: rgba(14, 116, 144, 0.35);
+            border: 1px solid #38bdf8;
+            box-shadow: 0 4px 14px rgba(8, 145, 178, 0.12);
+        }
+
+        html:not(.dark) .aes-tool .aes-action--primary {
+            color: #ffffff;
+            background: #0284c7;
+            border: 1px solid #0284c7;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.16);
+        }
+
+        html.dark .aes-tool .aes-action--secondary {
+            color: #e2e8f0;
+            background: #162033;
+            border: 1px solid #475569;
+        }
+
+        html:not(.dark) .aes-tool .aes-action--secondary {
+            color: #0f172a;
+            background: #ffffff;
+            border: 1px solid #94a3b8;
+        }
+
+        html.dark .aes-tool .aes-action--primary:hover {
+            color: #ffffff;
+            background: #0284c7;
+            border-color: #7dd3fc;
+        }
+
+        html:not(.dark) .aes-tool .aes-action--primary:hover {
+            color: #ffffff;
+            background: #0369a1;
+            border-color: #0369a1;
+        }
+
+        html.dark .aes-tool .aes-action--secondary:hover {
+            color: #f8fafc;
+            background: #24324a;
+            border-color: #94a3b8;
+        }
+
+        html:not(.dark) .aes-tool .aes-action--secondary:hover {
+            color: #0f172a;
+            background: #f1f5f9;
+            border-color: #64748b;
+        }
+
+        .aes-tool .aes-action:active { transform: translateY(1px); }
+
+        .aes-tool .aes-action:focus-visible,
+        .aes-tool .aes-copy:focus-visible {
+            outline: 3px solid rgba(56, 189, 248, 0.38);
+            outline-offset: 2px;
+        }
+
+        .aes-result {
+            width: 100%;
+            max-width: none;
+            min-width: 0;
+            margin: 16px 0 0;
+            padding: 16px;
+            text-align: left;
+            border-radius: 12px;
+        }
+
+        html.dark .aes-tool .aes-result {
+            color: #e2e8f0;
+            background: #07111f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+        }
+
+        html:not(.dark) .aes-tool .aes-result {
+            color: #1e293b;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .aes-result__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .aes-result__eyebrow {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+        }
+
+        html.dark .aes-tool .aes-result__eyebrow { color: #38bdf8; }
+        html:not(.dark) .aes-tool .aes-result__eyebrow { color: #0369a1; }
+
+        .aes-result__title {
+            margin: 0;
+            overflow-wrap: anywhere;
+            font-size: 15px;
+            line-height: 1.35;
+        }
+
+        html.dark .aes-tool .aes-result__title { color: #f8fafc; }
+        html:not(.dark) .aes-tool .aes-result__title { color: #0f172a; }
+
+        .aes-result__badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 25px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        html.dark .aes-tool .aes-result__badge {
+            color: #a7f3d0;
+            background: rgba(6, 78, 59, 0.32);
+            border: 1px solid rgba(52, 211, 153, 0.35);
+        }
+
+        html:not(.dark) .aes-tool .aes-result__badge {
+            color: #047857;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+        }
+
+        .aes-result__body {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: stretch;
+            gap: 10px;
+            min-width: 0;
+            margin-top: 12px;
+        }
+
+        .aes-tool .compute-result .item {
+            display: contents;
+        }
+
+        .aes-tool .compute-result .item .passworld {
+            display: block;
+            min-width: 0;
+            min-height: 44px;
+            max-height: 300px;
+            padding: 11px 13px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            border-radius: 9px;
+            text-align: left;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        html.dark .aes-tool .compute-result .item .passworld {
+            color: #e2e8f0;
+            background: #0b1120;
+            border: 1px solid #334155;
+        }
+
+        html:not(.dark) .aes-tool .compute-result .item .passworld {
+            color: #1e293b;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+        }
+
+        .aes-copy {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            align-self: start;
+            min-height: 44px;
+            padding: 8px 15px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 750;
+            cursor: pointer;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+        }
+
+        html.dark .aes-tool .aes-copy {
+            color: #e0f2fe;
+            background: rgba(14, 116, 144, 0.28);
+            border: 1px solid #38bdf8;
+        }
+
+        html:not(.dark) .aes-tool .aes-copy {
+            color: #075985;
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+        }
+
+        html.dark .aes-tool .aes-copy:hover {
+            color: #ffffff;
+            background: #0284c7;
+            border-color: #7dd3fc;
+        }
+
+        html:not(.dark) .aes-tool .aes-copy:hover {
+            color: #ffffff;
+            background: #0369a1;
+            border-color: #0369a1;
+        }
+
+        .aes-copy:active { transform: translateY(1px); }
+
+        .aes-tool .aes-result--error {
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        html.dark .aes-tool .aes-result--error {
+            color: #fecdd3;
+            background: #2a121b;
+            border-color: #881337;
+        }
+
+        html:not(.dark) .aes-tool .aes-result--error {
+            color: #9f1239;
+            background: #fff1f2;
+            border-color: #fecdd3;
+        }
+
+        .aes-divider {
+            width: 100%;
+            max-width: 980px;
+            height: 1px;
+            margin: 28px auto 22px;
+        }
+
+        html.dark .aes-divider { background: #1e293b; }
+        html:not(.dark) .aes-divider { background: #e2e8f0; }
+
+        .aes-docs {
+            width: 100%;
+            max-width: 980px;
+            min-width: 0;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .aes-docs h3 {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 24px 0 9px;
+            font-size: 17px;
+            line-height: 1.4;
+        }
+
+        .aes-docs h3:first-child { margin-top: 0; }
+
+        .aes-docs h3::before {
+            display: inline-block;
+            flex: 0 0 4px;
+            width: 4px;
+            height: 19px;
+            border-radius: 4px;
+            content: "";
+        }
+
+        html.dark .aes-docs { color: #cbd5e1; }
+        html:not(.dark) .aes-docs { color: #334155; }
+        html.dark .aes-docs h3 { color: #f8fafc; }
+        html:not(.dark) .aes-docs h3 { color: #0f172a; }
+        html.dark .aes-docs h3::before { background: #38bdf8; }
+        html:not(.dark) .aes-docs h3::before { background: #0284c7; }
+
+        .aes-docs p {
+            margin: 0 0 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .aes-docs ul {
+            margin: 0 0 15px;
+            padding-left: 22px;
+        }
+
+        .aes-docs li {
+            margin: 0 0 8px;
+            padding-left: 3px;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .aes-docs li::marker { color: #38bdf8; }
+        html:not(.dark) .aes-docs li::marker { color: #0284c7; }
+
+        @media (max-width: 768px) {
+            .aes-tool { margin-top: 18px; }
+
+            .aes-dashboard__status {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .aes-mode-trail { justify-content: flex-start; }
+
+            .aes-actionbar__copy { width: 100%; }
+
+            .aes-actions {
+                width: 100%;
+                margin-left: 0;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .aes-tool .aes-action { width: 100%; }
+        }
+
+        @media (max-width: 480px) {
+            .aes-dashboard,
+            .aes-panel,
+            .aes-actionbar,
+            .aes-result { padding: 14px; }
+
+            .aes-panel__header { flex-direction: column; }
+            .aes-panel__badge { align-self: flex-start; }
+
+            .aes-result__body { grid-template-columns: minmax(0, 1fr); }
+            .aes-copy { width: 100%; }
+        }
+
+        @media (max-width: 380px) {
+            .aes-actions { grid-template-columns: minmax(0, 1fr); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .aes-tool *,
+            .aes-tool *::before,
+            .aes-tool *::after {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
     </style>
 
     <meta property="og:type" content="website" />
@@ -49,7 +934,7 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
@@ -60,34 +945,127 @@
                 <h1 class="title">AES加密/解密</h1>
             </div>
             <div class="description">本工具提供 AES 算法加密及解密功能，AES是高级加密标准（Advanced Encryption Standard）的缩写，是对称密匙加密中最流行的加密算法之一。本工具还支持 CBC、CFB、CTR、OFB 和 ECB 5 种加解密模式。</div>
-            <el-form :model="formData" ref="computeForm" label-position="top" class="tool-form" v-on:submit.native.prevent>
-                <el-form-item label="加/解密内容" prop="text" :rules="{required: true, message: `请输入`, trigger: 'blur'}">
-                    <el-input v-model="formData.text" :rows="4" type="textarea" class="w100"></el-input>
-                </el-form-item>
-                <el-form-item label="密钥(选填)">
-                    <el-input v-model="formData.key" class="w100"></el-input>
-                </el-form-item>
-                <el-form-item label="加/解密模式">
-                    <el-select v-model="formData.mode" class="w100">
-                        <el-option label="CBC (Cipher Block Chaining, Default)" value="CBC"></el-option>
-                        <el-option label="CFB (Cipher FeedBack)" value="CFB"></el-option>
-                        <el-option label="CTR (Counter)" value="CTR"></el-option>
-                        <el-option label="OFB (Output FeedBack)" value="OFB"></el-option>
-                        <el-option label="ECB (Electronic Code Book)" value="ECB"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-button type="primary" v-on:click="encrypt">加密</el-button>
-                <el-button type="primary" v-on:click="decrypt">解密</el-button>
-            </el-form>
-            <div class="compute-result" v-if="computeResult!=null">
-                <div class="item">
-                    <div class="passworld" v-html="computeResultHtml"></div>
-                    <a href="javascript:;" v-on:click="copy">复制</a>
+            <section class="aes-tool" aria-label="AES 加密解密工作区">
+                <div class="aes-dashboard">
+                    <div class="aes-dashboard__brand">
+                        <div class="aes-mark" aria-hidden="true">AES</div>
+                        <div class="aes-dashboard__copy">
+                            <span class="aes-kicker">SECURE TRANSFORM</span>
+                            <strong>对称加密工作台</strong>
+                            <span class="aes-dashboard__sub">输入内容、选择模式，然后执行加密或解密</span>
+                        </div>
+                    </div>
+                    <div class="aes-dashboard__status" role="status" aria-label="当前处理方式">
+                        <span class="aes-status-dot" aria-hidden="true"></span>
+                        <span>浏览器端处理</span>
+                    </div>
+                    <div class="aes-mode-trail" aria-label="支持的加密模式">
+                        <span class="aes-mode-chip">CBC</span>
+                        <span class="aes-mode-chip">CFB</span>
+                        <span class="aes-mode-chip">CTR</span>
+                        <span class="aes-mode-chip">OFB</span>
+                        <span class="aes-mode-chip">ECB</span>
+                    </div>
                 </div>
-            </div>
-            <div v-cloak class="compute-result error" v-if="errorMsg!=null">{{errorMsg}}</div>
-            <div class="divider"></div>
-            <div class="content">
+
+                <el-form :model="formData" ref="computeForm" label-position="top" class="tool-form aes-form" v-on:submit.native.prevent>
+                    <div class="aes-input-grid">
+                        <section class="aes-panel aes-panel--input" aria-labelledby="aes-input-title">
+                            <div class="aes-panel__header">
+                                <div class="aes-panel__heading">
+                                    <span class="aes-panel__index" aria-hidden="true">01</span>
+                                    <div>
+                                        <h2 class="aes-panel__title" id="aes-input-title">输入数据</h2>
+                                        <p class="aes-panel__hint">粘贴要处理的明文或密文，内容会保留原始格式。</p>
+                                    </div>
+                                </div>
+                                <span class="aes-panel__badge">REQUIRED</span>
+                            </div>
+                            <el-form-item label="加/解密内容" prop="text" :rules="{required: true, message: `请输入`, trigger: 'blur'}">
+                                <el-input v-model="formData.text" :rows="8" type="textarea" class="w100 aes-control" aria-label="加/解密内容" placeholder="在此输入文本" autocomplete="off" spellcheck="false"></el-input>
+                            </el-form-item>
+                            <div class="aes-field-hint">
+                                <span>支持多行文本与较长密文</span>
+                                <span>处理在当前页面完成</span>
+                            </div>
+                        </section>
+
+                        <section class="aes-panel" aria-labelledby="aes-key-title">
+                            <div class="aes-panel__header">
+                                <div class="aes-panel__heading">
+                                    <span class="aes-panel__index" aria-hidden="true">02</span>
+                                    <div>
+                                        <h2 class="aes-panel__title" id="aes-key-title">密钥</h2>
+                                        <p class="aes-panel__hint">使用自定义密钥增强可控性。</p>
+                                    </div>
+                                </div>
+                                <span class="aes-panel__badge">OPTIONAL</span>
+                            </div>
+                            <el-form-item label="密钥(选填)">
+                                <el-input v-model="formData.key" class="w100 aes-control" type="password" show-password clearable aria-label="密钥，可选" placeholder="请输入密钥" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <div class="aes-field-hint">
+                                <span>密钥仅用于本次运算</span>
+                            </div>
+                        </section>
+
+                        <section class="aes-panel" aria-labelledby="aes-mode-title">
+                            <div class="aes-panel__header">
+                                <div class="aes-panel__heading">
+                                    <span class="aes-panel__index" aria-hidden="true">03</span>
+                                    <div>
+                                        <h2 class="aes-panel__title" id="aes-mode-title">运算模式</h2>
+                                        <p class="aes-panel__hint">根据数据场景选择合适的分组模式。</p>
+                                    </div>
+                                </div>
+                                <span class="aes-panel__badge">AES MODE</span>
+                            </div>
+                            <el-form-item label="加/解密模式">
+                                <el-select v-model="formData.mode" class="w100 aes-control" popper-class="aes-select-popper" aria-label="加/解密模式">
+                                    <el-option label="CBC (Cipher Block Chaining, Default)" value="CBC"></el-option>
+                                    <el-option label="CFB (Cipher FeedBack)" value="CFB"></el-option>
+                                    <el-option label="CTR (Counter)" value="CTR"></el-option>
+                                    <el-option label="OFB (Output FeedBack)" value="OFB"></el-option>
+                                    <el-option label="ECB (Electronic Code Book)" value="ECB"></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <div class="aes-field-hint">
+                                <span>当前默认模式：CBC</span>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="aes-actionbar">
+                        <div class="aes-actionbar__copy">
+                            <strong>准备好开始了吗？</strong>
+                            <span>选择操作后，结果会显示在下方输出区。</span>
+                        </div>
+                        <div class="aes-actions">
+                            <el-button type="primary" native-type="button" class="aes-action aes-action--primary" v-on:click="encrypt" aria-label="加密输入内容">加密</el-button>
+                            <el-button type="primary" native-type="button" class="aes-action aes-action--secondary" v-on:click="decrypt" aria-label="解密输入内容">解密</el-button>
+                        </div>
+                    </div>
+                </el-form>
+
+                <div class="compute-result aes-result" v-if="computeResult!=null" aria-live="polite" aria-label="加密解密结果">
+                    <div class="aes-result__header">
+                        <div>
+                            <span class="aes-result__eyebrow">OUTPUT</span>
+                            <h2 class="aes-result__title">处理结果</h2>
+                        </div>
+                        <span class="aes-result__badge">已生成</span>
+                    </div>
+                    <div class="aes-result__body">
+                        <div class="item">
+                            <div class="passworld" v-html="computeResultHtml" tabindex="0" role="textbox" aria-readonly="true" aria-label="处理结果内容"></div>
+                            <button type="button" class="aes-copy" v-on:click="copy" aria-label="复制处理结果">复制</button>
+                        </div>
+                    </div>
+                </div>
+                <div v-cloak class="compute-result error aes-result aes-result--error" v-if="errorMsg!=null" role="alert">{{errorMsg}}</div>
+            </section>
+            <div class="divider aes-divider"></div>
+            <div class="content aes-docs">
                 <h3>说明</h3><p>AES：Advanced Encryption Standard，又称 Rijndael 加密法。</p><p>这个标准用来替代原先的 DES（Data Encryption Standard），比 DES 有更高的安全性。 AES 算法采用固定长度的密钥（128 bits、192 bits 或256 bits）来加密和解密数据块，加密和解密过程都是基于矩阵运算和字节替换等操作进行的。 加密时会将明文数据按 16 字节(128 bits) 进行分组，不足 16 字节时将用特定的 Padding（如PCKS7）字符进填充，所以不同的 Padding 方式密文最后一段可能不一样。</p><h3>运算模式</h3><ul><li>CBC：Cipher Block Chaining，密码块链，明文被分成固定大小的块，并按顺序进行加密，每一个块（分组）要先和前一个分组加密后的数据进行 XOR 异或操作，然后再进行加密。 这样每个密文块依赖该块之前的所有明文块，为了保持每条消息都具有唯一性，第一个数据块进行加密之前需要用初始化向量 IV 进行异或操作。 CBC 模式是一种最常用的加密模式，它主要缺点是加密是连续的，不能并行处理，并且与 ECB 一样消息块必须填充到块大小的整倍数。</li><li>ECB：Electronic Codebook, 电子密码本，是最简单的加密模式，明文消息被分成固定大小的块（分组），并且每个块被单独加密。 每个块的加密和解密都是独立的，且使用相同的方法进行加密，所以可以进行并行计算，但是这种方法一旦有一个块被破解，使用相同的方法可以解密所有的明文数据，安全性比较差。 适用于数据较少的情形，加密前需要把明文数据填充到块大小的整倍数。</li><li>OFB：Output Feedback，输出反馈，将块密码转化为流密码，逐位或逐字节加密。使用一个初始向量（IV）作为输入，通过块密码算法生成一个密钥流。 密钥流与明文进行异或操作，得到密文。具有并行性，适用于实时加密和解密。不需要填充，可以处理任意长度的数据。不提供数据完整性和认证，需要额外的机制来确保数据的完整性和认证。</li><li>CFB：Cipher Feedback，密码反馈，将数据分成位（bit）而不是块，提供了流式加密（stream cipher）的特性，可以对任意长度的数据进行加密。它允许逐位或逐字节地加密和解密，并且不需要填充（padding）。 和 CBC 模式比较相似，前一个分组的密文加密后和当前分组的明文 XOR 异或操作生成当前分组的密文。因此，CFB 模式对于传输错误和数据丢失比较敏感，因为一个错误位会影响后续的加密结果。</li><li>CTS：Cipher Text Stealing，密文窃取，用于解决块密码加密中最后一个数据块长度不足的问题。 在加密过程中，最后一个数据块长度不足时，会使用部分密文块填充明文块，然后进行加密。 在解密过程中，最后一个数据块长度不足时，会使用部分密文块解密，然后去除填充部分。保持了加密前后数据长度的一致性。</li><li>CTR：Counter，计算器模式，将块密码转化为流密码，逐位或逐字节加密。使用一个计数器作为输入，通过块密码算法生成一个密钥流。 密钥流与明文进行异或操作，得到密文。具有并行性，适用于实时加密和解密。不需要填充，可以处理任意长度的数据。不提供数据完整性和认证，需要额外的机制来确保数据的完整性和认证。</li></ul><h3>填充模式</h3><ul><li>None：不填充</li><li>PKCS7：填充字符串由一个字节序列组成，每个字节填充该字节序列的长度</li><li>Zeros：填充字符串由设置为零的字节组成</li><li>ANSIX923：填充字符串由一个字节序列组成，此字节序列的最后一个字节填充字节序列的长度，其余字节均填充数字零</li><li>ISO10126：填充字符串由一个字节序列组成，此字节序列的最后一个字节填充字节序列的长度，其余字节填充随机数据</li></ul><p>分组对称加密算法有些运算模式要求明文数据的字节长度必须是其块大小的整倍数，因此在加密明文数据之前我们必须对明文数据进行填充。</p>
             </div>
         </div>
