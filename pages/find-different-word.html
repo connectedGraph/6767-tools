@@ -31,6 +31,14 @@
         html:not(.dark) .fdw-stat-value { color:#0f172a; }
         .fdw-stat-value { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:15px; font-weight:750; }
         .fdw-board-wrap { padding:0 20px; }
+        .fdw-zoom-bar { display:flex; align-items:center; justify-content:center; gap:8px; padding:0 0 10px; }
+        .fdw-zoom-btn { appearance:none; border:1px solid #cbd5e1; background:#fff; color:#334155; width:30px; height:30px; border-radius:8px; cursor:pointer; font-size:15px; line-height:1; display:flex; align-items:center; justify-content:center; transition:border-color .15s, color .15s; }
+        .fdw-zoom-btn:hover { border-color:#0284c7; color:#0284c7; }
+        html.dark .fdw-zoom-btn { background:#0f172a; border-color:#334155; color:#e2e8f0; }
+        html.dark .fdw-zoom-btn:hover { border-color:#38bdf8; color:#67e8f9; }
+        .fdw-zoom-slider { width:130px; accent-color:#0284c7; cursor:pointer; }
+        .fdw-zoom-value { min-width:44px; font-size:13px; font-weight:650; color:#64748b; text-align:center; }
+        html.dark .fdw-zoom-value { color:#94a3b8; }
         .game-play { width:100%; aspect-ratio:1; display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); grid-template-rows:repeat(10,minmax(0,1fr)); gap:2px; padding:3px; border-radius:12px; overflow:hidden; }
         html.dark .game-play { background:#334155 !important; }
         html:not(.dark) .game-play { background:#94a3b8 !important; }
@@ -96,7 +104,14 @@
               <div class="fdw-stat"><span class="fdw-stat-label">目标字符</span><strong class="fdw-stat-value">{{findChar}}</strong></div>
             </div>
             <div class="fdw-board-wrap">
-              <div class="game-area">
+              <div class="fdw-zoom-bar" aria-label="棋盘缩放">
+                <button type="button" class="fdw-zoom-btn" v-on:click="zoomOut" aria-label="缩小">−</button>
+                <input type="range" class="fdw-zoom-slider" min="0.4" max="1.5" step="0.05" v-model.number="zoom" aria-label="缩放比例">
+                <button type="button" class="fdw-zoom-btn" v-on:click="zoomIn" aria-label="放大">＋</button>
+                <span class="fdw-zoom-value">{{Math.round(zoom*100)}}%</span>
+                <button type="button" class="fdw-zoom-btn" v-on:click="resetZoom" aria-label="重置缩放" title="重置">⟲</button>
+              </div>
+              <div class="game-area" v-bind:style="{maxWidth: (boardSize*zoom)+'px', margin: '0 auto'}">
                 <div v-if="gameState==1" class="game-area-mode game-play" role="grid" aria-label="汉字选择区">
                   <template v-for="(item,index) in 100">
                     <button type="button" class="item" role="gridcell" v-on:click="charClick(index)" v-bind:style="`color:${(errorCharIndex==index?'#dc2626':'#111827')}`" v-bind:aria-label="`第${index+1}个字符`">{{findCharBlockIndex==index?findChar:otherChar}}</button>

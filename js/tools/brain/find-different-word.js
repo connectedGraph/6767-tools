@@ -16,6 +16,8 @@ Vue.createApp({
       gameTimeInterval: 0,
       countdown: 60,
       countdownInterval: null,
+      zoom: (function(){ var z = parseFloat(c.localStorage.get("fdwZoom")); return (z >= 0.4 && z <= 1.5) ? z : 1; })(),
+      boardSize: 760,
       level: 1,
       errorCount: 0,
       findChar: "",
@@ -42,6 +44,21 @@ Vue.createApp({
   },
   methods: {
     setRelateToolPosition() {
+    },
+    zoomIn() {
+      this.zoom = Math.min(1.5, Math.round((this.zoom + 0.1) * 100) / 100);
+      this.saveZoom();
+    },
+    zoomOut() {
+      this.zoom = Math.max(0.4, Math.round((this.zoom - 0.1) * 100) / 100);
+      this.saveZoom();
+    },
+    resetZoom() {
+      this.zoom = 1;
+      this.saveZoom();
+    },
+    saveZoom() {
+      c.localStorage.set("fdwZoom", String(this.zoom));
     },
     startGame() {
       this.gameStartTime = new Date().getTime();

@@ -90,7 +90,9 @@ Vue.createApp({
       this.lives = 3;
     },
     playAudio(frequency) {
-      if (!mainNavVueObj.soundOpen) {
+      var soundOpenStorage = c.localStorage.get("soundOpen");
+      var soundEnabled = c.isNullOrEmpty(soundOpenStorage) ? true : JSON.parse(soundOpenStorage);
+      if (!soundEnabled) {
         return;
       }
       var volume = 0.5;
