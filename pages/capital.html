@@ -17,15 +17,767 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .query-data { margin-top: 15px; text-align: center; }
-        .suggestions { width: 100%; border: 1px solid rgb(204, 204, 204); background: #fff; position: absolute; top: 42px; left: 0; z-index: 10; border-radius: 4px; text-align: start; display: none; }
-        .suggestions .item { line-height: 30px; cursor: pointer; padding: 0 8px; }
-        .suggestions .item:hover { background-color: #ECECEC; }
-        .suggestions .bottom { height: 30px; line-height: 30px; padding: 0 10px; cursor: pointer; background-color: #ECECEC; text-align: right; }
-        .tool-body .content table { max-width: 900px; }
-        .tool-body .content table td, .tool-body .content table th { text-align: start; }
-        .tool-body .content#region-list table tr:first-child th { background-color: var(--el-color-primary); color: #fff; cursor: pointer; }
-        .tool-body .content#region-list table tr:first-child th i { float: right; font-size: 14px; }
+        /* Capital directory — page-local visual system. */
+        .tool-page-body,
+        .tool-page-body * {
+            box-sizing: border-box;
+        }
+
+        .tool-page-body,
+        .tool-page-body .tool-body,
+        .tool-page-body .card-model,
+        .tool-page-body .card-body,
+        .tool-page-body .capital-workspace,
+        .tool-page-body .directory-content,
+        .tool-page-body .query-data {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .tool-page-body .card-body {
+            overflow-wrap: anywhere;
+        }
+
+        .tool-page-body .tool-head {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .tool-page-body .tool-head .title {
+            margin: 0;
+            max-width: 100%;
+            font-size: clamp(1.7rem, 3vw, 2.4rem);
+            line-height: 1.2;
+            letter-spacing: -0.025em;
+            overflow-wrap: anywhere;
+        }
+
+        .tool-page-body .description {
+            max-width: 760px;
+            margin: 0;
+            line-height: 1.75;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .tool-page-body .card-body {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body .card-body {
+            color: #1e293b;
+        }
+
+        html.dark .tool-page-body .tool-head .title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .tool-head .title {
+            color: #0f172a;
+        }
+
+        html.dark .tool-page-body .description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .description {
+            color: #475569;
+        }
+
+        .tool-page-body .capital-workspace {
+            position: relative;
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 14px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .tool-page-body .capital-workspace {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 12px 30px rgba(2, 8, 23, 0.16);
+        }
+
+        html:not(.dark) .tool-page-body .capital-workspace {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03), 0 12px 30px rgba(15, 23, 42, 0.05);
+        }
+
+        .tool-page-body .workspace-header,
+        .tool-page-body .directory-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tool-page-body .workspace-copy {
+            flex: 1 1 280px;
+            min-width: 0;
+        }
+
+        .tool-page-body .workspace-eyebrow,
+        .tool-page-body .directory-eyebrow {
+            margin: 0 0 6px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        html.dark .tool-page-body .workspace-eyebrow,
+        html.dark .tool-page-body .directory-eyebrow {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .tool-page-body .workspace-eyebrow,
+        html:not(.dark) .tool-page-body .directory-eyebrow {
+            color: #0369a1;
+        }
+
+        .tool-page-body .workspace-copy h2,
+        .tool-page-body .directory-heading h2 {
+            margin: 0;
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .tool-page-body .workspace-copy h2,
+        html.dark .tool-page-body .directory-heading h2 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .workspace-copy h2,
+        html:not(.dark) .tool-page-body .directory-heading h2 {
+            color: #0f172a;
+        }
+
+        .tool-page-body .workspace-hint {
+            margin: 6px 0 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        html.dark .tool-page-body .workspace-hint {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .workspace-hint {
+            color: #64748b;
+        }
+
+        .tool-page-body .workspace-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 30px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        html.dark .tool-page-body .workspace-status {
+            background: rgba(14, 116, 144, 0.2);
+            border: 1px solid #155e75;
+            color: #bae6fd;
+        }
+
+        html:not(.dark) .tool-page-body .workspace-status {
+            background: #ecfeff;
+            border: 1px solid #a5f3fc;
+            color: #0e7490;
+        }
+
+        .tool-page-body .status-dot {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+        }
+
+        html.dark .tool-page-body .status-dot {
+            background: #22d3ee;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.14);
+        }
+
+        html:not(.dark) .tool-page-body .status-dot {
+            background: #0891b2;
+            box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.12);
+        }
+
+        .tool-page-body .capital-search-form {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            width: 100%;
+            margin-top: 18px;
+        }
+
+        .tool-page-body .capital-search-form .capital-field {
+            position: relative;
+            flex: 1 1 auto;
+            min-width: 0;
+            margin-bottom: 0;
+        }
+
+        .tool-page-body .capital-search-form .el-form-item__content {
+            position: relative;
+            display: block;
+            width: 100%;
+            min-width: 0;
+            line-height: normal;
+        }
+
+        .tool-page-body .capital-input,
+        .tool-page-body .capital-search-form .el-input {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .tool-page-body .capital-search-form .el-input__wrapper {
+            min-height: 42px;
+            border-radius: 10px;
+            transition: box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+
+        html.dark .tool-page-body .capital-search-form .el-input__wrapper {
+            background: #0b1120;
+            box-shadow: 0 0 0 1px #334155 inset;
+        }
+
+        html:not(.dark) .tool-page-body .capital-search-form .el-input__wrapper {
+            background: #ffffff;
+            box-shadow: 0 0 0 1px #cbd5e1 inset;
+        }
+
+        html.dark .tool-page-body .capital-search-form .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px #38bdf8 inset;
+        }
+
+        html:not(.dark) .tool-page-body .capital-search-form .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px #0284c7 inset;
+        }
+
+        html.dark .tool-page-body .capital-search-form .capital-field:focus-within .el-input__wrapper {
+            box-shadow: 0 0 0 1px #38bdf8 inset, 0 0 0 3px rgba(56, 189, 248, 0.16);
+        }
+
+        html:not(.dark) .tool-page-body .capital-search-form .capital-field:focus-within .el-input__wrapper {
+            box-shadow: 0 0 0 1px #0284c7 inset, 0 0 0 3px rgba(2, 132, 199, 0.14);
+        }
+
+        html.dark .tool-page-body .capital-search-form input {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .capital-search-form input {
+            color: #0f172a;
+        }
+
+        html.dark .tool-page-body .capital-search-form input::placeholder {
+            color: #64748b;
+        }
+
+        html:not(.dark) .tool-page-body .capital-search-form input::placeholder {
+            color: #94a3b8;
+        }
+
+        html.dark .tool-page-body .capital-search-form .el-input__prefix,
+        html.dark .tool-page-body .capital-search-form .el-input__suffix {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .capital-search-form .el-input__prefix,
+        html:not(.dark) .tool-page-body .capital-search-form .el-input__suffix {
+            color: #64748b;
+        }
+
+        .tool-page-body .capital-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.2;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        html.dark .tool-page-body .capital-submit {
+            background: rgba(14, 116, 144, 0.35);
+            border: 1px solid #38bdf8;
+            color: #e0f2fe;
+            box-shadow: 0 5px 16px rgba(8, 47, 73, 0.25);
+        }
+
+        html:not(.dark) .tool-page-body .capital-submit {
+            background: #0284c7;
+            border: 1px solid #0284c7;
+            color: #ffffff;
+            box-shadow: 0 5px 16px rgba(2, 132, 199, 0.18);
+        }
+
+        html.dark .tool-page-body .capital-submit:hover {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #ffffff;
+        }
+
+        html:not(.dark) .tool-page-body .capital-submit:hover {
+            background: #0369a1;
+            border-color: #0369a1;
+            color: #ffffff;
+        }
+
+        .tool-page-body .capital-submit:active {
+            transform: translateY(1px);
+        }
+
+        html.dark .tool-page-body .capital-submit:focus-visible {
+            outline: 3px solid rgba(56, 189, 248, 0.35);
+            outline-offset: 2px;
+        }
+
+        html:not(.dark) .tool-page-body .capital-submit:focus-visible {
+            outline: 3px solid rgba(2, 132, 199, 0.28);
+            outline-offset: 2px;
+        }
+
+        .tool-page-body .suggestions {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            z-index: 20;
+            display: none;
+            width: 100%;
+            max-width: 100%;
+            padding: 6px;
+            border-radius: 11px;
+            text-align: start;
+            overflow: hidden;
+            box-shadow: 0 16px 32px rgba(2, 8, 23, 0.2);
+        }
+
+        html.dark .tool-page-body .suggestions {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body .suggestions {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.14);
+        }
+
+        .tool-page-body .suggestions .item,
+        .tool-page-body .suggestions .bottom {
+            display: block;
+            width: 100%;
+            min-height: 38px;
+            padding: 9px 10px;
+            border: 0;
+            border-radius: 8px;
+            font: inherit;
+            line-height: 1.35;
+            text-align: start;
+            cursor: pointer;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+
+        .tool-page-body .suggestions .item {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        html.dark .tool-page-body .suggestions .item,
+        html.dark .tool-page-body .suggestions .bottom {
+            background: transparent;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body .suggestions .item,
+        html:not(.dark) .tool-page-body .suggestions .bottom {
+            background: transparent;
+            color: #1e293b;
+        }
+
+        html.dark .tool-page-body .suggestions .item:hover,
+        html.dark .tool-page-body .suggestions .item:focus-visible {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .suggestions .item:hover,
+        html:not(.dark) .tool-page-body .suggestions .item:focus-visible {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .tool-page-body .suggestions .bottom {
+            margin-top: 5px;
+            border-top: 1px solid transparent;
+            text-align: right;
+        }
+
+        html.dark .tool-page-body .suggestions .bottom {
+            border-top-color: #1e293b;
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .suggestions .bottom {
+            border-top-color: #e2e8f0;
+            color: #64748b;
+        }
+
+        html.dark .tool-page-body .suggestions .bottom:hover,
+        html.dark .tool-page-body .suggestions .bottom:focus-visible {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .suggestions .bottom:hover,
+        html:not(.dark) .tool-page-body .suggestions .bottom:focus-visible {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .tool-page-body .query-data {
+            margin-top: 18px;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: start;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .tool-page-body .query-data {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body .query-data {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        .tool-page-body .query-data:empty {
+            display: none;
+        }
+
+        .tool-page-body .query-data p,
+        .tool-page-body .query-data h3 {
+            margin-top: 0;
+        }
+
+        html.dark .tool-page-body .query-data a {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .tool-page-body .query-data a {
+            color: #0369a1;
+        }
+
+        .tool-page-body .divider {
+            width: 100%;
+            height: 1px;
+            margin: 28px 0 22px;
+        }
+
+        html.dark .tool-page-body .divider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) .tool-page-body .divider {
+            background: #e2e8f0;
+        }
+
+        .tool-page-body .directory-heading {
+            align-items: flex-end;
+            margin-bottom: 14px;
+        }
+
+        .tool-page-body .directory-heading h2 {
+            font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+        }
+
+        .tool-page-body .directory-meta {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        html.dark .tool-page-body .directory-meta {
+            color: #64748b;
+        }
+
+        html:not(.dark) .tool-page-body .directory-meta {
+            color: #64748b;
+        }
+
+        .tool-page-body .directory-content {
+            overflow-wrap: anywhere;
+        }
+
+        .tool-page-body .directory-content table,
+        .tool-page-body .query-data table {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 0 14px;
+            border-spacing: 0;
+            border-collapse: separate;
+            table-layout: fixed;
+            border-radius: 12px;
+            overflow: hidden;
+            word-break: break-word;
+        }
+
+        .tool-page-body .directory-content table th,
+        .tool-page-body .directory-content table td,
+        .tool-page-body .query-data table th,
+        .tool-page-body .query-data table td {
+            padding: 11px 14px;
+            border-right: 1px solid transparent;
+            border-bottom: 1px solid transparent;
+            text-align: start;
+            vertical-align: middle;
+            font-size: 14px;
+            line-height: 1.55;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .tool-page-body .directory-content table,
+        html.dark .tool-page-body .query-data table {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .tool-page-body .directory-content table,
+        html:not(.dark) .tool-page-body .query-data table {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        html.dark .tool-page-body .directory-content table th,
+        html.dark .tool-page-body .directory-content table td,
+        html.dark .tool-page-body .query-data table th,
+        html.dark .tool-page-body .query-data table td {
+            border-right-color: #1e293b;
+            border-bottom-color: #1e293b;
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .tool-page-body .directory-content table th,
+        html:not(.dark) .tool-page-body .directory-content table td,
+        html:not(.dark) .tool-page-body .query-data table th,
+        html:not(.dark) .tool-page-body .query-data table td {
+            border-right-color: #e2e8f0;
+            border-bottom-color: #e2e8f0;
+            color: #334155;
+        }
+
+        html.dark .tool-page-body .directory-content table tr:first-child th,
+        html.dark .tool-page-body .query-data table tr:first-child th {
+            background: linear-gradient(135deg, #0e7490, #155e75);
+            border-bottom-color: #38bdf8;
+            color: #f0fdfa;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        html:not(.dark) .tool-page-body .directory-content table tr:first-child th,
+        html:not(.dark) .tool-page-body .query-data table tr:first-child th {
+            background: #e0f2fe;
+            border-bottom-color: #7dd3fc;
+            color: #0c4a6e;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        html.dark .tool-page-body .directory-content table tr:nth-child(2) th,
+        html.dark .tool-page-body .query-data table tr:nth-child(2) th {
+            background: #111c33;
+            color: #bae6fd;
+            font-size: 12px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        html:not(.dark) .tool-page-body .directory-content table tr:nth-child(2) th,
+        html:not(.dark) .tool-page-body .query-data table tr:nth-child(2) th {
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 12px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        html.dark .tool-page-body .directory-content table tr:nth-child(even) td {
+            background: #0d1628;
+        }
+
+        html:not(.dark) .tool-page-body .directory-content table tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        html.dark .tool-page-body .directory-content table tbody tr:hover td,
+        html.dark .tool-page-body .query-data table tbody tr:hover td {
+            background: #111c33;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .directory-content table tbody tr:hover td,
+        html:not(.dark) .tool-page-body .query-data table tbody tr:hover td {
+            background: #f0f9ff;
+            color: #0f172a;
+        }
+
+        .tool-page-body .directory-content table tr:last-child td,
+        .tool-page-body .query-data table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .tool-page-body .directory-content table th:last-child,
+        .tool-page-body .directory-content table td:last-child,
+        .tool-page-body .query-data table th:last-child,
+        .tool-page-body .query-data table td:last-child {
+            border-right: 0;
+        }
+
+        .tool-page-body .directory-content table tr:first-child th i {
+            float: right;
+            font-size: 14px;
+        }
+
+        .tool-page-body .directory-content h3 {
+            margin: 30px 0 12px;
+            padding-left: 12px;
+            border-left: 3px solid;
+            font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+            line-height: 1.4;
+        }
+
+        html.dark .tool-page-body .directory-content h3 {
+            border-left-color: #38bdf8;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .directory-content h3 {
+            border-left-color: #0284c7;
+            color: #0f172a;
+        }
+
+        .tool-page-body .directory-content p {
+            margin: 0 0 12px;
+            font-size: 14px;
+            line-height: 1.85;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .tool-page-body .directory-content p {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .tool-page-body .directory-content p {
+            color: #475569;
+        }
+
+        .tool-page-body .directory-content img,
+        .tool-page-body .query-data img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            .tool-page-body .capital-workspace {
+                margin-top: 20px;
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .tool-page-body .workspace-header {
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .tool-page-body .capital-search-form {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .tool-page-body .capital-search-form .capital-field,
+            .tool-page-body .capital-submit {
+                width: 100%;
+            }
+
+            .tool-page-body .capital-submit {
+                flex-basis: auto;
+            }
+
+            .tool-page-body .query-data {
+                padding: 14px;
+            }
+
+            .tool-page-body .directory-heading {
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .tool-page-body .directory-content table,
+            .tool-page-body .query-data table {
+                border-radius: 10px;
+            }
+
+            .tool-page-body .directory-content table th,
+            .tool-page-body .directory-content table td,
+            .tool-page-body .query-data table th,
+            .tool-page-body .query-data table td {
+                padding: 9px 10px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .tool-page-body .workspace-status {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .tool-page-body .tool-head .title {
+                font-size: clamp(1.5rem, 8vw, 2rem);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tool-page-body .capital-workspace,
+            .tool-page-body .capital-submit,
+            .tool-page-body .capital-search-form .el-input__wrapper,
+            .tool-page-body .suggestions .item,
+            .tool-page-body .suggestions .bottom {
+                transition: none;
+            }
+        }
     </style>
 
     <meta property="og:type" content="website" />
@@ -51,7 +803,7 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
@@ -62,23 +814,40 @@
                 <h1 class="title">世界各国首都</h1>
             </div>
             <div class="description">世界各国的首都是哪些，各国中文名称，各国英文名称，各国首都中文名称，首都英文名称尽在微查网</div>
-            <el-form :model="formData" ref="computeForm" size="large" class="tool-form" v-on:submit.native.prevent>
-                <el-form-item prop="region" :rules="{required: true, message: `请输入国家、区域或首都`, trigger: 'blur'}">
-                    <el-input-extend v-model="formData.region" label="国家、区域或首都" v-on:focus="suggestionsDisplay" class="w100"></el-input-extend>
-                    <div class="suggestions">
-                        <template v-for="(item,index) in suggestionList">
-                            <div class="item ellipsis" v-if="index<10" v-on:click="selectSuggestion(item)">{{item}}</div>
-                        </template>
-                        <div class="bottom" v-on:click="closeSuggestions">关闭</div>
+            <section class="capital-workspace" aria-labelledby="capital-search-title">
+                <div class="workspace-header">
+                    <div class="workspace-copy">
+                        <p class="workspace-eyebrow">CAPITAL DIRECTORY / 01</p>
+                        <h2 id="capital-search-title">快速定位国家与首都</h2>
+                        <p class="workspace-hint">支持国家、区域和首都名称，输入关键词即可查询。</p>
                     </div>
-                </el-form-item>
-                <el-button type="primary" v-on:click="search">查询</el-button>
-            </el-form>
+                    <span class="workspace-status" role="status"><span class="status-dot" aria-hidden="true"></span>数据已就绪</span>
+                </div>
+                <el-form :model="formData" ref="computeForm" size="large" class="tool-form capital-search-form" v-on:submit.native.prevent>
+                    <el-form-item prop="region" class="capital-field" :rules="{required: true, message: `请输入国家、区域或首都`, trigger: 'blur'}">
+                        <el-input-extend v-model="formData.region" label="国家、区域或首都" aria-label="国家、区域或首都" v-on:focus="suggestionsDisplay" class="w100 capital-input"></el-input-extend>
+                        <div class="suggestions" role="listbox" aria-label="搜索建议">
+                            <template v-for="(item,index) in suggestionList">
+                                <button type="button" class="item ellipsis" role="option" v-if="index<10" v-on:click="selectSuggestion(item)">{{item}}</button>
+                            </template>
+                            <button type="button" class="bottom" v-on:click="closeSuggestions">关闭建议</button>
+                        </div>
+                    </el-form-item>
+                    <el-button type="primary" class="capital-submit" v-on:click="search">查询<span aria-hidden="true">↗</span></el-button>
+                </el-form>
+            </section>
             <template v-if="queryDataHtml!=null">
-                <div class="content query-data" v-html="queryDataHtml"></div>
+                <div class="content query-data" role="region" aria-live="polite" aria-label="查询结果" v-html="queryDataHtml"></div>
             </template>
-            <div class="divider"></div>
-            <div class="content" id="region-list">
+            <div class="divider" role="presentation"></div>
+            <div class="directory-heading">
+                <div>
+                    <p class="directory-eyebrow">REFERENCE INDEX / 02</p>
+                    <h2 id="directory-title">全球首都目录</h2>
+                </div>
+                <p class="directory-meta">按洲分类 · 适合快速浏览</p>
+            </div>
+            <div class="content directory-content" id="region-list" role="region" aria-labelledby="directory-title">
                 <table style="width: 100%;"><tbody><tr><th colSpan="2">亚洲</th></tr><tr><th>国家</th><th>首都</th></tr><tr><td>中国</td><td>北京</td></tr><tr><td>蒙古</td><td>乌兰巴托</td></tr><tr><td>朝鲜</td><td>平壤</td></tr><tr><td>韩国</td><td>首尔</td></tr><tr><td>日本</td><td>东京</td></tr><tr><td>菲律宾</td><td>马尼拉</td></tr><tr><td>印度尼西亚</td><td>雅加达</td></tr><tr><td>文莱</td><td>斯里巴加湾市</td></tr><tr><td>新加坡</td><td>新加坡</td></tr><tr><td>泰国</td><td>曼谷</td></tr><tr><td>马来西亚</td><td>吉隆坡</td></tr><tr><td>越南</td><td>河内</td></tr><tr><td>老挝</td><td>万象</td></tr><tr><td>柬埔寨</td><td>金边</td></tr><tr><td>缅甸</td><td>内比都</td></tr><tr><td>不丹</td><td>廷布</td></tr><tr><td>东帝汶</td><td>帝力</td></tr><tr><td>尼泊尔</td><td>加德满都</td></tr><tr><td>印度</td><td>新德里</td></tr><tr><td>孟加拉国</td><td>达卡</td></tr><tr><td>斯里兰卡</td><td>科伦坡</td></tr><tr><td>马尔代夫</td><td>马累</td></tr><tr><td>巴基斯坦</td><td>伊斯兰堡</td></tr><tr><td>阿富汗</td><td>喀布尔</td></tr><tr><td>塔吉克斯坦</td><td>杜尚别</td></tr><tr><td>吉尔吉斯斯坦</td><td>比什凯克</td></tr><tr><td>哈萨克斯坦</td><td>努尔苏丹</td></tr><tr><td>乌兹别克期坦</td><td>塔什干</td></tr><tr><td>土库曼斯坦</td><td>阿什哈巴德</td></tr><tr><td>伊朗</td><td>德黑兰</td></tr><tr><td>伊拉克</td><td>巴格达</td></tr><tr><td>科威特</td><td>科威特城</td></tr><tr><td>卡塔尔</td><td>多哈</td></tr><tr><td>阿拉伯联合酋长国</td><td>阿布扎比</td></tr><tr><td>巴林</td><td>麦纳麦</td></tr><tr><td>阿曼</td><td>马斯喀特</td></tr><tr><td>也门</td><td>萨那</td></tr><tr><td>沙特阿拉伯</td><td>利雅得</td></tr><tr><td>约旦</td><td>安曼</td></tr><tr><td>巴勒斯坦</td><td>耶路撒冷</td></tr><tr><td>以色列</td><td>耶路撒冷</td></tr><tr><td>叙利亚</td><td>大马士革</td></tr><tr><td>黎巴嫩</td><td>贝鲁特</td></tr><tr><td>塞浦路斯</td><td>尼科西亚</td></tr><tr><td>土耳其</td><td>安卡拉</td></tr><tr><td>阿塞拜疆</td><td>巴库</td></tr><tr><td>格鲁吉亚</td><td>第比利斯</td></tr><tr><td>亚美尼亚</td><td>埃里温</td></tr></tbody></table><table style="width: 100%;"><tbody><tr><th colSpan="2">欧洲</th></tr><tr><th>国家</th><th>首都</th></tr><tr><td>挪威</td><td>奥斯路</td></tr><tr><td>冰岛</td><td>雷克雅未克</td></tr><tr><td>瑞典</td><td>斯德哥尔摩</td></tr><tr><td>芬兰</td><td>赫尔辛基</td></tr><tr><td>爱沙尼亚</td><td>塔林</td></tr><tr><td>拉脱维亚</td><td>里加</td></tr><tr><td>立陶宛</td><td>维尔纽斯</td></tr><tr><td>白俄罗斯</td><td>明斯克</td></tr><tr><td>俄罗斯</td><td>莫斯科</td></tr><tr><td>乌克兰</td><td>基辅</td></tr><tr><td>摩尔多瓦</td><td>基希讷乌</td></tr><tr><td>波兰</td><td>华沙</td></tr><tr><td>捷克</td><td>布拉格</td></tr><tr><td>斯洛伐克</td><td>布拉提斯拉发</td></tr><tr><td>匈牙利</td><td>布达佩斯</td></tr><tr><td>德国</td><td>柏林</td></tr><tr><td>英国</td><td>伦敦</td></tr><tr><td>爱尔兰</td><td>都柏林</td></tr><tr><td>丹麦</td><td>哥本哈根</td></tr><tr><td>荷兰</td><td>阿姆斯特丹</td></tr><tr><td>摩纳哥</td><td>摩纳哥</td></tr><tr><td>法国</td><td>巴黎</td></tr><tr><td>比利时</td><td>布鲁塞尔</td></tr><tr><td>卢森堡</td><td>卢森堡</td></tr><tr><td>奥地利</td><td>维也纳</td></tr><tr><td>瑞士</td><td>伯尔尼</td></tr><tr><td>列支敦士登</td><td>瓦杜兹</td></tr><tr><td>西班牙</td><td>马德里</td></tr><tr><td>安道尔</td><td>安道尔</td></tr><tr><td>葡萄牙</td><td>里斯本</td></tr><tr><td>意大利</td><td>罗马</td></tr><tr><td>马耳他</td><td>瓦莱塔</td></tr><tr><td>圣马力诺</td><td>圣马力诺</td></tr><tr><td>梵蒂冈</td><td>梵蒂冈城</td></tr><tr><td>斯洛文尼亚</td><td>卢布尔雅那</td></tr><tr><td>克罗地亚</td><td>萨格勒布</td></tr><tr><td>波斯尼亚和黑塞哥维那</td><td>萨拉热窝</td></tr><tr><td>南斯拉夫</td><td>贝尔格莱德</td></tr><tr><td>北马其顿</td><td>斯科普里</td></tr><tr><td>阿尔巴尼亚</td><td>地拉那</td></tr><tr><td>罗马尼亚</td><td>布加勒斯特</td></tr><tr><td>保加利亚</td><td>索非亚</td></tr><tr><td>希腊</td><td>雅典</td></tr></tbody></table><table style="width: 100%;"><tbody><tr><th colSpan="2">非洲</th></tr><tr><th>国家</th><th>首都</th></tr><tr><td>埃及</td><td>开罗</td></tr><tr><td>苏丹</td><td>喀土穆</td></tr><tr><td>南苏丹</td><td>拉姆塞尔</td></tr><tr><td>埃塞俄比亚</td><td>亚的斯亚贝巴</td></tr><tr><td>厄立特里亚</td><td>阿斯马拉</td></tr><tr><td>吉布提</td><td>吉布提</td></tr><tr><td>索马里</td><td>摩加迪沙</td></tr><tr><td>利比亚</td><td>的黎波里</td></tr><tr><td>阿尔及利亚</td><td>阿尔及尔</td></tr><tr><td>突尼斯</td><td>突尼斯</td></tr><tr><td>摩洛哥</td><td>拉巴特</td></tr><tr><td>佛得角</td><td>普拉亚</td></tr><tr><td>毛里塔尼亚</td><td>努瓦克肖特</td></tr><tr><td>马里</td><td>巴马科</td></tr><tr><td>塞内加尔</td><td>达喀尔</td></tr><tr><td>冈比亚</td><td>班珠尔</td></tr><tr><td>几内亚比绍</td><td>比绍</td></tr><tr><td>几内亚</td><td>科纳克里</td></tr><tr><td>塞拉利昂</td><td>弗里敦</td></tr><tr><td>利比里亚</td><td>蒙罗维亚</td></tr><tr><td>科特迪瓦</td><td>亚穆苏克罗</td></tr><tr><td>布基纳法索</td><td>瓦加杜古</td></tr><tr><td>尼日尔</td><td>尼亚美</td></tr><tr><td>乍得</td><td>恩贾梅纳</td></tr><tr><td>尼日利亚</td><td>阿布贾</td></tr><tr><td>加纳</td><td>阿克拉</td></tr><tr><td>多哥</td><td>洛美</td></tr><tr><td>贝宁</td><td>波多诺伏</td></tr><tr><td>喀麦隆</td><td>雅温得</td></tr><tr><td>加蓬</td><td>利伯维尔</td></tr><tr><td>赤道几内亚</td><td>马拉博</td></tr><tr><td>圣多美和普林西比</td><td>圣多美</td></tr><tr><td>中非</td><td>班吉</td></tr><tr><td>刚果</td><td>布拉柴维尔</td></tr><tr><td>刚果民主共和国</td><td>金沙萨</td></tr><tr><td>乌干达</td><td>坎帕拉</td></tr><tr><td>卢旺达</td><td>基加利</td></tr><tr><td>布隆迪</td><td>布琼布拉</td></tr><tr><td>坦桑尼亚</td><td>多多马</td></tr><tr><td>肯尼亚</td><td>内罗华</td></tr><tr><td>安哥拉</td><td>罗安达</td></tr><tr><td>赞比亚</td><td>卢萨卡</td></tr><tr><td>马拉维</td><td>利隆圭</td></tr><tr><td>莫桑比克</td><td>马普托</td></tr><tr><td>马达加斯加</td><td>塔那那利佛</td></tr><tr><td>科摩罗</td><td>莫罗尼</td></tr><tr><td>塞舌尔</td><td>维多利亚</td></tr><tr><td>毛里求斯</td><td>路易港</td></tr><tr><td>津巴布韦</td><td>哈拉雷</td></tr><tr><td>博茨瓦纳</td><td>哈博罗内</td></tr><tr><td>纳米比亚</td><td>温得和克</td></tr><tr><td>斯威士兰</td><td>姆巴巴内</td></tr><tr><td>莱索托</td><td>马塞卢</td></tr><tr><td>南非</td><td>比勒陀利亚</td></tr></tbody></table><table style="width: 100%;"><tbody><tr><th colSpan="2">北美洲</th></tr><tr><th>国家</th><th>首都</th></tr><tr><td>加拿大</td><td>渥太华</td></tr><tr><td>美国</td><td>华盛顿哥伦比亚特区</td></tr><tr><td>墨西哥</td><td>墨西哥城</td></tr><tr><td>危地马拉</td><td>危地马拉</td></tr><tr><td>伯利兹</td><td>贝尔莫潘</td></tr><tr><td>萨尔瓦多</td><td>圣萨尔瓦多</td></tr><tr><td>洪都拉斯</td><td>特古西加尔巴</td></tr><tr><td>尼加拉瓜</td><td>马那瓜</td></tr><tr><td>哥斯达黎加</td><td>圣何塞</td></tr><tr><td>巴拿马</td><td>巴拿马城</td></tr><tr><td>古巴</td><td>哈瓦那</td></tr><tr><td>巴哈马</td><td>拿骚</td></tr><tr><td>海地</td><td>太子港</td></tr><tr><td>多米尼加共和国</td><td>圣多明各</td></tr><tr><td>牙买加</td><td>金斯敦</td></tr><tr><td>圣基茨和尼维斯</td><td>巴斯特尔</td></tr><tr><td>安提瓜和巴布达</td><td>圣约翰</td></tr><tr><td>多米尼克</td><td>罗索</td></tr><tr><td>圣卢西亚</td><td>卡斯特里</td></tr><tr><td>圣文森特和格林纳丁斯</td><td>金斯敦</td></tr><tr><td>格林纳达</td><td>圣乔治</td></tr><tr><td>巴巴多斯</td><td>布里奇敦</td></tr><tr><td>特立尼达和多巴哥</td><td>西班牙港</td></tr><tr><td>蒙特塞拉特或蒙瑟拉特岛</td><td>布莱兹</td></tr></tbody></table><table style="width: 100%;"><tbody><tr><th colSpan="2">南美洲</th></tr><tr><th>国家</th><th>首都</th></tr><tr><td>哥伦比亚</td><td>波哥大</td></tr><tr><td>厄瓜多尔</td><td>基多</td></tr><tr><td>委内瑞拉</td><td>加拉加斯</td></tr><tr><td>圭亚那</td><td>乔治敦</td></tr><tr><td>苏里南</td><td>帕拉马里博</td></tr><tr><td>秘鲁</td><td>利马</td></tr><tr><td>玻利维亚</td><td>苏克雷</td></tr><tr><td>巴拉圭</td><td>亚松森</td></tr><tr><td>阿根廷</td><td>布宜诺斯艾利斯</td></tr><tr><td>乌拉圭</td><td>蒙得维的亚</td></tr><tr><td>巴西</td><td>巴西利亚</td></tr><tr><td>智利</td><td>圣地亚哥</td></tr></tbody></table><table style="width: 100%;"><tbody><tr><th colSpan="2">大洋洲</th></tr><tr><th>国家</th><th>首都</th></tr><tr><td>澳大利亚</td><td>堪培拉</td></tr><tr><td>巴布亚新几内亚</td><td>莫尔兹比港</td></tr><tr><td>所罗门群岛</td><td>霍尼亚拉</td></tr><tr><td>瓦努阿图</td><td>维拉港</td></tr><tr><td>新西兰</td><td>惠灵顿</td></tr><tr><td>斐济</td><td>苏瓦</td></tr><tr><td>汤加</td><td>努库阿洛法</td></tr><tr><td>瑙鲁</td><td>亚伦</td></tr><tr><td>基里巴斯</td><td>塔拉瓦</td></tr><tr><td>图瓦卢</td><td>富纳富提</td></tr><tr><td>萨摩亚</td><td>阿皮亚</td></tr><tr><td>密克罗尼西亚联邦</td><td>帕利基尔</td></tr><tr><td>马绍尔群岛</td><td>马朱罗</td></tr><tr><td>帕劳</td><td>梅莱凯奥克</td></tr></tbody></table><h3>国名与首都名称相同的国家</h3><p>世界上有12个国家国名与首都名相同！除了突尼斯，墨西哥，巴拿马外，危地马拉、吉布提共和国外，其他均为袖珍国（全世界最小的六个袖珍国家）。</p><p>世界上国名与首都名相同的国家：新加坡，新加坡(亚洲)，科威特，科威特(亚洲)，吉布提，吉布提(非洲)，卢森堡，卢森堡(欧洲)，安道尔，安道尔(欧洲)，摩纳哥，摩纳哥(欧洲)，圣马力诺，圣马力诺(欧洲)，突尼斯，突尼斯(非洲)，危地马拉（美洲）</p><p>国名与首都同名的国家（按洲分类）</p><p>亚洲（Asia）2个：</p><p>新加坡共和国（Republic of Singapore），新加坡（Singapore）；</p><p>科威特国（The State of Kuwait），科威特（Al Kuwait）；</p><p>非洲（Africa）2个：</p><p>吉布提共和国（The Republic of Djibouti），吉布提市（Djibouti）；</p><p>突尼斯共和国（The Republic of Tunisiae），突尼斯（Tunis）；</p><p>欧洲（Europe）5个：</p><p>卢森堡（The Grand Duchy of Luxembourg），卢森堡市（Luxembourg City）；</p><p>安道尔（The Principality of Andorra），安道尔城（Andorra La Vella）；</p><p>摩纳哥（The Principality of Monaco），摩纳哥城（Monaco-Ville）；</p><p>圣马力诺共和国（Repubblica di San Marino），圣马力诺（San Marino） ；</p><p>梵蒂冈城国（Status Civitatis Vaticanae），梵蒂冈城。</p><p>北美洲（North America）2个：</p><p>危地马拉共和国（The Republic of Guatemala），危地马拉城（ Guatemala City）；</p><p>墨西哥合众国（The United States of Mexico），墨西哥城（Mexico City）。</p><p>中美洲（Central America）1个：</p><p>巴拿马共和国（The Republic of Panama），巴拿马城（Panama City）；</p><h3>这些会被误认为首都的城市</h3><p>绝大部分国家的首都是该国的政治文化经济中心，故知名度非常高，耳熟能详。但是部分国家未必如此，知名度最高的，第一大城市往往不是该国首都，首都往往是名不见经传的，甚至是小城市。就像电影中的演员一样，有时候配角表演出色，演技到位，抢尽了主角的风头！同样，在国家各城市间也出现了这样的尴尬，有的城市风头完全盖过了国家的首都！</p><p>这些城市以其美丽，标志性地标，一流的美食或令人叹为观止的建筑而闻名，几乎所有这些城市在全球都广为人知。但是，许多人也误认为该国的首都，而事实并非如此。一些世界上最著名和最受欢迎的城市，比如：中国上海，缅甸仰光，印度孟买，越南胡志明，科特迪瓦阿比讓，尼日利亚拉各斯，玻利维亚拉巴斯，南非约翰内斯堡，哈萨克斯坦阿拉木图，厄瓜多尔瓜亚基尔，澳大利亚悉尼……他们都是不是该国的首都。</p><p>十大被误认为是首都的城市 日本首都竟不是东京</p><p>日本首都是东京吗？</p><p>日本没有首都！</p><p>你可能认为日本的首都：东京（Tokyo）。</p><p>然而东京并不是日本的首都，在日本宪法中，其实没有关于首都的具体规定。</p><p>而作为君主立宪制国家，日本的首都一般是依据天皇的居住地而定。历史上很长一段时间，天皇都是居住在平安京城，即现在的京都，所以京都作为旧都依然在日本占据着重要地位。</p><p>土耳其的首都是伊斯坦布尔？</p><p>你可能认为土耳其的首都：伊斯坦布尔</p><p>而土耳其真正的首都：安卡拉</p><p>阿拉伯联合酋长国的首都是迪拜？</p><p>你可能以为的阿联酋首都：迪拜。七星级帆船酒店是全球最豪华的酒店。</p><p>而阿联酋真正的首都：阿布扎比（Abu Dhabi）。</p><p>澳大利亚首都不是悉尼，是堪培拉</p><p>澳大利亚的首都是悉尼？</p><p>你可能认为的澳大利亚首都：悉尼（Sydney）！悉尼歌剧院成为了澳大利亚的象征。</p><p>或者你可能认为是墨尔本？</p><p>而澳大利亚真正的首都：堪培拉（Canberra）。</p><p>事实上，悉尼和墨尔本确实有过首都争夺战，结果半路出个程咬金——堪培拉。</p><p>越南首都是胡志明市？</p><p>你可能认为的越南首都：胡志明市（Ho Chi Minh City）！胡志明市是越南最大的城市，是以越南的前G领导人胡志明的名字命名的，就是以前的西贡（Sài Gòn）。</p><p>而越南真正的首都：河内（Hanoi）。</p><p>加拿大的首都是温哥华？</p><p>你可能认为的首都：温哥华（Vancouver）！这是华人世界最著名的城市了。</p><p>包括多伦多（Toronto）也会被误认。</p><p>而加拿大真正的首都：渥太华（Ottawa）</p><p>缅甸的首都是仰光？</p><p>你可能认为的首都：仰光（Yangon）</p><p>而缅甸真正的首都：内比都（Naypyidaw）</p><p>仰光是缅甸最大的城市，以前确实是缅甸的首都没错。2005年时，从仰光迁都至此。</p><p>新西兰的首都是奥克兰？</p><p>你可能认为的首都：奥克兰（Auckland）</p><p>而新西兰真正的首都：惠灵顿（Wellington）</p><p>美国首都不是纽约</p><p>美国的首都是纽约？</p><p>你可能认为的首都：纽约（New York）</p><p>而美国真正的首都：华盛顿哥伦比亚特区（Washington District of Columbia），简称“华盛顿D.C.”（Washington.D.C.），或者“华府”，不能简称为“华盛顿”，以免跟美国西北部的“华盛顿州”（State of Washington）混淆。美国有多少地方以华盛顿命名？美国为什么把首都设在华盛顿而不是纽约？美国为何把首都放在城乡结合部？</p><p>巴西的首都是里约热内卢？</p><p>你可能认为的首都：里约热内卢（Rio de Janeiro）</p><p>而巴西真正的首都：巴西利亚（Brasilia）</p><p>瑞士可能认为的首都：日内瓦、苏黎世</p><p>你可能认为瑞士的首都：日内瓦（Geneva），苏黎世（Zurich）</p><p>而瑞士真正的首都：伯尔尼（Bern）瑞士为何不把首都放在苏黎世、日内瓦、巴塞尔等大城市?</p><p>荷兰的首都是海牙？</p><p>你可能认为荷兰的首都：海牙（Hague）</p><p>而荷兰真正的首都：阿姆斯特丹（Amsterdam）</p><p>南非的首都 — 约翰内斯堡？</p><p>你可能认为南非的首都：翰内斯堡（Johannesburg）</p><p>而实际上南非真正的首都有三个</p><p>——比勒陀利亚（Pretoria，又译作茨瓦内，行政），布隆方丹（Bloemfontein，司法），开普敦（Cape Town，立法）。</p><p>印度的首都是孟买？</p><p>你可能认为印度的首都：孟买（Mumbai），1995 年11月，印度政府将孟买的英文由 "Bombay" 改为 "Mumbai"。孟买犹如中国的上海，是印度第一大都市。</p><p>而印度真正的首都：新德里（New Delhi）</p><p>中国的首都是上海？</p><p>其实在外国人眼里，上海（Shanghai）才是中国首都（1949年新中国选首都，北京不是首选而是哈尔滨），甚至以为是香港（Hong Kong），怎么是北京呢？不过在2008年北京奥运会后，北京的知名度得以提高。</p>
             </div>
         </div>
