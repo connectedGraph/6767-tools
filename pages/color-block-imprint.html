@@ -17,20 +17,787 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .tool-body { overflow: hidden; }
+        /* Local visual system: the game remains self-contained and theme-aware. */
+        .tool-page-body,
+        .tool-page-body *,
+        .tool-page-body *::before,
+        .tool-page-body *::after {
+            box-sizing: border-box;
+        }
 
-        .game-box .game-top .game-top-left, .game-box .game-top .game-top-right { width: 50%; }
+        .tool-page-body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
 
-        .game-box .game-area .game-area-mode { background: rgba(0,0,0,0.76); color: #fff;left:unset;right:0; }
+        .tool-page-body .tool-body {
+            width: 100%;
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: clamp(16px, 3vw, 32px) clamp(12px, 3vw, 24px) 56px;
+            min-width: 0;
+        }
 
-        .game-play { background: none !important; }
-        .game-play .color-block-box { position: absolute; top: 0; right: 0; width: 100%; height: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr 1fr 1fr; grid-gap: 7px;opacity: 0;  }
-        .game-play .color-block-box .item { cursor: pointer; transition: none; }
-        .game-play .result-tip { position: absolute; top: 0; left: 0; width: 100%; height: 100%; font-size: 160px; display: flex; justify-content: center; align-items: center; text-shadow: 2px 0 black, -2px 0 black, 0 2px black, 0 -2px black, 2px 2px black, -2px -2px black, 2px -2px black, -2px 2px black; }
+        .tool-page-body .card-model {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            border-radius: 14px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
 
-        @media (max-width:1300px) {
-            .tool-body .relate-tool-box { display: block; }
-            .tool-body .right { display: none; }
+        html.dark .tool-page-body {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body {
+            color: #0f172a;
+        }
+
+        html.dark .tool-page-body .card-model {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 18px 50px rgba(2, 6, 23, 0.34), inset 0 1px 0 rgba(148, 163, 184, 0.06);
+        }
+
+        html:not(.dark) .tool-page-body .card-model {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .tool-page-body .card-body {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            padding: clamp(20px, 4vw, 38px);
+        }
+
+        .tool-page-body .tool-head {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 0 0 12px;
+        }
+
+        .tool-page-body .tool-kicker {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 22px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        html.dark .tool-page-body .tool-kicker {
+            color: #67e8f9;
+        }
+
+        html:not(.dark) .tool-page-body .tool-kicker {
+            color: #0369a1;
+        }
+
+        .tool-page-body .kicker-dot {
+            width: 8px;
+            height: 8px;
+            flex: 0 0 8px;
+            border-radius: 50%;
+        }
+
+        html.dark .tool-page-body .kicker-dot {
+            background: #22d3ee;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.14), 0 0 16px rgba(34, 211, 238, 0.45);
+        }
+
+        html:not(.dark) .tool-page-body .kicker-dot {
+            background: #0284c7;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+
+        .tool-page-body .kicker-divider {
+            width: 1px;
+            height: 14px;
+            margin: 0 2px;
+            opacity: 0.45;
+        }
+
+        html.dark .tool-page-body .kicker-divider {
+            background: #64748b;
+        }
+
+        html:not(.dark) .tool-page-body .kicker-divider {
+            background: #94a3b8;
+        }
+
+        .tool-page-body .tool-head .title {
+            margin: 0;
+            font-size: clamp(28px, 4.2vw, 42px);
+            font-weight: 850;
+            letter-spacing: -0.04em;
+            line-height: 1.12;
+        }
+
+        html.dark .tool-page-body .tool-head .title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .tool-head .title {
+            color: #0f172a;
+        }
+
+        .tool-page-body .description {
+            max-width: 76ch;
+            margin: 0 0 24px;
+            padding-left: 14px;
+            border-left: 3px solid;
+            font-size: 15px;
+            line-height: 1.85;
+        }
+
+        html.dark .tool-page-body .description {
+            color: #94a3b8;
+            border-left-color: #0e7490;
+        }
+
+        html:not(.dark) .tool-page-body .description {
+            color: #475569;
+            border-left-color: #0284c7;
+        }
+
+        .tool-page-body .game-box {
+            position: relative;
+            width: 100%;
+            max-width: 820px;
+            margin: 0 auto;
+            padding: clamp(14px, 2.5vw, 24px);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .tool-page-body .game-box::before {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 2px;
+            margin: -1px 0 16px;
+            border-radius: 999px;
+        }
+
+        html.dark .tool-page-body .game-box {
+            background: linear-gradient(145deg, #0f1b32 0%, #0b1120 100%);
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.06), 0 12px 28px rgba(2, 6, 23, 0.24);
+        }
+
+        html:not(.dark) .tool-page-body .game-box {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 12px 28px rgba(15, 23, 42, 0.06);
+        }
+
+        html.dark .tool-page-body .game-box::before {
+            background: linear-gradient(90deg, #06b6d4, #38bdf8, transparent);
+        }
+
+        html:not(.dark) .tool-page-body .game-box::before {
+            background: linear-gradient(90deg, #0284c7, #38bdf8, transparent);
+        }
+
+        .tool-page-body .game-level {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            margin: 0 0 14px;
+            padding: 5px 11px;
+            border: 1px solid;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        html.dark .tool-page-body .game-level {
+            color: #bae6fd;
+            background: rgba(14, 116, 144, 0.2);
+            border-color: #155e75;
+        }
+
+        html:not(.dark) .tool-page-body .game-level {
+            color: #075985;
+            background: #e0f2fe;
+            border-color: #bae6fd;
+        }
+
+        .tool-page-body .game-top {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            width: 100%;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .tool-page-body .game-top .game-top-left,
+        .tool-page-body .game-top .game-top-middle,
+        .tool-page-body .game-top .game-top-right {
+            display: flex;
+            align-items: center;
+            width: auto;
+            min-width: 0;
+            min-height: 42px;
+            padding: 8px 12px;
+            border: 1px solid;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 750;
+            line-height: 1.25;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .tool-page-body .game-top .game-top-left {
+            justify-content: flex-start;
+        }
+
+        .tool-page-body .game-top .game-top-middle {
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .tool-page-body .game-top .game-top-right {
+            justify-content: flex-end;
+        }
+
+        html.dark .tool-page-body .game-top .game-top-left,
+        html.dark .tool-page-body .game-top .game-top-middle,
+        html.dark .tool-page-body .game-top .game-top-right {
+            color: #cbd5e1;
+            background: rgba(15, 23, 42, 0.72);
+            border-color: #26364d;
+        }
+
+        html:not(.dark) .tool-page-body .game-top .game-top-left,
+        html:not(.dark) .tool-page-body .game-top .game-top-middle,
+        html:not(.dark) .tool-page-body .game-top .game-top-right {
+            color: #334155;
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        html.dark .tool-page-body .game-top .game-top-left .my-icon {
+            color: #67e8f9;
+        }
+
+        html:not(.dark) .tool-page-body .game-top .game-top-left .my-icon {
+            color: #0284c7;
+        }
+
+        .tool-page-body .game-top .my-icon {
+            flex: 0 0 auto;
+            font-size: 16px;
+        }
+
+        .tool-page-body .game-top-right .el-dropdown {
+            display: block;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .tool-page-body .level-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            width: 100%;
+            min-height: 26px;
+            min-width: 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tool-page-body .level-group span {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        html.dark .tool-page-body .level-group {
+            color: #bae6fd;
+        }
+
+        html:not(.dark) .tool-page-body .level-group {
+            color: #075985;
+        }
+
+        .tool-page-body .level-group .my-icon {
+            flex: 0 0 auto;
+            font-size: 12px;
+        }
+
+        html.dark .tool-page-body .level-group .my-icon {
+            color: #67e8f9;
+        }
+
+        html:not(.dark) .tool-page-body .level-group .my-icon {
+            color: #0284c7;
+        }
+
+        .tool-page-body .game-area {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            height: auto;
+            min-height: 0;
+            margin: 0 auto 16px;
+            aspect-ratio: 1 / 1;
+            border: 1px solid;
+            border-radius: 14px;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        html.dark .tool-page-body .game-area {
+            background: #080d1b;
+            border-color: #26364d;
+            box-shadow: inset 0 0 0 1px rgba(2, 6, 23, 0.35), inset 0 0 34px rgba(14, 116, 144, 0.08);
+        }
+
+        html:not(.dark) .tool-page-body .game-area {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75), inset 0 0 34px rgba(14, 116, 144, 0.06);
+        }
+
+        .tool-page-body .game-area .game-area-mode {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: clamp(18px, 5vw, 42px);
+            border: 0;
+            text-align: center;
+        }
+
+        html.dark .tool-page-body .game-area .game-area-mode {
+            color: #e2e8f0;
+            background: rgba(9, 14, 31, 0.96);
+        }
+
+        html:not(.dark) .tool-page-body .game-area .game-area-mode {
+            color: #1e293b;
+            background: rgba(248, 250, 252, 0.97);
+        }
+
+        .tool-page-body .game-desc {
+            gap: 14px;
+            overflow: auto;
+        }
+
+        .tool-page-body .game-desc .desc {
+            width: 100%;
+            max-width: 44ch;
+            margin: 0;
+            font-size: clamp(13px, 2vw, 15px);
+            line-height: 1.75;
+        }
+
+        html.dark .tool-page-body .game-desc .desc {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .tool-page-body .game-desc .desc {
+            color: #334155;
+        }
+
+        .tool-page-body .game-desc .emoji {
+            font-size: clamp(48px, 12vw, 86px);
+            line-height: 1;
+            filter: drop-shadow(0 10px 18px rgba(2, 6, 23, 0.18));
+        }
+
+        .tool-page-body .game-desc .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+            max-width: 100%;
+            min-height: 44px;
+            padding: 9px 22px;
+            border: 1px solid;
+            border-radius: 10px;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.2;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        html.dark .tool-page-body .game-desc .btn {
+            color: #ecfeff;
+            background: #0e7490;
+            border-color: #22d3ee;
+            box-shadow: 0 8px 18px rgba(8, 145, 178, 0.22);
+        }
+
+        html:not(.dark) .tool-page-body .game-desc .btn {
+            color: #ffffff;
+            background: #0284c7;
+            border-color: #0284c7;
+            box-shadow: 0 8px 18px rgba(2, 132, 199, 0.2);
+        }
+
+        html.dark .tool-page-body .game-desc .btn:hover {
+            background: #0284c7;
+            border-color: #38bdf8;
+            transform: translateY(-1px);
+        }
+
+        html:not(.dark) .tool-page-body .game-desc .btn:hover {
+            background: #0369a1;
+            border-color: #0369a1;
+            transform: translateY(-1px);
+        }
+
+        .tool-page-body .game-desc .btn:active {
+            transform: translateY(0);
+        }
+
+        .tool-page-body .game-desc .btn:focus-visible,
+        .tool-page-body .game-bottom .el-button:focus-visible,
+        .tool-page-body .game-play .color-block-box .item:focus-visible,
+        .tool-page-body .level-group:focus-visible {
+            outline: 3px solid;
+            outline-offset: 3px;
+        }
+
+        html.dark .tool-page-body .game-desc .btn:focus-visible,
+        html.dark .tool-page-body .game-bottom .el-button:focus-visible,
+        html.dark .tool-page-body .game-play .color-block-box .item:focus-visible,
+        html.dark .tool-page-body .level-group:focus-visible {
+            outline-color: #67e8f9;
+        }
+
+        html:not(.dark) .tool-page-body .game-desc .btn:focus-visible,
+        html:not(.dark) .tool-page-body .game-bottom .el-button:focus-visible,
+        html:not(.dark) .tool-page-body .game-play .color-block-box .item:focus-visible,
+        html:not(.dark) .tool-page-body .level-group:focus-visible {
+            outline-color: #0284c7;
+        }
+
+        .tool-page-body .game-play {
+            padding: 0;
+            background: transparent !important;
+        }
+
+        .tool-page-body .game-play .color-block-box {
+            position: absolute;
+            inset: clamp(12px, 2.8vw, 24px);
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-rows: repeat(5, minmax(0, 1fr));
+            gap: clamp(6px, 1.25vw, 10px);
+            width: auto;
+            height: auto;
+            opacity: 0;
+            touch-action: manipulation;
+        }
+
+        .tool-page-body .game-play .color-block-box .item {
+            display: block;
+            width: 100%;
+            min-width: 0;
+            min-height: 0;
+            padding: 0;
+            border: 1px solid;
+            border-radius: 10px;
+            font: inherit;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        html.dark .tool-page-body .game-play .color-block-box .item {
+            border-color: rgba(226, 232, 240, 0.16);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 5px 12px rgba(2, 6, 23, 0.28);
+        }
+
+        html:not(.dark) .tool-page-body .game-play .color-block-box .item {
+            border-color: rgba(15, 23, 42, 0.16);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), 0 5px 12px rgba(15, 23, 42, 0.12);
+        }
+
+        .tool-page-body .game-play .color-block-box .item:hover {
+            filter: brightness(1.1) saturate(1.08);
+            transform: translateY(-2px);
+        }
+
+        .tool-page-body .game-play .color-block-box .item:active {
+            filter: brightness(0.96);
+            transform: translateY(0) scale(0.97);
+        }
+
+        .tool-page-body .game-play .result-tip {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: 12px;
+            font-size: clamp(64px, 18vw, 148px);
+            font-weight: 900;
+            line-height: 1;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        html.dark .tool-page-body .game-play .result-tip {
+            text-shadow: 0 3px 0 #020617, 2px 0 0 #020617, -2px 0 0 #020617, 0 -2px 0 #020617, 0 12px 30px rgba(2, 6, 23, 0.5);
+        }
+
+        html:not(.dark) .tool-page-body .game-play .result-tip {
+            text-shadow: 0 3px 0 #ffffff, 2px 0 0 #ffffff, -2px 0 0 #ffffff, 0 -2px 0 #ffffff, 0 12px 30px rgba(15, 23, 42, 0.22);
+        }
+
+        .tool-page-body .game-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+            padding-top: 2px;
+        }
+
+        .tool-page-body .game-bottom .el-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-width: 128px;
+            min-height: 40px;
+            margin: 0;
+            padding: 8px 15px;
+            border: 1px solid;
+            border-radius: 999px;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 750;
+            line-height: 1.2;
+            cursor: pointer;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+        }
+
+        html.dark .tool-page-body .game-bottom .el-button {
+            color: #cbd5e1;
+            background: #111c31;
+            border-color: #334155;
+        }
+
+        html:not(.dark) .tool-page-body .game-bottom .el-button {
+            color: #334155;
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+
+        html.dark .tool-page-body .game-bottom .el-button:hover {
+            color: #ecfeff;
+            background: #164e63;
+            border-color: #22d3ee;
+            transform: translateY(-1px);
+        }
+
+        html:not(.dark) .tool-page-body .game-bottom .el-button:hover {
+            color: #075985;
+            background: #e0f2fe;
+            border-color: #38bdf8;
+            transform: translateY(-1px);
+        }
+
+        .tool-page-body .game-bottom .el-button:active {
+            transform: translateY(0);
+        }
+
+        .tool-page-body .game-bottom .el-button .my-icon {
+            font-size: 15px;
+        }
+
+        html.dark .tool-page-body .game-bottom .el-button .my-icon {
+            color: #67e8f9;
+        }
+
+        html:not(.dark) .tool-page-body .game-bottom .el-button .my-icon {
+            color: #0284c7;
+        }
+
+        .tool-page-body .divider {
+            width: 100%;
+            height: 1px;
+            margin: clamp(28px, 5vw, 44px) 0;
+        }
+
+        html.dark .tool-page-body .divider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) .tool-page-body .divider {
+            background: #e2e8f0;
+        }
+
+        .tool-page-body .content {
+            width: 100%;
+            max-width: 78ch;
+            margin: 0 auto;
+            min-width: 0;
+        }
+
+        .tool-page-body .content h2 {
+            margin: 30px 0 12px;
+            padding-left: 12px;
+            border-left: 3px solid;
+            font-size: clamp(19px, 2.8vw, 24px);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.35;
+        }
+
+        .tool-page-body .content h2:first-child {
+            margin-top: 0;
+        }
+
+        html.dark .tool-page-body .content h2 {
+            color: #f8fafc;
+            border-left-color: #22d3ee;
+        }
+
+        html:not(.dark) .tool-page-body .content h2 {
+            color: #0f172a;
+            border-left-color: #0284c7;
+        }
+
+        .tool-page-body .content p,
+        .tool-page-body .content li {
+            font-size: 15px;
+            line-height: 1.9;
+        }
+
+        .tool-page-body .content p {
+            margin: 0 0 14px;
+        }
+
+        html.dark .tool-page-body .content p,
+        html.dark .tool-page-body .content li {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .content p,
+        html:not(.dark) .tool-page-body .content li {
+            color: #475569;
+        }
+
+        .tool-page-body .content ul {
+            margin: 0 0 16px;
+            padding-left: 22px;
+        }
+
+        .tool-page-body .content li {
+            padding-left: 4px;
+            margin: 4px 0;
+        }
+
+        html.dark .tool-page-body .content li::marker {
+            color: #22d3ee;
+        }
+
+        html:not(.dark) .tool-page-body .content li::marker {
+            color: #0284c7;
+        }
+
+        .tool-page-body .relate-tool-box,
+        .tool-page-body comment {
+            display: block;
+            width: 100%;
+            max-width: 78ch;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .tool-page-body .relate-tool-box {
+            min-height: 0;
+            margin-top: 28px;
+        }
+
+        @media (max-width: 640px) {
+            .tool-page-body .card-body {
+                padding: 20px 14px 26px;
+            }
+
+            .tool-page-body .game-top {
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            }
+
+            .tool-page-body .game-top .game-top-right {
+                grid-column: 1 / -1;
+            }
+
+            .tool-page-body .game-bottom {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .tool-page-body .game-bottom .el-button {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .tool-page-body .game-box {
+                padding: 12px;
+            }
+
+            .tool-page-body .game-top .game-top-left,
+            .tool-page-body .game-top .game-top-middle,
+            .tool-page-body .game-top .game-top-right {
+                padding-right: 9px;
+                padding-left: 9px;
+                font-size: 12px;
+            }
+
+            .tool-page-body .content p,
+            .tool-page-body .content li {
+                font-size: 14px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tool-page-body *,
+            .tool-page-body *::before,
+            .tool-page-body *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
         }
     </style>
 
@@ -57,25 +824,25 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
-<div class="tool-body flex">
-    <div class="left">
-        <div class="card-model">
+<div class="tool-body">
+    <div class="card-model">
             <div class="card-body">
                 <div class="tool-head">
-                    <h1 class="title">色块印记</h1>
+                    <div class="tool-kicker"><span class="kicker-dot" aria-hidden="true"></span><span>视觉记忆训练</span><span class="kicker-divider" aria-hidden="true"></span><span>5 × 5 GRID</span></div>
+                    <h1 class="title" id="game-title">色块印记</h1>
                 </div>
                 <div class="description">游戏界面为5×5的方格矩阵，每局随机点亮N个方块，随后这些方格恢复原色，玩家需凭借短暂视觉残留的记忆，快速定位并点击刚才变色的方块，完成“印记复刻”。</div>
-                <div class="game-box" v-cloak>
-                    <div class="game-level">第{{gameProgress}}关</div>
+                <div class="game-box" v-cloak role="region" aria-labelledby="game-title">
+                    <div class="game-level" aria-live="polite">第{{gameProgress}}关</div>
                     <div class="game-top">
-                        <div class="game-top-left"><i class="my-icon my-icon-time"></i><span>{{gameSecondTime}}秒</span></div>
-                        <div class="game-top-middle">错误: {{3-lives}}/3</div>
+                        <div class="game-top-left" role="status" aria-label="本关用时"><i class="my-icon my-icon-time" aria-hidden="true"></i><span>{{gameSecondTime}}秒</span></div>
+                        <div class="game-top-middle" role="status" aria-label="错误次数">错误: {{3-lives}}/3</div>
                         <div class="game-top-right">
                             <el-dropdown trigger="click" v-on:command="changeLevelGroup">
-                                <div class="level-group"><span>{{levelGroupDescArr[levelGroupIndex]}}</span><i class="my-icon my-icon-jiantou-down"></i></div>
+                                <div class="level-group" aria-label="选择难度"><span>{{levelGroupDescArr[levelGroupIndex]}}</span><i class="my-icon my-icon-jiantou-down" aria-hidden="true"></i></div>
                                 <template #dropdown>
                                     <el-dropdown-menu>
                                         <el-dropdown-item v-for="(item,index) in levelGroupDescArr" :command="index">{{item}}</el-dropdown-item>
@@ -84,26 +851,26 @@
                             </el-dropdown>
                         </div>
                     </div>
-                    <div class="game-area">
+                    <div class="game-area" role="group" aria-label="色块记忆游戏区域">
                         <div v-if="gameState==1" class="game-area-mode game-desc">
                             <div class="desc">游戏界面为5×5的方格矩阵，每局随机点亮N个方块，随后这些方格恢复原色，玩家需凭借短暂视觉残留的记忆，快速定位并点击刚才变色的方块，完成“印记复刻”。</div>
-                            <div class="btn" v-on:click="startGame">开始游戏</div>
+                            <button type="button" class="btn" v-on:click="startGame">开始游戏</button>
                         </div>
                         <div v-if="gameState==2" class="game-area-mode game-play">
-                            <div class="color-block-box">
+                            <div class="color-block-box" role="group" aria-label="5乘5色块网格">
                                 <template v-for="(item,index) in 25">
-                                    <div v-on:click="clickColorBlock(index)" class="item" v-bind:style="{'background':(tapedBlockIndexArr.includes(index)?'#2AAD67':'#9b9581')}"></div>
+                                    <button type="button" v-on:click="clickColorBlock(index)" class="item" v-bind:style="{'background':(tapedBlockIndexArr.includes(index)?'#2AAD67':'#9b9581')}" v-bind:aria-label="'第' + (index + 1) + '个方格'"></button>
                                 </template>
                             </div>
-                            <div class="result-tip" v-if="resultTipShow" v-bind:style="{color:resultTipColor}">{{resultTipIcon}}</div>
+                            <div class="result-tip" role="status" aria-live="assertive" aria-atomic="true" v-if="resultTipShow" v-bind:style="{color:resultTipColor}">{{resultTipIcon}}</div>
                         </div>
                         <div v-if="gameState==3" class="game-area-mode game-desc">
                             <div class="emoji">{{emoji}}</div>
                             <div class="desc" v-html="scoreDesc"></div>
-                            <div class="btn" v-on:click="startGame">再玩一次</div>
+                            <button type="button" class="btn" v-on:click="startGame">再玩一次</button>
                         </div>
                     </div>
-                    <div class="game-bottom">
+                    <div class="game-bottom" role="group" aria-label="游戏记录">
                         <el-button round v-on:click="$refs.phbDialog.showPhb(levelGroupIndex)"><i class="my-icon my-icon-phb"></i><span>排行榜</span></el-button>
                         <el-button round v-on:click="$refs.historyDialog.showHistory(levelGroupIndex)"><i class="my-icon my-icon-history"></i><span>历史记录</span></el-button>
                     </div>
@@ -113,12 +880,11 @@
                 <div class="content">
                     <h2>游戏介绍</h2><p>“色块印记”是一款以短时记忆和视觉反应为核心的益智小游戏，操作简单、兼具挑战性，适合各年龄段人群。核心是通过“观察-记忆-复刻”的玩法，锻炼视觉专注力、短时记忆与反应力，轻松激活大脑活力。</p><h2>游戏规则</h2><ul><li>游戏界面为5×5方格矩阵，每局随机点亮N个方格（N随关卡递增，难度循序渐进），点亮方格呈醒目颜色，短暂停留后恢复原色。</li><li>玩家需凭借视觉记忆，在方格恢复原色后，快速点击所有曾点亮的方格完成“印记复刻”，全部正确即可过关。</li><li>选择“旋转矩阵”难度时，方格熄灭后矩阵会随机旋转90°、180°或270°，玩家需结合旋转位置，精准回忆并点击目标方格，提升双重挑战。</li><li>玩家拥有3次失败机会（点击错误、遗漏方格均算失败），失败次数超3次，测试结束，可重新挑战。</li><li>成绩按用时统计：从游戏开始到最后一次过关的时间差为最终用时，最后一次失败耗时不计。</li></ul><h2>游戏好处</h2><p>这款游戏既是休闲解压工具，也是高效大脑训练器，长期玩可多方面提升能力，兼顾趣味与实用：</p><ul><li>强化短时记忆：需快速捕捉并留存方格位置，反复练习可提升短时记忆容量和留存时长，改善易遗忘问题。</li><li>提升视觉专注力：需快速锁定目标色块、排除干扰，长期练习可改善注意力不集中，适配学生、办公人群。</li><li>培养空间感知（旋转难度专属）：需结合矩阵旋转位置推导目标方格，提升空间想象力和思维逻辑。</li><li>缓解压力：操作简单、节奏灵活，碎片化时间即可游玩，可转移负面情绪，轻松解压。</li><li>适配全年龄段：儿童练记忆、青少年提敏捷、中老年人活大脑，实现“玩中学、练中乐”。</li></ul>
                 </div>
+                <div class="relate-tool-box"></div>
+                <comment :relate-id="278" :comment-class="2"></comment>
             </div>
         </div>
-        <div class="relate-tool-box"></div>
-        <comment :relate-id="278" :comment-class="2"></comment>
     </div>
-</div>
 
 <phb-dialog ref="phbDialog" :program-name="programName" :level-group-desc-arr="levelGroupDescArr" :level-group-code-arr="levelGroupCodeArr" score-text="关卡"></phb-dialog>
 <history-dialog ref="historyDialog" :program-name="programName" :level-group-desc-arr="levelGroupDescArr" :level-group-code-arr="levelGroupCodeArr" score-text="关卡" tooltip-template="第 {0} 关\n用时: {1} 秒\n{2}"></history-dialog>
