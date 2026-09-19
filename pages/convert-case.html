@@ -17,13 +17,1014 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .tool-body .tool-form { max-width: 1100px; text-align: start; }
-        .tool-body .tool-form .trans .trans-left { width: 100%; }
+        /* Convert-case: self-contained visual system with explicit light and dark themes. */
+        #app,
+        #app *,
+        #app *::before,
+        #app *::after {
+            box-sizing: border-box;
+        }
 
-        @media (max-width:1300px) {
-            .tool-body { flex-direction: column; }
-            .tool-body .left { width: 100%; }
-            .tool-body .right { width: 100%; margin: 15px 0 0 0; position: unset; z-index: unset; height: auto; }
+        #app {
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        html.dark .tool-page-body {
+            color: #e2e8f0;
+            background: transparent;
+        }
+
+        html:not(.dark) .tool-page-body {
+            color: #0f172a;
+            background: transparent;
+        }
+
+        /* Page chrome */
+        .tool-topbar {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+            max-width: 100vw;
+            min-height: 58px;
+            padding: 10px clamp(16px, 4vw, 48px);
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        html.dark .tool-topbar {
+            color: #e2e8f0;
+            background: rgba(9, 14, 31, 0.94);
+            border-bottom: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .tool-topbar {
+            color: #1e293b;
+            background: rgba(255, 255, 255, 0.96);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tool-topbar-logo,
+        .tool-topbar-title,
+        .tool-topbar-sep {
+            min-width: 0;
+        }
+
+        .tool-topbar-logo {
+            display: inline-flex;
+            align-items: center;
+            min-height: 36px;
+            color: inherit;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+        }
+
+        html.dark .tool-topbar-logo {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-topbar-logo {
+            color: #0f172a;
+        }
+
+        .tool-topbar-sep {
+            color: #94a3b8;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        html.dark .tool-topbar-title {
+            color: #bae6fd;
+        }
+
+        html:not(.dark) .tool-topbar-title {
+            color: #0369a1;
+        }
+
+        .tool-topbar-title {
+            overflow-wrap: anywhere;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .tool-topbar-home {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            margin-left: auto;
+            padding: 7px 12px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            color: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        }
+
+        html.dark .tool-topbar-home {
+            color: #bae6fd;
+            border-color: #1e3a5f;
+        }
+
+        html.dark .tool-topbar-home:hover,
+        html.dark .tool-topbar-home:focus-visible {
+            color: #f0f9ff;
+            background: #12304d;
+            border-color: #38bdf8;
+        }
+
+        html:not(.dark) .tool-topbar-home {
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+
+        html:not(.dark) .tool-topbar-home:hover,
+        html:not(.dark) .tool-topbar-home:focus-visible {
+            color: #075985;
+            background: #e0f2fe;
+            border-color: #0284c7;
+        }
+
+        /* Outer tool frame: the required main > tool-body > card-model > card-body hierarchy. */
+        #app.tool-page-body {
+            width: 100%;
+            min-width: 0;
+            padding: clamp(20px, 4vw, 48px) clamp(12px, 4vw, 48px) 40px;
+        }
+
+        #app .tool-body {
+            display: block;
+            width: 100%;
+            max-width: 1180px;
+            min-width: 0;
+            margin: 0 auto;
+        }
+
+        #app .card-model {
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            border-radius: 14px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark #app .card-model {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(148, 163, 184, 0.04);
+        }
+
+        html:not(.dark) #app .card-model {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        #app .card-body {
+            width: 100%;
+            min-width: 0;
+            padding: clamp(20px, 4vw, 38px);
+        }
+
+        /* Tool heading */
+        #app .tool-head {
+            margin: 0 0 10px;
+        }
+
+        #app .case-title-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            min-width: 0;
+        }
+
+        #app .case-title-copy {
+            min-width: 0;
+        }
+
+        #app .case-kicker {
+            margin-bottom: 7px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        html.dark #app .case-kicker {
+            color: #67e8f9;
+        }
+
+        html:not(.dark) #app .case-kicker {
+            color: #0e7490;
+        }
+
+        #app .title {
+            margin: 0;
+            font-size: clamp(27px, 4vw, 40px);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+        }
+
+        html.dark #app .title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) #app .title {
+            color: #0f172a;
+        }
+
+        #app .case-live-badge {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            gap: 8px;
+            min-height: 34px;
+            margin-top: 3px;
+            padding: 6px 11px;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        html.dark #app .case-live-badge {
+            color: #a5f3fc;
+            background: rgba(14, 116, 144, 0.18);
+            border-color: #155e75;
+        }
+
+        html:not(.dark) #app .case-live-badge {
+            color: #0e7490;
+            background: #ecfeff;
+            border-color: #a5f3fc;
+        }
+
+        #app .case-live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.14);
+        }
+
+        #app .description {
+            max-width: 760px;
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        html.dark #app .description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) #app .description {
+            color: #475569;
+        }
+
+        /* Editor workspace */
+        #app .tool-form.case-tool-form {
+            width: 100%;
+            max-width: none;
+            margin-top: 26px;
+            text-align: left;
+        }
+
+        #app [v-cloak] {
+            display: none;
+        }
+
+        #app .case-workspace {
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            border-radius: 13px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        html.dark #app .case-workspace {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) #app .case-workspace {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        #app .case-workspace-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            min-width: 0;
+            padding: 16px 18px;
+            border-bottom: 1px solid transparent;
+        }
+
+        html.dark #app .case-workspace-head {
+            background: #101a2e;
+            border-bottom-color: #1e293b;
+        }
+
+        html:not(.dark) #app .case-workspace-head {
+            background: #f8fafc;
+            border-bottom-color: #e2e8f0;
+        }
+
+        #app .case-panel-label {
+            margin: 0 0 3px;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+        }
+
+        html.dark #app .case-panel-label {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) #app .case-panel-label {
+            color: #0f172a;
+        }
+
+        #app .case-panel-help {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        html.dark #app .case-panel-help {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) #app .case-panel-help {
+            color: #64748b;
+        }
+
+        #app .case-private-note {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            gap: 6px;
+            min-height: 30px;
+            padding: 5px 9px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        html.dark #app .case-private-note {
+            color: #86efac;
+            background: rgba(22, 101, 52, 0.2);
+        }
+
+        html:not(.dark) #app .case-private-note {
+            color: #166534;
+            background: #f0fdf4;
+        }
+
+        #app .case-private-note .my-icon {
+            font-size: 13px;
+        }
+
+        #app .trans,
+        #app .trans-left {
+            width: 100%;
+            min-width: 0;
+        }
+
+        #app .edit-top.case-action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 132px), 1fr));
+            gap: 9px;
+            width: 100%;
+            min-width: 0;
+            padding: 15px 16px;
+        }
+
+        html.dark #app .edit-top.case-action-grid {
+            background: #0b1120;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        html:not(.dark) #app .edit-top.case-action-grid {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        #app .case-action.el-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-width: 0;
+            min-height: 40px;
+            margin: 0;
+            padding: 9px 11px;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.35;
+            text-align: center;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            cursor: pointer;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        html.dark #app .case-action.el-button {
+            color: #dbeafe;
+            background: #132238;
+            border-color: #2b4058;
+            box-shadow: none;
+        }
+
+        html:not(.dark) #app .case-action.el-button {
+            color: #1e293b;
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            box-shadow: none;
+        }
+
+        html.dark #app .case-action.el-button:hover:not(.is-disabled),
+        html.dark #app .case-action.el-button:focus-visible:not(.is-disabled) {
+            color: #f8fafc;
+            background: #1e3a5f;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.13);
+            transform: translateY(-1px);
+        }
+
+        html:not(.dark) #app .case-action.el-button:hover:not(.is-disabled),
+        html:not(.dark) #app .case-action.el-button:focus-visible:not(.is-disabled) {
+            color: #0c4a6e;
+            background: #e0f2fe;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.13);
+            transform: translateY(-1px);
+        }
+
+        html.dark #app .case-action.el-button:active:not(.is-disabled),
+        html:not(.dark) #app .case-action.el-button:active:not(.is-disabled) {
+            transform: translateY(0);
+        }
+
+        html.dark #app .case-action-primary.el-button {
+            color: #e0f2fe;
+            background: rgba(14, 116, 144, 0.35);
+            border-color: #38bdf8;
+        }
+
+        html.dark #app .case-action-primary.el-button:hover:not(.is-disabled) {
+            color: #ffffff;
+            background: #0284c7;
+            border-color: #38bdf8;
+        }
+
+        html:not(.dark) #app .case-action-primary.el-button {
+            color: #ffffff;
+            background: #0284c7;
+            border-color: #0284c7;
+        }
+
+        html:not(.dark) #app .case-action-primary.el-button:hover:not(.is-disabled) {
+            color: #ffffff;
+            background: #0369a1;
+            border-color: #0369a1;
+        }
+
+        html.dark #app .case-action-utility.el-button {
+            color: #a5f3fc;
+            background: rgba(14, 116, 144, 0.2);
+            border-color: #0e7490;
+        }
+
+        html:not(.dark) #app .case-action-utility.el-button {
+            color: #0e7490;
+            background: #ecfeff;
+            border-color: #67e8f9;
+        }
+
+        html.dark #app .case-action-utility.el-button:hover:not(.is-disabled) {
+            color: #ecfeff;
+            background: #0e7490;
+            border-color: #22d3ee;
+        }
+
+        html:not(.dark) #app .case-action-utility.el-button:hover:not(.is-disabled) {
+            color: #155e75;
+            background: #cffafe;
+            border-color: #06b6d4;
+        }
+
+        #app .case-action .my-icon {
+            flex: 0 0 auto;
+            margin-right: 6px;
+            font-size: 14px;
+        }
+
+        #app .case-editor {
+            min-width: 0;
+            padding: 17px 16px 15px;
+        }
+
+        #app .case-editor-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            min-width: 0;
+            margin-bottom: 9px;
+        }
+
+        #app .case-input-label {
+            min-width: 0;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        html.dark #app .case-input-label {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) #app .case-input-label {
+            color: #334155;
+        }
+
+        #app .case-input-note {
+            flex: 0 0 auto;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        html.dark #app .case-input-note {
+            color: #64748b;
+        }
+
+        html:not(.dark) #app .case-input-note {
+            color: #94a3b8;
+        }
+
+        #app .case-textarea.edit-textarea {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            height: clamp(240px, 32vw, 360px);
+            min-height: 240px;
+            padding: 15px 16px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            outline: none;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 14px;
+            line-height: 1.75;
+            resize: vertical;
+            transition: background-color 0.2s ease, border-color 0.15s ease, box-shadow 0.15s ease, color 0.2s ease;
+        }
+
+        html.dark #app .case-textarea.edit-textarea {
+            color: #f8fafc;
+            background: #090e1f;
+            border-color: #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+        }
+
+        html:not(.dark) #app .case-textarea.edit-textarea {
+            color: #0f172a;
+            background: #ffffff;
+            border-color: #cbd5e1;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+        }
+
+        html.dark #app .case-textarea.edit-textarea::placeholder {
+            color: #64748b;
+        }
+
+        html:not(.dark) #app .case-textarea.edit-textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        html.dark #app .case-textarea.edit-textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14), inset 0 1px 3px rgba(0, 0, 0, 0.35);
+        }
+
+        html:not(.dark) #app .case-textarea.edit-textarea:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.13), inset 0 1px 2px rgba(15, 23, 42, 0.04);
+        }
+
+        #app .edit-bottom.case-stats-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            min-width: 0;
+            padding-top: 13px;
+        }
+
+        #app .text-statistics {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 7px;
+            min-width: 0;
+        }
+
+        #app .case-stat {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 7px;
+            min-height: 36px;
+            padding: 7px 10px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        html.dark #app .case-stat {
+            background: #111c31;
+            border-color: #25334a;
+        }
+
+        html:not(.dark) #app .case-stat {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        #app .case-stat-label {
+            font-weight: 600;
+        }
+
+        html.dark #app .case-stat-label {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) #app .case-stat-label {
+            color: #64748b;
+        }
+
+        #app .case-stat strong {
+            font-size: 14px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        html.dark #app .case-stat strong {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) #app .case-stat strong {
+            color: #0f172a;
+        }
+
+        #app .case-stat-hint {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        html.dark #app .case-stat-hint {
+            color: #64748b;
+        }
+
+        html:not(.dark) #app .case-stat-hint {
+            color: #94a3b8;
+        }
+
+        /* Explanation and feedback */
+        #app .divider.case-divider {
+            width: 100%;
+            height: 1px;
+            margin: 28px 0;
+            background: transparent;
+            border: 0;
+        }
+
+        html.dark #app .divider.case-divider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) #app .divider.case-divider {
+            background: #e2e8f0;
+        }
+
+        #app .content.case-info {
+            width: 100%;
+            min-width: 0;
+            margin: 0;
+            padding: 22px;
+            border-radius: 12px;
+        }
+
+        html.dark #app .content.case-info {
+            color: #cbd5e1;
+            background: #0b1120;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) #app .content.case-info {
+            color: #334155;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        #app .case-info-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        #app .case-info-kicker {
+            margin: 0 0 4px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        html.dark #app .case-info-kicker {
+            color: #67e8f9;
+        }
+
+        html:not(.dark) #app .case-info-kicker {
+            color: #0e7490;
+        }
+
+        #app .case-info h2,
+        #app .case-info h3,
+        #app .case-info p {
+            margin-top: 0;
+        }
+
+        #app .case-info h2 {
+            margin-bottom: 0;
+            font-size: 20px;
+            line-height: 1.35;
+        }
+
+        html.dark #app .case-info h2,
+        html.dark #app .case-info h3 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) #app .case-info h2,
+        html:not(.dark) #app .case-info h3 {
+            color: #0f172a;
+        }
+
+        #app .case-info-copy {
+            max-width: 880px;
+        }
+
+        #app .case-info-copy p {
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        #app .case-info-copy p:last-child {
+            margin-bottom: 0;
+        }
+
+        #app .case-info h3 {
+            margin: 22px 0 12px;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        #app .case-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 9px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #app .case-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+        }
+
+        html.dark #app .case-feature {
+            background: #101a2e;
+            border-color: #24344b;
+        }
+
+        html:not(.dark) #app .case-feature {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        #app .case-feature-index {
+            display: inline-flex;
+            flex: 0 0 28px;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+
+        html.dark #app .case-feature-index {
+            color: #a5f3fc;
+            background: #12304d;
+        }
+
+        html:not(.dark) #app .case-feature-index {
+            color: #0e7490;
+            background: #cffafe;
+        }
+
+        #app .case-feature strong {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 13px;
+        }
+
+        html.dark #app .case-feature strong {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) #app .case-feature strong {
+            color: #1e293b;
+        }
+
+        #app .case-feature p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.65;
+        }
+
+        html.dark #app .case-feature p {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) #app .case-feature p {
+            color: #64748b;
+        }
+
+        #app .case-info-note {
+            margin: 14px 0 0;
+            padding-top: 12px;
+            border-top: 1px solid transparent;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        html.dark #app .case-info-note {
+            color: #94a3b8;
+            border-top-color: #1e293b;
+        }
+
+        html:not(.dark) #app .case-info-note {
+            color: #64748b;
+            border-top-color: #e2e8f0;
+        }
+
+        #app .case-feedback {
+            width: 100%;
+            min-width: 0;
+            margin-top: 24px;
+            padding-top: 22px;
+            border-top: 1px solid transparent;
+        }
+
+        html.dark #app .case-feedback {
+            border-top-color: #1e293b;
+        }
+
+        html:not(.dark) #app .case-feedback {
+            border-top-color: #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .tool-topbar {
+                gap: 8px;
+                padding: 9px 12px;
+            }
+
+            .tool-topbar-home {
+                margin-left: 0;
+            }
+
+            #app.tool-page-body {
+                padding: 16px 12px 30px;
+            }
+
+            #app .card-body {
+                padding: 20px 14px 26px;
+            }
+
+            #app .case-title-row {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            #app .case-live-badge {
+                margin-top: 0;
+            }
+
+            #app .case-workspace-head {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+                padding: 14px;
+            }
+
+            #app .edit-top.case-action-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+                padding: 12px;
+            }
+
+            #app .case-action.el-button {
+                padding: 9px 8px;
+            }
+
+            #app .case-editor {
+                padding: 14px 12px 12px;
+            }
+
+            #app .case-editor-meta {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            #app .edit-bottom.case-stats-bar {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 9px;
+            }
+
+            #app .text-statistics {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                width: 100%;
+            }
+
+            #app .case-stat {
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            #app .case-stat-hint {
+                align-self: flex-start;
+            }
+
+            #app .content.case-info {
+                padding: 17px 14px;
+            }
+
+            #app .case-info-heading {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            #app .case-feature-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #app *,
+            #app *::before,
+            #app *::after,
+            .tool-topbar,
+            .tool-topbar * {
+                scroll-behavior: auto !important;
+                transition: none !important;
+                animation: none !important;
+            }
         }
     </style>
 
@@ -50,55 +1051,98 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
-        
-
-
-<div class="tool-body flex">
-    <div class="left">
-        <div class="card-model">
-            <div class="card-body">
-                <div class="tool-head">
-                    <h1 class="title">转换大小写</h1>
-                </div>
-                <div class="description">一个非常方便的在线文本工具，您可以在小写和大写字母之间切换，可以大写、取消大写、转换为混合大小写。</div>
-                <div class="tool-form" v-cloak>
-                    <div class="trans">
-                        <div class="trans-left">
-                            <div class="edit-top">
-                                <el-button class="item" color="#666" type="primary" plain v-on:click="sentenceCase">句子大小写</el-button>
-                                <el-button class="item" color="#666" type="primary" plain v-on:click="text = text.toLowerCase()">小写</el-button>
-                                <el-button class="item" color="#666" type="primary" plain v-on:click="text = text.toUpperCase()">大写</el-button>
-                                <el-button class="item" color="#666" type="primary" plain v-on:click="capitalizedCase">单词大小写</el-button>
-                                <el-button class="item" color="#666" type="primary" plain v-on:click="alternatingCase">交替大小写</el-button>
-                                <el-button class="item" color="#666" type="primary" plain v-on:click="titleCase">标题大小写</el-button>
-                                <el-button class="item" color="#666" type="primary" plain v-on:click="inverseCase">逆大小写</el-button>
-                                <el-button class="item" color="#666" type="primary" plain v-on:click="downloadText"><i class="my-icon my-icon-download"></i>下载文本</el-button>
-                                <el-button class="item" color="#666" type="primary" plain v-on:click="copyText"><i class="my-icon my-icon-copy"></i>复制到剪贴板</el-button>
+    <main class="main-body tool-page-body" id="app">
+        <div class="tool-body">
+            <div class="card-model">
+                <div class="card-body">
+                    <div class="tool-head">
+                        <div class="case-title-row">
+                            <div class="case-title-copy">
+                                <div class="case-kicker">TEXT / TRANSFORM</div>
+                                <h1 class="title">转换大小写</h1>
                             </div>
-                            <textarea v-model="text" placeholder="在此处键入或粘贴您的内容" class="edit-textarea"></textarea>
-                            <div class="edit-bottom">
-                                <div class="text-statistics">
-                                    <span>字符数: {{charCount}}</span>
-                                    <span>字数: {{wordCount}}</span>
-                                    <span>句子数: {{sentenceCount}}</span>
-                                    <span>行数: {{lineCount}}</span>
-                                </div>
-                            </div>
+                            <span class="case-live-badge"><span class="case-live-dot" aria-hidden="true"></span>即时处理</span>
                         </div>
                     </div>
-                </div>
-                <div class="divider"></div>
-                <div class="content">
-                    <p>欢迎使用转换大小写文本生成器工具</p><p>一个非常方便的在线文本工具，您可以在小写和大写字母之间切换，可以大写、取消大写、转换为混合大小写。</p><p>文本大小写转换器提供一下功能：</p><ul><li>可以把每个句子的首字母转换为大写。</li><li>可以把所有字母转换为小写。</li><li>可以把所有字母转换为大写。</li><li>可以把每个单词的首字母转换为大写。</li><li>可以把本转换为小写和大写之间交替的文本。</li><li>可以生成标题文本，它本质上确保了标题上下文中正确的字母大写。诸如“an”之类的单词将全部保留为小写，重要的单词将被转换，例如“Title”。</li><li>还可以把所有字母大小写逆反。</li></ul>
+                    <div class="description">一个非常方便的在线文本工具，您可以在小写和大写字母之间切换，可以大写、取消大写、转换为混合大小写。</div>
+
+                    <div class="tool-form case-tool-form" v-cloak>
+                        <section class="case-workspace" aria-labelledby="case-editor-heading">
+                            <div class="case-workspace-head">
+                                <div>
+                                    <p class="case-panel-label" id="case-editor-heading">文本工作区</p>
+                                    <p class="case-panel-help">输入或粘贴英文文本，选择下方格式即可立即更新。</p>
+                                </div>
+                                <span class="case-private-note"><i class="my-icon my-icon-lock" aria-hidden="true"></i>本地即时转换</span>
+                            </div>
+
+                            <div class="trans">
+                                <div class="trans-left">
+                                    <div class="edit-top case-action-grid" role="toolbar" aria-label="大小写转换操作">
+                                        <el-button class="item case-action case-action-primary" type="primary" plain v-on:click="sentenceCase">句子大小写</el-button>
+                                        <el-button class="item case-action" type="primary" plain v-on:click="text = text.toLowerCase()">小写</el-button>
+                                        <el-button class="item case-action" type="primary" plain v-on:click="text = text.toUpperCase()">大写</el-button>
+                                        <el-button class="item case-action" type="primary" plain v-on:click="capitalizedCase">单词大小写</el-button>
+                                        <el-button class="item case-action" type="primary" plain v-on:click="alternatingCase">交替大小写</el-button>
+                                        <el-button class="item case-action" type="primary" plain v-on:click="titleCase">标题大小写</el-button>
+                                        <el-button class="item case-action" type="primary" plain v-on:click="inverseCase">逆大小写</el-button>
+                                        <el-button class="item case-action case-action-utility" type="primary" plain v-on:click="downloadText"><i class="my-icon my-icon-download" aria-hidden="true"></i><span>下载文本</span></el-button>
+                                        <el-button class="item case-action case-action-utility" type="primary" plain v-on:click="copyText"><i class="my-icon my-icon-copy" aria-hidden="true"></i><span>复制到剪贴板</span></el-button>
+                                    </div>
+
+                                    <div class="case-editor">
+                                        <div class="case-editor-meta">
+                                            <label class="case-input-label" for="case-text-input">待转换文本</label>
+                                            <span class="case-input-note">支持直接粘贴内容</span>
+                                        </div>
+                                        <textarea id="case-text-input" v-model="text" placeholder="在此处键入或粘贴您的内容" class="edit-textarea case-textarea" aria-label="待转换文本"></textarea>
+                                        <div class="edit-bottom case-stats-bar">
+                                            <div class="text-statistics" aria-live="polite" aria-label="文本统计">
+                                                <span class="case-stat"><span class="case-stat-label">字符数</span><strong>{{charCount}}</strong></span>
+                                                <span class="case-stat"><span class="case-stat-label">字数</span><strong>{{wordCount}}</strong></span>
+                                                <span class="case-stat"><span class="case-stat-label">句子数</span><strong>{{sentenceCount}}</strong></span>
+                                                <span class="case-stat"><span class="case-stat-label">行数</span><strong>{{lineCount}}</strong></span>
+                                            </div>
+                                            <span class="case-stat-hint">统计实时更新</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="divider case-divider"></div>
+
+                    <section class="content case-info" aria-labelledby="case-info-heading">
+                        <div class="case-info-heading">
+                            <div>
+                                <p class="case-info-kicker">QUICK GUIDE</p>
+                                <h2 id="case-info-heading">让文本拥有合适的大小写</h2>
+                            </div>
+                        </div>
+                        <div class="case-info-copy">
+                            <p>欢迎使用转换大小写文本生成器工具。</p>
+                            <p>一个非常方便的在线文本工具，您可以在小写和大写字母之间切换，可以大写、取消大写、转换为混合大小写。</p>
+                        </div>
+                        <h3>支持的转换模式</h3>
+                        <ul class="case-feature-grid">
+                            <li class="case-feature"><span class="case-feature-index">01</span><div><strong>句子大小写</strong><p>把每个句子的首字母转换为大写。</p></div></li>
+                            <li class="case-feature"><span class="case-feature-index">02</span><div><strong>小写</strong><p>把所有字母转换为小写。</p></div></li>
+                            <li class="case-feature"><span class="case-feature-index">03</span><div><strong>大写</strong><p>把所有字母转换为大写。</p></div></li>
+                            <li class="case-feature"><span class="case-feature-index">04</span><div><strong>单词大小写</strong><p>把每个单词的首字母转换为大写。</p></div></li>
+                            <li class="case-feature"><span class="case-feature-index">05</span><div><strong>交替大小写</strong><p>把文本转换为小写和大写之间交替的形式。</p></div></li>
+                            <li class="case-feature"><span class="case-feature-index">06</span><div><strong>标题大小写</strong><p>生成符合标题语境的文本，让重要单词使用正确的大小写。</p></div></li>
+                            <li class="case-feature"><span class="case-feature-index">07</span><div><strong>逆大小写</strong><p>把所有字母的大小写进行逆反。</p></div></li>
+                        </ul>
+                        <p class="case-info-note">标题模式会保留诸如“an”之类的常见小词为小写，并将重要单词转换为标题格式。</p>
+                    </section>
+
+                    <section class="case-feedback" aria-label="用户反馈">
+                        <comment :relate-id="96" :comment-class="2"></comment>
+                    </section>
                 </div>
             </div>
         </div>
-        <comment :relate-id="96" :comment-class="2"></comment>
-    </div>
-</div>
-
-
     </main>
 </div>
 
