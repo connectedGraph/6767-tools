@@ -16,6 +16,852 @@
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
 
+    <style>
+        /* Child clothing size guide: page-local, accessible, dual-mode UI */
+        #app.child-size-tool,
+        #app.child-size-tool *,
+        #app.child-size-tool *::before,
+        #app.child-size-tool *::after,
+        .child-size-topbar,
+        .child-size-topbar *,
+        .child-size-topbar *::before,
+        .child-size-topbar *::after {
+            box-sizing: border-box;
+        }
+
+        .child-size-topbar {
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 14px clamp(16px, 3vw, 28px);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .child-size-topbar {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .child-size-topbar {
+            color: #475569;
+        }
+
+        .child-size-topbar .tool-topbar-logo,
+        .child-size-topbar .tool-topbar-home {
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            padding: 7px 12px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.25;
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+
+        html.dark .child-size-topbar .tool-topbar-logo,
+        html.dark .child-size-topbar .tool-topbar-home {
+            color: #e0f2fe;
+            background: #111b32;
+            border: 1px solid #26344e;
+        }
+
+        html:not(.dark) .child-size-topbar .tool-topbar-logo,
+        html:not(.dark) .child-size-topbar .tool-topbar-home {
+            color: #1e293b;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        html.dark .child-size-topbar .tool-topbar-logo:hover,
+        html.dark .child-size-topbar .tool-topbar-home:hover {
+            color: #ffffff;
+            background: #0284c7;
+            border-color: #38bdf8;
+            transform: translateY(-1px);
+        }
+
+        html:not(.dark) .child-size-topbar .tool-topbar-logo:hover,
+        html:not(.dark) .child-size-topbar .tool-topbar-home:hover {
+            color: #075985;
+            background: #eff6ff;
+            border-color: #7dd3fc;
+            transform: translateY(-1px);
+        }
+
+        .child-size-topbar .tool-topbar-sep {
+            color: #64748b;
+            font-weight: 700;
+            user-select: none;
+        }
+
+        .child-size-topbar .tool-topbar-title {
+            min-width: 0;
+            flex: 1 1 160px;
+            color: inherit;
+            font-size: 14px;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+        }
+
+        .child-size-topbar .tool-topbar-home {
+            margin-left: auto;
+        }
+
+        .child-size-topbar a:focus-visible {
+            outline: 3px solid #0284c7;
+            outline-offset: 3px;
+        }
+
+        #app.child-size-tool {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+        }
+
+        html.dark #app.child-size-tool {
+            color-scheme: dark;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) #app.child-size-tool {
+            color-scheme: light;
+            color: #1e293b;
+        }
+
+        #app.child-size-tool .tool-body {
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 10px clamp(12px, 3vw, 28px) 52px;
+        }
+
+        #app.child-size-tool .card-model {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            border-radius: 14px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark #app.child-size-tool .card-model {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(148, 163, 184, 0.05);
+        }
+
+        html:not(.dark) #app.child-size-tool .card-model {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        #app.child-size-tool .card-body {
+            width: 100%;
+            padding: clamp(22px, 4vw, 42px) clamp(18px, 4vw, 42px) 38px;
+        }
+
+        #app.child-size-tool .tool-head {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 0 0 8px;
+        }
+
+        .child-size-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 28px;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            line-height: 1.25;
+            text-transform: uppercase;
+        }
+
+        html.dark .child-size-eyebrow {
+            color: #7dd3fc;
+            background: rgba(14, 116, 144, 0.18);
+            border: 1px solid #155e75;
+        }
+
+        html:not(.dark) .child-size-eyebrow {
+            color: #0369a1;
+            background: #eff6ff;
+            border: 1px solid #bae6fd;
+        }
+
+        #app.child-size-tool .title {
+            max-width: 100%;
+            margin: 0;
+            color: inherit;
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.18;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark #app.child-size-tool .title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) #app.child-size-tool .title {
+            color: #0f172a;
+        }
+
+        #app.child-size-tool .description {
+            max-width: 760px;
+            margin: 0 0 24px;
+            font-size: 15px;
+            line-height: 1.75;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark #app.child-size-tool .description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) #app.child-size-tool .description {
+            color: #475569;
+        }
+
+        .child-size-dashboard {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+            gap: 18px;
+            align-items: stretch;
+            width: 100%;
+            margin: 0 0 14px;
+            padding: 18px;
+            border-radius: 12px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        html.dark .child-size-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .child-size-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .child-size-dashboard-copy {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .child-size-kicker {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.3;
+        }
+
+        html.dark .child-size-kicker {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .child-size-kicker {
+            color: #0369a1;
+        }
+
+        .child-size-dashboard-copy p,
+        .child-size-section-heading p,
+        .child-size-note p,
+        .child-size-table-note,
+        .child-size-guide-card p {
+            margin: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .child-size-dashboard-copy p {
+            max-width: 600px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        html.dark .child-size-dashboard-copy p {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .child-size-dashboard-copy p {
+            color: #334155;
+        }
+
+        .child-size-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .child-size-metric {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2px;
+            padding: 11px 9px;
+            border-radius: 10px;
+            text-align: center;
+            transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        html.dark .child-size-metric {
+            background: #111b32;
+            border: 1px solid #26344e;
+        }
+
+        html:not(.dark) .child-size-metric {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .child-size-metric:hover {
+            transform: translateY(-1px);
+        }
+
+        html.dark .child-size-metric:hover {
+            background: #172442;
+            border-color: #38bdf8;
+        }
+
+        html:not(.dark) .child-size-metric:hover {
+            background: #f8fafc;
+            border-color: #7dd3fc;
+        }
+
+        .child-size-metric-value {
+            display: block;
+            font-size: clamp(18px, 2.4vw, 25px);
+            font-variant-numeric: tabular-nums;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        html.dark .child-size-metric-value {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .child-size-metric-value {
+            color: #0f172a;
+        }
+
+        .child-size-metric-label {
+            display: block;
+            font-size: 11px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .child-size-metric-label {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .child-size-metric-label {
+            color: #64748b;
+        }
+
+        .child-size-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            width: 100%;
+            margin: 0 0 22px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        html.dark .child-size-note {
+            color: #bae6fd;
+            background: #0c2634;
+            border: 1px solid #155e75;
+        }
+
+        html:not(.dark) .child-size-note {
+            color: #0c4a6e;
+            background: #eff6ff;
+            border: 1px solid #bae6fd;
+        }
+
+        .child-size-note-icon {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            margin-top: 1px;
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        html.dark .child-size-note-icon {
+            color: #082f49;
+            background: #7dd3fc;
+        }
+
+        html:not(.dark) .child-size-note-icon {
+            color: #ffffff;
+            background: #0284c7;
+        }
+
+        .child-size-note strong {
+            font-weight: 800;
+        }
+
+        html.dark .child-size-note strong {
+            color: #e0f2fe;
+        }
+
+        html:not(.dark) .child-size-note strong {
+            color: #075985;
+        }
+
+        #app.child-size-tool .divider.model-dirider {
+            height: 1px;
+            margin: 0 0 28px;
+            border: 0;
+        }
+
+        html.dark #app.child-size-tool .divider.model-dirider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) #app.child-size-tool .divider.model-dirider {
+            background: #e2e8f0;
+        }
+
+        #app.child-size-tool .content {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .child-size-section {
+            width: 100%;
+        }
+
+        .child-size-section + .child-size-section {
+            margin-top: 32px;
+        }
+
+        .child-size-section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 18px;
+            margin: 0 0 14px;
+        }
+
+        .child-size-section-heading > div {
+            min-width: 0;
+        }
+
+        .child-size-section-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            line-height: 1.3;
+            text-transform: uppercase;
+        }
+
+        html.dark .child-size-section-label {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .child-size-section-label {
+            color: #0369a1;
+        }
+
+        .child-size-section-heading h2 {
+            margin: 0;
+            font-size: clamp(20px, 2.5vw, 26px);
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .child-size-section-heading h2 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .child-size-section-heading h2 {
+            color: #0f172a;
+        }
+
+        .child-size-section-heading p {
+            max-width: 390px;
+            font-size: 13px;
+            line-height: 1.6;
+            text-align: right;
+        }
+
+        html.dark .child-size-section-heading p {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .child-size-section-heading p {
+            color: #64748b;
+        }
+
+        .child-size-table-wrap {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 12px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .child-size-table-wrap {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .child-size-table-wrap {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .child-size-table-wrap:focus-visible {
+            outline: 3px solid #0284c7;
+            outline-offset: 3px;
+        }
+
+        .child-size-table {
+            width: 100%;
+            max-width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .child-size-table caption {
+            padding: 13px 15px 10px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        html.dark .child-size-table caption {
+            color: #94a3b8;
+            background: #0b1120;
+        }
+
+        html:not(.dark) .child-size-table caption {
+            color: #64748b;
+            background: #ffffff;
+        }
+
+        .child-size-table th,
+        .child-size-table td {
+            width: 33.333%;
+            padding: 11px 12px;
+            text-align: left;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .child-size-table th {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        html.dark .child-size-table th {
+            color: #e0f2fe;
+            background: #13213a;
+            border-top: 1px solid #26344e;
+            border-bottom: 1px solid #26344e;
+        }
+
+        html:not(.dark) .child-size-table th {
+            color: #1e293b;
+            background: #f1f5f9;
+            border-top: 1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        html.dark .child-size-table td {
+            color: #cbd5e1;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .child-size-table td {
+            color: #334155;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        html.dark .child-size-table tbody tr:hover {
+            background: #101b30;
+        }
+
+        html:not(.dark) .child-size-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .child-size-table tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        .child-size-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .child-size-table td:first-child {
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+
+        html.dark .child-size-table td:first-child {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .child-size-table td:first-child {
+            color: #0369a1;
+        }
+
+        .child-size-table-note {
+            margin-top: 9px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        html.dark .child-size-table-note {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .child-size-table-note {
+            color: #64748b;
+        }
+
+        .child-size-table-note span {
+            margin-right: 5px;
+            font-weight: 800;
+        }
+
+        html.dark .child-size-table-note span {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .child-size-table-note span {
+            color: #0369a1;
+        }
+
+        .child-size-guide-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .child-size-guide-card {
+            min-width: 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        html.dark .child-size-guide-card {
+            background: #101a2f;
+            border: 1px solid #26344e;
+        }
+
+        html:not(.dark) .child-size-guide-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .child-size-guide-card:hover {
+            transform: translateY(-1px);
+        }
+
+        html.dark .child-size-guide-card:hover {
+            background: #13213a;
+            border-color: #38bdf8;
+        }
+
+        html:not(.dark) .child-size-guide-card:hover {
+            background: #ffffff;
+            border-color: #7dd3fc;
+        }
+
+        .child-size-guide-index {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        html.dark .child-size-guide-index {
+            color: #bae6fd;
+            background: #0c4a6e;
+            border: 1px solid #155e75;
+        }
+
+        html:not(.dark) .child-size-guide-index {
+            color: #0369a1;
+            background: #eff6ff;
+            border: 1px solid #bae6fd;
+        }
+
+        .child-size-guide-card h3 {
+            margin: 0 0 5px;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .child-size-guide-card h3 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .child-size-guide-card h3 {
+            color: #0f172a;
+        }
+
+        .child-size-guide-card p {
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        html.dark .child-size-guide-card p {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .child-size-guide-card p {
+            color: #475569;
+        }
+
+        @media (max-width: 768px) {
+            .child-size-topbar {
+                padding: 12px 16px;
+                gap: 8px;
+            }
+
+            .child-size-topbar .tool-topbar-title {
+                flex-basis: 140px;
+            }
+
+            #app.child-size-tool .tool-body {
+                padding: 8px 12px 38px;
+            }
+
+            #app.child-size-tool .card-body {
+                padding: 22px 16px 30px;
+            }
+
+            .child-size-dashboard {
+                grid-template-columns: 1fr;
+                gap: 14px;
+                padding: 15px;
+            }
+
+            .child-size-section-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .child-size-section-heading p {
+                max-width: none;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .child-size-topbar .tool-topbar-home {
+                flex: 1 0 100%;
+                justify-content: flex-start;
+                margin-left: 0;
+            }
+
+            .child-size-guide-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 420px) {
+            #app.child-size-tool .card-body {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .child-size-dashboard {
+                padding: 13px;
+            }
+
+            .child-size-metric {
+                padding: 10px 5px;
+            }
+
+            .child-size-metric-label {
+                font-size: 10px;
+            }
+
+            .child-size-table th,
+            .child-size-table td {
+                padding: 10px 8px;
+                font-size: 13px;
+            }
+
+            .child-size-table th {
+                font-size: 11px;
+            }
+
+            .child-size-guide-card {
+                padding: 14px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .child-size-topbar *,
+            #app.child-size-tool * {
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="在线工具集" />
     <meta property="og:title" content="小孩服装尺码查询 - 在线工具" />
@@ -30,7 +876,7 @@
 </head>
 <body>
 <div class="grid-bg"></div>
-<header class="tool-topbar">
+<header class="tool-topbar child-size-topbar">
   <a href="./" class="tool-topbar-logo" aria-label="首页">
     <span>在线工具集</span>
   </a>
@@ -39,7 +885,7 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body child-size-tool" id="app">
         
 
 
@@ -47,12 +893,116 @@
     <div class="card-model">
         <div class="card-body">
             <div class="tool-head">
-                <h1 class="title">小孩服装尺码查询</h1>
+                <div class="child-size-eyebrow"><span aria-hidden="true">✦</span><span>生活工具 · 尺码参考</span></div>
+                <h1 class="title" id="child-size-title">小孩服装尺码查询</h1>
             </div>
             <div class="description">小孩服装尺码，小孩服装尺寸，小孩尺寸在线查询，小孩服装尺码在线查询</div>
-            <div class="divider model-dirider"></div>
-            <div class="content">
-                <table style="width: 100%;"><tbody><tr><th>尺码</th><th>身高</th><th>体重</th></tr><tr><td>52码</td><td>46-59cm</td><td>2.5-6kg</td></tr><tr><td>59码</td><td>59-66cm</td><td>6-7.6kg</td></tr><tr><td>66码</td><td>59-70cm</td><td>4.7-8.8kg</td></tr><tr><td>73码</td><td>65-72cm</td><td>6-12kg</td></tr><tr><td>80码</td><td>70-80cm</td><td>8-14kg</td></tr><tr><td>90码</td><td>75-90cm</td><td>9-15kg</td></tr><tr><td>100码</td><td>90-100cm</td><td>12-15kg</td></tr><tr><td>110码</td><td>100-110cm</td><td>15-18.5kg</td></tr><tr><td>120码</td><td>110-120cm</td><td>18.5-22.5kg</td></tr><tr><td>130码</td><td>120-130cm</td><td>22.5-28kg</td></tr><tr><td>140码</td><td>130-140cm</td><td>28-34kg</td></tr><tr><td>150码</td><td>140-150cm</td><td>34-45kg</td></tr><tr><td>160码</td><td>150-160cm</td><td>45-50kg</td></tr><tr><td>165码</td><td>160-165cm</td><td>50-55kg</td></tr><tr><td>170码</td><td>165-170cm</td><td>55-60kg</td></tr></tbody></table><h3>介绍</h3><p>1.小孩的头部占总身高的20%，体高占总身高的80%。为小孩选择服装时，通常以体高为标准。例如：身高为100厘米的女童，体高为100厘米的80%，约80厘米。如果选购一件连衣裙，衣长为80厘米的70%即56厘米长。如果选购一件衬衫，衣长为80厘米的50%即40厘米。</p><p>2.吊牌上的执行标准的含义：A类，B类，C类的含义：这是国标中对甲醛含量的规定，A类是婴糼儿用品，B类是直接接触皮肤，C类是非直接接触皮肤。</p><p>3.小孩衣服最好选择天然面料，纯棉面料柔软吸汗透气，因此选购时要尽量选用纯棉衣物。晴纶、涤纶布料的这类面料不透气。不吸汗，孩子穿了容易产生皮疹。</p><p>4.小孩衣服最好选择天然面料，纯棉面料柔软吸汗透气，因此选购时要尽量选用纯棉衣物。晴纶、涤纶布料的这类面料不透气。不吸汗，孩子穿了容易产生皮疹。</p><p>5.妈咪们最好选择淡色的童装给宝贝穿，特别是内衣和夏季衣服，建议选择白色，乳白色，淡黄色，淡蓝色，淡粉色等纯色衣物，避免宝宝皮肤接触太多的染料化学物，造成过敏或者有害物质积累。</p><p>6.婴幼儿期和小童时期宝宝长的特别快，每季都会换衣服，所以我们在选择衣服的时候不要囤太多。</p>
+            <section class="child-size-dashboard" aria-label="儿童服装尺码指南概览">
+                <div class="child-size-dashboard-copy">
+                    <span class="child-size-kicker">QUICK REFERENCE</span>
+                    <p>先看孩子的实际身高，再用体重与体型进行校正，快速找到更合适的服装参考尺码。</p>
+                </div>
+                <div class="child-size-metrics" aria-label="指南覆盖范围">
+                    <div class="child-size-metric"><strong class="child-size-metric-value">15</strong><span class="child-size-metric-label">常用尺码</span></div>
+                    <div class="child-size-metric"><strong class="child-size-metric-value">46–170</strong><span class="child-size-metric-label">身高 cm</span></div>
+                    <div class="child-size-metric"><strong class="child-size-metric-value">2.5–60</strong><span class="child-size-metric-label">体重 kg</span></div>
+                </div>
+            </section>
+            <div class="child-size-note" role="note">
+                <span class="child-size-note-icon" aria-hidden="true">i</span>
+                <p><strong>选码提示：</strong>同一身高可能对应多个尺码，优先参考孩子的实际体型、季节和衣物版型，并预留适度活动空间。</p>
+            </div>
+            <div class="divider model-dirider" aria-hidden="true"></div>
+            <div class="content child-size-content">
+                <section class="child-size-section" aria-labelledby="size-table-heading">
+                    <div class="child-size-section-heading">
+                        <div>
+                            <span class="child-size-section-label">01 / SIZE TABLE</span>
+                            <h2 id="size-table-heading">按身高与体重快速定位</h2>
+                        </div>
+                        <p>中国常用儿童服装尺码参考，购买前请同时核对商品详情页。</p>
+                    </div>
+                    <div class="child-size-table-wrap" role="region" aria-label="儿童服装尺码参考表" tabindex="0">
+                        <table class="child-size-table">
+                            <caption>儿童服装尺码、适用身高与参考体重</caption>
+                            <thead>
+                                <tr><th scope="col">尺码</th><th scope="col">身高</th><th scope="col">体重</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>52码</td><td>46-59cm</td><td>2.5-6kg</td></tr>
+                                <tr><td>59码</td><td>59-66cm</td><td>6-7.6kg</td></tr>
+                                <tr><td>66码</td><td>59-70cm</td><td>4.7-8.8kg</td></tr>
+                                <tr><td>73码</td><td>65-72cm</td><td>6-12kg</td></tr>
+                                <tr><td>80码</td><td>70-80cm</td><td>8-14kg</td></tr>
+                                <tr><td>90码</td><td>75-90cm</td><td>9-15kg</td></tr>
+                                <tr><td>100码</td><td>90-100cm</td><td>12-15kg</td></tr>
+                                <tr><td>110码</td><td>100-110cm</td><td>15-18.5kg</td></tr>
+                                <tr><td>120码</td><td>110-120cm</td><td>18.5-22.5kg</td></tr>
+                                <tr><td>130码</td><td>120-130cm</td><td>22.5-28kg</td></tr>
+                                <tr><td>140码</td><td>130-140cm</td><td>28-34kg</td></tr>
+                                <tr><td>150码</td><td>140-150cm</td><td>34-45kg</td></tr>
+                                <tr><td>160码</td><td>150-160cm</td><td>45-50kg</td></tr>
+                                <tr><td>165码</td><td>160-165cm</td><td>50-55kg</td></tr>
+                                <tr><td>170码</td><td>165-170cm</td><td>55-60kg</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="child-size-table-note"><span aria-hidden="true">●</span>尺码为常见参考范围，不同品牌、版型与面料的实际尺寸可能存在差异。</p>
+                </section>
+
+                <section class="child-size-section child-size-guide" aria-labelledby="guide-heading">
+                    <div class="child-size-section-heading">
+                        <div>
+                            <span class="child-size-section-label">02 / BUYING NOTES</span>
+                            <h2 id="guide-heading">选购时的实用提醒</h2>
+                        </div>
+                        <p>从衣长、面料到换季节奏，给孩子留出舒服的成长空间。</p>
+                    </div>
+                    <div class="child-size-guide-grid">
+                        <article class="child-size-guide-card">
+                            <span class="child-size-guide-index" aria-hidden="true">01</span>
+                            <div>
+                                <h3>用体高估算衣长</h3>
+                                <p>小孩的头部占总身高的20%，体高占总身高的80%。为小孩选择服装时，通常以体高为标准。例如：身高为100厘米的女童，体高为100厘米的80%，约80厘米。如果选购一件连衣裙，衣长为80厘米的70%即56厘米长。如果选购一件衬衫，衣长为80厘米的50%即40厘米。</p>
+                            </div>
+                        </article>
+                        <article class="child-size-guide-card">
+                            <span class="child-size-guide-index" aria-hidden="true">02</span>
+                            <div>
+                                <h3>看懂服装执行标准</h3>
+                                <p>吊牌上的执行标准含义：A类、B类、C类是国标中对甲醛含量的规定。A类是婴幼儿用品，B类是直接接触皮肤，C类是非直接接触皮肤。</p>
+                            </div>
+                        </article>
+                        <article class="child-size-guide-card">
+                            <span class="child-size-guide-index" aria-hidden="true">03</span>
+                            <div>
+                                <h3>优先选择天然面料</h3>
+                                <p>小孩衣服最好选择天然面料，纯棉面料柔软、吸汗、透气，因此选购时要尽量选用纯棉衣物。</p>
+                            </div>
+                        </article>
+                        <article class="child-size-guide-card">
+                            <span class="child-size-guide-index" aria-hidden="true">04</span>
+                            <div>
+                                <h3>关注吸汗与透气</h3>
+                                <p>晴纶、涤纶布料不透气、不吸汗，孩子穿了容易产生皮疹，选择时应留意面料成分与穿着场景。</p>
+                            </div>
+                        </article>
+                        <article class="child-size-guide-card">
+                            <span class="child-size-guide-index" aria-hidden="true">05</span>
+                            <div>
+                                <h3>婴幼儿宜选浅色衣物</h3>
+                                <p>最好选择淡色的童装给宝贝穿，特别是内衣和夏季衣服，建议选择白色、乳白色、淡黄色、淡蓝色、淡粉色等纯色衣物，避免宝宝皮肤接触太多的染料化学物，造成过敏或者有害物质积累。</p>
+                            </div>
+                        </article>
+                        <article class="child-size-guide-card">
+                            <span class="child-size-guide-index" aria-hidden="true">06</span>
+                            <div>
+                                <h3>按成长速度理性囤衣</h3>
+                                <p>婴幼儿期和小童时期宝宝长得特别快，每季都会换衣服，所以在选择衣服的时候不要囤太多。</p>
+                            </div>
+                        </article>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
