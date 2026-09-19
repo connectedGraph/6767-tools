@@ -20,6 +20,18 @@
     <style>
         .tool-page-body.periodic-container {
             max-width: 1200px;
+            width: 100%;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        /* 页面级防溢出；周期表的宽内容仅允许在 .pt-table-scroll 内滚动 */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
         /* ── 控制栏与筛选 ── */
@@ -415,11 +427,183 @@
             font-size: 0.85rem;
         }
 
+        /* ── 窄屏布局保护：滚动只发生在周期表内部 ── */
+        .pt-control-bar,
+        .pt-table-scroll,
+        .elem-badge-hero,
+        .pt-dialog .el-dialog__body {
+            min-width: 0;
+        }
+
+        .pt-table-scroll {
+            max-width: 100%;
+            overscroll-behavior-x: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .pt-cell-name,
+        .pt-cell-pinyin {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         @media (max-width: 768px) {
-            .pt-control-bar { flex-direction: column; align-items: stretch; }
-            .elem-badge-hero { flex-direction: column; text-align: center; }
-            .elem-badge-box { margin: 0 auto; }
-            .elem-hero-title { justify-content: center; }
+            /* 防止控制栏的子项以自身内容撑破卡片 */
+            .pt-control-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 12px;
+            }
+            .pt-filter-chips {
+                width: 100%;
+                gap: 6px;
+            }
+            .pt-chip {
+                padding: 5px 9px;
+                font-size: 0.74rem;
+            }
+            .pt-control-bar > .flex {
+                width: 100%;
+                min-width: 0;
+                align-items: stretch;
+            }
+            .pt-temp-bar {
+                flex: 1 1 100%;
+                min-width: 0;
+                flex-wrap: wrap;
+                gap: 7px;
+                padding: 8px 10px;
+            }
+            .pt-temp-bar input[type="range"] {
+                flex: 1 1 110px;
+                min-width: 90px;
+                width: auto;
+            }
+            .pt-temp-val {
+                min-width: 62px;
+                font-size: 0.78rem;
+            }
+            .pt-control-bar > .flex > div[style*="width: 180px"] {
+                width: 100% !important;
+            }
+
+            /* 375px 也完整容纳 18 族；避免网格子项本身跑出视口 */
+            .pt-table-scroll {
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                padding-bottom: 6px;
+                overflow-x: hidden;
+            }
+            .pt-grid {
+                width: 100%;
+                min-width: 0;
+                grid-template-columns: 20px repeat(18, minmax(0, 1fr));
+                gap: 2px;
+            }
+            .pt-cell,
+            .pt-cell-placeholder {
+                min-width: 0;
+                min-height: 52px;
+                padding: 3px 2px;
+                border-radius: 4px;
+            }
+            .pt-cell-top,
+            .pt-cell-bottom {
+                min-width: 0;
+            }
+            .pt-cell-symbol {
+                font-size: clamp(.62rem, 3.5vw, .95rem);
+            }
+            .pt-cell-num,
+            .pt-cell-mass,
+            .pt-cell-name,
+            .pt-cell-pinyin {
+                font-size: 0;
+            }
+            .pt-cell-num {
+                font-size: 0.48rem;
+            }
+            .pt-cell-name {
+                display: none;
+            }
+            .pt-label-col,
+            .pt-label-row {
+                min-width: 0;
+                font-size: 0.55rem;
+            }
+            .pt-cell-placeholder span {
+                transform: scale(.78);
+                white-space: nowrap;
+            }
+
+            .elem-badge-hero {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                gap: 12px;
+                padding: 14px;
+            }
+            .elem-badge-box {
+                margin: 0 auto;
+            }
+            .elem-hero-title {
+                justify-content: center;
+                gap: 7px;
+            }
+            .elem-hero-name {
+                font-size: 1.45rem;
+            }
+            .elem-hero-info > .flex {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .prop-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            /* Element Plus 弹窗默认宽度在手机上会造成 body 横向溢出 */
+            .pt-dialog .el-dialog {
+                width: calc(100vw - 24px) !important;
+                max-width: none;
+                margin: 12px auto !important;
+            }
+            .pt-dialog .el-dialog__header {
+                padding: 14px 16px 10px;
+            }
+            .pt-dialog .el-dialog__body {
+                max-height: calc(100vh - 116px);
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding: 14px 16px;
+            }
+            .pt-dialog .el-dialog__title {
+                font-size: 0.98rem;
+                overflow-wrap: anywhere;
+            }
+            .text-desc-content,
+            .prop-val {
+                overflow-wrap: anywhere;
+            }
+            .pt-dialog .el-dialog__body > div > .flex.justify-between {
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .pt-chip {
+                padding-inline: 7px;
+            }
+            .pt-temp-bar .text-xs {
+                width: 100%;
+            }
+            .pt-temp-bar input[type="range"] {
+                flex-basis: 130px;
+            }
         }
     </style>
 </head>

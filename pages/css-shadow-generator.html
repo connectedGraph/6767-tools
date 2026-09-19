@@ -119,6 +119,51 @@
             position: relative;
             word-break: break-all;
         }
+
+        /* This page is a dense control panel: keep every flex/grid child shrinkable. */
+        .tool-page-body, .tool-page-body .tool-body, .tool-page-body .card-model,
+        .tool-page-body .card-body { min-width: 0; max-width: 100%; }
+        .tool-page-body .card-body { overflow: hidden; }
+        .shadow-stage { max-width: 100%; }
+        .shadow-box-target { max-width: 100%; }
+        .tool-page-body .el-radio-group { max-width: 100%; }
+        .tool-page-body .el-slider { min-width: 0; }
+
+        @media (max-width: 640px) {
+            .tool-topbar { height: auto; min-height: 44px; padding: 9px 12px; gap: 6px; }
+            .tool-topbar-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .tool-topbar-home { margin-left: auto; }
+            .tool-page-body .card-body { padding: 16px !important; }
+            .tool-head { align-items: flex-start; }
+            .tool-head .title { font-size: 1.15rem; line-height: 1.35; }
+
+            /* Radio buttons have a fixed intrinsic width in Element Plus; scroll only this
+               local control instead of allowing it to widen the document. */
+            .shadow-stage + * { min-width: 0; }
+            .shadow-stage { min-height: 230px; padding: 16px 10px; }
+            .shadow-stage .shadow-box-target { max-width: 100%; }
+            .shadow-stage .font-mono { overflow-wrap: anywhere; }
+            .mb-6 > .flex.items-center.justify-between { align-items: flex-start; flex-direction: column; gap: 8px; }
+            .mb-6 > .flex.items-center.justify-between .el-radio-group { display: flex; flex-wrap: nowrap; overflow-x: auto; width: 100%; padding-bottom: 3px; }
+            .mb-6 > .flex.items-center.justify-between .el-radio-button { flex: 0 0 auto; }
+
+            /* The inline desktop slider widths become fluid rows on a phone. */
+            .preview-section > .flex.items-center.justify-between { flex-direction: column; align-items: stretch; gap: 10px; padding: 0 !important; }
+            .preview-section > .flex.items-center.justify-between > div { justify-content: space-between; min-width: 0; }
+            .preview-section > .flex.items-center.justify-between > div:nth-child(2) { flex-wrap: wrap; }
+            .preview-section > .flex.items-center.justify-between > div:nth-child(2) > div,
+            .preview-section > .flex.items-center.justify-between > div:nth-child(3) > div { width: auto !important; flex: 1 1 90px; min-width: 70px; }
+            .preview-section > .flex.items-center.justify-between .el-switch { max-width: 100%; }
+
+            .layer-manager > .flex.items-center.justify-between { align-items: stretch; }
+            .layer-manager > .flex.items-center.justify-between > div:first-child { min-width: 0; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 3px; }
+            .layer-manager > .flex.items-center.justify-between > div:first-child .layer-tab-item { flex: 0 0 auto; }
+            .layer-manager > .flex.items-center.justify-between > div:last-child { flex-wrap: wrap; }
+            .layer-tab-item { padding: 6px 9px; }
+            .preset-shadow-card { min-width: 0; padding: 10px 6px; }
+            .code-output-card { padding: 10px 12px; font-size: .76rem; }
+            .content p { overflow-wrap: anywhere; }
+        }
     </style>
 
     <meta property="og:type" content="website" />
@@ -160,7 +205,7 @@
                 </div>
 
                 <!-- 实时预览舞台 -->
-                <div class="mb-6">
+                <div class="preview-section mb-6">
                     <div class="flex items-center justify-between mb-2">
                         <div class="text-xs font-mono text-slate-400">// 实时阴影渲染舞台 (Shadow Stage)</div>
                         <div class="flex items-center gap-3">
@@ -218,7 +263,7 @@
                 </div>
 
                 <!-- 多图层管理与控制 -->
-                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 mb-6">
+                <div class="layer-manager p-4 rounded-xl bg-slate-900/80 border border-slate-800 mb-6">
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-800">
                         <!-- 图层切换标签栏 -->
                         <div class="flex flex-wrap items-center gap-2">

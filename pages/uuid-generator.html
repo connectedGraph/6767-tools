@@ -145,6 +145,74 @@
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 16px;
         }
+
+        /* 响应式约束：避免 Element Plus 的 nowrap / 固定宽度撑破手机卡片 */
+        .uuid-generator-page, .uuid-generator-page * { min-width: 0; }
+        .uuid-generator-page .el-form,
+        .uuid-generator-page .el-form-item,
+        .uuid-generator-page .el-form-item__content { max-width: 100%; }
+        .uuid-type-radio { display: flex; flex-wrap: wrap; width: 100%; }
+        .uuid-type-radio .el-radio-button { flex: 0 1 auto; }
+        .uuid-type-radio .el-radio-button__inner {
+            white-space: normal; line-height: 1.35; min-height: 38px;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .uuid-output-area { max-width: 100%; overflow-x: auto; overflow-wrap: anywhere; }
+        .uuid-output-area code { white-space: pre-wrap; overflow-wrap: anywhere; }
+        .uuid-item-row { min-width: 0; }
+        .uuid-item-text { min-width: 0; overflow-wrap: anywhere; }
+        .uuid-item-copy { flex: 0 0 auto; }
+        .uuid-generator-page .el-input-number { max-width: 100%; }
+        .uuid-generator-page .description,
+        .uuid-generator-page .text-slate-400 { overflow-wrap: anywhere; }
+        .uuid-generator-page .el-select { max-width: 100%; }
+
+        @media (max-width: 767px) {
+            .tool-page-body { padding: 18px 10px 40px; }
+            .uuid-generator-page .card-body { padding: 16px; border-radius: 10px; }
+            .uuid-generator-page .tool-head { align-items: flex-start; }
+            .uuid-generator-page .tool-head h1 { font-size: 1.15rem; line-height: 1.4; }
+            .uuid-generator-page .tool-head > .flex { width: 100%; flex-wrap: wrap; }
+            .uuid-generator-page .tool-head > .flex .badge-cyan,
+            .uuid-generator-page .tool-head > .flex .badge-purple { flex: 1 1 auto; text-align: center; }
+            .uuid-type-radio .el-radio-button { flex: 1 1 50%; }
+            .uuid-type-radio .el-radio-button__inner { width: 100%; padding: 9px 6px; font-size: .78rem; }
+            .uuid-generator-page .options-grid { grid-template-columns: 1fr; gap: 14px; padding: 12px; }
+            .uuid-generator-page .el-form-item__content > .flex { align-items: stretch; }
+            .uuid-generator-page .el-input-number { width: 100% !important; }
+            .uuid-generator-page .preset-btn { padding: 6px 9px; }
+            .uuid-generator-page .el-button { margin-left: 0; }
+            .uuid-terminal-header { align-items: flex-start; flex-direction: column; gap: 8px; padding: 10px 12px; }
+            .uuid-terminal-header > div { flex-wrap: wrap; }
+            .uuid-terminal-box > .p-3 { padding: 8px; }
+            .uuid-item-row { align-items: flex-start; padding: 6px 4px; }
+            .uuid-item-index { width: 36px; flex: 0 0 36px; }
+            .uuid-item-copy { display: none; }
+            .uuid-generator-page .p-4 > .flex.gap-2 { flex-direction: column; }
+            .uuid-generator-page .p-4 > .flex.gap-2 .el-button { width: 100%; margin-left: 0; }
+            .uuid-generator-page .content { overflow: hidden; }
+            /* 对比表格在小屏改为固定布局并允许单词断行，避免长中文/英文最小内容宽度撑破视口 */
+            .uuid-generator-page .content .overflow-x-auto {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+            .uuid-generator-page .content table {
+                width: 100% !important;
+                max-width: 100%;
+                table-layout: fixed;
+                font-size: .7rem;
+            }
+            .uuid-generator-page .content table th,
+            .uuid-generator-page .content table td {
+                width: auto;
+                max-width: 20%;
+                padding: 6px 4px;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+                white-space: normal;
+            }
+        }
     </style>
 
     <meta property="og:type" content="website" />
@@ -172,7 +240,7 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-<main class="main-body tool-page-body">
+<main class="main-body tool-page-body uuid-generator-page">
     <div class="tool-body">
         <div class="card-model">
             <div class="card-body">

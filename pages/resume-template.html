@@ -15,6 +15,38 @@
     <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet" />
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
+    <style>
+      /* The legacy redirect page is also briefly rendered before navigation. Keep
+         that first paint usable on narrow screens and at arbitrary zoom levels. */
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+      body { min-width: 0; }
+      .tool-topbar {
+        width: 100%;
+        min-width: 0;
+        flex-wrap: wrap;
+        gap: .35rem .65rem;
+      }
+      .tool-topbar-logo, .tool-topbar-title, .tool-topbar-home,
+      .tool-topbar-sep { min-width: 0; }
+      .tool-topbar-title { overflow-wrap: anywhere; }
+      .tool-topbar-home { margin-left: auto; }
+      .tool-page-body { width: 100%; min-width: 0; padding-inline: clamp(12px, 4vw, 32px); }
+      .tool-body { width: 100%; min-width: 0; }
+      .card-model { width: min(100%, 960px); margin-inline: auto; }
+      .card-body { min-width: 0; }
+      .card-body .title, .card-body p, .card-body a {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      @media (max-width: 480px) {
+        .tool-topbar { align-items: flex-start; }
+        .tool-topbar-home { width: 100%; margin-left: 0; }
+        .card-body { padding: clamp(28px, 10vw, 60px) clamp(16px, 5vw, 20px) !important; }
+        .card-body .title { font-size: clamp(1.35rem, 6vw, 2rem); line-height: 1.35; }
+      }
+    </style>
 </head>
 <body>
 <div class="grid-bg"></div>

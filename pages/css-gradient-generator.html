@@ -148,6 +148,106 @@
             position: relative;
             word-break: break-all;
         }
+
+        /* Gradient Studio layout safeguards.  Element Plus controls are often
+           intrinsically sized, so keep them inside the page's available width. */
+        .main-body,
+        .tool-page-body,
+        .tool-body,
+        .card-model,
+        .card-body { min-width: 0; max-width: 100%; }
+        .card-body { overflow: hidden; }
+        .main-body .el-radio-group { max-width: 100%; }
+        .main-body .el-radio-button__inner { white-space: nowrap; }
+        .main-body .el-slider { min-width: 0; }
+        .main-body code { white-space: normal; }
+        .preview-toolbar,
+        .stop-actions { min-width: 0; }
+
+        @media (max-width: 767px) {
+            .tool-page-body { padding: 20px 10px 48px; }
+            .card-body { padding: 16px; border-radius: 14px; }
+            .tool-head h1 { font-size: 1.15rem; line-height: 1.35; }
+            .description { line-height: 1.55; }
+
+            /* Controls flow instead of forcing a single, overflowing row. */
+            .main-body .flex.items-center.justify-between,
+            .main-body .flex.items-center.justify-between.mb-2,
+            .main-body .flex.items-center.justify-between.mb-3 {
+                flex-wrap: wrap;
+                row-gap: 10px;
+            }
+            .main-body .el-radio-group {
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+                max-width: 100%;
+            }
+            .main-body .el-radio-button { flex: 1 1 auto; min-width: 0; }
+            .preview-toolbar .preview-actions,
+            .preset-toolbar > .el-radio-group,
+            .code-toolbar > div {
+                width: 100%;
+            }
+            .preview-toolbar .preview-actions {
+                justify-content: flex-end;
+            }
+            .preview-toolbar .preview-actions > .el-button {
+                flex: 0 0 auto;
+            }
+            .preset-toolbar > .el-radio-group,
+            .code-toolbar > div {
+                justify-content: flex-start;
+            }
+            .main-body .el-radio-button__inner {
+                width: 100%;
+                padding-left: 9px;
+                padding-right: 9px;
+            }
+            .gradient-preview-card { min-height: 140px; }
+            .gradient-text-preview { font-size: clamp(1.35rem, 7vw, 2.2rem); }
+
+            /* The two slider rows remain usable without squeezing labels. */
+            .main-body .flex.items-center.gap-3 { flex-wrap: wrap; }
+            .main-body .flex.items-center.gap-3 > div[style*="width"] {
+                width: min(130px, 100%) !important;
+                flex: 1 1 110px;
+            }
+            .main-body .direction-dial-btn { flex: 0 0 30px; width: 30px; height: 30px; }
+
+            .color-stop-bar-wrapper { margin-left: 4px; margin-right: 4px; touch-action: none; }
+            .color-stop-pin { width: 20px; height: 20px; }
+            .main-body .el-radio-group,
+            .main-body .el-select,
+            .main-body .el-slider { min-width: 0; max-width: 100%; }
+            .main-body .el-radio-button__inner { overflow: hidden; text-overflow: ellipsis; }
+            .main-body .el-button { white-space: normal; height: auto; min-height: 32px; }
+            .main-body .grid.grid-cols-1.md\\:grid-cols-4 > div:nth-child(2) {
+                min-width: 0;
+            }
+            .stop-list-item { min-width: 0; }
+            .preset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+            .preset-thumb { min-width: 0; height: 64px; }
+
+            /* These action clusters are the main source of 375px collisions. */
+            .main-body .border-t.flex.items-center.justify-between {
+                align-items: flex-start;
+            }
+            .main-body .border-t.flex.items-center.justify-between > div:last-child,
+            .main-body .flex.items-center.gap-2:has(> .el-button) {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                width: 100%;
+            }
+            .main-body .border-t.flex.items-center.justify-between > div:last-child .el-button,
+            .main-body .flex.items-center.gap-2:has(> .el-button) .el-button {
+                margin-left: 0;
+                max-width: 100%;
+            }
+            .main-body .code-output-card { padding: 10px 12px; font-size: .76rem; }
+            .main-body .content .grid { min-width: 0; }
+        }
     </style>
 
     <meta property="og:type" content="website" />
@@ -190,9 +290,9 @@
 
                 <!-- 渐变实时预览区域 -->
                 <div class="mb-6">
-                    <div class="flex items-center justify-between mb-2">
+                    <div class="preview-toolbar flex items-center justify-between mb-2">
                         <div class="text-xs font-mono text-slate-400">// 实时渲染画布 (Live Preview)</div>
-                        <div class="flex items-center gap-2">
+                        <div class="preview-actions flex items-center gap-2">
                             <el-radio-group v-model="previewMode" size="small">
                                 <el-radio-button label="box">盒子背景</el-radio-button>
                                 <el-radio-button label="text">文字镂空</el-radio-button>
@@ -362,7 +462,7 @@
 
                 <!-- 精品渐变预设库 -->
                 <div class="mb-6">
-                    <div class="flex items-center justify-between mb-3">
+                    <div class="preset-toolbar flex items-center justify-between mb-3">
                         <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
                             <span>🎨 精选渐变预设库 (Curated Presets)</span>
                         </h3>
@@ -387,7 +487,7 @@
 
                 <!-- 生成代码输出区域 -->
                 <div class="mb-6">
-                    <div class="flex items-center justify-between mb-2">
+                    <div class="code-toolbar flex items-center justify-between mb-2">
                         <span class="text-xs font-mono text-slate-400">// CSS / Tailwind 代码输出</span>
                         <div class="flex items-center gap-2">
                             <el-button type="primary" size="small" @click="copyCss">📋 复制 CSS 代码</el-button>

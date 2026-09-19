@@ -180,41 +180,6 @@
     "cat": "办公助手"
   },
   {
-    "code": "bold-text-generator",
-    "name": "粗体文本生成器",
-    "cat": "办公助手"
-  },
-  {
-    "code": "italic-text-generator",
-    "name": "斜体文本生成器",
-    "cat": "办公助手"
-  },
-  {
-    "code": "strikethrough-text-generator",
-    "name": "删除线文本生成器",
-    "cat": "办公助手"
-  },
-  {
-    "code": "underline-text",
-    "name": "下划线文本生成器",
-    "cat": "办公助手"
-  },
-  {
-    "code": "upside-down-text-generator",
-    "name": "颠倒文本生成器",
-    "cat": "办公助手"
-  },
-  {
-    "code": "mirror-text-generator",
-    "name": "镜像文本生成器",
-    "cat": "办公助手"
-  },
-  {
-    "code": "reverse-text-generator",
-    "name": "反向文本生成器",
-    "cat": "办公助手"
-  },
-  {
     "code": "replace-text",
     "name": "文本替换工具",
     "cat": "办公助手"
@@ -315,16 +280,6 @@
     "cat": "图像"
   },
   {
-    "code": "image-processing-assistant-app",
-    "name": "图像处理助手桌面应用程序",
-    "cat": "图像"
-  },
-  {
-    "code": "image-compressor-app",
-    "name": "图像压缩器桌面应用程序",
-    "cat": "图像"
-  },
-  {
     "code": "white-noise-player",
     "name": "白噪音与专注助眠多轨混音器",
     "cat": "音视频"
@@ -342,46 +297,6 @@
   {
     "code": "metronome-tuner",
     "name": "极简电子节拍器与乐器调音器",
-    "cat": "音视频"
-  },
-  {
-    "code": "video-processing-assistant-app",
-    "name": "视频处理助手桌面应用程序",
-    "cat": "音视频"
-  },
-  {
-    "code": "video-cut-merge-app",
-    "name": "视频剪切合并桌面应用程序",
-    "cat": "音视频"
-  },
-  {
-    "code": "video-compressor-app",
-    "name": "视频压缩器桌面应用程序",
-    "cat": "音视频"
-  },
-  {
-    "code": "video-format-converter-app",
-    "name": "视频格式转换器桌面应用程序",
-    "cat": "音视频"
-  },
-  {
-    "code": "audio-processing-assistant-app",
-    "name": "音频处理助手桌面应用程序",
-    "cat": "音视频"
-  },
-  {
-    "code": "audio-cut-merge-app",
-    "name": "音频剪切合并桌面应用程序",
-    "cat": "音视频"
-  },
-  {
-    "code": "audio-compressor-app",
-    "name": "音频压缩器桌面应用程序",
-    "cat": "音视频"
-  },
-  {
-    "code": "audio-format-convertor-app",
-    "name": "音频格式转换器桌面应用程序",
     "cat": "音视频"
   },
   {

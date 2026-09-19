@@ -1,0 +1,1896 @@
+{
+  "total_pages": 204,
+  "untrusted_new_tools": [
+    "color-palette-extractor",
+    "cron-generator",
+    "css-gradient-generator",
+    "css-shadow-generator",
+    "data-unit-converter",
+    "date-calculator",
+    "decision-maker",
+    "emoticon",
+    "food-calories-lookup",
+    "image-mosaic-blur",
+    "image-stitcher",
+    "json-formatter",
+    "jwt-debugger",
+    "led-banner",
+    "lights-out",
+    "minesweeper",
+    "mortgage-advanced-calculator",
+    "periodic-table",
+    "regex-tester",
+    "resume-template",
+    "rmb-capital-converter",
+    "salary-tax-calculator",
+    "scientific-calculator",
+    "sleep-cycle-calculator",
+    "sudoku",
+    "table-converter",
+    "text-autospace",
+    "text-dedup-sort",
+    "uuid-generator",
+    "water-intake-calculator",
+    "word-counter"
+  ],
+  "fake_apps_to_delete": [
+    "audio-compressor-app",
+    "audio-cut-merge-app",
+    "audio-format-convertor-app",
+    "audio-processing-assistant-app",
+    "image-compressor-app",
+    "image-processing-assistant-app",
+    "video-compressor-app",
+    "video-cut-merge-app",
+    "video-format-converter-app",
+    "video-processing-assistant-app"
+  ],
+  "trivial_tools_to_consolidate": [
+    "bold-text-generator",
+    "italic-text-generator",
+    "mirror-text-generator",
+    "reverse-text-generator",
+    "strikethrough-text-generator",
+    "underline-text",
+    "upside-down-text-generator"
+  ],
+  "cdn_tainted_tools": [],
+  "all_catalog": [
+    {
+      "code": "2048",
+      "title": "2048游戏在线玩：益智解压，锻炼逻辑思维与专注力的数字合成挑战",
+      "file": "2048.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "Account",
+      "title": "登录",
+      "file": "Account.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "Feedback",
+      "title": "意见反馈",
+      "file": "Feedback.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "Search",
+      "title": "搜索",
+      "file": "Search.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "adjust-image-aspect-ratio",
+      "title": "调整图像宽高比例",
+      "file": "adjust-image-aspect-ratio.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "aes-encrypt",
+      "title": "AES加密/解密",
+      "file": "aes-encrypt.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "age",
+      "title": "年龄计算器",
+      "file": "age.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "area-calculator",
+      "title": "面积计算器",
+      "file": "area-calculator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "area-converter",
+      "title": "面积单位转换器",
+      "file": "area-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "ascii-art-generator",
+      "title": "ASCII 艺术字与极客字符 Logo 生成器",
+      "file": "ascii-art-generator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "audio-and-video",
+      "title": "音视频",
+      "file": "audio-and-video.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "audio-compressor-app",
+      "title": "音频压缩器桌面应用程序",
+      "file": "audio-compressor-app.html",
+      "is_untrusted_new": false,
+      "is_fake_app": true,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "audio-cut-merge-app",
+      "title": "音频剪切合并桌面应用程序",
+      "file": "audio-cut-merge-app.html",
+      "is_untrusted_new": false,
+      "is_fake_app": true,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "audio-format-convertor-app",
+      "title": "音频格式转换器桌面应用程序",
+      "file": "audio-format-convertor-app.html",
+      "is_untrusted_new": false,
+      "is_fake_app": true,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "audio-processing-assistant-app",
+      "title": "音频处理助手桌面应用程序",
+      "file": "audio-processing-assistant-app.html",
+      "is_untrusted_new": false,
+      "is_fake_app": true,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "bar-code",
+      "title": "免费在线条形码生成器",
+      "file": "bar-code.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "base-converter",
+      "title": "进制转换",
+      "file": "base-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "base64-encoder-decoder",
+      "title": "base64编码解码",
+      "file": "base64-encoder-decoder.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "best-figure",
+      "title": "女性最佳身材计算器",
+      "file": "best-figure.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "bfr",
+      "title": "体脂率（BFR）计算器",
+      "file": "bfr.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "bitwise-visualizer",
+      "title": "计算机位运算与逻辑门实验室",
+      "file": "bitwise-visualizer.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "bmi",
+      "title": "Bmi，在线Bmi指数计算，Bmi指数计算器，bmi计算公式",
+      "file": "bmi.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "bmr",
+      "title": "基础代谢率(BMR)计算器",
+      "file": "bmr.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "bold-text-generator",
+      "title": "粗体文本生成器",
+      "file": "bold-text-generator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": true,
+      "cdn_count": 0
+    },
+    {
+      "code": "bood-type",
+      "title": "血型遗传规律和血型性格",
+      "file": "bood-type.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "bottle-color-matching",
+      "title": "上下瓶色匹配，观察力与逻辑推理训练游戏",
+      "file": "bottle-color-matching.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "bra-size",
+      "title": "文胸尺码查询",
+      "file": "bra-size.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "brain",
+      "title": "脑力训练",
+      "file": "brain.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "burn-fat-heart-rate",
+      "title": "有氧运动心率 / 最佳燃脂心率计算器",
+      "file": "burn-fat-heart-rate.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "capital",
+      "title": "世界各国首都",
+      "file": "capital.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "car-loan-calculator",
+      "title": "全款与车贷落地费用精算器",
+      "file": "car-loan-calculator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "child-clothe-size",
+      "title": "小孩服装尺码查询",
+      "file": "child-clothe-size.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "child-height",
+      "title": "孩子身高预测",
+      "file": "child-height.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "click-speed-test",
+      "title": "点击速度测试，在线手速挑战，提升游戏反应力",
+      "file": "click-speed-test.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "code",
+      "title": "程序员",
+      "file": "code.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "color-blindness-test",
+      "title": "色盲色弱检测",
+      "file": "color-blindness-test.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "color-block-imprint",
+      "title": "色块印记",
+      "file": "color-block-imprint.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "color-palette-extractor",
+      "title": "图片调色板提取器",
+      "file": "color-palette-extractor.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "compare-text",
+      "title": "文本（代码）对比工具",
+      "file": "compare-text.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "compound-interest-calculator",
+      "title": "复利定投与理财收益计算器",
+      "file": "compound-interest-calculator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "compress-image",
+      "title": "批量压缩图像",
+      "file": "compress-image.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "contrast-checker",
+      "title": "无障碍色彩对比度检测器 (WCAG)",
+      "file": "contrast-checker.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "convert-case",
+      "title": "转换大小写",
+      "file": "convert-case.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "convert-image",
+      "title": "图像格式转换器",
+      "file": "convert-image.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "coordinate-drift",
+      "title": "坐标迷航",
+      "file": "coordinate-drift.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "create-gif",
+      "title": "免费制作gif图片，编辑gif图片",
+      "file": "create-gif.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "cron-generator",
+      "title": "Cron 表达式生成与预测器",
+      "file": "cron-generator.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "crop-image",
+      "title": "裁剪、编辑图像",
+      "file": "crop-image.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "css-glassmorphism",
+      "title": "CSS 玻璃拟态与毛玻璃生成器",
+      "file": "css-glassmorphism.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "css-gradient-generator",
+      "title": "CSS 渐变色生成器",
+      "file": "css-gradient-generator.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "css-shadow-generator",
+      "title": "CSS 盒子阴影生成器",
+      "file": "css-shadow-generator.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "curl-converter",
+      "title": "cURL 转换多语言代码工具",
+      "file": "curl-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "data-format-converter",
+      "title": "多格式配置文件双向转换器 (JSON / YAML / TOML / XML)",
+      "file": "data-format-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "data-unit-converter",
+      "title": "数据存储单位与进阶度量衡换算器",
+      "file": "data-unit-converter.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "date-calculator",
+      "title": "日期间隔与重要日子倒计时",
+      "file": "date-calculator.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "death-time",
+      "title": "死亡时间计算器",
+      "file": "death-time.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "decision-maker",
+      "title": "今天吃什么 / 帮我做决定",
+      "file": "decision-maker.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "decompose-gif",
+      "title": "分解gif图片，拆分gif图片帧",
+      "file": "decompose-gif.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "des-encrypt",
+      "title": "DES加密/解密",
+      "file": "des-encrypt.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "digital-huarong-road",
+      "title": "数字华容道游戏在线玩，经典益智数字拼图训练，提升逻辑观察力",
+      "file": "digital-huarong-road.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "dong-tai-se-cha",
+      "title": "动态色差",
+      "file": "dong-tai-se-cha.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "dress-size",
+      "title": "连衣裙尺码查询",
+      "file": "dress-size.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "dynamic-visual-acuity-test",
+      "title": "动态视力测试游戏，在线挑战你的视觉反应极限",
+      "file": "dynamic-visual-acuity-test.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "emoji",
+      "title": "emoji表情大全，可复制",
+      "file": "emoji.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "emoticon",
+      "title": "颜文字表情符号大全｜一键复制可爱文字表情 ᶘᵒᴥᵒᶅ",
+      "file": "emoticon.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "energy-convert",
+      "title": "焦耳卡路里换算器，千焦千卡换算器",
+      "file": "energy-convert.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "ent",
+      "title": "娱乐",
+      "file": "ent.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "female-safe-period",
+      "title": "女性安全期计算器",
+      "file": "female-safe-period.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "find-different-word",
+      "title": "找不同的字，眼力大挑战小游戏",
+      "file": "find-different-word.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "flag",
+      "title": "世界各国国旗和区旗图案",
+      "file": "flag.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "food-calories-lookup",
+      "title": "常用食物热量与营养成分速查表",
+      "file": "food-calories-lookup.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "format-css",
+      "title": "css格式化、压缩",
+      "file": "format-css.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "format-html",
+      "title": "html格式化、压缩",
+      "file": "format-html.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "format-js",
+      "title": "js格式化、压缩",
+      "file": "format-js.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "function-grapher",
+      "title": "2D 数学函数图像绘制器",
+      "file": "function-grapher.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "garbage-classification",
+      "title": "生活垃圾分类离线速查字典",
+      "file": "garbage-classification.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "generate-grid-image",
+      "title": "生成宫格图像，分割图片",
+      "file": "generate-grid-image.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "generate",
+      "title": "生成",
+      "file": "generate.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "hash-avatar",
+      "title": "哈希头像生成器",
+      "file": "hash-avatar.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "health",
+      "title": "健康",
+      "file": "health.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "hmac-encrypt",
+      "title": "HMAC哈希加密",
+      "file": "hmac-encrypt.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "http-status-codes",
+      "title": "HTTP 状态码速查与排错全书",
+      "file": "http-status-codes.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "ico-generator",
+      "title": "在线生成透明ICO图标",
+      "file": "ico-generator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "image-compressor-app",
+      "title": "图像压缩器桌面应用程序",
+      "file": "image-compressor-app.html",
+      "is_untrusted_new": false,
+      "is_fake_app": true,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "image-mosaic-blur",
+      "title": "图片马赛克与局部隐私遮挡",
+      "file": "image-mosaic-blur.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "image-processing-assistant-app",
+      "title": "图像处理助手桌面应用程序",
+      "file": "image-processing-assistant-app.html",
+      "is_untrusted_new": false,
+      "is_fake_app": true,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "image-stitcher",
+      "title": "多图无损拼接与长图生成器",
+      "file": "image-stitcher.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "image-to-base64",
+      "title": "图片转base64",
+      "file": "image-to-base64.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "image",
+      "title": "图像",
+      "file": "image.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "index",
+      "title": "在线工具集",
+      "file": "index.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "italic-text-generator",
+      "title": "斜体文本生成器",
+      "file": "italic-text-generator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": true,
+      "cdn_count": 0
+    },
+    {
+      "code": "jing-tai-se-cha",
+      "title": "静态色差游戏：色彩辨别能力测试，挑战ΔE色差识别极限",
+      "file": "jing-tai-se-cha.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "js-obfuscator",
+      "title": "JavaScript混淆加密",
+      "file": "js-obfuscator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "json-formatter",
+      "title": "JSON 格式化与深度工具箱",
+      "file": "json-formatter.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "jwt-debugger",
+      "title": "JWT 解码与调试器",
+      "file": "jwt-debugger.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "kinship-calculator",
+      "title": "中国亲戚关系称谓换算器",
+      "file": "kinship-calculator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "led-banner",
+      "title": "手持全屏弹幕 / LED滚动屏幕",
+      "file": "led-banner.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "length-converter",
+      "title": "长度单位转换器",
+      "file": "length-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "life",
+      "title": "生活",
+      "file": "life.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "lights-out",
+      "title": "熄灯游戏",
+      "file": "lights-out.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "loan-calculator",
+      "title": "贷款计算器",
+      "file": "loan-calculator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "lottery",
+      "title": "免费在线抽奖工具",
+      "file": "lottery.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "lucky-color",
+      "title": "星座幸运色",
+      "file": "lucky-color.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "lucky-number",
+      "title": "幸运数字计算器",
+      "file": "lucky-number.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "lucky-wheel",
+      "title": "幸运大转盘抽奖",
+      "file": "lucky-wheel.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "man-clothing-size",
+      "title": "男装尺码查询",
+      "file": "man-clothing-size.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "man-pant-size",
+      "title": "男裤尺码查询",
+      "file": "man-pant-size.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "markdown",
+      "title": "Markdown在线编辑器，Markdown免费转Word/Html/Pdf",
+      "file": "markdown.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "md5-encrypt",
+      "title": "MD5加密",
+      "file": "md5-encrypt.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "metronome-tuner",
+      "title": "极简电子节拍器与乐器调音器",
+      "file": "metronome-tuner.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "minesweeper",
+      "title": "经典扫雷游戏在线玩",
+      "file": "minesweeper.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "mirror-text-generator",
+      "title": "镜像文本生成器",
+      "file": "mirror-text-generator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": true,
+      "cdn_count": 0
+    },
+    {
+      "code": "mock-data-generator",
+      "title": "Mock Data 模拟数据生成器",
+      "file": "mock-data-generator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "morse-code-translator",
+      "title": "摩斯密码翻译器，摩斯密码音频播放器",
+      "file": "morse-code-translator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "mortgage-advanced-calculator",
+      "title": "房贷提前还款与省息对比器",
+      "file": "mortgage-advanced-calculator.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "n-back",
+      "title": "N",
+      "file": "n-back.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "number-sequence-memory",
+      "title": "数字顺序记忆训练，短期记忆力训练游戏",
+      "file": "number-sequence-memory.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "office",
+      "title": "办公助手",
+      "file": "office.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "paper-size",
+      "title": "A4纸张尺寸，各种纸张尺寸查询",
+      "file": "paper-size.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "perimeter-calculator",
+      "title": "周长计算器",
+      "file": "perimeter-calculator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "periodic-table",
+      "title": "化学元素周期表交互系统",
+      "file": "periodic-table.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "physical-fitness-test",
+      "title": "体质综合测试",
+      "file": "physical-fitness-test.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "pi-query",
+      "title": "圆周率查询",
+      "file": "pi-query.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "pinyin-converter",
+      "title": "汉字转拼音与多音字排版",
+      "file": "pinyin-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "pixel-art-maker",
+      "title": "像素画 / 8",
+      "file": "pixel-art-maker.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "port-scan",
+      "title": "端口扫描",
+      "file": "port-scan.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "proportion-calculator",
+      "title": "比例计算器",
+      "file": "proportion-calculator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "protein-intake",
+      "title": "蛋白质摄入量计算器",
+      "file": "protein-intake.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "qrcode",
+      "title": "免费在线二维码生成器",
+      "file": "qrcode.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "rabbit-encrypt",
+      "title": "Rabbit加密/解密",
+      "file": "rabbit-encrypt.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "random-number",
+      "title": "随机数生成器",
+      "file": "random-number.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "random-password",
+      "title": "在线随机密码生成器",
+      "file": "random-password.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "rc4-encrypt",
+      "title": "RC4加密/解密",
+      "file": "rc4-encrypt.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "react-speed-test",
+      "title": "反应速度测试",
+      "file": "react-speed-test.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "regex-tester",
+      "title": "正则表达式测试器",
+      "file": "regex-tester.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "replace-text",
+      "title": "文本替换工具",
+      "file": "replace-text.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "resize-image",
+      "title": "调整图像大小，图片缩放",
+      "file": "resize-image.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "resume-maker",
+      "title": "现代简历制作与排版器",
+      "file": "resume-maker.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "resume-template",
+      "title": "简历生成器",
+      "file": "resume-template.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "retirement-time-query",
+      "title": "退休年龄计算器，退休时间查询",
+      "file": "retirement-time-query.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "reverse-text-generator",
+      "title": "反向文本生成器",
+      "file": "reverse-text-generator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": true,
+      "cdn_count": 0
+    },
+    {
+      "code": "right-click-test",
+      "title": "右键点击速度测试，测试鼠标右键每秒点击次数",
+      "file": "right-click-test.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "ripemd160-encrypt",
+      "title": "RIPEMD160哈希加密",
+      "file": "ripemd160-encrypt.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "rmb-capital-converter",
+      "title": "人民币大写金额转换器 (支持反向转换与财务防篡改)",
+      "file": "rmb-capital-converter.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "rotate-image",
+      "title": "批量旋转图像",
+      "file": "rotate-image.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "round-image",
+      "title": "在线生成透明圆角图片",
+      "file": "round-image.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "running-calorie",
+      "title": "跑步卡路里消耗计算器",
+      "file": "running-calorie.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "salary-tax-calculator",
+      "title": "2026最新个税与五险一金计算器",
+      "file": "salary-tax-calculator.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "scientific-calculator",
+      "title": "科学高级计算器",
+      "file": "scientific-calculator.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "screen-recorder",
+      "title": "免插件屏幕与窗口录制工具",
+      "file": "screen-recorder.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "sentence-case-converter",
+      "title": "句子大小写转换器",
+      "file": "sentence-case-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "sequence-memory",
+      "title": "顺序记忆训练，科学提升记忆力的在线脑力训练工具",
+      "file": "sequence-memory.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "serial-number",
+      "title": "流水号生成器",
+      "file": "serial-number.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "sha-encrypt",
+      "title": "SHA加密",
+      "file": "sha-encrypt.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "shult-grid",
+      "title": "舒尔特方格训练",
+      "file": "shult-grid.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "signin",
+      "title": "登录",
+      "file": "signin.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "sleep-cycle-calculator",
+      "title": "90分钟睡眠周期与起床时间计算器",
+      "file": "sleep-cycle-calculator.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "sokoban",
+      "title": "复古推箱子 50 关益智挑战",
+      "file": "sokoban.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "spacebar-counter",
+      "title": "空格键速度测试 | 在线空格键计数器挑战",
+      "file": "spacebar-counter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "sql-formatter",
+      "title": "SQL 格式化与美化器",
+      "file": "sql-formatter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "strikethrough-text-generator",
+      "title": "删除线文本生成器",
+      "file": "strikethrough-text-generator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": true,
+      "cdn_count": 0
+    },
+    {
+      "code": "stroop-effect",
+      "title": "斯特鲁普效应小游戏，测测你的大脑反应速度！",
+      "file": "stroop-effect.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "study",
+      "title": "学习",
+      "file": "study.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "subnet-calculator",
+      "title": "IP 子网掩码与 CIDR 计算器 (IPv4 / IPv6)",
+      "file": "subnet-calculator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "sudoku",
+      "title": "数独 | 在线逻辑推理益智游戏",
+      "file": "sudoku.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "surface-area-calculator",
+      "title": "表面积计算器",
+      "file": "surface-area-calculator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "symbols",
+      "title": "符号大全，一键复制",
+      "file": "symbols.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "symmetry-blocks",
+      "title": "对称方块",
+      "file": "symmetry-blocks.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "table-converter",
+      "title": "在线表格转换器 (Excel / CSV / Markdown / HTML / JSON / ASCII)",
+      "file": "table-converter.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "temperature-converter",
+      "title": "温度转换器",
+      "file": "temperature-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "text-autospace",
+      "title": "中英文排版规范美化器",
+      "file": "text-autospace.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "text-dedup-sort",
+      "title": "文本多行去重与多维排序器",
+      "file": "text-dedup-sort.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "text-to-ascll-converter",
+      "title": "文本与ASCLL转换器",
+      "file": "text-to-ascll-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "time-perception-training",
+      "title": "时间感知训练游戏，培养你的内在生物钟与专注力",
+      "file": "time-perception-training.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "timestamp",
+      "title": "时间和时间戳相互转换",
+      "file": "timestamp.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "title-case-converter",
+      "title": "标题大小写转换器",
+      "file": "title-case-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "underline-text",
+      "title": "下划线文本生成器",
+      "file": "underline-text.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": true,
+      "cdn_count": 0
+    },
+    {
+      "code": "underwear-size",
+      "title": "内裤尺码查询",
+      "file": "underwear-size.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "unicode-encoder-decoder",
+      "title": "Unicode编码器/解码器",
+      "file": "unicode-encoder-decoder.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "upside-down-text-generator",
+      "title": "颠倒文本生成器",
+      "file": "upside-down-text-generator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": true,
+      "cdn_count": 0
+    },
+    {
+      "code": "url-encoder-decoder",
+      "title": "URL编码解码",
+      "file": "url-encoder-decoder.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "uuid-generator",
+      "title": "UUID / ULID / NanoID 批量生成器",
+      "file": "uuid-generator.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "vegetable-oil",
+      "title": "植物油脂肪含量查询",
+      "file": "vegetable-oil.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "video-compressor-app",
+      "title": "视频压缩器桌面应用程序",
+      "file": "video-compressor-app.html",
+      "is_untrusted_new": false,
+      "is_fake_app": true,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "video-cut-merge-app",
+      "title": "视频剪切合并桌面应用程序",
+      "file": "video-cut-merge-app.html",
+      "is_untrusted_new": false,
+      "is_fake_app": true,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "video-format-converter-app",
+      "title": "视频格式转换器桌面应用程序",
+      "file": "video-format-converter-app.html",
+      "is_untrusted_new": false,
+      "is_fake_app": true,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "video-processing-assistant-app",
+      "title": "视频处理助手桌面应用程序",
+      "file": "video-processing-assistant-app.html",
+      "is_untrusted_new": false,
+      "is_fake_app": true,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "video-to-gif",
+      "title": "免费视频转gif图片，视频生成GIF，视频转动图",
+      "file": "video-to-gif.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "visual-tracking-training",
+      "title": "视觉追踪训练小游戏",
+      "file": "visual-tracking-training.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "voice-recorder",
+      "title": "在线波形录音机与音频剪辑 (WaveSurfer Studio)",
+      "file": "voice-recorder.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "volume-calculator",
+      "title": "体积计算器",
+      "file": "volume-calculator.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "volume-converter",
+      "title": "体积单位转换器",
+      "file": "volume-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "water-intake-calculator",
+      "title": "科学每日饮水量计算器",
+      "file": "water-intake-calculator.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "watermark-image",
+      "title": "批量给图片加水印",
+      "file": "watermark-image.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "websocket-tester",
+      "title": "WebSocket / SSE 在线调试客户端",
+      "file": "websocket-tester.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "weight-converter",
+      "title": "重量转换器",
+      "file": "weight-converter.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "weight",
+      "title": "在线标准体重计算器，标准体重计算公式",
+      "file": "weight.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "white-noise-player",
+      "title": "白噪音与专注助眠多轨混音器",
+      "file": "white-noise-player.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "wifi-qrcode",
+      "title": "WiFi 扫码直连二维码与台卡生成器",
+      "file": "wifi-qrcode.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "woman-clothing-size",
+      "title": "女装尺码查询",
+      "file": "woman-clothing-size.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "woman-shirt-size",
+      "title": "女士衬衫尺码查询",
+      "file": "woman-shirt-size.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "word-counter",
+      "title": "综合文本字数与阅读时长统计器 (字数/词数/阅读语速精算)",
+      "file": "word-counter.html",
+      "is_untrusted_new": true,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "world-clock-planner",
+      "title": "世界时钟与跨时区会议规划器",
+      "file": "world-clock-planner.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    },
+    {
+      "code": "worth",
+      "title": "身价计算器",
+      "file": "worth.html",
+      "is_untrusted_new": false,
+      "is_fake_app": false,
+      "is_trivial": false,
+      "cdn_count": 0
+    }
+  ]
+}

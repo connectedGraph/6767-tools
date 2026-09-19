@@ -63,34 +63,6 @@
     "h1": "音视频"
   },
   {
-    "file": "audio-compressor-app.html",
-    "route": "audio-compressor-app",
-    "title": "音频压缩器桌面应用程序 - 在线工具",
-    "desc": "一款免费的音频压缩软件，支持mp3、wma、ogg、aac、aiff、au、flac、mp2、m4a、m4r、ac3、amr、ra、rm、wav音频格式，满足您各种压缩需求；可手动调节音频比特率、帧速率、分辨率；一键批量压缩操作，操作简单、省时高效；支持多种语言。",
-    "h1": "音频压缩器桌面应用程序"
-  },
-  {
-    "file": "audio-cut-merge-app.html",
-    "route": "audio-cut-merge-app",
-    "title": "音频剪切合并桌面应用程序 - 在线工具",
-    "desc": "一款免费的音频剪切合并软件，裁剪音频任意时间段，支持各种音频格式进行合并，可手动调节合并后音频比特率、播放速度、音量大小，操作简单、省时高效；支持多种语言。",
-    "h1": "音频剪切合并桌面应用程序"
-  },
-  {
-    "file": "audio-format-convertor-app.html",
-    "route": "audio-format-convertor-app",
-    "title": "音频格式转换器桌面应用程序 - 在线工具",
-    "desc": "一款免费的音频格式转换桌面应用程序，支持mp3、wma、ogg、aac、aiff、au、flac、mp2、m4a、m4r、ac3、amr、ra、rm、wav音频格式之间互相转化，也可以从是视频中提取音频，满足您各种音频格式转换需求；一键批量压缩操作，操作简单、省时高效；支持多种语言。",
-    "h1": "音频格式转换器桌面应用程序"
-  },
-  {
-    "file": "audio-processing-assistant-app.html",
-    "route": "audio-processing-assistant-app",
-    "title": "音频处理助手桌面应用程序 - 在线工具",
-    "desc": "一款免费的视频批量处理软件，具体功能有：音频批量压缩、音频剪切、音频合并、音频批量格式转换、视频提取音频，界面美观，操作简单、省时高效，支持多种语言。",
-    "h1": "音频处理助手桌面应用程序"
-  },
-  {
     "file": "bar-code.html",
     "route": "bar-code",
     "title": "免费在线条形码生成器 - 在线工具",
@@ -145,13 +117,6 @@
     "title": "基础代谢率(BMR)计算器 - 在线工具",
     "desc": "基础代谢率计算公式，基础代谢率计算器，在线计算基础代谢率，基础代谢率(BMR)是指人体在 非活动状态 下，维持生命所需的最低能量。运动会提高人体的基础代谢率，节食则会降低基础代谢率。",
     "h1": "基础代谢率(BMR)计算器"
-  },
-  {
-    "file": "bold-text-generator.html",
-    "route": "bold-text-generator",
-    "title": "粗体文本生成器 - 在线工具",
-    "desc": "本工具可以快速且免费的把您输入的文本自动转换为粗体文本，然后可以把粗体文本一键复制出来，还可以点击下载按钮把粗体文本下载下来。",
-    "h1": "粗体文本生成器"
   },
   {
     "file": "bood-type.html",
@@ -574,25 +539,11 @@
     "h1": "在线生成透明ICO图标"
   },
   {
-    "file": "image-compressor-app.html",
-    "route": "image-compressor-app",
-    "title": "图像压缩器桌面应用程序 - 在线工具",
-    "desc": "一款免费的图片压缩软件，支持jpg、jpeg、png、gif、webp、tif、tiff、avif、heif图片格式，满足您各种压缩需求；压缩质量可手动调节；一键批量压缩操作，操作简单、省时高效；支持多种语言。",
-    "h1": "图像压缩器桌面应用程序"
-  },
-  {
     "file": "image-mosaic-blur.html",
     "route": "image-mosaic-blur",
     "title": "图片马赛克与局部隐私遮挡 - 在线工具",
     "desc": "免费在线图片马赛克与局部隐私遮挡工具，支持交互式涂抹马赛克、高斯模糊、黑色遮挡块、白色遮挡块与红框重点标注。支持笔刷与矩形框选，支持撤销/重做与橡皮擦还原，一键导出保护隐私后的图片。拓展时间: 2026-08-31。",
     "h1": "图片马赛克与局部隐私遮挡 (Image Mosaic & Privacy Censor)"
-  },
-  {
-    "file": "image-processing-assistant-app.html",
-    "route": "image-processing-assistant-app",
-    "title": "图像处理助手桌面应用程序 - 在线工具",
-    "desc": "一款免费的图片批量处理软件，具体功能有：图片批量压缩、图片批量格式转换、图片批量添加水印，界面美观，操作简单、省时高效，支持多种语言。",
-    "h1": "图像处理助手桌面应用程序"
   },
   {
     "file": "image-stitcher.html",
@@ -621,13 +572,6 @@
     "title": "在线工具集",
     "desc": "本站是一个在线工具集合网站，为用户提供便捷的在线工具和软件。我们提供脑力训练、办公助手、图像、音视频、生成、程序员、学习、生活、娱乐、健康等几百个在线工具。",
     "h1": ""
-  },
-  {
-    "file": "italic-text-generator.html",
-    "route": "italic-text-generator",
-    "title": "斜体文本生成器 - 在线工具",
-    "desc": "本工具可以快速且免费的把您输入的文本自动转换为斜体文本，然后可以把斜体文本一键复制出来，还可以点击下载按钮把斜体文本下载下来。",
-    "h1": "斜体文本生成器"
   },
   {
     "file": "jing-tai-se-cha.html",
@@ -768,13 +712,6 @@
     "title": "经典扫雷游戏在线玩 - Windows经典复刻与自定义雷区 | 益智脑力挑战 - 在线工具",
     "desc": "纯前端复刻经典Windows扫雷游戏，支持初级9x9(10雷)、中级16x16(40雷)、高级30x16(99雷)与自定义行列雷数。支持右键/长按插旗、首次点击安全、双击已翻开数字快速展开周围方块、计时器、音效震动与本地用时排行榜。",
     "h1": "经典扫雷 (Minesweeper)"
-  },
-  {
-    "file": "mirror-text-generator.html",
-    "route": "mirror-text-generator",
-    "title": "镜像文本生成器 - 在线工具",
-    "desc": "使用此镜像文本生成器可以快速轻松地将标准文本转换为镜像版本。只需在左侧面板中输入普通文本，然后即可在右侧看到它转换为镜像文本。",
-    "h1": "镜像文本生成器"
   },
   {
     "file": "mock-data-generator.html",
@@ -973,13 +910,6 @@
     "h1": "退休年龄查询"
   },
   {
-    "file": "reverse-text-generator.html",
-    "route": "reverse-text-generator",
-    "title": "反向文本生成器 - 在线工具",
-    "desc": "将普通前向文本转换为后向文本。一个简单的在线向后文本生成器工具，可让您切换文本的朝向方式。只需在左列中编写或粘贴文本，然后在右列中看到它被转换。",
-    "h1": "反向文本生成器"
-  },
-  {
     "file": "right-click-test.html",
     "route": "right-click-test",
     "title": "右键点击速度测试，测试鼠标右键每秒点击次数 - 在线工具",
@@ -1120,13 +1050,6 @@
     "h1": ""
   },
   {
-    "file": "strikethrough-text-generator.html",
-    "route": "strikethrough-text-generator",
-    "title": "删除线文本生成器 - 在线工具",
-    "desc": "本工具可以快速且免费的把您输入的文本自动转换为带有删除线的文本，然后可以把删除线文本一键复制出来，还可以点击下载按钮把删除线文本下载下来。",
-    "h1": "删除线文本生成器"
-  },
-  {
     "file": "stroop-effect.html",
     "route": "stroop-effect",
     "title": "斯特鲁普效应小游戏，测测你的大脑反应速度！ - 在线工具",
@@ -1232,13 +1155,6 @@
     "h1": "标题大小写转换器"
   },
   {
-    "file": "underline-text.html",
-    "route": "underline-text",
-    "title": "下划线文本生成器 - 在线工具",
-    "desc": "本工具可以快速且免费的把您输入的文本自动转换为带有下划线的文本，然后可以把下划线文本一键复制出来，还可以点击下载按钮把下划线文本下载下来。",
-    "h1": "下划线文本生成器"
-  },
-  {
     "file": "underwear-size.html",
     "route": "underwear-size",
     "title": "内裤尺码查询 - 在线工具",
@@ -1251,13 +1167,6 @@
     "title": "Unicode编码器/解码器 - 在线工具",
     "desc": "Unicode与文本互转，文本转换为\\uXXXX形式，实现Unicode与文本互转；文本转Unicode，Unicode转文本，Unicode与任意字符之间相互转换。",
     "h1": "Unicode编码器/解码器"
-  },
-  {
-    "file": "upside-down-text-generator.html",
-    "route": "upside-down-text-generator",
-    "title": "颠倒文本生成器 - 在线工具",
-    "desc": "这个颠倒的文本生成器是一个易于使用的在线工具，可让您完全翻转文本。只需在左列中粘贴或写入文本，然后看到它会自动在右列中翻转。",
-    "h1": "颠倒文本生成器"
   },
   {
     "file": "url-encoder-decoder.html",
@@ -1279,34 +1188,6 @@
     "title": "植物油脂肪含量查询 - 在线工具",
     "desc": "植物油的脂肪含量,食用油中含多少脂肪,各种油的脂肪含量,植物油的脂肪含量是多少，植物油不饱和脂肪酸，100克食用油有多少脂肪,酥油脂肪含量,菜油脂肪含量,红棕榈油脂肪含量,棕榈油脂肪含量,椰子油脂肪含量,棕榈仁油脂肪含量,橄榄油脂肪含量,花生油脂肪含量,芥末油脂肪含量,香油脂肪含量,米糠油脂肪含量,棉籽油脂肪含量,玉米油脂肪含量,葵花籽油脂肪含量,大豆油脂肪含量,茶油脂肪含量.",
     "h1": "植物油脂肪含量查询"
-  },
-  {
-    "file": "video-compressor-app.html",
-    "route": "video-compressor-app",
-    "title": "视频压缩器桌面应用程序 - 在线工具",
-    "desc": "一款免费的视频压缩软件，支持mp4、mov、avi、mkv、ts、flv、swf、mpeg、mpg、m4v、vob、wmv视频格式，满足您各种压缩需求；可手动调节视频比特率、帧速率、分辨率；一键批量压缩操作，操作简单、省时高效；支持多种语言。",
-    "h1": "视频压缩器桌面应用程序"
-  },
-  {
-    "file": "video-cut-merge-app.html",
-    "route": "video-cut-merge-app",
-    "title": "视频剪切合并桌面应用程序 - 在线工具",
-    "desc": "一款免费的视频剪切合并软件，裁剪视频任意时间段，支持各种视频格式进行合并，可手动调节合并后视频比特率、帧速率、分辨率，操作简单、省时高效；支持多种语言。",
-    "h1": "视频剪切合并桌面应用程序"
-  },
-  {
-    "file": "video-format-converter-app.html",
-    "route": "video-format-converter-app",
-    "title": "视频格式转换器桌面应用程序 - 在线工具",
-    "desc": "一款免费的视频格式转换桌面应用程序，支持mp4、mov、avi、mkv、ts、flv、swf、mpeg、mpg、m4v、vob、wmv视频格式之间互相转化，满足您各种视频格式转换需求；一键批量转换操作，操作简单、省时高效；支持多种语言。",
-    "h1": "视频格式转换器桌面应用程序"
-  },
-  {
-    "file": "video-processing-assistant-app.html",
-    "route": "video-processing-assistant-app",
-    "title": "视频处理助手桌面应用程序 - 在线工具",
-    "desc": "一款免费的视频批量处理软件，具体功能有：视频批量压缩、视频剪切、视频合并、视频批量格式转换、视频批量添加水印，界面美观，操作简单、省时高效，支持多种语言。",
-    "h1": "视频处理助手桌面应用程序"
   },
   {
     "file": "video-to-gif.html",

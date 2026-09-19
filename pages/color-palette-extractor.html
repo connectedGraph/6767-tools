@@ -118,7 +118,7 @@
         /* 工作区布局 */
         .workspace-grid {
             display: grid;
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
             gap: 20px;
         }
         @media (max-width: 900px) {
@@ -222,6 +222,14 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 10px;
+        }
+        .palette-header > div:last-child {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .palette-header > div:last-child .el-button {
+            margin-left: 0;
         }
         .palette-title {
             font-size: 1.05rem;
@@ -387,6 +395,14 @@
             border: 1px solid rgba(51, 65, 85, 0.6);
             border-radius: 10px;
         }
+        .export-actions-row > div:last-child {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .export-actions-row .el-button {
+            margin-left: 0;
+        }
 
         /* 复制反馈浮层 / Toast */
         .copy-toast-banner {
@@ -414,6 +430,221 @@
         /* 隐藏的导出画布 */
         #exportCardCanvas {
             display: none;
+        }
+
+        /* 响应式基础约束：避免第三方组件或长文本撑破工具卡片 */
+        .tool-page-body,
+        .tool-page-body * {
+            box-sizing: border-box;
+        }
+        .tool-page-body,
+        .tool-body,
+        .card-model,
+        .card-body,
+        .palette-container,
+        .workspace-grid,
+        .image-preview-card,
+        .palette-section {
+            min-width: 0;
+            max-width: 100%;
+        }
+        .title,
+        .description,
+        .upload-title,
+        .upload-subtitle,
+        .image-meta-info,
+        .content {
+            overflow-wrap: anywhere;
+        }
+        .image-meta-info span {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        .dominant-actions,
+        .palette-header > div:last-child,
+        .export-actions-row > div {
+            min-width: 0;
+        }
+
+        @media (max-width: 600px) {
+            .palette-container {
+                gap: 14px;
+            }
+            .upload-dropzone {
+                padding: 24px 12px;
+            }
+            .upload-icon {
+                font-size: 40px;
+                margin-bottom: 8px;
+            }
+            .upload-title {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+            .upload-subtitle {
+                line-height: 1.5;
+            }
+            .preset-row {
+                align-items: stretch;
+                margin-top: 12px;
+            }
+            .preset-row > span {
+                width: 100%;
+                text-align: center;
+            }
+            .preset-btn {
+                flex: 1 1 calc(50% - 4px);
+                justify-content: center;
+                min-width: 0;
+                padding-inline: 8px;
+            }
+            .control-bar {
+                align-items: stretch;
+                padding: 12px;
+                gap: 14px;
+            }
+            .control-group {
+                width: 100%;
+                align-items: flex-start;
+                gap: 7px;
+            }
+            .control-label {
+                width: 100%;
+            }
+            .control-group .el-radio-group {
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+            }
+            .control-group .el-radio-button {
+                flex: 1 1 33.333%;
+                min-width: 0;
+            }
+            .control-group .el-radio-button__inner {
+                width: 100%;
+                padding-inline: 5px;
+                white-space: normal;
+                line-height: 1.25;
+            }
+            .control-group .el-select {
+                width: 100% !important;
+            }
+            .image-preview-card,
+            .palette-section {
+                padding: 12px;
+            }
+            .image-preview-wrapper {
+                max-height: 240px;
+            }
+            .image-preview-wrapper img {
+                max-height: 238px;
+            }
+            .image-meta-info {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 4px;
+            }
+            .dominant-color-card {
+                padding: 14px;
+            }
+            .dominant-hex {
+                font-size: 1.55rem;
+                overflow-wrap: anywhere;
+            }
+            .dominant-actions {
+                flex-wrap: wrap;
+            }
+            .dominant-actions .el-button {
+                flex: 1 1 calc(33.333% - 6px);
+                min-width: 0;
+                margin-left: 0;
+                padding-inline: 6px;
+            }
+            .palette-header {
+                align-items: stretch;
+            }
+            .palette-title {
+                flex-wrap: wrap;
+            }
+            .palette-header > div:last-child {
+                display: flex !important;
+                flex-wrap: wrap;
+                width: 100%;
+                gap: 6px !important;
+            }
+            .palette-header > div:last-child .el-button {
+                flex: 1 1 calc(50% - 3px);
+                min-width: 0;
+                margin-left: 0;
+                padding-inline: 6px;
+            }
+            .palette-strip-bar {
+                height: 24px;
+            }
+            .swatch-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+            .swatch-color-box {
+                height: 64px;
+            }
+            .swatch-info {
+                padding: 8px;
+            }
+            .swatch-hex {
+                font-size: .82rem;
+            }
+            .swatch-quick-actions {
+                gap: 3px;
+            }
+            .swatch-action-mini-btn {
+                padding-inline: 2px;
+            }
+            .export-actions-row {
+                align-items: stretch;
+                padding: 12px;
+            }
+            .export-actions-row > div:first-child {
+                display: block !important;
+            }
+            .export-actions-row > div:first-child span {
+                display: block;
+                margin-bottom: 4px;
+            }
+            .export-actions-row > div:last-child {
+                display: flex !important;
+                flex-direction: column;
+                gap: 7px !important;
+            }
+            .export-actions-row .el-button {
+                width: 100%;
+                margin-left: 0;
+                white-space: normal;
+                min-height: 36px;
+            }
+            .copy-toast-banner {
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .card-body {
+                padding-inline: 12px;
+            }
+            .swatch-grid {
+                gap: 6px;
+            }
+            .swatch-info {
+                padding-inline: 7px;
+            }
+            .swatch-rgb,
+            .swatch-hsl {
+                font-size: .67rem;
+            }
         }
     </style>
 

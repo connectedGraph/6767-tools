@@ -337,6 +337,112 @@
             border: 1px solid rgba(51, 65, 85, 0.6);
             border-radius: 10px;
         }
+         /* 窄屏布局保护：允许控件收缩并换行，避免撑出视口 */
+         .stitcher-container,
+         .stitch-layout-grid,
+         .settings-panel,
+         .preview-panel,
+         .export-bar,
+         .param-row,
+         .param-control { min-width: 0; }
+         .stitcher-container *,
+         .stitcher-container *::before,
+         .stitcher-container *::after { box-sizing: border-box; }
+         .upload-title,
+         .upload-subtitle { overflow-wrap: anywhere; }
+
+         @media (max-width: 600px) {
+             .tool-topbar {
+                 flex-wrap: wrap;
+                 height: auto;
+                 min-height: 52px;
+                 padding: 10px 14px;
+                 gap: 4px 8px;
+             }
+             .tool-topbar-title {
+                 order: 3;
+                 flex-basis: 100%;
+                 white-space: normal;
+                 overflow-wrap: anywhere;
+                 line-height: 1.35;
+             }
+             .tool-topbar-home { margin-left: auto; }
+             .tool-page-body .tool-body { width: 100%; max-width: 100%; }
+             .tool-page-body .card-body { padding-left: 12px; padding-right: 12px; }
+             .tool-head .title {
+                 font-size: 1.2rem;
+                 line-height: 1.35;
+                 overflow-wrap: anywhere;
+             }
+             .upload-dropzone { padding: 24px 12px; }
+             .preset-row { justify-content: flex-start; text-align: left; }
+             .preset-row > span { flex-basis: 100%; }
+             .settings-panel, .preview-panel { padding: 14px; border-radius: 10px; }
+             .section-title { align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+             .param-row { display: block; }
+             .param-label { display: block; min-width: 0; margin-bottom: 6px; }
+             .param-control { width: 100%; }
+             .settings-panel .el-radio-group {
+                 width: 100%; display: flex !important; flex-wrap: wrap; gap: 4px;
+             }
+             .settings-panel .el-radio-button { flex: 1 1 auto !important; min-width: 0; }
+             .settings-panel .el-radio-button__inner {
+                 width: 100%; white-space: normal; line-height: 1.25; padding: 7px 6px;
+             }
+             .image-list-container { max-height: 320px; }
+             .image-list-item { gap: 7px; padding: 8px 7px; }
+             .item-actions { gap: 1px; }
+             .item-mini-btn { padding: 5px 3px; }
+             .preview-top-toolbar { align-items: stretch; }
+             .preview-stats { flex-wrap: wrap; gap: 6px; line-height: 1.4; }
+             .preview-top-toolbar > div:last-child { width: 100%; }
+             .preview-top-toolbar .el-button-group {
+                 display: flex; flex-wrap: wrap; width: 100%; gap: 4px;
+             }
+             .preview-top-toolbar .el-button-group .el-button {
+                 flex: 1 1 calc(50% - 4px); margin-left: 0; border-radius: 4px;
+                 white-space: normal; min-height: 30px; padding: 5px 6px;
+             }
+             .canvas-viewport-container {
+                 min-height: 360px; max-height: 560px; padding: 16px; justify-content: flex-start;
+             }
+             .export-bar { padding: 13px 14px; align-items: stretch; }
+             .export-bar > div { width: 100%; }
+             .export-bar .el-radio-group { display: flex; flex-wrap: wrap; gap: 4px; }
+             .export-bar .el-radio-button { flex: 1 1 auto; min-width: 0; }
+             .export-bar .el-radio-button__inner { width: 100%; white-space: normal; padding: 6px 5px; }
+             .export-bar > div:last-child { display: flex; flex-direction: column; }
+             .export-bar > div:last-child .el-button { width: 100%; margin-left: 0; }
+         }
+         @media (max-width: 600px) {
+              html, body { max-width: 100%; overflow-x: hidden; }
+              .main-body, .tool-page-body, .tool-body, .card-model, .card-body {
+                  width: 100%; max-width: 100%; min-width: 0;
+              }
+              .param-control .el-radio-group {
+                  display: flex; flex-wrap: wrap; width: 100%; gap: 4px;
+              }
+              .param-control .el-radio-button { flex: 1 1 auto; min-width: 0; }
+              .param-control .el-radio-button__inner {
+                  white-space: normal; padding-left: 6px; padding-right: 6px;
+              }
+          }
+          @media (max-width: 600px) {
+              .canvas-viewport-container { overflow-x: hidden; }
+              .canvas-viewport-container canvas {
+                  display: block;
+                  max-width: 100%;
+                  width: auto;
+                  height: auto;
+                  transform-origin: top left;
+              }
+          }
+          @media (max-width: 380px) {
+             .tool-page-body .card-body { padding-left: 8px; padding-right: 8px; }
+             .settings-panel, .preview-panel { padding: 11px; }
+             .item-thumb { width: 38px; height: 38px; }
+             .item-index-badge { padding-left: 4px; padding-right: 4px; }
+         }
     </style>
 
     <meta property="og:type" content="website" />

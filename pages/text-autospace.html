@@ -18,6 +18,68 @@
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
 
+    <style>
+        /* 页面级布局：保持内容在窄视口内可收缩 */
+        html, body { max-width: 100%; overflow-x: hidden; }
+        .main-body, .tool-body, .card-model, .card-body, #app { min-width: 0; }
+
+        .autospace-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 860px) {
+            .autospace-grid { grid-template-columns: minmax(0, 1fr); }
+        }
+        .pane-card { min-width: 0; }
+        .pane-header, .pane-footer { min-width: 0; }
+        .pane-title { min-width: 0; }
+        .pane-title span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .pane-actions { min-width: 0; flex-wrap: wrap; justify-content: flex-end; }
+        .editor-textarea, .diff-preview-box {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .stats-bar { grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr)); }
+        .stat-item, .stat-value { min-width: 0; }
+        .stat-value { overflow-wrap: anywhere; }
+        .option-grid { grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); }
+        .config-card, .rule-card { min-width: 0; }
+        .rule-card .example { overflow-wrap: anywhere; }
+        .el-checkbox, .el-radio-group { max-width: 100%; }
+        .el-checkbox { white-space: normal; align-items: flex-start; }
+        .el-checkbox__label { white-space: normal; overflow-wrap: anywhere; }
+        .el-radio-group { display: flex; flex-wrap: wrap; }
+
+        @media (max-width: 600px) {
+            .tool-page-body { padding: 20px 10px 44px; }
+            .card-body { padding: 16px 12px; border-radius: 10px; }
+            .tool-head { display: block; }
+            .tool-head .title { font-size: 1.18rem; line-height: 1.35; }
+            .tool-head > div:last-child { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+            .description { font-size: .84rem; line-height: 1.7; }
+            .stats-bar { gap: 8px; margin-bottom: 16px; }
+            .stat-item { padding: 9px 6px; }
+            .stat-label { font-size: .68rem; }
+            .stat-value { font-size: 1.05rem; }
+            .pane-header { align-items: flex-start; flex-direction: column; gap: 8px; padding: 10px; }
+            .pane-actions { width: 100%; justify-content: flex-start; gap: 5px; }
+            .pane-actions .el-button { margin-left: 0; }
+            .pane-actions .el-radio-group { width: 100%; }
+            .pane-footer { align-items: flex-start; flex-direction: column; gap: 3px; padding: 8px 10px; }
+            .editor-textarea, .diff-preview-box { height: 300px; min-height: 220px; padding: 11px 10px; font-size: .88rem; }
+            .config-card { padding: 15px 12px; }
+            .config-section-title { line-height: 1.45; }
+            .flex.justify-between { align-items: stretch; }
+            .content .example { line-height: 1.7; }
+        }
+    </style>
+
+    <style>
         .autospace-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -227,6 +289,25 @@
         }
         .rule-card .good {
             color: #34d399;
+        }
+    </style>
+
+    <!-- 覆盖页面原有基础规则，确保组件在窄屏下继续收缩 -->
+    <style>
+        .autospace-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .option-grid { grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); }
+        .pane-actions { flex-wrap: wrap; min-width: 0; }
+        .editor-textarea, .diff-preview-box { width: 100%; max-width: 100%; box-sizing: border-box; }
+        @media (max-width: 860px) {
+            .autospace-grid { grid-template-columns: minmax(0, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .pane-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .pane-actions { width: 100%; justify-content: flex-start; gap: 5px; }
+            .pane-actions .el-button { margin-left: 0; }
+            .pane-actions .el-radio-group { width: 100%; display: flex; flex-wrap: wrap; }
+            .pane-footer { flex-direction: column; align-items: flex-start; gap: 3px; }
+            .option-grid { grid-template-columns: minmax(0, 1fr); }
         }
     </style>
 
