@@ -17,31 +17,661 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .tool-body .tool-form { max-width: 100%; display: flex; }
-        .tool-body .tool-form .file { flex: 1; width: 0; margin: 0 10px 0 0; display: flex; flex-direction: column; }
-        [dir=rtl] .tool-body .tool-form .file { margin: 0 0 0 10px; }
-        .file-box { width: 100%; height: 500px; max-height: 500px; display: flex; }
-        .file-box .choose-file-cover { width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; padding: 10px; border: 3px dashed #D7D7DB; border-radius: 6px; }
-        .file-box .choose-file-cover .my-icon-add-image { color: var(--el-color-primary); font-size: 70px; height: 74px; display: flex; align-items: center; }
-        .file-box .choose-file-cover .tip { font-size: 22px; padding: 10px 0; }
-        .file-box .cropper-img { width: 100%; }
-
-        .tool-body .tool-form .setting { width: 330px; margin: 0; display: flex; flex-direction: column; overflow: auto; text-align: start; }
-        .tool-body .tool-form .setting .crop--tool-list { display: flex; flex-wrap: wrap; margin-bottom: 5px; border-radius: 4px; }
-        .tool-body .tool-form .setting .crop--tool-list .item { min-width: 42px; width: auto; height: 34px; padding: 2px 5px; display: flex; justify-content: center; align-items: center; border-right: 1px solid #fff; border-bottom: 1px solid #fff; border-radius: 4px; background: var(--el-color-primary); color: #fff; cursor: pointer; }
-        .tool-body .tool-form .setting .crop--tool-list .item.active { background: var(--el-color-primary-dark-2); }
-        .tool-body .tool-form .setting .crop--tool-list .item i { font-size: 18px; }
-        .tool-body .tool-form .setting .crop-input { width:100%; margin-bottom: 5px; }
-
-        @media (max-width:1400px) {
-            .tool-body .tool-form .setting { width: 270px; }
+        /* Crop editor: a local, responsive workspace skin. */
+        .crop-tool-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 8px;
         }
-        @media (max-width:1100px) {
-            .tool-body .tool-form { max-width: 100%; flex-direction: column; }
-            .tool-body .tool-form .file { flex: unset; width: 100%; margin: 0 0 10px 0; }
-            [dir=rtl] .tool-body .tool-form .file { margin: 0 0 10px 0; }
-            .file-box { height: 400px; }
-            .tool-body .tool-form .setting { width: 100%; }
+        .crop-tool-head .title {
+            margin: 0;
+            max-width: 100%;
+            font-size: clamp(24px, 4vw, 34px);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        html.dark .crop-tool-head .title { color: #f8fafc; }
+        html:not(.dark) .crop-tool-head .title { color: #0f172a; }
+
+        .crop-description {
+            max-width: 760px;
+            margin: 0 0 22px;
+            font-size: 14px;
+            line-height: 1.75;
+        }
+        html.dark .crop-description { color: #94a3b8; }
+        html:not(.dark) .crop-description { color: #475569; }
+
+        .tool-body .tool-form.crop-editor,
+        .tool-body .tool-form.crop-editor * {
+            box-sizing: border-box;
+        }
+        .tool-body .tool-form.crop-editor {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            margin: 22px 0 0;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+            gap: 18px;
+            align-items: stretch;
+        }
+        html.dark .crop-editor { color: #e2e8f0; }
+        html:not(.dark) .crop-editor { color: #1e293b; }
+
+        .crop-editor .file {
+            width: 100%;
+            min-width: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .crop-editor .file-panel,
+        .crop-editor .settings-panel {
+            min-width: 0;
+            border-radius: 14px;
+            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .crop-editor .file-panel {
+            width: 100%;
+            padding: 16px;
+        }
+        html.dark .crop-editor .file-panel {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 16px 36px rgba(2, 6, 23, 0.24), inset 0 1px 2px rgba(255, 255, 255, 0.025);
+        }
+        html:not(.dark) .crop-editor .file-panel {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .crop-editor .panel-topline,
+        .crop-editor .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .crop-editor .panel-topline {
+            padding: 0 0 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid;
+        }
+        html.dark .crop-editor .panel-topline { border-color: #1e293b; }
+        html:not(.dark) .crop-editor .panel-topline { border-color: #e2e8f0; }
+
+        .crop-editor .panel-eyebrow,
+        .crop-editor .settings-overline,
+        .crop-editor .help-eyebrow {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+        html.dark .crop-editor .panel-eyebrow,
+        html.dark .crop-editor .settings-overline,
+        html.dark .crop-editor .help-eyebrow { color: #67e8f9; }
+        html:not(.dark) .crop-editor .panel-eyebrow,
+        html:not(.dark) .crop-editor .settings-overline,
+        html:not(.dark) .crop-editor .help-eyebrow { color: #0284c7; }
+
+        .crop-editor .panel-title,
+        .crop-editor .settings-title {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+        html.dark .crop-editor .panel-title,
+        html.dark .crop-editor .settings-title { color: #f8fafc; }
+        html:not(.dark) .crop-editor .panel-title,
+        html:not(.dark) .crop-editor .settings-title { color: #0f172a; }
+
+        .crop-editor .status-chip,
+        .crop-editor .settings-badge {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            gap: 7px;
+            min-height: 28px;
+            padding: 5px 10px;
+            border: 1px solid;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        html.dark .crop-editor .status-chip,
+        html.dark .crop-editor .settings-badge {
+            background: rgba(14, 116, 144, 0.18);
+            border-color: #155e75;
+            color: #a5f3fc;
+        }
+        html:not(.dark) .crop-editor .status-chip,
+        html:not(.dark) .crop-editor .settings-badge {
+            background: #ecfeff;
+            border-color: #a5f3fc;
+            color: #0e7490;
+        }
+        .crop-editor .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.14);
+        }
+
+        .crop-editor .file-box {
+            position: relative;
+            width: 100%;
+            height: clamp(320px, 42vw, 560px);
+            min-height: 300px;
+            max-height: 560px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid;
+            border-radius: 11px;
+        }
+        html.dark .crop-editor .file-box {
+            background: #090e1f;
+            border-color: #1e293b;
+        }
+        html:not(.dark) .crop-editor .file-box {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        .crop-editor .choose-file-cover {
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            border: 1px dashed;
+            border-radius: 10px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+        html.dark .crop-editor .choose-file-cover {
+            background: linear-gradient(135deg, #0f172a, #111827);
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        html:not(.dark) .crop-editor .choose-file-cover {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+        html.dark .crop-editor .choose-file-cover:hover {
+            background: linear-gradient(135deg, #11213a, #13233a);
+            border-color: #38bdf8;
+        }
+        html:not(.dark) .crop-editor .choose-file-cover:hover {
+            background: linear-gradient(135deg, #f0f9ff, #f8fafc);
+            border-color: #0284c7;
+        }
+        .crop-editor .choose-file-cover:active { transform: scale(0.995); }
+        .crop-editor .empty-state-icon {
+            width: 68px;
+            height: 68px;
+            margin-bottom: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid;
+            border-radius: 18px;
+        }
+        html.dark .crop-editor .empty-state-icon {
+            background: rgba(14, 116, 144, 0.18);
+            border-color: #155e75;
+            color: #67e8f9;
+        }
+        html:not(.dark) .crop-editor .empty-state-icon {
+            background: #ecfeff;
+            border-color: #a5f3fc;
+            color: #0284c7;
+        }
+        .crop-editor .empty-state-icon .my-icon-add-image {
+            display: flex;
+            align-items: center;
+            height: auto;
+            font-size: 34px;
+        }
+        .crop-editor .choose-file-cover .tip {
+            padding: 0;
+            font-size: clamp(17px, 2.2vw, 22px);
+            font-weight: 700;
+            line-height: 1.45;
+        }
+        .crop-editor .empty-subtitle {
+            max-width: 100%;
+            margin-top: 9px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        html.dark .crop-editor .empty-subtitle,
+        html.dark .crop-editor .canvas-hint { color: #94a3b8; }
+        html:not(.dark) .crop-editor .empty-subtitle,
+        html:not(.dark) .crop-editor .canvas-hint { color: #64748b; }
+        .crop-editor .cropper-img {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+        }
+        .crop-editor .canvas-hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 12px 2px 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .crop-editor .canvas-hint strong { font-weight: 700; }
+        html.dark .crop-editor .canvas-hint strong { color: #cbd5e1; }
+        html:not(.dark) .crop-editor .canvas-hint strong { color: #334155; }
+
+        .crop-editor .settings-panel {
+            width: 100%;
+            max-width: 340px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+        }
+        html.dark .crop-editor .settings-panel {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 16px 36px rgba(2, 6, 23, 0.24), inset 0 1px 2px rgba(255, 255, 255, 0.025);
+        }
+        html:not(.dark) .crop-editor .settings-panel {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+        .crop-editor .settings-header {
+            align-items: flex-start;
+            padding-bottom: 15px;
+        }
+        .crop-editor .action-stack {
+            display: grid;
+            gap: 10px;
+        }
+        .crop-editor .action-stack > div { width: 100%; }
+        .crop-editor .crop-action {
+            width: 100%;
+            min-height: 42px;
+            height: auto;
+            margin: 0;
+            padding: 9px 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.25;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .crop-editor .crop-action:active { transform: translateY(1px); }
+        html.dark .crop-editor .el-button.crop-action-primary {
+            background: rgba(14, 116, 144, 0.35);
+            border-color: #38bdf8;
+            color: #e0f2fe;
+        }
+        html:not(.dark) .crop-editor .el-button.crop-action-primary {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #ffffff;
+        }
+        html.dark .crop-editor .el-button.crop-action-primary:hover:not(:disabled) {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #ffffff;
+        }
+        html:not(.dark) .crop-editor .el-button.crop-action-primary:hover:not(:disabled) {
+            background: #0369a1;
+            border-color: #0369a1;
+            color: #ffffff;
+        }
+        html.dark .crop-editor .el-button.crop-action-secondary {
+            background: #172033;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        html:not(.dark) .crop-editor .el-button.crop-action-secondary {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+        html.dark .crop-editor .el-button.crop-action-secondary:hover:not(:disabled) {
+            background: #26354d;
+            border-color: #94a3b8;
+            color: #f8fafc;
+        }
+        html:not(.dark) .crop-editor .el-button.crop-action-secondary:hover:not(:disabled) {
+            background: #e0f2fe;
+            border-color: #0284c7;
+            color: #075985;
+        }
+        .crop-editor .crop-action .my-icon { font-size: 18px; }
+
+        .crop-editor .control-section {
+            padding-top: 16px;
+            margin-top: 16px;
+            border-top: 1px solid;
+        }
+        html.dark .crop-editor .control-section { border-color: #1e293b; }
+        html:not(.dark) .crop-editor .control-section { border-color: #e2e8f0; }
+        .crop-editor .section-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            margin-bottom: 11px;
+        }
+        .crop-editor .section-index {
+            display: inline-flex;
+            flex: 0 0 auto;
+            width: 24px;
+            height: 24px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1;
+        }
+        html.dark .crop-editor .section-index {
+            background: rgba(14, 116, 144, 0.22);
+            color: #67e8f9;
+        }
+        html:not(.dark) .crop-editor .section-index {
+            background: #ecfeff;
+            color: #0284c7;
+        }
+        .crop-editor .section-title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 750;
+            line-height: 1.4;
+        }
+        html.dark .crop-editor .section-title { color: #f8fafc; }
+        html:not(.dark) .crop-editor .section-title { color: #0f172a; }
+        .crop-editor .section-note {
+            margin: 2px 0 0;
+            font-size: 11px;
+            line-height: 1.45;
+        }
+        html.dark .crop-editor .section-note { color: #94a3b8; }
+        html:not(.dark) .crop-editor .section-note { color: #64748b; }
+
+        .crop-editor .crop--tool-list {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
+            border-radius: 0;
+        }
+        .crop-editor .crop--tool-list > * { min-width: 0; }
+        .crop-editor .crop--tool-list .item {
+            width: 100%;
+            min-width: 0;
+            min-height: 40px;
+            height: auto;
+            padding: 7px 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            appearance: none;
+            -webkit-appearance: none;
+            border: 1px solid;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 650;
+            line-height: 1.25;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        html.dark .crop-editor .crop--tool-list .item {
+            background: #111c31;
+            border-color: #26354d;
+            color: #cbd5e1;
+        }
+        html:not(.dark) .crop-editor .crop--tool-list .item {
+            background: #f8fafc;
+            border-color: #dbe4ef;
+            color: #334155;
+        }
+        html.dark .crop-editor .crop--tool-list .item:hover {
+            background: #17304a;
+            border-color: #38bdf8;
+            color: #f0f9ff;
+            box-shadow: 0 5px 14px rgba(8, 47, 73, 0.35);
+        }
+        html:not(.dark) .crop-editor .crop--tool-list .item:hover {
+            background: #e0f2fe;
+            border-color: #0284c7;
+            color: #075985;
+            box-shadow: 0 5px 14px rgba(2, 132, 199, 0.12);
+        }
+        html.dark .crop-editor .crop--tool-list .item:active {
+            background: #0e7490;
+            color: #ffffff;
+            transform: translateY(1px);
+        }
+        html:not(.dark) .crop-editor .crop--tool-list .item:active {
+            background: #bae6fd;
+            color: #075985;
+            transform: translateY(1px);
+        }
+        html.dark .crop-editor .crop--tool-list .item.active {
+            background: #0e7490;
+            border-color: #38bdf8;
+            color: #ffffff;
+        }
+        html:not(.dark) .crop-editor .crop--tool-list .item.active {
+            background: #e0f2fe;
+            border-color: #0284c7;
+            color: #075985;
+        }
+        .crop-editor .icon-tools .item { font-size: 0; }
+        .crop-editor .icon-tools .item i {
+            font-size: 18px;
+            line-height: 1;
+        }
+        .crop-editor .icon-turn-left { transform: rotate(180deg); }
+        .crop-editor .icon-turn-up { transform: rotate(270deg); }
+        .crop-editor .icon-turn-down { transform: rotate(90deg); }
+        .crop-editor .ratio-tools {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 6px;
+        }
+        .crop-editor .ratio-tools .item {
+            padding-right: 4px;
+            padding-left: 4px;
+            font-size: 12px;
+        }
+
+        .crop-editor .input-grid {
+            width: 100%;
+            min-width: 0;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .crop-editor .crop-input {
+            width: 100%;
+            min-width: 0;
+            margin: 0;
+        }
+        .crop-editor .rotation-input { grid-column: 1 / -1; }
+        .crop-editor .crop-input .el-input__wrapper {
+            min-height: 40px;
+            padding: 1px 10px;
+            border-radius: 9px;
+            box-shadow: 0 0 0 1px inset;
+            transition: box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+        .crop-editor .crop-input .el-input-group__prepend {
+            min-height: 40px;
+            padding: 0 9px;
+            border-radius: 9px 0 0 9px;
+            font-size: 12px;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+        .crop-editor .crop-input .el-input__inner {
+            min-height: 38px;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+        html.dark .crop-editor .crop-input .el-input__wrapper {
+            background: #111c31;
+            box-shadow: 0 0 0 1px #26354d inset;
+        }
+        html:not(.dark) .crop-editor .crop-input .el-input__wrapper {
+            background: #f8fafc;
+            box-shadow: 0 0 0 1px #dbe4ef inset;
+        }
+        html.dark .crop-editor .crop-input .el-input-group__prepend {
+            background: #172033;
+            border-color: #26354d;
+            color: #94a3b8;
+        }
+        html:not(.dark) .crop-editor .crop-input .el-input-group__prepend {
+            background: #f1f5f9;
+            border-color: #dbe4ef;
+            color: #475569;
+        }
+        html.dark .crop-editor .crop-input .el-input__inner { color: #f8fafc; }
+        html:not(.dark) .crop-editor .crop-input .el-input__inner { color: #0f172a; }
+        html.dark .crop-editor .crop-input .el-input__inner::placeholder { color: #64748b; }
+        html:not(.dark) .crop-editor .crop-input .el-input__inner::placeholder { color: #94a3b8; }
+        html.dark .crop-editor .crop-input .el-input__wrapper.is-focus {
+            box-shadow: 0 0 0 1px #38bdf8 inset, 0 0 0 3px rgba(56, 189, 248, 0.16);
+        }
+        html:not(.dark) .crop-editor .crop-input .el-input__wrapper.is-focus {
+            box-shadow: 0 0 0 1px #0284c7 inset, 0 0 0 3px rgba(2, 132, 199, 0.14);
+        }
+
+        .crop-editor :focus-visible {
+            outline: 3px solid;
+            outline-offset: 2px;
+        }
+        html.dark .crop-editor :focus-visible { outline-color: #38bdf8; }
+        html:not(.dark) .crop-editor :focus-visible { outline-color: #0284c7; }
+
+        .crop-divider {
+            width: 100%;
+            height: 1px;
+            margin: 26px 0 22px;
+            border: 0;
+        }
+        html.dark .crop-divider { background: #1e293b; }
+        html:not(.dark) .crop-divider { background: #e2e8f0; }
+        .crop-help {
+            width: 100%;
+            min-width: 0;
+        }
+        .crop-help .help-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .crop-help .help-card {
+            min-width: 0;
+            padding: 18px;
+            border: 1px solid;
+            border-radius: 12px;
+        }
+        html.dark .crop-help .help-card {
+            background: #0f172a;
+            border-color: #1e293b;
+            color: #cbd5e1;
+        }
+        html:not(.dark) .crop-help .help-card {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #334155;
+        }
+        .crop-help .help-card h3 {
+            margin: 0 0 9px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        html.dark .crop-help .help-card h3 { color: #f8fafc; }
+        html:not(.dark) .crop-help .help-card h3 { color: #0f172a; }
+        .crop-help .help-card p,
+        .crop-help .help-card li {
+            font-size: 13px;
+            line-height: 1.75;
+        }
+        .crop-help .help-card p { margin: 0; }
+        .crop-help .help-card ul {
+            margin: 0;
+            padding-inline-start: 20px;
+        }
+        html.dark .crop-help .help-card li::marker { color: #67e8f9; }
+        html:not(.dark) .crop-help .help-card li::marker { color: #0284c7; }
+
+        @media (max-width: 1100px) {
+            .tool-body .tool-form.crop-editor {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .crop-editor .settings-panel {
+                max-width: none;
+            }
+            .crop-editor .file-box {
+                height: clamp(300px, 52vw, 460px);
+                max-height: 460px;
+            }
+        }
+        @media (max-width: 768px) {
+            .crop-tool-head { margin-bottom: 6px; }
+            .crop-description { margin-bottom: 16px; }
+            .tool-body .tool-form.crop-editor { gap: 14px; margin-top: 16px; }
+            .crop-editor .file-panel,
+            .crop-editor .settings-panel { padding: 14px; }
+            .crop-editor .help-grid { grid-template-columns: minmax(0, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .crop-editor .panel-topline,
+            .crop-editor .settings-header { align-items: flex-start; }
+            .crop-editor .status-chip { padding-right: 8px; padding-left: 8px; }
+            .crop-editor .file-box {
+                height: min(62vh, 390px);
+                min-height: 270px;
+                max-height: 390px;
+            }
+            .crop-editor .choose-file-cover { padding: 18px 12px; }
+            .crop-editor .empty-state-icon { width: 58px; height: 58px; margin-bottom: 12px; }
+            .crop-editor .empty-state-icon .my-icon-add-image { font-size: 28px; }
+            .crop-editor .choose-file-cover .tip { font-size: 17px; }
+            .crop-editor .ratio-tools { gap: 5px; }
+            .crop-editor .ratio-tools .item { min-height: 38px; font-size: 11px; }
+            .crop-editor .input-grid { grid-template-columns: minmax(0, 1fr); gap: 9px; }
+            .crop-editor .rotation-input { grid-column: auto; }
+            .crop-help .help-card { padding: 15px; }
         }
     </style>
 
@@ -68,118 +698,178 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
 <div class="tool-body">
     <div class="card-model">
         <div class="card-body">
-            <div class="tool-head">
+            <div class="tool-head crop-tool-head">
                 <h1 class="title">裁剪、编辑图像</h1>
             </div>
-            <div class="description">免费在线图片裁剪工具，可自由设置需要裁剪图像的区域和大小。还可以旋转、翻转图像。你可以把此工具当作在线图像编辑器使用。&#xA;</div>
-            <div class="tool-form" v-cloak>
+            <div class="description crop-description">免费在线图片裁剪工具，可自由设置需要裁剪图像的区域和大小。还可以旋转、翻转图像。你可以把此工具当作在线图像编辑器使用。&#xA;</div>
+            <div class="tool-form crop-editor" v-cloak>
                 <div class="file">
-                    <div class="file-box">
-                        <input id="flFile" name="flFile" type="file" accept="image/*" style="display:none;" />
-                        <div v-if="file==null" class="choose-file-cover" v-on:click="selectImg">
-                            <i class="my-icon my-icon-add-image"></i>
-                            <div class="tip">拖放图片到此处或单击选择</div>
+                    <div class="file-panel">
+                        <div class="panel-topline">
+                            <div>
+                                <span class="panel-eyebrow">CANVAS</span>
+                                <h2 class="panel-title">编辑画布</h2>
+                            </div>
+                            <span class="status-chip"><span class="status-dot" aria-hidden="true"></span>本地处理</span>
                         </div>
-                        <img v-else class="cropper-img" v-bind:src="file.sourceBlobUrl" />
+                        <div class="file-box">
+                            <input id="flFile" name="flFile" type="file" accept="image/*" style="display:none;" />
+                            <div v-if="file==null" class="choose-file-cover" role="button" tabindex="0" aria-label="选择要编辑的图像" v-on:click="selectImg" v-on:keydown.enter.prevent="selectImg" v-on:keydown.space.prevent="selectImg">
+                                <span class="empty-state-icon" aria-hidden="true"><i class="my-icon my-icon-add-image"></i></span>
+                                <div class="tip">拖放图片到此处或单击选择</div>
+                                <div class="empty-subtitle">支持 JPG、PNG、WEBP 等常用格式</div>
+                            </div>
+                            <img v-else class="cropper-img" v-bind:src="file.sourceBlobUrl" alt="待编辑图像" />
+                        </div>
+                        <div class="canvas-hint"><span class="status-dot" aria-hidden="true"></span><span><strong>隐私优先</strong> · 图像仅在当前浏览器中处理</span></div>
                     </div>
                 </div>
-                <div class="setting">
-                    <div>
-                        <el-button type="primary" v-on:click="selectImg" class="w100" style="margin-bottom:5px;">
-                            <i class="my-icon my-icon-add-image"></i>
-                            <span>选择图像</span>
-                        </el-button>
+                <div class="setting settings-panel">
+                    <div class="settings-header">
+                        <div>
+                            <span class="settings-overline">EDIT WORKSPACE</span>
+                            <h2 class="settings-title">编辑控制</h2>
+                        </div>
+                        <span class="settings-badge">实时</span>
                     </div>
-                    <div>
-                        <el-button type="primary" class="w100" style="margin-bottom:5px;" v-on:click="saveImg">
-                            <i class="my-icon my-icon-save"></i>
-                            <span>保存图像</span>
-                        </el-button>
-                    </div>
-
-                    <div class="crop--tool-list">
-                        <el-tooltip hide-after="0" content="移动 " placement="top">
-                            <div class="item" v-on:click="cropperSetDragMode('move')"><i class="my-icon my-icon-move"></i></div>
-                        </el-tooltip>
-                        <el-tooltip hide-after="0" content=" 裁剪 " placement="top">
-                            <div class="item" v-on:click="cropperSetDragMode('crop')"><i class="my-icon my-icon-crop"></i></div>
-                        </el-tooltip>
-
-                        <el-tooltip hide-after="0" content=" 放大 " placement="top">
-                            <div class="item" v-on:click="cropperZoom(0.1)"><i class="my-icon my-icon-fangda"></i></div>
-                        </el-tooltip>
-                        <el-tooltip hide-after="0" content=" 缩小 " placement="top">
-                            <div class="item" v-on:click="cropperZoom(-0.1)"><i class="my-icon my-icon-suoxiao"></i></div>
-                        </el-tooltip>
-
-                        <el-tooltip hide-after="0" content=" 向左移动 " placement="top">
-                            <div class="item" v-on:click="cropperMove(-10,0)"><i class="my-icon my-icon-arrow-right" style="transform: rotate(180deg);"></i></div>
-                        </el-tooltip>
-                        <el-tooltip hide-after="0" content=" 向右移动 " placement="top">
-                            <div class="item" v-on:click="cropperMove(10,0)"><i class="my-icon my-icon-arrow-right"></i></div>
-                        </el-tooltip>
-                        <el-tooltip hide-after="0" content=" 向上移动 " placement="top">
-                            <div class="item" v-on:click="cropperMove(0,-10)"><i class="my-icon my-icon-arrow-right" style="transform: rotate(270deg);"></i></div>
-                        </el-tooltip>
-                        <el-tooltip hide-after="0" content=" 向下移动 " placement="top">
-                            <div class="item" v-on:click="cropperMove(0,10)"><i class="my-icon my-icon-arrow-right" style="transform: rotate(90deg);"></i></div>
-                        </el-tooltip>
-                        
-                        <el-tooltip hide-after="0" content=" 向左翻转 " placement="top">
-                            <div class="item" v-on:click="cropperRotate(-45)"><i class="my-icon my-icon-left-rotate"></i></div>
-                        </el-tooltip>
-                        <el-tooltip hide-after="0" content=" 向右翻转 " placement="top">
-                            <div class="item" v-on:click="cropperRotate(45)"><i class="my-icon my-icon-right-rotate"></i></div>
-                        </el-tooltip>
-                        
-                        <el-tooltip hide-after="0" content=" 左右相互翻转 " placement="top">
-                            <div class="item" v-on:click="cropperScale(scaleX==1?-1:1,scaleY)"><i class="my-icon my-icon-flip-horizontal"></i></div>
-                        </el-tooltip>
-                        <el-tooltip hide-after="0" content=" 上下相互翻转 " placement="top">
-                            <div class="item" v-on:click="cropperScale(scaleX,scaleY==1?-1:1)"><i class="my-icon my-icon-flip-vertical"></i></div>
-                        </el-tooltip>
-
-                        <el-tooltip hide-after="0" content=" 重置" placement="top">
-                            <div class="item" v-on:click="cropperReset"><i class="my-icon my-icon-reset"></i></div>
-                        </el-tooltip>
+                    <div class="action-stack">
+                        <div>
+                            <el-button type="primary" v-on:click="selectImg" class="w100 crop-action crop-action-primary" aria-label="选择图像">
+                                <i class="my-icon my-icon-add-image" aria-hidden="true"></i>
+                                <span>选择图像</span>
+                            </el-button>
+                        </div>
+                        <div>
+                            <el-button type="primary" class="w100 crop-action crop-action-secondary" v-on:click="saveImg" aria-label="保存图像">
+                                <i class="my-icon my-icon-save" aria-hidden="true"></i>
+                                <span>保存图像</span>
+                            </el-button>
+                        </div>
                     </div>
 
-                    <div class="crop--tool-list">
-                        <div class="item" v-bind:class="{'active':aspectRatio=='NaN'}" v-on:click="cropperSetAspectRatio('NaN')">自由比例</div>
-                        <div class="item" v-bind:class="{'active':aspectRatio==1.7777777777777777}" v-on:click="cropperSetAspectRatio(1.7777777777777777)">16:9</div>
-                        <div class="item" v-bind:class="{'active':aspectRatio==1.3333333333333333}" v-on:click="cropperSetAspectRatio(1.3333333333333333)">4:3</div>
-                        <div class="item" v-bind:class="{'active':aspectRatio==1}" v-on:click="cropperSetAspectRatio(1)">1:1</div>
-                        <div class="item" v-bind:class="{'active':aspectRatio==0.6666666666666666}" v-on:click="cropperSetAspectRatio(0.6666666666666666)">2:3</div>
+                    <div class="control-section">
+                        <div class="section-heading">
+                            <span class="section-index">01</span>
+                            <div>
+                                <h3 class="section-title">画布操作</h3>
+                                <p class="section-note">调整视图、方向与裁剪模式</p>
+                            </div>
+                        </div>
+                        <div class="crop--tool-list icon-tools">
+                            <el-tooltip hide-after="0" content="移动" placement="top">
+                                <button type="button" class="item" v-on:click="cropperSetDragMode('move')" aria-label="移动" title="移动"><i class="my-icon my-icon-move" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="裁剪" placement="top">
+                                <button type="button" class="item" v-on:click="cropperSetDragMode('crop')" aria-label="裁剪" title="裁剪"><i class="my-icon my-icon-crop" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="放大" placement="top">
+                                <button type="button" class="item" v-on:click="cropperZoom(0.1)" aria-label="放大" title="放大"><i class="my-icon my-icon-fangda" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="缩小" placement="top">
+                                <button type="button" class="item" v-on:click="cropperZoom(-0.1)" aria-label="缩小" title="缩小"><i class="my-icon my-icon-suoxiao" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="向左移动" placement="top">
+                                <button type="button" class="item" v-on:click="cropperMove(-10,0)" aria-label="向左移动" title="向左移动"><i class="my-icon my-icon-arrow-right icon-turn-left" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="向右移动" placement="top">
+                                <button type="button" class="item" v-on:click="cropperMove(10,0)" aria-label="向右移动" title="向右移动"><i class="my-icon my-icon-arrow-right" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="向上移动" placement="top">
+                                <button type="button" class="item" v-on:click="cropperMove(0,-10)" aria-label="向上移动" title="向上移动"><i class="my-icon my-icon-arrow-right icon-turn-up" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="向下移动" placement="top">
+                                <button type="button" class="item" v-on:click="cropperMove(0,10)" aria-label="向下移动" title="向下移动"><i class="my-icon my-icon-arrow-right icon-turn-down" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="向左翻转" placement="top">
+                                <button type="button" class="item" v-on:click="cropperRotate(-45)" aria-label="向左翻转" title="向左翻转"><i class="my-icon my-icon-left-rotate" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="向右翻转" placement="top">
+                                <button type="button" class="item" v-on:click="cropperRotate(45)" aria-label="向右翻转" title="向右翻转"><i class="my-icon my-icon-right-rotate" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="左右相互翻转" placement="top">
+                                <button type="button" class="item" v-on:click="cropperScale(scaleX==1?-1:1,scaleY)" aria-label="左右相互翻转" title="左右相互翻转"><i class="my-icon my-icon-flip-horizontal" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="上下相互翻转" placement="top">
+                                <button type="button" class="item" v-on:click="cropperScale(scaleX,scaleY==1?-1:1)" aria-label="上下相互翻转" title="上下相互翻转"><i class="my-icon my-icon-flip-vertical" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                            <el-tooltip hide-after="0" content="重置" placement="top">
+                                <button type="button" class="item" v-on:click="cropperReset" aria-label="重置" title="重置"><i class="my-icon my-icon-reset" aria-hidden="true"></i></button>
+                            </el-tooltip>
+                        </div>
                     </div>
 
-                    <el-input v-model="width" type="number" class="crop-input" v-on:input="widthInput">
-                        <template #prepend>宽度(px)：</template>
-                    </el-input>
-                    <el-input v-model="height" type="number" class="crop-input" v-on:input="heightInput">
-                        <template #prepend>高度(px)：</template>
-                    </el-input>
-                    <el-input v-model="x" type="number" class="crop-input" v-on:input="xInput">
-                        <template #prepend>X(px)</template>
-                    </el-input>
-                    <el-input v-model="y" type="number" class="crop-input" v-on:input="yInput">
-                        <template #prepend>Y(px)</template>
-                    </el-input>
-                    <el-input v-model="rotate" type="number" class="crop-input" v-on:input="rotateInput">
-                        <template #prepend>旋转(deg)</template>
-                    </el-input>
+                    <div class="control-section">
+                        <div class="section-heading">
+                            <span class="section-index">02</span>
+                            <div>
+                                <h3 class="section-title">裁剪比例</h3>
+                                <p class="section-note">选择输出画面的构图比例</p>
+                            </div>
+                        </div>
+                        <div class="crop--tool-list ratio-tools">
+                            <button type="button" class="item" v-bind:class="{'active':aspectRatio=='NaN'}" v-on:click="cropperSetAspectRatio('NaN')" v-bind:aria-pressed="aspectRatio=='NaN'">自由比例</button>
+                            <button type="button" class="item" v-bind:class="{'active':aspectRatio==1.7777777777777777}" v-on:click="cropperSetAspectRatio(1.7777777777777777)" v-bind:aria-pressed="aspectRatio==1.7777777777777777">16:9</button>
+                            <button type="button" class="item" v-bind:class="{'active':aspectRatio==1.3333333333333333}" v-on:click="cropperSetAspectRatio(1.3333333333333333)" v-bind:aria-pressed="aspectRatio==1.3333333333333333">4:3</button>
+                            <button type="button" class="item" v-bind:class="{'active':aspectRatio==1}" v-on:click="cropperSetAspectRatio(1)" v-bind:aria-pressed="aspectRatio==1">1:1</button>
+                            <button type="button" class="item" v-bind:class="{'active':aspectRatio==0.6666666666666666}" v-on:click="cropperSetAspectRatio(0.6666666666666666)" v-bind:aria-pressed="aspectRatio==0.6666666666666666">2:3</button>
+                        </div>
+                    </div>
+
+                    <div class="control-section input-section">
+                        <div class="section-heading">
+                            <span class="section-index">03</span>
+                            <div>
+                                <h3 class="section-title">精确参数</h3>
+                                <p class="section-note">用像素值微调裁剪区域</p>
+                            </div>
+                        </div>
+                        <div class="input-grid">
+                            <el-input v-model="width" type="number" class="crop-input" v-on:input="widthInput" aria-label="裁剪宽度">
+                                <template #prepend>宽度(px)：</template>
+                            </el-input>
+                            <el-input v-model="height" type="number" class="crop-input" v-on:input="heightInput" aria-label="裁剪高度">
+                                <template #prepend>高度(px)：</template>
+                            </el-input>
+                            <el-input v-model="x" type="number" class="crop-input" v-on:input="xInput" aria-label="裁剪区域 X 坐标">
+                                <template #prepend>X(px)</template>
+                            </el-input>
+                            <el-input v-model="y" type="number" class="crop-input" v-on:input="yInput" aria-label="裁剪区域 Y 坐标">
+                                <template #prepend>Y(px)</template>
+                            </el-input>
+                            <el-input v-model="rotate" type="number" class="crop-input rotation-input" v-on:input="rotateInput" aria-label="旋转角度">
+                                <template #prepend>旋转(deg)</template>
+                            </el-input>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="divider"></div>
-            <div class="content">
-                <h3>介绍</h3><p>免费在线图片裁剪工具，可自由设置需要裁剪图像的区域和大小。还可以旋转、翻转图像。你可以把此工具当作在线图像编辑器使用。</p><h3>使用方法</h3><ul><li>选择要裁剪的图像。</li><li>设置裁剪图像比例。</li><li>选择裁剪图像区域和大小，你可旋转、翻转图像。</li><li>点击“保存图像”即可。</li></ul>
+            <div class="divider crop-divider"></div>
+            <div class="content crop-help">
+                <div class="help-grid">
+                    <section class="help-card">
+                        <span class="help-eyebrow">ABOUT</span>
+                        <h3>介绍</h3>
+                        <p>免费在线图片裁剪工具，可自由设置需要裁剪图像的区域和大小。还可以旋转、翻转图像。你可以把此工具当作在线图像编辑器使用。</p>
+                    </section>
+                    <section class="help-card">
+                        <span class="help-eyebrow">WORKFLOW</span>
+                        <h3>使用方法</h3>
+                        <ul>
+                            <li>选择要裁剪的图像。</li>
+                            <li>设置裁剪图像比例。</li>
+                            <li>选择裁剪图像区域和大小，你可旋转、翻转图像。</li>
+                            <li>点击“保存图像”即可。</li>
+                        </ul>
+                    </section>
+                </div>
             </div>
         </div>
     </div>
