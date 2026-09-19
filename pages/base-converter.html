@@ -17,7 +17,732 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .tool-body .tool-form { max-width: 700px; }
+        .tool-page-body .card-body > .tool-head {
+            margin-bottom: 8px;
+        }
+
+        .tool-page-body .card-body > .tool-head .title {
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+        }
+
+        .tool-page-body .card-body > .description {
+            max-width: 760px;
+            margin: 0 auto 22px;
+            line-height: 1.75;
+        }
+
+        .tool-page-body .tool-form.base-converter-ui {
+            width: 100%;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .base-converter-ui,
+        .base-converter-ui * {
+            box-sizing: border-box;
+        }
+
+        html.dark .tool-page-body .card-body > .tool-head .title,
+        html.dark .tool-page-body .card-body > .description {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .card-body > .tool-head .title,
+        html:not(.dark) .tool-page-body .card-body > .description {
+            color: #0f172a;
+        }
+
+        .tool-dashboard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 16px 18px;
+            border: 1px solid transparent;
+            border-radius: 14px;
+            overflow: hidden;
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .tool-dashboard {
+            background: linear-gradient(135deg, #090e1f 0%, #0d1b31 100%);
+            border-color: #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.42), 0 10px 30px rgba(2, 8, 23, 0.18);
+        }
+
+        html:not(.dark) .tool-dashboard {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef7ff 100%);
+            border-color: #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03), 0 10px 24px rgba(15, 23, 42, 0.05);
+        }
+
+        .dashboard-copy {
+            min-width: 0;
+            flex: 1 1 320px;
+        }
+
+        .dashboard-kicker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            margin-bottom: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.2;
+        }
+
+        html.dark .dashboard-kicker {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .dashboard-kicker {
+            color: #0369a1;
+        }
+
+        .dashboard-kicker__line {
+            display: inline-block;
+            width: 26px;
+            height: 1px;
+            flex: 0 0 26px;
+            opacity: 0.7;
+        }
+
+        html.dark .dashboard-kicker__line {
+            background: #38bdf8;
+        }
+
+        html:not(.dark) .dashboard-kicker__line {
+            background: #0284c7;
+        }
+
+        .dashboard-title {
+            font-size: clamp(18px, 2.4vw, 24px);
+            font-weight: 750;
+            letter-spacing: -0.025em;
+            line-height: 1.25;
+        }
+
+        html.dark .dashboard-title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .dashboard-title {
+            color: #0f172a;
+        }
+
+        .dashboard-caption {
+            margin-top: 5px;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        html.dark .dashboard-caption {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .dashboard-caption {
+            color: #475569;
+        }
+
+        .dashboard-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex: 0 0 auto;
+            min-height: 36px;
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        html.dark .dashboard-status {
+            background: rgba(14, 116, 144, 0.2);
+            border-color: #155e75;
+            color: #bae6fd;
+        }
+
+        html:not(.dark) .dashboard-status {
+            background: #ecfeff;
+            border-color: #a5f3fc;
+            color: #155e75;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            flex: 0 0 8px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.14);
+        }
+
+        html.dark .status-dot {
+            background: #67e8f9;
+        }
+
+        html:not(.dark) .status-dot {
+            background: #0891b2;
+        }
+
+        .converter-panel {
+            margin-top: 16px;
+            padding: 20px;
+            border: 1px solid transparent;
+            border-radius: 14px;
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .converter-panel {
+            background: #0b1120;
+            border-color: #1e293b;
+            box-shadow: 0 16px 36px rgba(2, 8, 23, 0.22);
+        }
+
+        html:not(.dark) .converter-panel {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.06);
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            min-width: 0;
+            padding-bottom: 16px;
+            border-bottom: 1px solid transparent;
+        }
+
+        html.dark .panel-head {
+            border-bottom-color: #1e293b;
+        }
+
+        html:not(.dark) .panel-head {
+            border-bottom-color: #e2e8f0;
+        }
+
+        .panel-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            border-radius: 10px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        html.dark .panel-index {
+            background: #082f49;
+            color: #7dd3fc;
+            box-shadow: inset 0 0 0 1px #155e75;
+        }
+
+        html:not(.dark) .panel-index {
+            background: #e0f2fe;
+            color: #0369a1;
+            box-shadow: inset 0 0 0 1px #bae6fd;
+        }
+
+        .panel-heading-copy {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .panel-heading-copy h2 {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 750;
+            letter-spacing: -0.015em;
+            line-height: 1.35;
+        }
+
+        html.dark .panel-heading-copy h2 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .panel-heading-copy h2 {
+            color: #0f172a;
+        }
+
+        .panel-heading-copy p {
+            margin: 4px 0 0;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        html.dark .panel-heading-copy p {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .panel-heading-copy p {
+            color: #475569;
+        }
+
+        .panel-chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            flex: 0 0 auto;
+            padding: 5px 9px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+        }
+
+        html.dark .panel-chip {
+            background: #111827;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .panel-chip {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+
+        .base-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px 16px;
+            width: 100%;
+            margin-top: 18px;
+        }
+
+        .base-converter-ui .base-form .base-field {
+            min-width: 0;
+            margin-bottom: 0;
+        }
+
+        .base-field--featured {
+            grid-column: 1 / -1;
+        }
+
+        .base-converter-ui .base-form .base-field .el-form-item__label {
+            height: auto;
+            margin-bottom: 7px;
+            padding: 0;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        html.dark .base-converter-ui .base-form .base-field .el-form-item__label {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .base-converter-ui .base-form .base-field .el-form-item__label {
+            color: #334155;
+        }
+
+        .base-converter-ui .base-form .base-field .el-form-item__content {
+            display: block;
+            min-width: 0;
+            margin-left: 0 !important;
+            line-height: normal;
+        }
+
+        .base-field__surface {
+            min-width: 0;
+            padding: 11px 12px 10px;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+        }
+
+        html.dark .base-field__surface {
+            background: #0f172a;
+            border-color: #1e293b;
+            box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.04);
+        }
+
+        html:not(.dark) .base-field__surface {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        html.dark .base-field__surface:hover {
+            border-color: #334155;
+            background: #111c31;
+        }
+
+        html:not(.dark) .base-field__surface:hover {
+            border-color: #cbd5e1;
+            background: #f1f5f9;
+        }
+
+        html.dark .base-field__surface:focus-within {
+            border-color: #38bdf8;
+            background: #101c32;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14), inset 0 1px 0 rgba(125, 211, 252, 0.08);
+            transform: translateY(-1px);
+        }
+
+        html:not(.dark) .base-field__surface:focus-within {
+            border-color: #0284c7;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12), 0 6px 16px rgba(15, 23, 42, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .base-field__meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+            margin-bottom: 5px;
+        }
+
+        .base-field__code,
+        .base-field__range {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            line-height: 1.25;
+        }
+
+        .base-field__code {
+            display: inline-flex;
+            align-items: center;
+            min-height: 22px;
+            padding: 3px 7px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        html.dark .base-field__code {
+            background: #082f49;
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .base-field__code {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .base-field__range {
+            min-width: 0;
+            overflow: hidden;
+            color: inherit;
+            font-size: 11px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        html.dark .base-field__range {
+            color: #64748b;
+        }
+
+        html:not(.dark) .base-field__range {
+            color: #64748b;
+        }
+
+        .base-converter-ui .base-input,
+        .base-converter-ui .base-input .el-textarea,
+        .base-converter-ui .base-input .el-textarea__inner {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .base-converter-ui .base-input .el-textarea__inner {
+            min-height: 86px;
+            padding: 8px 0 3px;
+            border: 0 !important;
+            border-radius: 0;
+            outline: 0;
+            resize: vertical;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+            word-break: break-all;
+            box-shadow: none !important;
+            transition: color 0.18s ease;
+        }
+
+        html.dark .base-converter-ui .base-input .el-textarea__inner {
+            background: transparent !important;
+            color: #f8fafc;
+            caret-color: #67e8f9;
+        }
+
+        html:not(.dark) .base-converter-ui .base-input .el-textarea__inner {
+            background: transparent !important;
+            color: #0f172a;
+            caret-color: #0284c7;
+        }
+
+        html.dark .base-converter-ui .base-input .el-textarea__inner::placeholder {
+            color: #64748b;
+        }
+
+        html:not(.dark) .base-converter-ui .base-input .el-textarea__inner::placeholder {
+            color: #94a3b8;
+        }
+
+        .converter-note {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px 18px;
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid transparent;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        html.dark .converter-note {
+            border-top-color: #1e293b;
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .converter-note {
+            border-top-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .converter-note__live,
+        .converter-note__hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-width: 0;
+        }
+
+        .converter-note__live {
+            font-weight: 700;
+        }
+
+        html.dark .converter-note__live {
+            color: #bae6fd;
+        }
+
+        html:not(.dark) .converter-note__live {
+            color: #155e75;
+        }
+
+        .converter-note__icon {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+        }
+
+        html.dark .converter-note__icon {
+            background: #22d3ee;
+        }
+
+        html:not(.dark) .converter-note__icon {
+            background: #0891b2;
+        }
+
+        .base-divider {
+            width: 100%;
+            max-width: 980px;
+            height: 1px;
+            margin: 24px auto;
+            opacity: 1;
+        }
+
+        html.dark .base-divider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) .base-divider {
+            background: #e2e8f0;
+        }
+
+        .tool-page-body .guide-section {
+            width: 100%;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid transparent;
+            border-radius: 14px;
+        }
+
+        html.dark .tool-page-body .guide-section {
+            background: #0b1120;
+            border-color: #1e293b;
+        }
+
+        html:not(.dark) .tool-page-body .guide-section {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        .guide-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .guide-kicker {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.2;
+        }
+
+        html.dark .guide-kicker {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .guide-kicker {
+            color: #0369a1;
+        }
+
+        .guide-heading h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        html.dark .guide-heading h3 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .guide-heading h3 {
+            color: #0f172a;
+        }
+
+        .guide-marker {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            padding: 5px 9px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.07em;
+            white-space: nowrap;
+        }
+
+        html.dark .guide-marker {
+            background: #111827;
+            border-color: #334155;
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .guide-marker {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #475569;
+        }
+
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px 20px;
+        }
+
+        .tool-page-body .guide-grid p {
+            min-width: 0;
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        html.dark .tool-page-body .guide-grid p {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .tool-page-body .guide-grid p {
+            color: #334155;
+        }
+
+        @media (max-width: 768px) {
+            .tool-page-body .tool-form.base-converter-ui,
+            .base-divider,
+            .tool-page-body .guide-section {
+                max-width: 100%;
+            }
+
+            .base-form,
+            .guide-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .base-field--featured {
+                grid-column: auto;
+            }
+
+            .converter-panel,
+            .tool-page-body .guide-section {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tool-dashboard {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 12px;
+                padding: 14px;
+            }
+
+            .dashboard-status {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .panel-head,
+            .guide-heading {
+                gap: 10px;
+            }
+
+            .panel-chip,
+            .guide-marker {
+                display: none;
+            }
+
+            .converter-panel,
+            .tool-page-body .guide-section {
+                padding: 14px;
+            }
+
+            .base-field__surface {
+                padding: 10px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tool-dashboard,
+            .converter-panel,
+            .base-field__surface,
+            .base-converter-ui .base-input .el-textarea__inner {
+                transition: none;
+            }
+
+            html.dark .base-field__surface:focus-within,
+            html:not(.dark) .base-field__surface:focus-within {
+                transform: none;
+            }
+        }
     </style>
 
     <meta property="og:type" content="website" />
@@ -43,7 +768,7 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
@@ -54,29 +779,101 @@
                 <h1 class="title">进制转换</h1>
             </div>
             <div class="description">本工具支持二进制、八进制、十进制、十六进制、三十二进制等多种进制相互转换，支持大段数字。</div>
-            <div class="tool-form">
-                <el-form :model="formData" ref="computeForm" label-position="top">
-                    <el-form-item label="二进制">
-                        <el-input v-model="formData.value[0]" :rows="3" type="textarea" v-on:keyup="convert(0)" v-on:focus="focus(0)" v-on:blur="blur(0)" class="w100"></el-input>
-                    </el-form-item>
-                    <el-form-item label="八进制">
-                        <el-input v-model="formData.value[1]" :rows="3" type="textarea" v-on:keyup="convert(1)" v-on:focus="focus(1)" v-on:blur="blur(1)" class="w100"></el-input>
-                    </el-form-item>
-                    <el-form-item label="十进制">
-                        <el-input v-model="formData.value[2]" :rows="3" type="textarea" v-on:keyup="convert(2)" v-on:focus="focus(2)" v-on:blur="blur(2)" class="w100"></el-input>
-                    </el-form-item>
-                    <el-form-item label="十六进制">
-                        <el-input v-model="formData.value[3]" :rows="3" type="textarea" v-on:keyup="convert(3)" v-on:focus="focus(3)" v-on:blur="blur(3)" class="w100"></el-input>
-                    </el-form-item>
-                    <el-form-item label="三十二进制">
-                        <el-input v-model="formData.value[4]" :rows="3" type="textarea" v-on:keyup="convert(4)" v-on:focus="focus(4)" v-on:blur="blur(4)" class="w100"></el-input>
-                    </el-form-item>
-                </el-form>
+            <div class="tool-form base-converter-ui">
+                <section class="tool-dashboard" aria-label="进制转换状态">
+                    <div class="dashboard-copy">
+                        <div class="dashboard-kicker">
+                            <span>RADIX LAB</span>
+                            <span class="dashboard-kicker__line" aria-hidden="true"></span>
+                            <span>05 BASES</span>
+                        </div>
+                        <div class="dashboard-title">多进制转换工作台</div>
+                        <div class="dashboard-caption">在任意输入框键入数值，其他进制会即时同步。</div>
+                    </div>
+                    <div class="dashboard-status" role="status" aria-live="polite">
+                        <span class="status-dot" aria-hidden="true"></span>
+                        <span>实时转换</span>
+                    </div>
+                </section>
+
+                <section class="converter-panel" aria-labelledby="converter-panel-title">
+                    <div class="panel-head">
+                        <span class="panel-index" aria-hidden="true">01</span>
+                        <div class="panel-heading-copy">
+                            <h2 id="converter-panel-title">输入与转换</h2>
+                            <p>选择任意进制作为入口，结果会保持同步。</p>
+                        </div>
+                        <span class="panel-chip">AUTO SYNC</span>
+                    </div>
+
+                    <el-form :model="formData" ref="computeForm" label-position="top" class="base-form">
+                        <el-form-item label="二进制" class="base-field">
+                            <div class="base-field__surface">
+                                <div class="base-field__meta">
+                                    <span class="base-field__code">BIN</span>
+                                    <span class="base-field__range">0 · 1</span>
+                                </div>
+                                <el-input v-model="formData.value[0]" :rows="3" type="textarea" v-on:keyup="convert(0)" v-on:focus="focus(0)" v-on:blur="blur(0)" class="w100 base-input" aria-label="二进制输入" spellcheck="false"></el-input>
+                            </div>
+                        </el-form-item>
+                        <el-form-item label="八进制" class="base-field">
+                            <div class="base-field__surface">
+                                <div class="base-field__meta">
+                                    <span class="base-field__code">OCT</span>
+                                    <span class="base-field__range">0 – 7</span>
+                                </div>
+                                <el-input v-model="formData.value[1]" :rows="3" type="textarea" v-on:keyup="convert(1)" v-on:focus="focus(1)" v-on:blur="blur(1)" class="w100 base-input" aria-label="八进制输入" spellcheck="false"></el-input>
+                            </div>
+                        </el-form-item>
+                        <el-form-item label="十进制" class="base-field base-field--featured">
+                            <div class="base-field__surface">
+                                <div class="base-field__meta">
+                                    <span class="base-field__code">DEC</span>
+                                    <span class="base-field__range">0 – 9</span>
+                                </div>
+                                <el-input v-model="formData.value[2]" :rows="3" type="textarea" v-on:keyup="convert(2)" v-on:focus="focus(2)" v-on:blur="blur(2)" class="w100 base-input" aria-label="十进制输入" spellcheck="false"></el-input>
+                            </div>
+                        </el-form-item>
+                        <el-form-item label="十六进制" class="base-field">
+                            <div class="base-field__surface">
+                                <div class="base-field__meta">
+                                    <span class="base-field__code">HEX</span>
+                                    <span class="base-field__range">0 – 9 · A – F</span>
+                                </div>
+                                <el-input v-model="formData.value[3]" :rows="3" type="textarea" v-on:keyup="convert(3)" v-on:focus="focus(3)" v-on:blur="blur(3)" class="w100 base-input" aria-label="十六进制输入" spellcheck="false"></el-input>
+                            </div>
+                        </el-form-item>
+                        <el-form-item label="三十二进制" class="base-field">
+                            <div class="base-field__surface">
+                                <div class="base-field__meta">
+                                    <span class="base-field__code">BASE32</span>
+                                    <span class="base-field__range">0 – 9 · A – V</span>
+                                </div>
+                                <el-input v-model="formData.value[4]" :rows="3" type="textarea" v-on:keyup="convert(4)" v-on:focus="focus(4)" v-on:blur="blur(4)" class="w100 base-input" aria-label="三十二进制输入" spellcheck="false"></el-input>
+                            </div>
+                        </el-form-item>
+                    </el-form>
+
+                    <div class="converter-note" role="status" aria-live="polite">
+                        <span class="converter-note__live"><span class="converter-note__icon" aria-hidden="true"></span>输入任意一栏，其他栏位自动更新</span>
+                        <span class="converter-note__hint">支持大段数字 · 纯前端处理</span>
+                    </div>
+                </section>
             </div>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>介绍</h3><p>进制转换是一款功免费的在线工具，可以用来解决许多实际问题。它包含了二进制、八进制、十进制、十六进制、三十二进制等多种进制转换，支持大段数字。进制转换工具是一款出色的数学运算工具，可以成为用户生产力和效率的重要工具之一。</p><p>进制也就是进位计数制，是人为定义的带进位的计数方法。 对于任何一种进制：X进制，就表示每一位置上的数运算时都是逢X进一位。 十进制是逢十进一，十六进制是逢十六进一，二进制就是逢二进一，以此类推，x进制就是逢x进位。</p>
-            </div>
+            <div class="divider base-divider" aria-hidden="true"></div>
+            <section class="content guide-section" aria-labelledby="guide-title">
+                <div class="guide-heading">
+                    <div>
+                        <span class="guide-kicker">FIELD NOTES / 01</span>
+                        <h3 id="guide-title">介绍</h3>
+                    </div>
+                    <span class="guide-marker">BASE SYSTEM</span>
+                </div>
+                <div class="guide-grid">
+                    <p>进制转换是一款免费的在线工具，可以用来解决许多实际问题。它包含了二进制、八进制、十进制、十六进制、三十二进制等多种进制转换，支持大段数字。进制转换工具是一款出色的数学运算工具，可以成为用户生产力和效率的重要工具之一。</p>
+                    <p>进制也就是进位计数制，是人为定义的带进位的计数方法。对于任何一种进制：X 进制，就表示每一位置上的数运算时都是逢 X 进一位。十进制是逢十进一，十六进制是逢十六进一，二进制就是逢二进一，以此类推，X 进制就是逢 X 进位。</p>
+                </div>
+            </section>
         </div>
     </div>
 </div>
