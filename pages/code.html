@@ -17,136 +17,1008 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
 
     <style>
-        .category-container {
-            max-width: 1320px;
-            margin: 0 auto;
-            padding: 24px 16px 80px;
+        /* Scoped page reset and predictable sizing for every viewport. */
+        .tool-page-body,
+        .tool-page-body *,
+        .tool-topbar,
+        .tool-topbar * {
+            box-sizing: border-box;
         }
 
-        /* 顶部 Header */
-        .cat-hero {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 24px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+        html {
+            min-width: 320px;
         }
-        .cat-title-group {
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        html.dark {
+            color-scheme: dark;
+        }
+
+        html:not(.dark) {
+            color-scheme: light;
+        }
+
+        /* Site chrome remains quiet so the tool card owns the visual hierarchy. */
+        .tool-topbar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            width: calc(100% - 32px);
+            max-width: 1280px;
+            min-height: 52px;
+            margin: 14px auto 0;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+
+        html.dark .tool-topbar {
+            background: rgba(9, 14, 31, 0.92);
+            border: 1px solid #1e293b;
+            color: #94a3b8;
+            box-shadow: 0 10px 30px rgba(2, 6, 23, 0.22);
+        }
+
+        html:not(.dark) .tool-topbar {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .tool-topbar-logo,
+        .tool-topbar-home {
+            display: inline-flex;
+            align-items: center;
+            min-height: 36px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .tool-topbar-logo {
+            padding: 6px 8px;
+            font-weight: 750;
+            letter-spacing: 0.02em;
+        }
+
+        html.dark .tool-topbar-logo {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-topbar-logo {
+            color: #0f172a;
+        }
+
+        .tool-topbar-logo:hover,
+        .tool-topbar-logo:focus-visible {
+            text-decoration: none;
+        }
+
+        html.dark .tool-topbar-logo:hover,
+        html.dark .tool-topbar-logo:focus-visible {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .tool-topbar-logo:hover,
+        html:not(.dark) .tool-topbar-logo:focus-visible {
+            color: #0369a1;
+        }
+
+        .tool-topbar-sep {
+            user-select: none;
+        }
+
+        html.dark .tool-topbar-sep {
+            color: #475569;
+        }
+
+        html:not(.dark) .tool-topbar-sep {
+            color: #94a3b8;
+        }
+
+        .tool-topbar-title {
+            min-width: 0;
+            overflow: hidden;
+            color: inherit;
+            font-weight: 600;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tool-topbar-home {
+            margin-left: auto;
+            padding: 6px 10px;
+            border: 1px solid transparent;
+            font-weight: 650;
+        }
+
+        html.dark .tool-topbar-home {
+            color: #bae6fd;
+        }
+
+        html.dark .tool-topbar-home:hover,
+        html.dark .tool-topbar-home:focus-visible {
+            background: rgba(14, 116, 144, 0.22);
+            border-color: #155e75;
+            color: #f0f9ff;
+        }
+
+        html:not(.dark) .tool-topbar-home {
+            color: #0369a1;
+        }
+
+        html:not(.dark) .tool-topbar-home:hover,
+        html:not(.dark) .tool-topbar-home:focus-visible {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+            color: #0c4a6e;
+        }
+
+        /* Required tool-page hierarchy. */
+        .tool-page-body {
+            width: 100%;
+            max-width: 100%;
+            padding: clamp(16px, 3vw, 32px) 16px 72px;
+            overflow-x: hidden;
+        }
+
+        html.dark .tool-page-body {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body {
+            color: #1e293b;
+        }
+
+        .tool-page-body .tool-body {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        html.dark .tool-page-body .tool-body {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body .tool-body {
+            color: #1e293b;
+        }
+
+        .tool-page-body .card-model {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+
+        html.dark .tool-page-body .card-model {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 20px 55px rgba(2, 6, 23, 0.34);
+        }
+
+        html:not(.dark) .tool-page-body .card-model {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+        }
+
+        .tool-page-body .card-body {
+            width: 100%;
+            min-width: 0;
+            padding: clamp(22px, 4vw, 42px);
+        }
+
+        html.dark .tool-page-body .card-body {
+            background: #0b1120;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body .card-body {
+            background: #ffffff;
+            color: #1e293b;
+        }
+
+        .tool-page-body .tool-head {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            margin: 0;
+        }
+
+        .tool-page-body .title {
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-        .cat-title {
-            font-size: 24px;
+            min-width: 0;
+            margin: 0;
+            font-size: clamp(26px, 3vw, 38px);
             font-weight: 800;
-            color: #f8fafc;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.035em;
+            line-height: 1.18;
         }
-        .cat-badge {
+
+        .tool-page-body .title::before {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            width: 42px;
+            height: 42px;
+            border-radius: 11px;
+            content: '</>';
             font-family: 'JetBrains Mono', Consolas, monospace;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 999px;
-            background: rgba(56, 189, 248, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8;
-        }
-        .cat-search-input {
-            width: 260px;
-            height: 38px;
-            background: #090f1d !important;
-            border: 1px solid rgba(51, 65, 85, 0.8);
-            border-radius: 8px;
-            padding: 0 14px;
-            color: #f1f5f9 !important;
             font-size: 13px;
-            outline: none;
-            transition: all 0.2s;
-            box-sizing: border-box;
+            font-weight: 800;
+            letter-spacing: -0.08em;
         }
-        .cat-search-input:focus {
+
+        html.dark .tool-page-body .title {
+            color: #f8fafc;
+        }
+
+        html.dark .tool-page-body .title::before {
+            background: rgba(14, 116, 144, 0.28);
+            border: 1px solid #38bdf8;
+            color: #7dd3fc;
+            box-shadow: 0 0 22px rgba(56, 189, 248, 0.14);
+        }
+
+        html:not(.dark) .tool-page-body .title {
+            color: #0f172a;
+        }
+
+        html:not(.dark) .tool-page-body .title::before {
+            background: #eff6ff;
+            border: 1px solid #7dd3fc;
+            color: #0369a1;
+        }
+
+        .tool-page-body .description {
+            max-width: 760px;
+            margin: 10px 0 0;
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        html.dark .tool-page-body .description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .description {
+            color: #475569;
+        }
+
+        .code-catalog {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .tool-dashboard {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 26px;
+            padding: 18px;
+            border-radius: 12px;
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .tool-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .tool-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .dashboard-copy {
+            min-width: 0;
+            flex: 1 1 280px;
+        }
+
+        .dashboard-kicker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            line-height: 1.4;
+        }
+
+        html.dark .dashboard-kicker {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .dashboard-kicker {
+            color: #0369a1;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        html.dark .status-dot {
+            background: #38bdf8;
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12), 0 0 12px rgba(56, 189, 248, 0.8);
+        }
+
+        html:not(.dark) .status-dot {
+            background: #0284c7;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+
+        .dashboard-heading {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        html.dark .dashboard-heading {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .dashboard-heading {
+            color: #0f172a;
+        }
+
+        .dashboard-meta {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 6px 0 0;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        html.dark .dashboard-meta {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .dashboard-meta {
+            color: #64748b;
+        }
+
+        .dashboard-meta strong {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 16px;
+        }
+
+        html.dark .dashboard-meta strong {
+            color: #bae6fd;
+        }
+
+        html:not(.dark) .dashboard-meta strong {
+            color: #0369a1;
+        }
+
+        .search-panel {
+            min-width: 0;
+            flex: 1 1 360px;
+            max-width: 520px;
+        }
+
+        .search-label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        html.dark .search-label {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .search-label {
+            color: #334155;
+        }
+
+        .search-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .search-field {
+            position: relative;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .cat-search-input {
+            display: block;
+            width: 100%;
+            min-width: 0;
+            height: 44px;
+            margin: 0;
+            padding: 0 14px 0 42px;
+            border-radius: 9px;
+            outline: none;
+            font: inherit;
+            font-size: 13px;
+            line-height: 44px;
+            transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+        }
+
+        html.dark .cat-search-input {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+        }
+
+        html.dark .cat-search-input::placeholder {
+            color: #64748b;
+        }
+
+        html.dark .cat-search-input:focus {
             border-color: #38bdf8;
             box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
         }
 
-        /* 响应式网格 */
+        html:not(.dark) .cat-search-input {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+        }
+
+        html:not(.dark) .cat-search-input::placeholder {
+            color: #64748b;
+        }
+
+        html:not(.dark) .cat-search-input:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
+        }
+
+        .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            width: 17px;
+            height: 17px;
+            pointer-events: none;
+            transform: translateY(-50%);
+        }
+
+        html.dark .search-icon {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .search-icon {
+            color: #0284c7;
+        }
+
+        .search-help {
+            margin: 6px 0 0;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        html.dark .search-help {
+            color: #64748b;
+        }
+
+        html:not(.dark) .search-help {
+            color: #64748b;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            padding: 8px 14px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            cursor: pointer;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-decoration: none;
+            white-space: nowrap;
+            user-select: none;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        html.dark .action-btn-primary {
+            background: #0e7490;
+            border-color: #38bdf8;
+            color: #ecfeff;
+        }
+
+        html.dark .action-btn-primary:hover {
+            background: #0284c7;
+            box-shadow: 0 5px 14px rgba(14, 116, 144, 0.28);
+        }
+
+        html.dark .action-btn-secondary {
+            background: #111b2e;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+
+        html.dark .action-btn-secondary:hover {
+            background: #1e293b;
+            border-color: #64748b;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .action-btn-primary {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #ffffff;
+        }
+
+        html:not(.dark) .action-btn-primary:hover {
+            background: #0369a1;
+            border-color: #0369a1;
+            box-shadow: 0 5px 14px rgba(3, 105, 161, 0.2);
+        }
+
+        html:not(.dark) .action-btn-secondary {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+
+        html:not(.dark) .action-btn-secondary:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
+        .action-btn:focus-visible,
+        .tool-topbar a:focus-visible,
+        .cat-tool-card:focus-visible {
+            outline: 3px solid rgba(56, 189, 248, 0.36);
+            outline-offset: 2px;
+        }
+
+        .catalog-section {
+            margin-top: 24px;
+        }
+
+        .section-heading,
+        .subgroup-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-width: 0;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        html.dark .section-title {
+            color: #f1f5f9;
+        }
+
+        html:not(.dark) .section-title {
+            color: #1e293b;
+        }
+
+        .section-count,
+        .subgroup-count {
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        html.dark .section-count,
+        html.dark .subgroup-count {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.24);
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .section-count,
+        html:not(.dark) .subgroup-count {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+        }
+
         .cat-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
             gap: 12px;
         }
+
         .cat-tool-card {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 14px;
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(51, 65, 85, 0.7);
-            border-radius: 10px;
-            text-decoration: none;
-            color: #cbd5e1;
-            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
             min-width: 0;
-            backdrop-filter: blur(8px);
-        }
-        .cat-tool-card:hover {
-            background: rgba(8, 47, 73, 0.5);
-            border-color: rgba(56, 189, 248, 0.6);
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 14px rgba(56, 189, 248, 0.15);
-        }
-        .cat-tool-icon {
-            width: 26px;
-            height: 26px;
-            object-fit: contain;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-        .cat-tool-name {
-            font-size: 13px;
-            font-weight: 500;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            letter-spacing: 0.01em;
+            min-height: 74px;
+            padding: 13px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
         }
 
-        /* 子分组 (脑力训练等) */
-        .subgroup-section {
-            margin-bottom: 28px;
+        html.dark .cat-tool-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            color: #e2e8f0;
+            box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.03);
         }
-        .subgroup-title {
-            font-family: 'JetBrains Mono', Consolas, monospace;
-            font-size: 14px;
+
+        html.dark .cat-tool-card:hover {
+            background: #111f35;
+            border-color: #38bdf8;
+            color: #f8fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(2, 6, 23, 0.38), 0 0 16px rgba(56, 189, 248, 0.12);
+        }
+
+        html.dark .cat-tool-card:active {
+            background: #102a43;
+            transform: translateY(0);
+        }
+
+        html:not(.dark) .cat-tool-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+        }
+
+        html:not(.dark) .cat-tool-card:hover {
+            background: #f8fbff;
+            border-color: #38bdf8;
+            color: #0f172a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1), 0 0 14px rgba(2, 132, 199, 0.08);
+        }
+
+        html:not(.dark) .cat-tool-card:active {
+            background: #eff6ff;
+            transform: translateY(0);
+        }
+
+        .cat-tool-icon-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 42px;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+        }
+
+        html.dark .cat-tool-icon-wrap {
+            background: #111c31;
+            border: 1px solid #22314a;
+        }
+
+        html:not(.dark) .cat-tool-icon-wrap {
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+        }
+
+        .cat-tool-icon {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .cat-tool-info {
+            display: flex;
+            flex: 1 1 auto;
+            flex-direction: column;
+            min-width: 0;
+            gap: 4px;
+        }
+
+        .cat-tool-name {
+            min-width: 0;
+            overflow-wrap: anywhere;
+            font-size: 13px;
             font-weight: 700;
-            color: #94a3b8;
-            margin-bottom: 12px;
+            letter-spacing: 0.005em;
+            line-height: 1.45;
+        }
+
+        html.dark .cat-tool-name {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .cat-tool-name {
+            color: #1e293b;
+        }
+
+        .cat-tool-code {
+            overflow: hidden;
+            color: #64748b;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 10px;
+            line-height: 1.35;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cat-tool-arrow {
+            flex: 0 0 auto;
+            margin-left: auto;
+            font-size: 18px;
+            line-height: 1;
+            opacity: 0.55;
+            transition: color 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
+        }
+
+        html.dark .cat-tool-arrow {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .cat-tool-arrow {
+            color: #0284c7;
+        }
+
+        .cat-tool-card:hover .cat-tool-arrow {
+            opacity: 1;
+            transform: translate(2px, -2px);
+        }
+
+        .subgroup-section {
+            margin-top: 24px;
+        }
+
+        .subgroup-title {
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-        .subgroup-title::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 14px;
-            background: #38bdf8;
-            border-radius: 2px;
-        }
-        .empty-hint {
-            text-align: center;
-            padding: 60px 0;
-            color: #64748b;
+            margin: 0;
+            font-family: 'JetBrains Mono', Consolas, monospace;
             font-size: 14px;
-            font-family: 'JetBrains Mono', monospace;
+            font-weight: 750;
+            line-height: 1.5;
+        }
+
+        .subgroup-title::before {
+            display: inline-block;
+            flex: 0 0 auto;
+            width: 4px;
+            height: 16px;
+            border-radius: 2px;
+            content: '';
+        }
+
+        html.dark .subgroup-title {
+            color: #cbd5e1;
+        }
+
+        html.dark .subgroup-title::before {
+            background: #38bdf8;
+        }
+
+        html:not(.dark) .subgroup-title {
+            color: #334155;
+        }
+
+        html:not(.dark) .subgroup-title::before {
+            background: #0284c7;
+        }
+
+        .empty-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 190px;
+            padding: 28px 18px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        html.dark .empty-hint {
+            background: #0f172a;
+            border: 1px dashed #334155;
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .empty-hint {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            color: #475569;
+        }
+
+        .empty-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            margin-bottom: 12px;
+            border-radius: 50%;
+            font-size: 21px;
+        }
+
+        html.dark .empty-icon {
+            background: rgba(56, 189, 248, 0.12);
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .empty-icon {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .empty-title {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        html.dark .empty-title {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .empty-title {
+            color: #1e293b;
+        }
+
+        .empty-message {
+            max-width: 38em;
+            margin-top: 4px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .empty-query {
+            max-width: 100%;
+            margin-top: 8px;
+            overflow-wrap: anywhere;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 12px;
+        }
+
+        html.dark .empty-query {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .empty-query {
+            color: #0369a1;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            .tool-topbar {
+                width: calc(100% - 24px);
+                margin-top: 12px;
+            }
+
+            .tool-page-body {
+                padding: 16px 12px 48px;
+            }
+
+            .tool-page-body .card-body {
+                padding: 22px 14px 26px;
+            }
+
+            .tool-dashboard {
+                align-items: stretch;
+                padding: 14px;
+            }
+
+            .search-panel {
+                max-width: none;
+                flex-basis: 100%;
+            }
+
+            .cat-grid {
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tool-topbar {
+                width: calc(100% - 20px);
+                min-height: 48px;
+                padding: 6px 9px;
+                gap: 5px;
+            }
+
+            .tool-topbar-home {
+                margin-left: 0;
+            }
+
+            .tool-page-body .title {
+                gap: 10px;
+                font-size: 25px;
+            }
+
+            .tool-page-body .title::before {
+                width: 38px;
+                height: 38px;
+                border-radius: 10px;
+                font-size: 12px;
+            }
+
+            .tool-page-body .description {
+                font-size: 13px;
+            }
+
+            .tool-dashboard {
+                margin-top: 20px;
+            }
+
+            .dashboard-heading {
+                font-size: 16px;
+            }
+
+            .cat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cat-tool-card {
+                min-height: 70px;
+                padding: 12px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tool-topbar,
+            .tool-topbar a,
+            .cat-search-input,
+            .action-btn,
+            .cat-tool-card,
+            .cat-tool-arrow {
+                transition: none;
+            }
+
+            .action-btn:hover,
+            .cat-tool-card:hover {
+                transform: none;
+            }
         }
     </style>
 </head>
@@ -161,31 +1033,89 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-<main class="category-container" id="app">
-    <!-- Hero & Search Header -->
-    <div class="cat-hero">
-        <div class="cat-title-group">
-            <h1 class="cat-title">程序员</h1>
-            <span class="cat-badge">{{ filteredCount }} 款工具</span>
-        </div>
-        <div>
-            <input type="text" v-model="searchQuery" placeholder="在当前分类中快速筛选..." class="cat-search-input" />
-        </div>
-    </div>
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">程序员</h1>
+                </div>
+                <div class="description">面向开发者的高效工具箱，覆盖数据格式、网络调试、编码解码、安全哈希与代码整理，让每一次排错都更快、更清晰。</div>
 
-    <!-- Brain Children View -->
-    
-    <!-- Standard Category Grid -->
-    <div v-if="filteredList.length" class="cat-grid">
-        <a v-for="t in filteredList" :key="t.toolCode" :href="'/' + t.toolCode" class="cat-tool-card" :title="t.toolName">
-            <img :src="t.icon || './img/icons/default.svg'" alt="" class="cat-tool-icon" />
-            <span class="cat-tool-name">{{ t.toolName }}</span>
-        </a>
+                <div class="code-catalog">
+                    <section class="tool-dashboard" aria-labelledby="developer-dashboard-title">
+                        <div class="dashboard-copy">
+                            <div class="dashboard-kicker"><span class="status-dot" aria-hidden="true"></span><span>DEVELOPER TOOLKIT</span></div>
+                            <h2 id="developer-dashboard-title" class="dashboard-heading">快速定位你的开发工具</h2>
+                            <p class="dashboard-meta" aria-live="polite"><strong>{{ filteredCount }}</strong><span>项工具可用</span><span aria-hidden="true">·</span><span>支持名称与代码搜索</span></p>
+                        </div>
+
+                        <div class="search-panel">
+                            <label for="tool-search" class="search-label">筛选工具</label>
+                            <div class="search-control">
+                                <div class="search-field">
+                                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <circle cx="11" cy="11" r="6.5"></circle>
+                                        <path d="m16 16 4.5 4.5"></path>
+                                    </svg>
+                                    <input id="tool-search" type="search" v-model="searchQuery" placeholder="输入工具名称或 tool code" class="cat-search-input" autocomplete="off" spellcheck="false" aria-describedby="tool-search-help" @keydown.esc="searchQuery = ''" />
+                                </div>
+                                <button v-if="searchQuery" type="button" class="action-btn action-btn-secondary" aria-label="清除搜索内容" @click="searchQuery = ''">清除</button>
+                            </div>
+                            <p id="tool-search-help" class="search-help">按 Esc 可快速清空关键词</p>
+                        </div>
+                    </section>
+
+                    <section class="catalog-section" aria-labelledby="catalog-title">
+                        <div class="section-heading">
+                            <h2 id="catalog-title" class="section-title">工具目录</h2>
+                            <span class="section-count" aria-live="polite">{{ filteredCount }} 项</span>
+                        </div>
+
+                        <div v-if="filteredList.length" class="cat-grid" role="list">
+                            <a v-for="t in filteredList" :key="t.toolCode" :href="'/' + t.toolCode" class="cat-tool-card" :title="t.toolName" :aria-label="'打开 ' + t.toolName" role="listitem">
+                                <span class="cat-tool-icon-wrap" aria-hidden="true">
+                                    <img :src="t.icon || './img/icons/default.svg'" alt="" class="cat-tool-icon" loading="lazy" />
+                                </span>
+                                <span class="cat-tool-info">
+                                    <span class="cat-tool-name">{{ t.toolName }}</span>
+                                    <span class="cat-tool-code">/{{ t.toolCode }}</span>
+                                </span>
+                                <span class="cat-tool-arrow" aria-hidden="true">↗</span>
+                            </a>
+                        </div>
+
+                        <div v-else class="empty-hint" role="status" aria-live="polite">
+                            <span class="empty-icon" aria-hidden="true">⌕</span>
+                            <strong class="empty-title">没有找到匹配工具</strong>
+                            <span class="empty-message">尝试更换关键词，或清除筛选后继续浏览。</span>
+                            <code v-if="searchQuery" class="empty-query">“{{ searchQuery }}”</code>
+                            <button v-if="searchQuery" type="button" class="action-btn action-btn-primary" @click="searchQuery = ''">重置搜索</button>
+                        </div>
+                    </section>
+
+                    <section v-for="group in filteredSubgroups" :key="'group-' + group.key" class="subgroup-section" :aria-labelledby="'group-title-' + group.key">
+                        <div class="subgroup-heading">
+                            <h2 :id="'group-title-' + group.key" class="subgroup-title">{{ group.desc }}</h2>
+                            <span class="subgroup-count">{{ group.toolList.length }} 项</span>
+                        </div>
+                        <div class="cat-grid" role="list">
+                            <a v-for="t in group.toolList" :key="t.toolCode" :href="'/' + t.toolCode" class="cat-tool-card" :title="t.toolName" :aria-label="'打开 ' + t.toolName" role="listitem">
+                                <span class="cat-tool-icon-wrap" aria-hidden="true">
+                                    <img :src="t.icon || './img/icons/default.svg'" alt="" class="cat-tool-icon" loading="lazy" />
+                                </span>
+                                <span class="cat-tool-info">
+                                    <span class="cat-tool-name">{{ t.toolName }}</span>
+                                    <span class="cat-tool-code">/{{ t.toolCode }}</span>
+                                </span>
+                                <span class="cat-tool-arrow" aria-hidden="true">↗</span>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
     </div>
-    <div v-else class="empty-hint">
-        // 未找到匹配的工具: "{{ searchQuery }}"
-    </div>
-    
 </main>
 
 <script src="./lib/vue/vue.global.prod.js"></script>
