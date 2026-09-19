@@ -17,16 +17,860 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .tool-body .tool-form { max-width: 700px; }
-        .tool-body .tool-form .el-form { display: flex; flex-wrap: wrap; margin: 0 -5px; }
-        .tool-body .tool-form .el-form-item { width: 50%; padding: 0 5px; margin-bottom: 18px; }
-        .tool-body .tool-form .el-form-item .el-input-extend { height: 46px; }
-        .tool-body .tool-form .el-form-item .el-input-extend .el-input--large { --el-input-height: 46px; }
-        .tool-body .tool-form .el-form-item .el-input-extend .totop { font-size: 0.9em; color: #888; }
-        .tool-body .tool-form .el-form-item .el-input-extend .focus { color: var(--el-color-primary); }
+        /* Area converter: page-local layout, contrast and interaction states. */
+        .tool-page-body#app,
+        .tool-page-body#app *,
+        .tool-page-body#app *::before,
+        .tool-page-body#app *::after {
+            box-sizing: border-box;
+        }
 
-        @media (max-width:600px) {
-            .tool-body .tool-form .el-form-item { width: 100%; }
+        .tool-page-body#app {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            overflow-x: clip;
+        }
+
+        .tool-page-body#app .tool-body,
+        .tool-page-body#app .card-model,
+        .tool-page-body#app .card-body {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .tool-page-body#app .tool-body {
+            margin: 0 auto;
+        }
+
+        .tool-page-body#app .card-model {
+            margin: 0 auto;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .tool-page-body#app .card-body {
+            padding: clamp(20px, 3.2vw, 34px);
+        }
+
+        html.dark .tool-page-body#app .card-model {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(148, 163, 184, 0.04);
+        }
+
+        html:not(.dark) .tool-page-body#app .card-model {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .tool-page-body#app .tool-head {
+            margin: 0;
+        }
+
+        .tool-page-body#app .tool-head .title {
+            margin: 0;
+            max-width: 900px;
+            font-size: clamp(1.7rem, 3vw, 2.35rem);
+            line-height: 1.18;
+            letter-spacing: -0.035em;
+            font-weight: 800;
+        }
+
+        .tool-page-body#app .description {
+            max-width: 900px;
+            margin: 10px 0 24px;
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        html.dark .tool-page-body#app .card-body {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body#app .card-body {
+            color: #0f172a;
+        }
+
+        html.dark .tool-page-body#app .tool-head .title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body#app .tool-head .title {
+            color: #0f172a;
+        }
+
+        html.dark .tool-page-body#app .description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body#app .description {
+            color: #475569;
+        }
+
+        .area-converter-ui {
+            width: 100%;
+            max-width: 960px;
+            min-width: 0;
+            margin: 0 auto;
+        }
+
+        .area-converter-ui > * {
+            min-width: 0;
+        }
+
+        .area-converter-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            width: 100%;
+            min-width: 0;
+            margin: 0 0 16px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .area-converter-toolbar {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .area-converter-toolbar {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .converter-toolbar-copy {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1 1 280px;
+            min-width: 0;
+        }
+
+        .converter-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 42px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        html.dark .converter-mark {
+            color: #7dd3fc;
+            background: #10233b;
+            border: 1px solid #1e6091;
+        }
+
+        html:not(.dark) .converter-mark {
+            color: #0369a1;
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+        }
+
+        .converter-toolbar-text {
+            min-width: 0;
+        }
+
+        .converter-eyebrow,
+        .workspace-kicker,
+        .reference-kicker {
+            margin: 0 0 3px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.3;
+            text-transform: uppercase;
+        }
+
+        html.dark .converter-eyebrow,
+        html.dark .workspace-kicker,
+        html.dark .reference-kicker {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .converter-eyebrow,
+        html:not(.dark) .workspace-kicker,
+        html:not(.dark) .reference-kicker {
+            color: #0369a1;
+        }
+
+        .converter-toolbar-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        .converter-toolbar-subtitle {
+            max-width: 600px;
+            margin: 3px 0 0;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        html.dark .converter-toolbar-title,
+        html.dark .converter-toolbar-subtitle {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .converter-toolbar-title {
+            color: #1e293b;
+        }
+
+        html:not(.dark) .converter-toolbar-subtitle {
+            color: #64748b;
+        }
+
+        .converter-toolbar-meta {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 0 1 auto;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .status-badge,
+        .unit-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 32px;
+            max-width: 100%;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 750;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .status-badge {
+            gap: 7px;
+        }
+
+        html.dark .status-badge {
+            color: #a7f3d0;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid #34d399;
+        }
+
+        html:not(.dark) .status-badge {
+            color: #047857;
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.14);
+        }
+
+        html.dark .unit-count {
+            color: #bae6fd;
+            background: #10233b;
+            border: 1px solid #1e6091;
+        }
+
+        html:not(.dark) .unit-count {
+            color: #075985;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+        }
+
+        .converter-workspace {
+            width: 100%;
+            min-width: 0;
+            padding: 18px;
+            border-radius: 14px;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        html.dark .converter-workspace {
+            color: #e2e8f0;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .converter-workspace {
+            color: #1e293b;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .workspace-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            margin-bottom: 16px;
+        }
+
+        .workspace-title {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 800;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+        }
+
+        html.dark .workspace-title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .workspace-title {
+            color: #0f172a;
+        }
+
+        .workspace-hint {
+            flex: 0 1 330px;
+            max-width: 100%;
+            margin: 15px 0 0;
+            font-size: 13px;
+            line-height: 1.55;
+            text-align: right;
+        }
+
+        html.dark .workspace-hint {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .workspace-hint {
+            color: #64748b;
+        }
+
+        .tool-page-body#app .tool-form {
+            width: 100%;
+            max-width: 960px;
+            min-width: 0;
+            margin: 0;
+        }
+
+        .tool-page-body#app .tool-form .el-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            width: 100%;
+            min-width: 0;
+            margin: 0;
+        }
+
+        .tool-page-body#app .tool-form .el-form-item {
+            width: auto;
+            min-width: 0;
+            min-height: 46px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .tool-page-body#app .tool-form .el-form-item__content,
+        .tool-page-body#app .tool-form .el-input-extend,
+        .tool-page-body#app .tool-form .el-input {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .tool-page-body#app .tool-form .el-form-item__content {
+            min-height: 46px;
+            line-height: normal;
+        }
+
+        .tool-page-body#app .tool-form .el-input-extend {
+            display: block;
+            height: 46px;
+        }
+
+        .tool-page-body#app .tool-form .el-input-extend .el-input--large {
+            --el-input-height: 46px;
+        }
+
+        .tool-page-body#app .tool-form .el-input-extend .el-input__wrapper {
+            min-height: 46px;
+            border-radius: 10px;
+            transition: background-color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+
+        html.dark .tool-page-body#app .tool-form {
+            color-scheme: dark;
+        }
+
+        html:not(.dark) .tool-page-body#app .tool-form {
+            color-scheme: light;
+        }
+
+        html.dark .tool-page-body#app .tool-form .el-input__wrapper {
+            background: #111c31;
+            box-shadow: 0 0 0 1px #334155 inset;
+        }
+
+        html:not(.dark) .tool-page-body#app .tool-form .el-input__wrapper {
+            background: #ffffff;
+            box-shadow: 0 0 0 1px #cbd5e1 inset;
+        }
+
+        html.dark .tool-page-body#app .tool-form .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px #64748b inset;
+        }
+
+        html:not(.dark) .tool-page-body#app .tool-form .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px #94a3b8 inset;
+        }
+
+        html.dark .tool-page-body#app .tool-form .el-input-extend:focus-within .el-input__wrapper,
+        html.dark .tool-page-body#app .tool-form .el-input__wrapper.is-focus {
+            box-shadow: 0 0 0 2px #38bdf8 inset, 0 0 0 4px rgba(56, 189, 248, 0.16);
+        }
+
+        html:not(.dark) .tool-page-body#app .tool-form .el-input-extend:focus-within .el-input__wrapper,
+        html:not(.dark) .tool-page-body#app .tool-form .el-input__wrapper.is-focus {
+            box-shadow: 0 0 0 2px #0284c7 inset, 0 0 0 4px rgba(2, 132, 199, 0.14);
+        }
+
+        html.dark .tool-page-body#app .tool-form .el-input__inner {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body#app .tool-form .el-input__inner {
+            color: #0f172a;
+        }
+
+        html.dark .tool-page-body#app .tool-form .el-input__inner::placeholder {
+            color: #64748b;
+        }
+
+        html:not(.dark) .tool-page-body#app .tool-form .el-input__inner::placeholder {
+            color: #94a3b8;
+        }
+
+        html.dark .tool-page-body#app .tool-form .el-input-extend .totop {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body#app .tool-form .el-input-extend .totop {
+            color: #64748b;
+        }
+
+        html.dark .tool-page-body#app .tool-form .el-input-extend .focus {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .tool-page-body#app .tool-form .el-input-extend .focus {
+            color: #0284c7;
+        }
+
+        .converter-tip {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin: 14px 2px 0;
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .converter-tip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 18px;
+            width: 18px;
+            height: 18px;
+            margin-top: 1px;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        html.dark .converter-tip {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .converter-tip {
+            color: #64748b;
+        }
+
+        html.dark .converter-tip-icon {
+            color: #bae6fd;
+            background: #164e63;
+            border: 1px solid #0e7490;
+        }
+
+        html:not(.dark) .converter-tip-icon {
+            color: #0369a1;
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+        }
+
+        .tool-page-body#app .area-converter-divider {
+            width: 100%;
+            height: 1px;
+            margin: 24px 0;
+            border: 0;
+        }
+
+        html.dark .tool-page-body#app .area-converter-divider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) .tool-page-body#app .area-converter-divider {
+            background: #e2e8f0;
+        }
+
+        .tool-page-body#app .conversion-reference {
+            width: 100%;
+            max-width: 960px;
+            min-width: 0;
+            margin: 0;
+        }
+
+        .reference-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .reference-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+        }
+
+        html.dark .reference-title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .reference-title {
+            color: #0f172a;
+        }
+
+        .reference-summary {
+            margin: 5px 0 0;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        html.dark .reference-summary {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .reference-summary {
+            color: #64748b;
+        }
+
+        .reference-chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        html.dark .reference-chip {
+            color: #bae6fd;
+            background: #10233b;
+            border: 1px solid #1e6091;
+        }
+
+        html:not(.dark) .reference-chip {
+            color: #075985;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+        }
+
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .reference-card {
+            min-width: 0;
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .reference-card-wide {
+            grid-column: 1 / -1;
+        }
+
+        html.dark .reference-card {
+            color: #cbd5e1;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .reference-card {
+            color: #334155;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .reference-card-heading {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 0 0 8px;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        html.dark .reference-card-heading {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .reference-card-heading {
+            color: #1e293b;
+        }
+
+        .reference-card-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 26px;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        html.dark .reference-card-icon {
+            color: #bae6fd;
+            background: #164e63;
+            border: 1px solid #0e7490;
+        }
+
+        html:not(.dark) .reference-card-icon {
+            color: #0369a1;
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+        }
+
+        .reference-card-description {
+            margin: 0 0 12px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        html.dark .reference-card-description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .reference-card-description {
+            color: #64748b;
+        }
+
+        .unit-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .unit-pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            max-width: 100%;
+            padding: 5px 9px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .unit-pill {
+            color: #cbd5e1;
+            background: #172033;
+            border: 1px solid #334155;
+        }
+
+        html:not(.dark) .unit-pill {
+            color: #334155;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+        }
+
+        .formula-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px 12px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .formula-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            min-width: 0;
+            padding: 9px 10px;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        html.dark .formula-item {
+            color: #cbd5e1;
+            background: #0b1120;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .formula-item {
+            color: #334155;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .formula-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 24px;
+            width: 24px;
+            height: 24px;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        html.dark .formula-index {
+            color: #7dd3fc;
+            background: #10233b;
+            border: 1px solid #1e6091;
+        }
+
+        html:not(.dark) .formula-index {
+            color: #0369a1;
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+        }
+
+        .formula-value {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .tool-page-body#app :where(button, input, textarea, select, [tabindex]):focus-visible {
+            outline-offset: 3px;
+        }
+
+        html.dark .tool-page-body#app :where(button, input, textarea, select, [tabindex]):focus-visible {
+            outline: 3px solid #38bdf8;
+        }
+
+        html:not(.dark) .tool-page-body#app :where(button, input, textarea, select, [tabindex]):focus-visible {
+            outline: 3px solid #0284c7;
+        }
+
+        @media (max-width: 768px) {
+            .tool-page-body#app .card-body {
+                padding: 18px 14px 24px;
+            }
+
+            .area-converter-toolbar {
+                align-items: flex-start;
+                padding: 13px 14px;
+            }
+
+            .converter-toolbar-meta {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .converter-workspace {
+                padding: 14px;
+            }
+
+            .tool-page-body#app .tool-form .el-form,
+            .formula-list {
+                grid-template-columns: 1fr;
+            }
+
+            .reference-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reference-card-wide {
+                grid-column: auto;
+            }
+
+            .workspace-hint {
+                flex-basis: 100%;
+                margin-top: 0;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .tool-page-body#app .card-body {
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+
+            .converter-toolbar-copy {
+                align-items: flex-start;
+            }
+
+            .converter-mark {
+                flex-basis: 38px;
+                width: 38px;
+                height: 38px;
+            }
+
+            .converter-workspace {
+                padding: 12px;
+            }
+
+            .reference-card {
+                padding: 13px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tool-page-body#app *,
+            .tool-page-body#app *::before,
+            .tool-page-body#app *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
         }
     </style>
 
@@ -53,72 +897,155 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
-        
+    <main class="main-body tool-page-body" id="app">
+        <div class="tool-body">
+            <div class="card-model">
+                <div class="card-body">
+                    <div class="tool-head">
+                        <h1 class="title">面积单位转换器</h1>
+                    </div>
+                    <div class="description">在线面积单位换算器，提供各种面积单位的换算，包括平方千米(km²)、公顷(ha)、公亩(are)、平方米(m²)、平方分米(dm²)、平方厘米(cm²)、平方毫米(mm²)、英亩(acre)、平方英里(sq.mi)、平方码(sq.yd)、平方英尺(sq.ft)、平方英寸(sq.in)、平方竿(sq.rd)等面积单位的换算。</div>
 
+                    <div class="area-converter-ui">
+                        <section class="area-converter-toolbar" aria-label="面积换算器概览">
+                            <div class="converter-toolbar-copy">
+                                <span class="converter-mark" aria-hidden="true">↔</span>
+                                <div class="converter-toolbar-text">
+                                    <p class="converter-eyebrow">AREA / CONVERTER</p>
+                                    <p class="converter-toolbar-title">统一换算工作台</p>
+                                    <p class="converter-toolbar-subtitle">输入任意一个单位的数值，其他单位将即时同步。</p>
+                                </div>
+                            </div>
+                            <div class="converter-toolbar-meta" aria-label="转换器状态">
+                                <span class="status-badge"><span class="status-dot" aria-hidden="true"></span>实时同步</span>
+                                <span class="unit-count">13 个单位</span>
+                            </div>
+                        </section>
 
-<div class="tool-body">
-    <div class="card-model">
-        <div class="card-body">
-            <div class="tool-head">
-                <h1 class="title">面积单位转换器</h1>
-            </div>
-            <div class="description">在线面积单位换算器，提供各种面积单位的换算，包括平方千米(km²)、公顷(ha)、公亩(are)、平方米(m²)、平方分米(dm²)、平方厘米(cm²)、分米毫米(mm²)、英亩(acre)、平方英里(sq.mi)、平方码(sq.yd)、平方英尺(sq.ft)、平方英寸(sq.in)、平方竿(sq.rd)等面积单位的换算。</div>
-            <div class="tool-form">
-                <el-form :model="formData" ref="computeForm" size="large">
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[0]" label="平方千米(km²) " v-on:keyup="convert(0)" v-on:focus="focus(0)" v-on:blur="blur(0)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[1]" label=" 公顷(ha) " v-on:keyup="convert(1)" v-on:focus="focus(1)" v-on:blur="blur(1)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[2]" label=" 公亩(are) " v-on:keyup="convert(2)" v-on:focus="focus(2)" v-on:blur="blur(2)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[3]" label=" 平方米(m²) " v-on:keyup="convert(3)" v-on:focus="focus(3)" v-on:blur="blur(3)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[4]" label=" 平方分米(dm²) " v-on:keyup="convert(4)" v-on:focus="focus(4)" v-on:blur="blur(4)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[5]" label=" 平方厘米(cm²) " v-on:keyup="convert(5)" v-on:focus="focus(5)" v-on:blur="blur(5)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[6]" label=" 平方毫米(mm²) " v-on:keyup="convert(6)" v-on:focus="focus(6)" v-on:blur="blur(6)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[7]" label=" 英亩(acre) " v-on:keyup="convert(7)" v-on:focus="focus(7)" v-on:blur="blur(7)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[8]" label=" 平方英里(sq.mi) " v-on:keyup="convert(8)" v-on:focus="focus(8)" v-on:blur="blur(8)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[9]" label=" 平方码(sq.yd) " v-on:keyup="convert(9)" v-on:focus="focus(9)" v-on:blur="blur(9)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[10]" label=" 平方英尺(sq.ft) " v-on:keyup="convert(10)" v-on:focus="focus(10)" v-on:blur="blur(10)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[11]" label=" 平方英寸(sq.in) " v-on:keyup="convert(11)" v-on:focus="focus(11)" v-on:blur="blur(11)" class="w100"></el-input-extend>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input-extend v-model="formData.value[12]" label=" 平方竿(sq.rd)" v-on:keyup="convert(12)" v-on:focus="focus(12)" v-on:blur="blur(12)" class="w100"></el-input-extend>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>公制单位</h3><p>平方千米(km²)、公顷(ha)、公亩(are)、平方米(m²)、平方分米(dm²)、平方厘米(cm²)、平方毫米(mm²)。</p><h3>英制单位</h3><p>英亩(acre)、平方英里(sq.mi)、平方码(sq.yd)、平方英尺(sq.ft)、平方英寸(sq.in)、平方竿(sq.rd)。</p><h3>换算公式</h3><p>1平方千米(km²) = 1,000,000平方米(m²)</p><p>1公顷(ha) = 10,000平方米(m²)</p><p>1公亩(are) = 100平方米(m²)</p><p>1平方米(m²) = 100平方分米(dm²)</p><p>1平方分米(dm²) = 100平方厘米(cm²)</p><p>1平方厘米(cm²) = 100平方毫米(mm²)</p><p>1英亩(acre) = 4046.8564224平方米(m²)</p><p>1平方英里(sq.mi) = 2,589,988.110336平方米(m²)</p><p>1平方码(sq.yd) = 0.8361274平方米(m²)</p><p>1平方码平方英尺(sq.ft) = 0.092903平方米(m²)</p><p>1平方英寸(sq.in) = 0.00064516平方米(m²)</p><p>1平方竿(sq.rd) = 25.2928526平方米(m²)</p>
+                        <section class="converter-workspace" aria-labelledby="area-converter-workspace-title">
+                            <div class="workspace-heading">
+                                <div>
+                                    <p class="workspace-kicker">LIVE INPUT</p>
+                                    <h2 class="workspace-title" id="area-converter-workspace-title">输入一个数值</h2>
+                                </div>
+                                <p class="workspace-hint">支持公制与英制面积单位，适合快速核对与精确换算。</p>
+                            </div>
+
+                            <div class="tool-form area-converter-form">
+                                <el-form :model="formData" ref="computeForm" size="large">
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[0]" label="平方千米(km²) " v-on:keyup="convert(0)" v-on:focus="focus(0)" v-on:blur="blur(0)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[1]" label=" 公顷(ha) " v-on:keyup="convert(1)" v-on:focus="focus(1)" v-on:blur="blur(1)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[2]" label=" 公亩(are) " v-on:keyup="convert(2)" v-on:focus="focus(2)" v-on:blur="blur(2)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[3]" label=" 平方米(m²) " v-on:keyup="convert(3)" v-on:focus="focus(3)" v-on:blur="blur(3)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[4]" label=" 平方分米(dm²) " v-on:keyup="convert(4)" v-on:focus="focus(4)" v-on:blur="blur(4)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[5]" label=" 平方厘米(cm²) " v-on:keyup="convert(5)" v-on:focus="focus(5)" v-on:blur="blur(5)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[6]" label=" 平方毫米(mm²) " v-on:keyup="convert(6)" v-on:focus="focus(6)" v-on:blur="blur(6)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[7]" label=" 英亩(acre) " v-on:keyup="convert(7)" v-on:focus="focus(7)" v-on:blur="blur(7)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[8]" label=" 平方英里(sq.mi) " v-on:keyup="convert(8)" v-on:focus="focus(8)" v-on:blur="blur(8)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[9]" label=" 平方码(sq.yd) " v-on:keyup="convert(9)" v-on:focus="focus(9)" v-on:blur="blur(9)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[10]" label=" 平方英尺(sq.ft) " v-on:keyup="convert(10)" v-on:focus="focus(10)" v-on:blur="blur(10)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[11]" label=" 平方英寸(sq.in) " v-on:keyup="convert(11)" v-on:focus="focus(11)" v-on:blur="blur(11)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                    <el-form-item class="area-converter-field">
+                                        <el-input-extend v-model="formData.value[12]" label=" 平方竿(sq.rd)" v-on:keyup="convert(12)" v-on:focus="focus(12)" v-on:blur="blur(12)" class="w100 area-converter-input"></el-input-extend>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+
+                            <div class="converter-tip" role="note">
+                                <span class="converter-tip-icon" aria-hidden="true">i</span>
+                                <span>换算结果会保留足够精度；清空当前输入即可重新开始。</span>
+                            </div>
+                        </section>
+
+                        <div class="divider area-converter-divider" role="presentation"></div>
+
+                        <section class="content conversion-reference" aria-labelledby="conversion-reference-title">
+                            <div class="reference-header">
+                                <div>
+                                    <p class="reference-kicker">REFERENCE</p>
+                                    <h2 class="reference-title" id="conversion-reference-title">单位与换算公式</h2>
+                                    <p class="reference-summary">常用面积单位一览，方便在输入数值后快速复核。</p>
+                                </div>
+                                <span class="reference-chip">公制 · 英制</span>
+                            </div>
+
+                            <div class="reference-grid">
+                                <article class="reference-card">
+                                    <h3 class="reference-card-heading"><span class="reference-card-icon" aria-hidden="true">SI</span>公制单位</h3>
+                                    <p class="reference-card-description">国际单位制与常用土地面积单位。</p>
+                                    <ul class="unit-list" aria-label="公制面积单位">
+                                        <li class="unit-pill">平方千米 km²</li>
+                                        <li class="unit-pill">公顷 ha</li>
+                                        <li class="unit-pill">公亩 are</li>
+                                        <li class="unit-pill">平方米 m²</li>
+                                        <li class="unit-pill">平方分米 dm²</li>
+                                        <li class="unit-pill">平方厘米 cm²</li>
+                                        <li class="unit-pill">平方毫米 mm²</li>
+                                    </ul>
+                                </article>
+
+                                <article class="reference-card">
+                                    <h3 class="reference-card-heading"><span class="reference-card-icon" aria-hidden="true">IMP</span>英制单位</h3>
+                                    <p class="reference-card-description">英美体系中常见的面积计量单位。</p>
+                                    <ul class="unit-list" aria-label="英制面积单位">
+                                        <li class="unit-pill">英亩 acre</li>
+                                        <li class="unit-pill">平方英里 sq.mi</li>
+                                        <li class="unit-pill">平方码 sq.yd</li>
+                                        <li class="unit-pill">平方英尺 sq.ft</li>
+                                        <li class="unit-pill">平方英寸 sq.in</li>
+                                        <li class="unit-pill">平方竿 sq.rd</li>
+                                    </ul>
+                                </article>
+
+                                <article class="reference-card reference-card-wide">
+                                    <h3 class="reference-card-heading"><span class="reference-card-icon" aria-hidden="true">＝</span>换算公式</h3>
+                                    <ul class="formula-list" aria-label="面积单位换算公式">
+                                        <li class="formula-item"><span class="formula-index">01</span><span class="formula-value">1 平方千米(km²) = 1,000,000 平方米(m²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">02</span><span class="formula-value">1 公顷(ha) = 10,000 平方米(m²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">03</span><span class="formula-value">1 公亩(are) = 100 平方米(m²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">04</span><span class="formula-value">1 平方米(m²) = 100 平方分米(dm²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">05</span><span class="formula-value">1 平方分米(dm²) = 100 平方厘米(cm²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">06</span><span class="formula-value">1 平方厘米(cm²) = 100 平方毫米(mm²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">07</span><span class="formula-value">1 英亩(acre) = 4046.8564224 平方米(m²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">08</span><span class="formula-value">1 平方英里(sq.mi) = 2,589,988.110336 平方米(m²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">09</span><span class="formula-value">1 平方码(sq.yd) = 0.8361274 平方米(m²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">10</span><span class="formula-value">1 平方英尺(sq.ft) = 0.092903 平方米(m²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">11</span><span class="formula-value">1 平方英寸(sq.in) = 0.00064516 平方米(m²)</span></li>
+                                        <li class="formula-item"><span class="formula-index">12</span><span class="formula-value">1 平方竿(sq.rd) = 25.2928526 平方米(m²)</span></li>
+                                    </ul>
+                                </article>
+                            </div>
+                        </section>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<comment :relate-id="92" :comment-class="2"></comment>
-
-
+        <comment :relate-id="92" :comment-class="2"></comment>
     </main>
-</div>
 
     <script>
         var languageCode = 'zh';
