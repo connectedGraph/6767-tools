@@ -27,6 +27,774 @@
     <meta name="twitter:description" content="女性最佳身材计算器，输入身高，即能得出最佳女性身材（上臂围，胸围，腰围下限，腰围上限，臀围，大腿围，小腿围）的尺寸。" />
     <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
     <link rel="canonical" href="https://tool.6767.chat/best-figure" />
+    <style>
+        /* Best-figure page: local, accessible, dual-mode presentation */
+        html.dark .best-figure-page {
+            --bf-page: #070b16;
+            --bf-card: #0c1424;
+            --bf-panel: #0f1a2c;
+            --bf-panel-deep: #09111f;
+            --bf-line: #1e293b;
+            --bf-line-strong: #334155;
+            --bf-heading: #f8fafc;
+            --bf-text: #e2e8f0;
+            --bf-muted: #94a3b8;
+            --bf-quiet: #64748b;
+            --bf-accent: #22d3ee;
+            --bf-accent-strong: #0891b2;
+            --bf-accent-soft: rgba(34, 211, 238, 0.12);
+            --bf-button: #0e7490;
+            --bf-button-hover: #0891b2;
+            --bf-number: #67e8f9;
+            --bf-shadow: 0 22px 60px rgba(0, 0, 0, 0.32);
+        }
+
+        html:not(.dark) .best-figure-page {
+            --bf-page: #f1f5f9;
+            --bf-card: #ffffff;
+            --bf-panel: #f8fafc;
+            --bf-panel-deep: #ffffff;
+            --bf-line: #e2e8f0;
+            --bf-line-strong: #cbd5e1;
+            --bf-heading: #0f172a;
+            --bf-text: #1e293b;
+            --bf-muted: #475569;
+            --bf-quiet: #64748b;
+            --bf-accent: #0f766e;
+            --bf-accent-strong: #0d9488;
+            --bf-accent-soft: rgba(15, 118, 110, 0.10);
+            --bf-button: #0f766e;
+            --bf-button-hover: #0d9488;
+            --bf-number: #0f766e;
+            --bf-shadow: 0 18px 48px rgba(15, 23, 42, 0.10);
+        }
+
+        .best-figure-page,
+        .best-figure-page * {
+            box-sizing: border-box;
+        }
+
+        .best-figure-page {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: clamp(18px, 3.4vw, 42px) 16px 56px;
+            overflow: hidden;
+            background: var(--bf-page);
+            color: var(--bf-text);
+        }
+
+        .best-figure-page .tool-body {
+            width: 100%;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .best-figure-page .card-model {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            border-radius: 16px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .best-figure-page .card-model {
+            background: #0c1424;
+            border: 1px solid #1e293b;
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.32);
+        }
+
+        html:not(.dark) .best-figure-page .card-model {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 48px rgba(15, 23, 42, 0.10);
+        }
+
+        .best-figure-page .card-body {
+            width: 100%;
+            min-width: 0;
+            padding: clamp(22px, 4vw, 46px);
+        }
+
+        .best-figure-page .tool-head {
+            margin: 0 0 10px;
+        }
+
+        .best-figure-page .tool-head .title {
+            margin: 0;
+            color: var(--bf-heading);
+            font-size: clamp(26px, 4vw, 38px);
+            font-weight: 760;
+            letter-spacing: -0.035em;
+            line-height: 1.2;
+        }
+
+        .best-figure-page .description {
+            max-width: 780px;
+            margin: 0 0 24px;
+            color: var(--bf-muted);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .best-figure-page .tool-dashboard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            min-width: 0;
+            margin: 0 0 16px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        html.dark .best-figure-page .tool-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .best-figure-page .tool-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .best-figure-page .dashboard-copy {
+            display: grid;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .best-figure-page .dashboard-eyebrow {
+            color: var(--bf-accent);
+            font-size: 11px;
+            font-weight: 750;
+            letter-spacing: 0.14em;
+            line-height: 1.3;
+            text-transform: uppercase;
+        }
+
+        .best-figure-page .dashboard-copy strong {
+            color: var(--bf-heading);
+            font-size: 15px;
+            font-weight: 680;
+            line-height: 1.45;
+        }
+
+        .best-figure-page .dashboard-chips {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .best-figure-page .dashboard-chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            color: var(--bf-muted);
+            font-size: 12px;
+            font-weight: 650;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        html.dark .best-figure-page .dashboard-chip {
+            background: rgba(30, 41, 59, 0.68);
+            border: 1px solid #334155;
+        }
+
+        html:not(.dark) .best-figure-page .dashboard-chip {
+            background: #ffffff;
+            border: 1px solid #dbe4ee;
+        }
+
+        .best-figure-page .status-dot,
+        .best-figure-page .result-status-dot {
+            width: 7px;
+            height: 7px;
+            margin-right: 7px;
+            flex: 0 0 auto;
+            border-radius: 50%;
+        }
+
+        html.dark .best-figure-page .status-dot,
+        html.dark .best-figure-page .result-status-dot {
+            background: #22d3ee;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12), 0 0 14px rgba(34, 211, 238, 0.7);
+        }
+
+        html:not(.dark) .best-figure-page .status-dot,
+        html:not(.dark) .best-figure-page .result-status-dot {
+            background: #0f766e;
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.10);
+        }
+
+        .best-figure-page .calculator-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
+            align-items: stretch;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .best-figure-page .input-panel,
+        .best-figure-page .result-panel {
+            min-width: 0;
+            border-radius: 12px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .best-figure-page .input-panel {
+            grid-column: 1;
+            padding: clamp(18px, 2.4vw, 26px);
+        }
+
+        .best-figure-page .result-panel {
+            grid-column: 2;
+            padding: clamp(16px, 2.2vw, 24px);
+        }
+
+        html.dark .best-figure-page .input-panel,
+        html.dark .best-figure-page .result-panel {
+            background: #0f1a2c;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .best-figure-page .input-panel,
+        html:not(.dark) .best-figure-page .result-panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .best-figure-page .calculator-grid:not(:has(.result-panel)) .input-panel {
+            grid-column: 1 / -1;
+        }
+
+        .best-figure-page .panel-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            min-width: 0;
+            margin: 0 0 18px;
+        }
+
+        .best-figure-page .panel-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            flex: 0 0 30px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        html.dark .best-figure-page .panel-index {
+            background: rgba(34, 211, 238, 0.12);
+            border: 1px solid rgba(34, 211, 238, 0.42);
+            color: #a5f3fc;
+        }
+
+        html:not(.dark) .best-figure-page .panel-index {
+            background: rgba(15, 118, 110, 0.09);
+            border: 1px solid rgba(15, 118, 110, 0.24);
+            color: #0f766e;
+        }
+
+        .best-figure-page .panel-heading h2 {
+            margin: 0;
+            color: var(--bf-heading);
+            font-size: 18px;
+            font-weight: 720;
+            line-height: 1.35;
+        }
+
+        .best-figure-page .panel-heading p {
+            margin: 4px 0 0;
+            color: var(--bf-muted);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .best-figure-page .tool-form {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: start;
+            gap: 12px;
+            min-width: 0;
+            margin: 0;
+        }
+
+        .best-figure-page .height-field {
+            min-width: 0;
+            margin: 0;
+        }
+
+        .best-figure-page .height-field .el-form-item__content {
+            display: block;
+            min-width: 0;
+            line-height: normal;
+        }
+
+        .best-figure-page .height-field .w100,
+        .best-figure-page .height-field .el-input,
+        .best-figure-page .height-field .el-input__wrapper {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .best-figure-page .height-field .el-input__wrapper {
+            min-height: 44px;
+            border-radius: 10px;
+            transition: box-shadow 0.18s ease, background-color 0.18s ease;
+        }
+
+        html.dark .best-figure-page .height-field .el-input__wrapper {
+            background: #08111f;
+            box-shadow: 0 0 0 1px #334155 inset;
+        }
+
+        html:not(.dark) .best-figure-page .height-field .el-input__wrapper {
+            background: #ffffff;
+            box-shadow: 0 0 0 1px #cbd5e1 inset;
+        }
+
+        html.dark .best-figure-page .height-field .el-input__inner {
+            color: #f8fafc;
+            caret-color: #22d3ee;
+        }
+
+        html:not(.dark) .best-figure-page .height-field .el-input__inner {
+            color: #0f172a;
+            caret-color: #0f766e;
+        }
+
+        html.dark .best-figure-page .height-field:focus-within .el-input__wrapper {
+            box-shadow: 0 0 0 1px #22d3ee inset, 0 0 0 3px rgba(34, 211, 238, 0.16);
+        }
+
+        html:not(.dark) .best-figure-page .height-field:focus-within .el-input__wrapper {
+            box-shadow: 0 0 0 1px #0f766e inset, 0 0 0 3px rgba(15, 118, 110, 0.13);
+        }
+
+        .best-figure-page .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 9px 17px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.2;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        .best-figure-page .compute-button {
+            width: 100%;
+            min-width: 104px;
+            margin: 0;
+        }
+
+        html.dark .best-figure-page .action-btn-primary {
+            background: #0e7490;
+            border: 1px solid #22d3ee;
+            color: #ecfeff;
+            box-shadow: 0 8px 18px rgba(8, 145, 178, 0.20);
+        }
+
+        html:not(.dark) .best-figure-page .action-btn-primary {
+            background: #0f766e;
+            border: 1px solid #0f766e;
+            color: #ffffff;
+            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.18);
+        }
+
+        html.dark .best-figure-page .action-btn-primary:hover:not(:disabled) {
+            background: #0891b2;
+            border-color: #67e8f9;
+            color: #ffffff;
+            box-shadow: 0 10px 22px rgba(8, 145, 178, 0.28);
+            transform: translateY(-1px);
+        }
+
+        html:not(.dark) .best-figure-page .action-btn-primary:hover:not(:disabled) {
+            background: #0d9488;
+            border-color: #0f766e;
+            color: #ffffff;
+            box-shadow: 0 10px 22px rgba(15, 118, 110, 0.23);
+            transform: translateY(-1px);
+        }
+
+        html.dark .best-figure-page .action-btn-primary:active:not(:disabled),
+        html:not(.dark) .best-figure-page .action-btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        html.dark .best-figure-page .action-btn-primary:focus-visible {
+            outline: 3px solid rgba(34, 211, 238, 0.35);
+            outline-offset: 2px;
+        }
+
+        html:not(.dark) .best-figure-page .action-btn-primary:focus-visible {
+            outline: 3px solid rgba(15, 118, 110, 0.25);
+            outline-offset: 2px;
+        }
+
+        .best-figure-page .button-arrow {
+            margin-left: 9px;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 0;
+            transition: transform 0.15s ease;
+        }
+
+        .best-figure-page .action-btn-primary:hover .button-arrow {
+            transform: translateX(2px);
+        }
+
+        .best-figure-page .field-helper {
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+            margin-top: 12px;
+            color: var(--bf-muted);
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .best-figure-page .helper-mark {
+            flex: 0 0 auto;
+            color: var(--bf-accent);
+            font-size: 16px;
+            line-height: 1.05;
+        }
+
+        html.dark .best-figure-page .el-form-item__error {
+            color: #fda4af;
+        }
+
+        html:not(.dark) .best-figure-page .el-form-item__error {
+            color: #be123c;
+        }
+
+        .best-figure-page .result-heading {
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .best-figure-page .result-heading > div:first-of-type {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            min-width: 0;
+        }
+
+        .best-figure-page .result-state {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        html.dark .best-figure-page .result-state {
+            background: rgba(34, 211, 238, 0.10);
+            border: 1px solid rgba(34, 211, 238, 0.28);
+            color: #a5f3fc;
+        }
+
+        html:not(.dark) .best-figure-page .result-state {
+            background: rgba(15, 118, 110, 0.08);
+            border: 1px solid rgba(15, 118, 110, 0.22);
+            color: #0f766e;
+        }
+
+        .best-figure-page .result-caption {
+            margin: 0 0 10px;
+            color: var(--bf-muted);
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .best-figure-page .result-table-wrap {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            overscroll-behavior-inline: contain;
+        }
+
+        .best-figure-page .measurement-table {
+            width: 100%;
+            min-width: 0;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0 7px;
+            color: var(--bf-text);
+        }
+
+        .best-figure-page .measurement-table th,
+        .best-figure-page .measurement-table td {
+            padding: 11px 12px;
+            border-top: 1px solid;
+            border-bottom: 1px solid;
+            line-height: 1.3;
+            white-space: nowrap;
+        }
+
+        .best-figure-page .measurement-table th {
+            width: 20%;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .best-figure-page .measurement-table td {
+            width: 30%;
+        }
+
+        html.dark .best-figure-page .measurement-table th,
+        html.dark .best-figure-page .measurement-table td {
+            background: #09111f;
+            border-color: #26364b;
+        }
+
+        html:not(.dark) .best-figure-page .measurement-table th,
+        html:not(.dark) .best-figure-page .measurement-table td {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        .best-figure-page .measurement-table tr > :first-child {
+            border-left: 1px solid;
+            border-radius: 9px 0 0 9px;
+        }
+
+        .best-figure-page .measurement-table tr > :last-child {
+            border-right: 1px solid;
+            border-radius: 0 9px 9px 0;
+        }
+
+        html.dark .best-figure-page .measurement-table tr > :first-child,
+        html.dark .best-figure-page .measurement-table tr > :last-child {
+            border-color: #26364b;
+        }
+
+        html:not(.dark) .best-figure-page .measurement-table tr > :first-child,
+        html:not(.dark) .best-figure-page .measurement-table tr > :last-child {
+            border-color: #e2e8f0;
+        }
+
+        .best-figure-page .measurement-value {
+            text-align: right;
+        }
+
+        .best-figure-page .readout-number {
+            color: var(--bf-number);
+            font-size: 17px;
+            font-variant-numeric: tabular-nums;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+        }
+
+        .best-figure-page .readout-unit {
+            margin-left: 4px;
+            color: var(--bf-quiet);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .best-figure-page .divider {
+            height: 1px;
+            margin: 28px 0 22px;
+            background: var(--bf-line);
+        }
+
+        .best-figure-page .content {
+            min-width: 0;
+        }
+
+        .best-figure-page .content h3 {
+            margin: 0 0 8px;
+            color: var(--bf-heading);
+            font-size: 17px;
+            font-weight: 720;
+            line-height: 1.4;
+        }
+
+        .best-figure-page .content p {
+            max-width: 880px;
+            margin: 0;
+            color: var(--bf-muted);
+            font-size: 14px;
+            line-height: 1.85;
+        }
+
+        .best-figure-page .info-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            max-width: 880px;
+            margin-top: 16px;
+            padding: 11px 13px;
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        html.dark .best-figure-page .info-note {
+            background: rgba(34, 211, 238, 0.07);
+            border: 1px solid rgba(34, 211, 238, 0.18);
+            color: #bae6fd;
+        }
+
+        html:not(.dark) .best-figure-page .info-note {
+            background: rgba(15, 118, 110, 0.06);
+            border: 1px solid rgba(15, 118, 110, 0.16);
+            color: #334155;
+        }
+
+        .best-figure-page .info-note-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            flex: 0 0 18px;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        html.dark .best-figure-page .info-note-icon {
+            background: rgba(34, 211, 238, 0.18);
+            color: #67e8f9;
+        }
+
+        html:not(.dark) .best-figure-page .info-note-icon {
+            background: rgba(15, 118, 110, 0.12);
+            color: #0f766e;
+        }
+
+        .best-figure-page [v-cloak] {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .best-figure-page {
+                padding: 16px 12px 40px;
+            }
+
+            .best-figure-page .card-body {
+                padding: 24px 20px 30px;
+            }
+
+            .best-figure-page .calculator-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .best-figure-page .input-panel,
+            .best-figure-page .result-panel,
+            .best-figure-page .calculator-grid:not(:has(.result-panel)) .input-panel {
+                grid-column: 1;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .best-figure-page .tool-dashboard {
+                align-items: flex-start;
+                padding: 13px 14px;
+            }
+
+            .best-figure-page .dashboard-chips {
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+            .best-figure-page .tool-form {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .best-figure-page .compute-button {
+                width: 100%;
+            }
+
+            .best-figure-page .result-heading {
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .best-figure-page .result-state {
+                margin-left: 41px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .best-figure-page {
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+
+            .best-figure-page .card-body {
+                padding: 20px 14px 26px;
+            }
+
+            .best-figure-page .tool-head .title {
+                font-size: 27px;
+            }
+
+            .best-figure-page .description {
+                font-size: 14px;
+            }
+
+            .best-figure-page .input-panel,
+            .best-figure-page .result-panel {
+                padding: 15px 12px;
+            }
+
+            .best-figure-page .measurement-table th,
+            .best-figure-page .measurement-table td {
+                padding: 10px 7px;
+            }
+
+            .best-figure-page .measurement-table th {
+                font-size: 11px;
+            }
+
+            .best-figure-page .readout-number {
+                font-size: 15px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .best-figure-page *,
+            .best-figure-page *::before,
+            .best-figure-page *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="grid-bg"></div>
@@ -39,7 +807,7 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body best-figure-page" id="app">
         
 
 
@@ -50,25 +818,66 @@
                 <h1 class="title">女性最佳身材计算器</h1>
             </div>
             <div class="description">女性最佳身材计算器，输入身高，即能得出最佳女性身材（上臂围，胸围，腰围下限，腰围上限，臀围，大腿围，小腿围）的尺寸。</div>
-            <el-form :model="formData" ref="computeForm" size="large" class="tool-form">
-                <el-form-item prop="height" :rules="[{required: true, message: `请输入身高`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
-                    <el-input-extend type="number" v-model="formData.height" label="身高(CM)" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-button type="primary" v-on:click="compute">计算</el-button>
-            </el-form>
-            <div v-cloak class="compute-result" v-if="chest!=null">
-                <table style="width: 100%;">
-                    <tbody>
-                        <tr><td>上臂围</td><td><span>{{arm}}</span></td><td>胸围</td><td><span>{{chest}}</span></td></tr>
-                        <tr><td>腰围</td><td><span>{{waist}}</span></td><td>臀围</td><td><span>{{buttocks}}</span></td></tr>
-                        <tr><td>大腿围</td><td><span>{{thigh}}</span></td><td>小腿围</td><td><span>{{calf}}</span></td></tr>
-                    </tbody>
-                </table>
+
+            <div class="tool-dashboard" role="status" aria-label="工具状态">
+                <div class="dashboard-copy">
+                    <span class="dashboard-eyebrow">比例参考 · 01</span>
+                    <strong>输入身高，生成专属参考区间</strong>
+                </div>
+                <div class="dashboard-chips" aria-label="计算信息">
+                    <span class="dashboard-chip"><span class="status-dot" aria-hidden="true"></span>即时计算</span>
+                    <span class="dashboard-chip">单位 · CM</span>
+                </div>
             </div>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>介绍</h3><p>女性最佳身材计算器仅供参考，根据东方女性形象设计。目前网上能查到的理想身材的比例标准较多，这个女性最佳身材计算器根据黄金分割比来计算，具有普遍和代表性。打造完美身材，魔鬼身材，欢迎参考对照。</p>
+
+            <div class="calculator-grid">
+                <section class="input-panel" aria-labelledby="height-panel-title">
+                    <div class="panel-heading">
+                        <span class="panel-index" aria-hidden="true">01</span>
+                        <div>
+                            <h2 id="height-panel-title">输入身高</h2>
+                            <p>使用厘米作为单位，结果会即时换算。</p>
+                        </div>
+                    </div>
+                    <el-form :model="formData" ref="computeForm" size="large" class="tool-form">
+                        <el-form-item class="height-field" prop="height" :rules="[{required: true, message: `请输入身高`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
+                            <el-input-extend type="number" v-model="formData.height" label="身高(CM)" class="w100" aria-label="身高（厘米）"></el-input-extend>
+                        </el-form-item>
+                        <el-button type="primary" class="action-btn action-btn-primary compute-button" v-on:click="compute" aria-label="计算最佳身材参考值"><span>计算</span><span class="button-arrow" aria-hidden="true">→</span></el-button>
+                    </el-form>
+                    <div class="field-helper"><span class="helper-mark" aria-hidden="true">↳</span><span>请输入大于 0 的数字，结果以厘米显示。</span></div>
+                </section>
+
+                <section v-cloak class="compute-result result-panel" v-if="chest!=null" aria-labelledby="result-panel-title" aria-live="polite">
+                    <div class="panel-heading result-heading">
+                        <div>
+                            <span class="panel-index" aria-hidden="true">02</span>
+                            <div>
+                                <h2 id="result-panel-title">参考结果</h2>
+                                <p>根据黄金分割比例模型计算</p>
+                            </div>
+                        </div>
+                        <span class="result-state"><span class="result-status-dot" aria-hidden="true"></span>已生成</span>
+                    </div>
+                    <p class="result-caption">以下数值为围度参考值，请结合个人体型与健康状态理性对照。</p>
+                    <div class="result-table-wrap">
+                        <table class="measurement-table" aria-label="女性最佳身材围度参考值">
+                            <tbody>
+                                <tr><th scope="row">上臂围</th><td class="measurement-value"><span class="readout-number">{{arm}}</span><small class="readout-unit">cm</small></td><th scope="row">胸围</th><td class="measurement-value"><span class="readout-number">{{chest}}</span><small class="readout-unit">cm</small></td></tr>
+                                <tr><th scope="row">腰围</th><td class="measurement-value"><span class="readout-number">{{waist}}</span><small class="readout-unit">cm</small></td><th scope="row">臀围</th><td class="measurement-value"><span class="readout-number">{{buttocks}}</span><small class="readout-unit">cm</small></td></tr>
+                                <tr><th scope="row">大腿围</th><td class="measurement-value"><span class="readout-number">{{thigh}}</span><small class="readout-unit">cm</small></td><th scope="row">小腿围</th><td class="measurement-value"><span class="readout-number">{{calf}}</span><small class="readout-unit">cm</small></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </div>
+
+            <div class="divider" role="presentation"></div>
+            <section class="content info-panel" aria-labelledby="intro-title">
+                <h3 id="intro-title">介绍</h3>
+                <p>女性最佳身材计算器仅供参考，根据东方女性形象设计。目前网上能查到的理想身材的比例标准较多，这个女性最佳身材计算器根据黄金分割比来计算，具有普遍和代表性。打造完美身材，魔鬼身材，欢迎参考对照。</p>
+                <div class="info-note" role="note"><span class="info-note-icon" aria-hidden="true">i</span><span>理想比例不等于健康标准，数据仅作为自我了解与搭配参考。</span></div>
+            </section>
         </div>
     </div>
 </div>
