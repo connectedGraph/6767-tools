@@ -17,23 +17,876 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .tool-body .tool-form { max-width: 600px; }
-        .tool-body .tool-form .el-tabs { display: flex; border-radius: 4px; }
-        .tool-body .tool-form .el-tabs--border-card > .el-tabs__header { border-bottom: 0; }
-        .tool-body .tool-form .el-tabs--left .el-tabs__header.is-left { margin-right: 0; height: unset; }
-        .tool-body .tool-form .el-tabs__item { padding: 0 10px; }
-        .tool-body .tool-form .el-tabs--border-card > .el-tabs__content { flex: 1; }
-        .tool-body .tool-form .radio-group { text-align: start; margin-bottom: 10px; }
-        [dir=rtl] .tool-body .tool-form .radio-group .el-radio { margin: 0 0 0 32px; }
-        [dir=rtl] .tool-body .tool-form .radio-group .el-radio:first-child { margin: 0 0 0 32px; }
-        [dir=rtl] .tool-body .tool-form .radio-group .el-radio__label { padding: 0 8px 0 0; }
-        [dir=rtl] .el-tabs--left.el-tabs--border-card .el-tabs__header.is-left { border-right: 0; border-left: 1px solid var(--el-border-color); }
-        .tool-body .tool-form .result { margin-top: 15px; line-height: 32px; }
-        .tool-body .tool-form .result span { font-size: 24px; }
+        /* Area calculator: a self-contained, dual-mode workspace. */
+        .area-calculator-page,
+        .area-calculator-page * {
+            box-sizing: border-box;
+        }
 
-        @media (max-width:500px) {
-            .tool-body .tool-form .el-tabs__item { padding: 0 5px; }
-            .tool-body .tool-form .el-tabs--border-card > .el-tabs__content { padding: 10px; }
+        .area-calculator-page {
+            width: 100%;
+            max-width: 1120px;
+            min-width: 0;
+            margin: 0 auto;
+            overflow: hidden;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        html.dark .area-calculator-page {
+            --area-ink: #f8fafc;
+            --area-muted: #94a3b8;
+            --area-soft: #cbd5e1;
+            --area-line: #1e293b;
+            --area-line-strong: #334155;
+            --area-panel: #0f172a;
+            --area-panel-deep: #090e1f;
+            --area-input: #111c32;
+            --area-accent: #38bdf8;
+            --area-accent-soft: rgba(14, 116, 144, 0.28);
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .area-calculator-page {
+            --area-ink: #0f172a;
+            --area-muted: #475569;
+            --area-soft: #334155;
+            --area-line: #e2e8f0;
+            --area-line-strong: #cbd5e1;
+            --area-panel: #ffffff;
+            --area-panel-deep: #f8fafc;
+            --area-input: #ffffff;
+            --area-accent: #0369a1;
+            --area-accent-soft: #e0f2fe;
+            color: #1e293b;
+        }
+
+        .area-calculator-card {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            overflow: hidden;
+            border-radius: 14px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .area-calculator-card {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(148, 163, 184, 0.04);
+        }
+
+        html:not(.dark) .area-calculator-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .area-calculator-card-body {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            padding: clamp(20px, 4vw, 40px);
+        }
+
+        .area-calculator-page .area-calculator-head {
+            margin: 0 0 10px;
+        }
+
+        .area-calculator-kicker {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            margin-bottom: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        html.dark .area-calculator-kicker {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .area-calculator-kicker {
+            color: #0369a1;
+        }
+
+        .area-calculator-kicker-note {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            text-transform: none;
+        }
+
+        html.dark .area-calculator-kicker-note {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .area-calculator-kicker-note {
+            color: #64748b;
+        }
+
+        .area-calculator-page .title {
+            max-width: 760px;
+            margin: 0;
+            color: var(--area-ink);
+            font-size: clamp(2rem, 5vw, 3.25rem);
+            font-weight: 850;
+            letter-spacing: -0.045em;
+            line-height: 1.08;
+        }
+
+        .area-calculator-description {
+            max-width: 820px;
+            margin: 12px 0 0;
+            color: var(--area-muted);
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        .area-calculator-overview {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 100%;
+            margin: 28px 0 24px;
+            padding: clamp(18px, 3vw, 24px);
+            border-radius: 12px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        html.dark .area-calculator-overview {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .area-calculator-overview {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .area-calculator-eyebrow,
+        .area-calculator-panel-eyebrow {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        html.dark .area-calculator-eyebrow,
+        html.dark .area-calculator-panel-eyebrow {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .area-calculator-eyebrow,
+        html:not(.dark) .area-calculator-panel-eyebrow {
+            color: #0369a1;
+        }
+
+        .area-calculator-overview-copy h2,
+        .area-calculator-panel-head h2 {
+            margin: 0;
+            color: var(--area-ink);
+            font-size: clamp(1.05rem, 2vw, 1.3rem);
+            font-weight: 760;
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .area-calculator-overview-copy p {
+            max-width: 620px;
+            margin: 7px 0 0;
+            color: var(--area-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .area-calculator-metrics {
+            display: flex;
+            align-items: stretch;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 14px;
+        }
+
+        .area-calculator-metric {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 70px;
+            padding-left: 14px;
+            border-left: 1px solid var(--area-line-strong);
+        }
+
+        .area-calculator-metric strong {
+            color: var(--area-ink);
+            font-size: 24px;
+            font-weight: 850;
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+
+        .area-calculator-metric span {
+            margin-top: 5px;
+            color: var(--area-muted);
+            font-size: 11px;
+            line-height: 1.3;
+            white-space: nowrap;
+        }
+
+        .area-calculator-panel-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            margin: 0 0 14px;
+        }
+
+        .area-calculator-live-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 32px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .area-calculator-live-status::before {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            content: "";
+        }
+
+        html.dark .area-calculator-live-status {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(52, 211, 153, 0.35);
+            color: #a7f3d0;
+        }
+
+        html.dark .area-calculator-live-status::before {
+            background: #34d399;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.12);
+        }
+
+        html:not(.dark) .area-calculator-live-status {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #047857;
+        }
+
+        html:not(.dark) .area-calculator-live-status::before {
+            background: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+        }
+
+        .area-calculator-form {
+            width: 100%;
+            max-width: none;
+            min-width: 0;
+        }
+
+        html.dark .area-calculator-form {
+            --el-color-primary: #38bdf8;
+            --el-text-color-primary: #f8fafc;
+            --el-text-color-regular: #cbd5e1;
+            --el-text-color-secondary: #94a3b8;
+            --el-border-color: #334155;
+            --el-border-color-light: #1e293b;
+            --el-fill-color-blank: #111c32;
+        }
+
+        html:not(.dark) .area-calculator-form {
+            --el-color-primary: #0284c7;
+            --el-text-color-primary: #0f172a;
+            --el-text-color-regular: #334155;
+            --el-text-color-secondary: #64748b;
+            --el-border-color: #cbd5e1;
+            --el-border-color-light: #e2e8f0;
+            --el-fill-color-blank: #ffffff;
+        }
+
+        .area-calculator-tabs {
+            display: flex;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .area-calculator-tabs {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.28);
+        }
+
+        html:not(.dark) .area-calculator-tabs {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .area-calculator-tabs.el-tabs--left > .el-tabs__header.is-left {
+            flex: 0 1 21%;
+            width: 100%;
+            max-width: 180px;
+            min-width: 0;
+            height: auto;
+            margin-right: 0;
+            padding: 8px;
+            border-bottom: 0;
+        }
+
+        html.dark .area-calculator-tabs.el-tabs--left > .el-tabs__header.is-left {
+            background: #090e1f;
+            border-right: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .area-calculator-tabs.el-tabs--left > .el-tabs__header.is-left {
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .area-calculator-tabs .el-tabs__nav-wrap,
+        .area-calculator-tabs .el-tabs__nav-scroll,
+        .area-calculator-tabs .el-tabs__nav {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .area-calculator-tabs .el-tabs__nav-wrap::after {
+            display: none;
+        }
+
+        .area-calculator-tabs .el-tabs__item {
+            display: flex;
+            align-items: center;
+            min-height: 42px;
+            height: auto;
+            margin: 2px 0;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 680;
+            line-height: 1.35;
+            text-align: start;
+            white-space: normal;
+            transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+        }
+
+        html.dark .area-calculator-tabs .el-tabs__item {
+            color: #94a3b8;
+        }
+
+        html.dark .area-calculator-tabs .el-tabs__item:hover {
+            background: rgba(14, 116, 144, 0.18);
+            color: #e0f2fe;
+        }
+
+        html.dark .area-calculator-tabs .el-tabs__item.is-active {
+            background: rgba(14, 116, 144, 0.32);
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .area-calculator-tabs .el-tabs__item {
+            color: #475569;
+        }
+
+        html:not(.dark) .area-calculator-tabs .el-tabs__item:hover {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        html:not(.dark) .area-calculator-tabs .el-tabs__item.is-active {
+            background: #e0f2fe;
+            color: #0c4a6e;
+        }
+
+        html.dark .area-calculator-tabs .el-tabs__active-bar {
+            width: 3px !important;
+            border-radius: 999px;
+            background: #38bdf8;
+        }
+
+        html:not(.dark) .area-calculator-tabs .el-tabs__active-bar {
+            width: 3px !important;
+            border-radius: 999px;
+            background: #0284c7;
+        }
+
+        .area-calculator-tabs > .el-tabs__content {
+            flex: 1 1 0;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            padding: clamp(18px, 3vw, 30px);
+            overflow: hidden;
+        }
+
+        .area-calculator-tabs .el-tab-pane,
+        .area-calculator-tabs .el-form {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .area-calculator-form .el-form-item {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 14px;
+        }
+
+        .area-calculator-form .el-form-item__content {
+            min-width: 0;
+        }
+
+        .area-calculator-form .radio-group {
+            margin: 0 0 16px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-align: start;
+        }
+
+        html.dark .area-calculator-form .radio-group {
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .area-calculator-form .radio-group {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .area-calculator-form .radio-group .el-radio-group {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px 16px;
+        }
+
+        .area-calculator-form .radio-group .el-radio {
+            display: inline-flex;
+            align-items: center;
+            min-height: 36px;
+            margin: 0;
+        }
+
+        .area-calculator-form .radio-group .el-radio__label {
+            padding-left: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        html.dark .area-calculator-form .radio-group .el-radio__label {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .area-calculator-form .radio-group .el-radio__label {
+            color: #334155;
+        }
+
+        html.dark .area-calculator-form .el-radio__inner {
+            background: #0f172a;
+            border-color: #475569;
+        }
+
+        html.dark .area-calculator-form .el-radio.is-checked .el-radio__inner {
+            background: #0284c7;
+            border-color: #38bdf8;
+        }
+
+        html:not(.dark) .area-calculator-form .el-radio__inner {
+            background: #ffffff;
+            border-color: #94a3b8;
+        }
+
+        html:not(.dark) .area-calculator-form .el-radio.is-checked .el-radio__inner {
+            background: #0284c7;
+            border-color: #0284c7;
+        }
+
+        .area-calculator-form el-input-extend,
+        .area-calculator-form el-input-extend.w100,
+        .area-calculator-form .w100,
+        .area-calculator-form .el-input {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .area-calculator-form .el-input__wrapper {
+            min-height: 42px;
+            padding: 1px 13px;
+            border-radius: 10px;
+            transition: background-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        html.dark .area-calculator-form .el-input__wrapper {
+            background: #111c32;
+            box-shadow: 0 0 0 1px #334155 inset, 0 4px 14px rgba(0, 0, 0, 0.12);
+        }
+
+        html.dark .area-calculator-form .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px #64748b inset;
+        }
+
+        html.dark .area-calculator-form .el-input__wrapper.is-focus {
+            box-shadow: 0 0 0 2px #38bdf8 inset, 0 0 0 4px rgba(56, 189, 248, 0.12);
+        }
+
+        html:not(.dark) .area-calculator-form .el-input__wrapper {
+            background: #ffffff;
+            box-shadow: 0 0 0 1px #cbd5e1 inset, 0 4px 14px rgba(15, 23, 42, 0.04);
+        }
+
+        html:not(.dark) .area-calculator-form .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px #94a3b8 inset;
+        }
+
+        html:not(.dark) .area-calculator-form .el-input__wrapper.is-focus {
+            box-shadow: 0 0 0 2px #0284c7 inset, 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+
+        .area-calculator-form .el-input__inner {
+            min-height: 38px;
+            color: var(--area-ink);
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        html.dark .area-calculator-form .el-input__inner::placeholder {
+            color: #64748b;
+        }
+
+        html:not(.dark) .area-calculator-form .el-input__inner::placeholder {
+            color: #94a3b8;
+        }
+
+        .area-calculator-form .el-form-item__error {
+            padding-top: 5px;
+            font-size: 12px;
+        }
+
+        html.dark .area-calculator-form .el-form-item__error {
+            color: #fda4af;
+        }
+
+        html:not(.dark) .area-calculator-form .el-form-item__error {
+            color: #be123c;
+        }
+
+        .area-calculator-form .el-button.el-button--primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 220px;
+            min-height: 42px;
+            margin-top: 2px;
+            padding: 9px 18px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 750;
+            letter-spacing: 0.01em;
+            transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        html.dark .area-calculator-form .el-button.el-button--primary {
+            background: rgba(14, 116, 144, 0.42);
+            border-color: #38bdf8;
+            color: #e0f2fe;
+            box-shadow: 0 6px 18px rgba(8, 145, 178, 0.16);
+        }
+
+        html.dark .area-calculator-form .el-button.el-button--primary:hover {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        html.dark .area-calculator-form .el-button.el-button--primary:active {
+            background: #0369a1;
+            transform: translateY(0);
+        }
+
+        html:not(.dark) .area-calculator-form .el-button.el-button--primary {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.18);
+        }
+
+        html:not(.dark) .area-calculator-form .el-button.el-button--primary:hover {
+            background: #0369a1;
+            border-color: #0369a1;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        html:not(.dark) .area-calculator-form .el-button.el-button--primary:active {
+            background: #075985;
+            transform: translateY(0);
+        }
+
+        .area-calculator-form .result {
+            width: 100%;
+            max-width: 100%;
+            margin-top: 20px;
+            padding: 13px 15px;
+            border-radius: 12px;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .area-calculator-form .result {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .area-calculator-form .result {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        .area-calculator-form .result > div {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px 10px;
+            min-width: 0;
+        }
+
+        .area-calculator-form .result > div + div {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--area-line);
+        }
+
+        .area-calculator-form .result > div:first-child {
+            color: var(--area-muted);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+        }
+
+        .area-calculator-form .result > div:last-child {
+            color: var(--area-ink);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .area-calculator-form .result span {
+            display: inline-block;
+            max-width: 100%;
+            color: var(--area-accent);
+            font-size: clamp(22px, 4vw, 30px);
+            font-weight: 850;
+            letter-spacing: -0.035em;
+            line-height: 1.1;
+            overflow-wrap: anywhere;
+        }
+
+        .area-calculator-divider {
+            width: 100%;
+            height: 1px;
+            margin: clamp(26px, 5vw, 44px) 0 24px;
+            border: 0;
+        }
+
+        html.dark .area-calculator-divider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) .area-calculator-divider {
+            background: #e2e8f0;
+        }
+
+        .area-calculator-content {
+            width: 100%;
+            max-width: 100%;
+            padding: clamp(18px, 3vw, 24px);
+            border-radius: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .area-calculator-content {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .area-calculator-content {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        .area-calculator-content h3 {
+            margin: 0 0 14px;
+            color: var(--area-ink);
+            font-size: 17px;
+            font-weight: 780;
+            letter-spacing: -0.02em;
+        }
+
+        .area-calculator-content p {
+            margin: 0;
+            color: inherit;
+            font-size: 13px;
+            line-height: 1.75;
+        }
+
+        .area-calculator-content p + p {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--area-line);
+        }
+
+        .area-calculator-content span,
+        .area-calculator-inline-formula {
+            color: inherit !important;
+            background: transparent !important;
+            font-size: inherit !important;
+        }
+
+        .area-calculator-page :focus-visible {
+            outline-width: 3px;
+            outline-style: solid;
+            outline-offset: 3px;
+        }
+
+        html.dark .area-calculator-page :focus-visible {
+            outline-color: #38bdf8;
+        }
+
+        html:not(.dark) .area-calculator-page :focus-visible {
+            outline-color: #0284c7;
+        }
+
+        @media (max-width: 768px) {
+            .area-calculator-overview {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 16px;
+            }
+
+            .area-calculator-metrics {
+                justify-content: flex-start;
+            }
+
+            .area-calculator-tabs.el-tabs--left {
+                display: block;
+            }
+
+            .area-calculator-tabs.el-tabs--left > .el-tabs__header.is-left {
+                display: block;
+                width: 100%;
+                max-width: none;
+                padding: 6px;
+                border-right: 0;
+                border-bottom: 1px solid var(--area-line);
+            }
+
+            html.dark .area-calculator-tabs.el-tabs--left > .el-tabs__header.is-left {
+                border-bottom-color: #1e293b;
+            }
+
+            html:not(.dark) .area-calculator-tabs.el-tabs--left > .el-tabs__header.is-left {
+                border-bottom-color: #e2e8f0;
+            }
+
+            .area-calculator-tabs .el-tabs__nav {
+                display: flex;
+                align-items: stretch;
+                flex-wrap: wrap;
+            }
+
+            .area-calculator-tabs .el-tabs__item {
+                flex: 1 1 25%;
+                justify-content: center;
+                min-height: 42px;
+                margin: 0;
+                padding: 8px 5px;
+                text-align: center;
+            }
+
+            .area-calculator-tabs .el-tabs__active-bar {
+                display: none;
+            }
+
+            .area-calculator-tabs > .el-tabs__content {
+                padding: 18px 14px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .area-calculator-card-body {
+                padding: 18px 13px 24px;
+            }
+
+            .area-calculator-description {
+                font-size: 13px;
+                line-height: 1.65;
+            }
+
+            .area-calculator-overview {
+                margin-top: 22px;
+                padding: 16px;
+            }
+
+            .area-calculator-panel-head {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .area-calculator-live-status {
+                align-self: flex-start;
+            }
+
+            .area-calculator-metrics {
+                gap: 10px;
+            }
+
+            .area-calculator-metric {
+                min-width: 64px;
+                padding-left: 10px;
+            }
+
+            .area-calculator-metric strong {
+                font-size: 21px;
+            }
+
+            .area-calculator-form .el-button.el-button--primary {
+                max-width: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .area-calculator-page *,
+            .area-calculator-page *::before,
+            .area-calculator-page *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
         }
     </style>
 
@@ -60,19 +913,41 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
-<div class="tool-body">
-    <div class="card-model">
-        <div class="card-body">
-            <div class="tool-head">
+<div class="tool-body area-calculator-page">
+    <div class="card-model area-calculator-card">
+        <div class="card-body area-calculator-card-body">
+            <div class="tool-head area-calculator-head">
+                <div class="area-calculator-kicker">
+                    <span>GEOMETRY TOOLKIT</span>
+                    <span class="area-calculator-kicker-note">单位：平方单位</span>
+                </div>
                 <h1 class="title">面积计算器</h1>
             </div>
-            <div class="description">面积计算器，在线面积计算器，三角形面积计算器，正方形面积计算，长方形面积计算，圆形面积计算，椭圆环面积计算，扇形面积计算，圆环面积计算，平形四边形面积计算，梯形面积计算</div>
-            <div v-cloak class="tool-form">
-                <el-tabs tab-position="left" type="border-card">
+            <div class="description area-calculator-description">面积计算器，在线面积计算器，三角形面积计算器，正方形面积计算，长方形面积计算，圆形面积计算，椭圆环面积计算，扇形面积计算，圆环面积计算，平形四边形面积计算，梯形面积计算</div>
+            <div class="area-calculator-overview" aria-label="面积计算器概览">
+                <div class="area-calculator-overview-copy">
+                    <span class="area-calculator-eyebrow">QUICK WORKSPACE</span>
+                    <h2>把尺寸变成清晰的面积结果</h2>
+                    <p>选择图形，填入已知参数，立即得到可核对的面积。</p>
+                </div>
+                <div class="area-calculator-metrics" aria-label="工具能力">
+                    <div class="area-calculator-metric"><strong>09</strong><span>种图形</span></div>
+                    <div class="area-calculator-metric"><strong>π</strong><span>高精度公式</span></div>
+                </div>
+            </div>
+            <div class="area-calculator-panel-head">
+                <div>
+                    <span class="area-calculator-panel-eyebrow">CALCULATOR / INPUT</span>
+                    <h2>选择图形并输入参数</h2>
+                </div>
+                <span class="area-calculator-live-status">在线计算</span>
+            </div>
+            <div v-cloak class="tool-form area-calculator-form">
+                <el-tabs tab-position="left" type="border-card" class="area-calculator-tabs" aria-label="选择图形">
                     <el-tab-pane label="圆形">
                         <el-form :model="roundFormData" ref="roundForm" size="large">
                             <el-form-item prop="r" :rules="{required: true, message: `请输入`, trigger: 'blur'}">
@@ -232,9 +1107,9 @@
                     </el-tab-pane>
                 </el-tabs>
             </div>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>常见面积公式</h3><p>圆形面积公式：S=π×r² (r为半径)</p><p>扇形面积公式：S=π×r²×n÷360 (n为圆心角) = <span style="color: rgb(51, 51, 51); background-color: rgb(255, 255, 255); font-size: 14px;">r×l÷2 (l为弧长) = r×k÷2 (弧度)</span></p><p>圆环面积公式：S=π×(R²-r²) (R为外圆半径，r为内圆半径) = π×d(2×R-d) (R为外圆半径，d为圆环厚度)</p><p>椭圆形面积公式：S=π×a×b (a为长半轴长，b为短半轴长)</p><p> </p><p>三角形面积公式：S=a×h÷2 (a为三角形的底长度，h为三角形高度)</p><p>正方形面积公式：S=a×a（a为正方形的边长）</p><p>长方形面积公式：S=axb（a为长度，b为宽度）</p><p>平行四边形面积公式：S=axh（a为长度，h为高度）</p><p>梯形面积公式：S=(a+b)×h÷2 (a为上底长度，b为下底长度，h为高度) </p>
+            <div class="divider area-calculator-divider"></div>
+            <div class="content area-calculator-content">
+                <h3>常见面积公式</h3><p>圆形面积公式：S=π×r² (r为半径)</p><p>扇形面积公式：S=π×r²×n÷360 (n为圆心角) = <span class="area-calculator-inline-formula">r×l÷2 (l为弧长) = r×k÷2 (弧度)</span></p><p>圆环面积公式：S=π×(R²-r²) (R为外圆半径，r为内圆半径) = π×d(2×R-d) (R为外圆半径，d为圆环厚度)</p><p>椭圆形面积公式：S=π×a×b (a为长半轴长，b为短半轴长)</p><p> </p><p>三角形面积公式：S=a×h÷2 (a为三角形的底长度，h为三角形高度)</p><p>正方形面积公式：S=a×a（a为正方形的边长）</p><p>长方形面积公式：S=axb（a为长度，b为宽度）</p><p>平行四边形面积公式：S=axh（a为长度，h为高度）</p><p>梯形面积公式：S=(a+b)×h÷2 (a为上底长度，b为下底长度，h为高度) </p>
             </div>
         </div>
     </div>
