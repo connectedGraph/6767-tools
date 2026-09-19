@@ -17,8 +17,680 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .tool-body .content table { max-width: 900px; }
-        .tool-body .content table td img { max-width: 165px; width: 100%; }
+        /* Color vision test: a contained, readable surface that remains clear in both themes. */
+        .color-test-card {
+            max-width: 100%;
+            min-width: 0;
+            color: #1e293b;
+        }
+
+        html.dark .color-test-card {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .color-test-card {
+            color: #1e293b;
+        }
+
+        .color-test-card .tool-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .color-test-card .title {
+            margin: 0;
+            max-width: 100%;
+            font-size: clamp(1.65rem, 3vw, 2.35rem);
+            line-height: 1.2;
+            letter-spacing: -0.025em;
+        }
+
+        html.dark .color-test-card .title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .color-test-card .title {
+            color: #0f172a;
+        }
+
+        .color-test-card > .description {
+            max-width: 920px;
+            margin: 0 0 18px;
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .color-test-card > .description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .color-test-card > .description {
+            color: #475569;
+        }
+
+        .color-test-dashboard {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto auto;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            min-width: 0;
+            padding: 14px 16px;
+            margin: 0 0 14px;
+            border-radius: 12px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .color-test-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .color-test-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .color-test-dashboard-copy,
+        .color-test-toggle-wrap,
+        .color-test-status,
+        .color-test-overview-item,
+        .color-test-notice {
+            min-width: 0;
+        }
+
+        .color-test-kicker {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.3;
+            text-transform: uppercase;
+        }
+
+        html.dark .color-test-kicker {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .color-test-kicker {
+            color: #0369a1;
+        }
+
+        .color-test-kicker-dot {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+        }
+
+        html.dark .color-test-kicker-dot {
+            background: #22d3ee;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12);
+        }
+
+        html:not(.dark) .color-test-kicker-dot {
+            background: #0284c7;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+
+        .color-test-dashboard-title {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 750;
+            line-height: 1.45;
+        }
+
+        html.dark .color-test-dashboard-title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .color-test-dashboard-title {
+            color: #0f172a;
+        }
+
+        .color-test-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 34px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        html.dark .color-test-status {
+            color: #bae6fd;
+            background: rgba(14, 116, 144, 0.22);
+            border: 1px solid #155e75;
+        }
+
+        html:not(.dark) .color-test-status {
+            color: #075985;
+            background: #ecfeff;
+            border: 1px solid #a5f3fc;
+        }
+
+        .color-test-status-dot {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+        }
+
+        html.dark .color-test-status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.14);
+        }
+
+        html:not(.dark) .color-test-status-dot {
+            background: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+        }
+
+        .color-test-toggle-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 11px;
+            min-height: 42px;
+        }
+
+        .color-test-toggle-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.35;
+            text-align: right;
+        }
+
+        .color-test-toggle-label small {
+            display: block;
+            margin-top: 2px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        html.dark .color-test-toggle-label {
+            color: #e2e8f0;
+        }
+
+        html.dark .color-test-toggle-label small {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .color-test-toggle-label {
+            color: #1e293b;
+        }
+
+        html:not(.dark) .color-test-toggle-label small {
+            color: #64748b;
+        }
+
+        .color-test-switch {
+            display: inline-flex;
+            align-items: center;
+            min-height: 38px;
+            flex: 0 0 auto;
+        }
+
+        html.dark .color-test-switch {
+            --el-switch-on-color: #0284c7;
+            --el-switch-off-color: #334155;
+        }
+
+        html:not(.dark) .color-test-switch {
+            --el-switch-on-color: #0284c7;
+            --el-switch-off-color: #94a3b8;
+        }
+
+        html.dark .color-test-switch .el-switch__label {
+            color: #94a3b8;
+        }
+
+        html.dark .color-test-switch .el-switch__label.is-active {
+            color: #e0f2fe;
+        }
+
+        html:not(.dark) .color-test-switch .el-switch__label {
+            color: #64748b;
+        }
+
+        html:not(.dark) .color-test-switch .el-switch__label.is-active {
+            color: #075985;
+        }
+
+        .color-test-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            margin: 0 0 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        html.dark .color-test-notice {
+            color: #cbd5e1;
+            background: rgba(8, 145, 178, 0.1);
+            border: 1px solid #164e63;
+        }
+
+        html:not(.dark) .color-test-notice {
+            color: #334155;
+            background: #ecfeff;
+            border: 1px solid #a5f3fc;
+        }
+
+        .color-test-notice-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            flex: 0 0 22px;
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        html.dark .color-test-notice-icon {
+            color: #082f49;
+            background: #67e8f9;
+        }
+
+        html:not(.dark) .color-test-notice-icon {
+            color: #ecfeff;
+            background: #0284c7;
+        }
+
+        .color-test-notice p {
+            margin: 0;
+            min-width: 0;
+        }
+
+        .color-test-notice strong {
+            margin-right: 5px;
+            font-weight: 800;
+        }
+
+        html.dark .color-test-notice strong {
+            color: #f0f9ff;
+        }
+
+        html:not(.dark) .color-test-notice strong {
+            color: #0f172a;
+        }
+
+        .color-test-overview {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin: 0 0 18px;
+        }
+
+        .color-test-overview-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 10px;
+            transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .color-test-overview-item:hover {
+            transform: translateY(-1px);
+        }
+
+        html.dark .color-test-overview-item {
+            background: #111827;
+            border: 1px solid #1e293b;
+        }
+
+        html.dark .color-test-overview-item:hover {
+            background: #172033;
+            border-color: #334155;
+        }
+
+        html:not(.dark) .color-test-overview-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        html:not(.dark) .color-test-overview-item:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .color-test-overview-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            flex: 0 0 28px;
+            border-radius: 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        html.dark .color-test-overview-index {
+            color: #bae6fd;
+            background: rgba(14, 116, 144, 0.28);
+            border: 1px solid #155e75;
+        }
+
+        html:not(.dark) .color-test-overview-index {
+            color: #075985;
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+        }
+
+        .color-test-overview-copy {
+            min-width: 0;
+        }
+
+        .color-test-overview-copy strong,
+        .color-test-overview-copy span {
+            display: block;
+        }
+
+        .color-test-overview-copy strong {
+            margin-bottom: 3px;
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        .color-test-overview-copy span {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        html.dark .color-test-overview-copy strong {
+            color: #f1f5f9;
+        }
+
+        html.dark .color-test-overview-copy span {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .color-test-overview-copy strong {
+            color: #1e293b;
+        }
+
+        html:not(.dark) .color-test-overview-copy span {
+            color: #64748b;
+        }
+
+        .color-test-content {
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .color-test-card .color-test-content table {
+            width: 100% !important;
+            max-width: 100%;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 0 0 18px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        html.dark .color-test-card .color-test-content table {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+        }
+
+        html:not(.dark) .color-test-card .color-test-content table {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+        }
+
+        .color-test-content table th {
+            width: 100%;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.55;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .color-test-content table th {
+            color: #e0f2fe;
+            background: #111c32;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .color-test-content table th {
+            color: #0f172a;
+            background: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .color-test-content table td {
+            width: 50%;
+            padding: 18px 14px;
+            vertical-align: top;
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        html.dark .color-test-content table td {
+            color: #cbd5e1;
+            background: #0f172a;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .color-test-content table td {
+            color: #334155;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .color-test-content table tr + tr td {
+            border-top: 0;
+        }
+
+        .color-test-content table td + td {
+            border-left: 1px solid;
+        }
+
+        html.dark .color-test-content table td + td {
+            border-left-color: #1e293b;
+        }
+
+        html:not(.dark) .color-test-content table td + td {
+            border-left-color: #e2e8f0;
+        }
+
+        .color-test-content table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .color-test-content table tbody tr:not(:first-child):hover td {
+            transition: background-color 0.18s ease;
+        }
+
+        html.dark .color-test-content table tbody tr:not(:first-child):hover td {
+            background: #131f35;
+        }
+
+        html:not(.dark) .color-test-content table tbody tr:not(:first-child):hover td {
+            background: #f8fafc;
+        }
+
+        .color-test-card .color-test-content table td img {
+            display: block;
+            width: min(100%, 220px);
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto 12px;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .color-test-content table td br {
+            display: none;
+        }
+
+        .color-test-content table td span {
+            display: block;
+            max-width: 34em;
+            margin: 0 auto;
+        }
+
+        html.dark .color-test-content table td span {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .color-test-content table td span {
+            color: #334155;
+        }
+
+        .color-test-content h3 {
+            margin: 26px 0 10px;
+            padding: 10px 12px;
+            border-left: 3px solid;
+            border-radius: 0 8px 8px 0;
+            font-size: 18px;
+            line-height: 1.45;
+        }
+
+        html.dark .color-test-content h3 {
+            color: #f8fafc;
+            background: rgba(30, 41, 59, 0.62);
+            border-left-color: #38bdf8;
+        }
+
+        html:not(.dark) .color-test-content h3 {
+            color: #0f172a;
+            background: #f8fafc;
+            border-left-color: #0284c7;
+        }
+
+        .color-test-content h4 {
+            margin: 20px 0 7px;
+            font-size: 15px;
+            line-height: 1.45;
+        }
+
+        html.dark .color-test-content h4 {
+            color: #e0f2fe;
+        }
+
+        html:not(.dark) .color-test-content h4 {
+            color: #1e293b;
+        }
+
+        .color-test-content p {
+            margin: 0 0 14px;
+            font-size: 14px;
+            line-height: 1.85;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .color-test-content p {
+            color: #aebdce;
+        }
+
+        html:not(.dark) .color-test-content p {
+            color: #475569;
+        }
+
+        html.dark .color-test-card :focus-visible {
+            outline: 3px solid #38bdf8;
+            outline-offset: 3px;
+        }
+
+        html:not(.dark) .color-test-card :focus-visible {
+            outline: 3px solid #0369a1;
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .color-test-dashboard {
+                grid-template-columns: minmax(0, 1fr) auto;
+            }
+
+            .color-test-dashboard-copy {
+                grid-column: 1 / -1;
+            }
+
+            .color-test-toggle-wrap {
+                justify-content: space-between;
+            }
+
+            .color-test-overview {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .color-test-dashboard {
+                grid-template-columns: 1fr;
+                gap: 11px;
+                padding: 13px;
+            }
+
+            .color-test-dashboard-copy,
+            .color-test-status,
+            .color-test-toggle-wrap {
+                grid-column: auto;
+            }
+
+            .color-test-status {
+                justify-self: start;
+            }
+
+            .color-test-toggle-wrap {
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .color-test-content table th {
+                padding: 12px 10px;
+                font-size: 13px;
+            }
+
+            .color-test-content table td {
+                padding: 14px 7px;
+                font-size: 12px;
+            }
+
+            .color-test-card .color-test-content table td img {
+                width: 100%;
+                max-width: 180px;
+                margin-bottom: 9px;
+            }
+
+            .color-test-content p {
+                font-size: 13px;
+                line-height: 1.8;
+            }
+        }
     </style>
 
     <meta property="og:type" content="website" />
@@ -44,27 +716,56 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
 <div class="tool-body">
     <div class="card-model">
-        <div class="card-body">
+        <div class="card-body color-test-card">
             <div class="tool-head">
                 <h1 class="title">色盲色弱检测</h1>
             </div>
             <div class="description">患有色盲的人无法正确分辨颜色，患有色盲或者色弱的人不具备驾驶资格，无法通过辨色力测验，也就与驾照无缘了，色盲测试图,色弱测试图，想不想知道自己是不是色盲(色弱)?来看一下微查网提供的测试图吧。</div>
-            <div class="flex-center" style="margin-bottom:10px;">
-                <el-switch v-model="showImgTip"
-                           inline-prompt
-                           style="--el-switch-off-color: #ff4949"
-                           active-text="显示图片注释"
-                           inactive-text="隐藏图片注释"
-                           v-on:change="showImgTipChange">
-                </el-switch>
+            <section class="color-test-dashboard" aria-label="色盲色弱测试控制面板">
+                <div class="color-test-dashboard-copy">
+                    <div class="color-test-kicker"><span class="color-test-kicker-dot" aria-hidden="true"></span>VISUAL SCREENING</div>
+                    <p class="color-test-dashboard-title">按组浏览测试图，保持屏幕亮度与观看距离稳定</p>
+                </div>
+                <div class="color-test-status" role="status" aria-live="polite">
+                    <span class="color-test-status-dot" aria-hidden="true"></span>
+                    <span>自测模式 · 4 组图卡</span>
+                </div>
+                <div class="color-test-toggle-wrap">
+                    <span class="color-test-toggle-label">图片注释<small>显示答案提示</small></span>
+                    <el-switch class="color-test-switch"
+                               v-model="showImgTip"
+                               inline-prompt
+                               active-text="显示"
+                               inactive-text="隐藏"
+                               v-on:change="showImgTipChange">
+                    </el-switch>
+                </div>
+            </section>
+            <div class="color-test-notice" role="note">
+                <span class="color-test-notice-icon" aria-hidden="true">i</span>
+                <p><strong>仅供自测参考</strong>测试结果不能替代专业眼科检查；如果你对辨色能力有疑问，建议咨询眼科医生。</p>
             </div>
-            <div class="content">
+            <div class="color-test-overview" aria-label="测试步骤">
+                <div class="color-test-overview-item">
+                    <span class="color-test-overview-index" aria-hidden="true">01</span>
+                    <div class="color-test-overview-copy"><strong>先看图</strong><span>在自然光下逐张观察图案。</span></div>
+                </div>
+                <div class="color-test-overview-item">
+                    <span class="color-test-overview-index" aria-hidden="true">02</span>
+                    <div class="color-test-overview-copy"><strong>再对照</strong><span>需要时切换注释，核对你的判断。</span></div>
+                </div>
+                <div class="color-test-overview-item">
+                    <span class="color-test-overview-index" aria-hidden="true">03</span>
+                    <div class="color-test-overview-copy"><strong>保留疑问</strong><span>异常或不确定时请进行专业检查。</span></div>
+                </div>
+            </div>
+            <div class="content color-test-content" id="color-test-content">
                 <table style="width: 100%;"><tbody><tr><th colSpan="2">色盲、色弱测试图片一【难度系数一星到四星】<br></th></tr><tr><td><img src='./up/2023/1228/151541862.jpg' /><br>上图中的 A 读不出为红色色盲。</td><td><img src='./up/2023/1228/151542100.jpg' /><br>上图中的 C 读不出为绿色色盲。</td></tr><tr><td><img src='./up/2023/1228/151542719.jpg' /><br>这是一个红色和紫色组成的图案，红色色盲者只能找到紫色的线，而绿色色盲者只能找到红色的线，但红绿色弱者、正常者则两线都找得到。</td><td><img src='./up/2023/1228/151544543.jpg' /><br>红色色盲者能读出6，而绿色色盲者能读出2，但红绿色弱者及正常者则两个字都能读出来。</td></tr><tr><td><img src='./up/2023/1228/151544817.jpg' /><br>上图，正常看应是一幅“牛”的图案，如看到的是一头“鹿”，就有可能是色盲或色弱。</td><td><img src='./up/2023/1228/151545017.jpg' /><br>正常者能读出6，红绿色盲者及红绿色弱者读成5，而全色弱者则全然读不出上述的两个字。</td></tr><tr><td><img src='./up/2023/1228/151545308.jpg' /><br>红绿色盲者及红绿色弱者大多能读成5，但全色弱者及正常者则大多都读不出来。</td><td><img src='./up/2023/1228/151545661.jpg' /><br>红绿色盲者及红绿色弱者容易找到，但正常者及全色弱者大多却找不到。</td></tr></tbody></table><table style="width: 100%;"><tbody><tr><th colSpan="2">色盲、色弱测试图片二【难度系数一星到二星】<br></th></tr><tr><td width="50%"><img src='./up/2023/1228/151545811.png' /><br>每个人看都应该是12</td><td width="50%"><img src='./up/2023/1228/151546100.png' /><br>正常色觉的人看到是45，色盲的人看不到任何数字</td></tr><tr><td><img src='./up/2023/1228/151546412.png' /><br>正常色觉的人实际上看不到任何数字，色盲的人很容易看出是5</td><td><img src='./up/2023/1228/151546637.png' /><br>正常色觉的人看到是26，红色色盲只能看到 6，绿色色盲只能看到2，全色盲什么也看不到</td></tr></tbody></table><table style="width: 100%;"><tbody><tr><th colSpan="2">色盲、色弱测试图片三【难度系数二星到三星】<br></th></tr><tr><td><img src='./up/2023/1228/151546874.png' /><br>正常色觉的人看到是6</td><td><img src='./up/2023/1228/151547212.png' /><br>正常色觉的人看到是698，色盲的人看不到任何数字</td></tr><tr><td><img src='./up/2023/1228/151547373.png' /><br>正常色觉的人看到是36，红色色盲的人看不到任何数字</td><td><img src='./up/2023/1228/151547586.png' /><br>正常色觉的人看到是66，红绿色色盲的人看不到任何数字</td></tr><tr><td><img src='./up/2023/1228/151548475.png' /><br>正常色觉的人看到是6</td><td><img src='./up/2023/1228/151549252.png' /><br>正常色觉的人看到是9</td></tr><tr><td><img src='./up/2023/1228/151550629.png' /><br>正常色觉的人看到是806，红色色盲的人看不到任何数字</td><td><img src='./up/2023/1228/151551209.png' /><br>正常色觉的人看到是3，红色色盲的人看不到任何数字</td></tr><tr><td><img src='./up/2023/1228/151551645.png' /><br>正常色觉的人看到是5</td><td><img src='./up/2023/1228/151551871.png' /><br>正常色觉的人看到是689，绿色色盲的人看不到任何数字</td></tr><tr><td><img src='./up/2023/1228/151552119.png' /><br>正常色觉的人看到是金鱼，红绿色色盲的人看不到金鱼</td><td><img src='./up/2023/1228/151552451.png' /><br>正常色觉的人看到是鸭子和兔子，红绿色色盲的人只能看到鸭子</td></tr></tbody></table><table style="width: 100%;"><tbody><tr><th colSpan="2">色盲、色弱测试图片四【难度系数三星到五星】<br></th></tr><tr><td><img src='./up/2023/1228/151552513.gif' /><br>16</td><td><img src='./up/2023/1228/151552847.gif' /><br>29</td></tr><tr><td><img src='./up/2023/1228/151552925.gif' /><br>正方形、三角形</td><td><img src='./up/2023/1228/151553002.gif' /><br>812</td></tr><tr><td><img src='./up/2023/1228/151553079.gif' /><br>899022</td><td><img src='./up/2023/1228/151553159.gif' /><br>628</td></tr><tr><td><img src='./up/2023/1228/151553215.gif' /><br>圆</td><td><img src='./up/2023/1228/151553270.gif' /><br>2个圆</td></tr><tr><td><img src='./up/2023/1228/151553326.gif' /><br>蝴蝶</td><td><img src='./up/2023/1228/151553380.gif' /><br>蜻蜓</td></tr><tr><td><img src='./up/2023/1228/151553442.gif' /><br>鸭子</td><td><img src='./up/2023/1228/151553498.gif' /><br>狗</td></tr><tr><td><img src='./up/2023/1228/151553560.gif' /><br>五角星</td><td><img src='./up/2023/1228/151553619.gif' /><br>燕子</td></tr></tbody></table><h3>介绍</h3><p>色盲是一种先天性色觉障碍疾病，是指缺乏或完全没有辨别色彩的能力。色盲有多种类型，最常见的是红绿色色盲。根据三原色学说，可见光谱内任何颜色都可由红、绿、蓝三色组成。如能辨认三原色都为正常人，三种原色均不能辨认都称全色盲。辨认任何一种颜色的能力降低者称色弱，主要有红色弱和绿色弱，还有蓝黄色弱。如有一种原色不能辨认都称二色视，主要为红色色盲与绿色色盲。中国男色盲率：4.71+-0.074%；女色盲率：0.67+-0.036%；色盲基因携带者的频率：8.98% ，多由遗传致。</p><h3>色盲和色弱的区别</h3><p>缺乏色觉或色觉不全称为色盲，辨色能力低为色弱。色盲又可分为全色盲与部分色盲。全色盲极少见，表现为只能分辨明暗，缺乏色觉；部分色盲多为红绿色色盲或蓝色盲。红绿色色盲表现为只有红色觉或绿色觉，即不能辨别红色与绿色，可能由于缺乏感红视锥细胞或感绿视锥细胞所致。蓝色盲不多见，表现为对绿、黄、红感觉占优势，类似蓝色弱，与感蓝视锥细胞缺乏或稀少有关。色盲有先天性的，也有后天性的。先天性色盲是可遗传的，后天性色盲可由解除病因或补充营养，如增加蛋白质或维生素A、B等而有所改善。色弱除先天性者外，多发生于后天，是由于健康状况不佳而造成的色觉感受机能缺陷所致。表现为辨别红、绿和蓝色的能力低落。后天性色弱可由解除病因或补充营养而改善。</p><p>每一种感光色素主要对一种原色光产生兴奋，而对其余两种原色光产生程度不等的反应。如果某一种色素缺乏，则会产生对此种颜色的感觉障碍，表现为色盲或色弱（辨色力弱）。色盲又分许多不同类型，仅对一种原色缺乏辨别力者，称为单色盲，如红色色盲，又称第一色盲，比较多见；绿色色盲，称为第二色盲，比第一色盲少些；蓝色盲，即第三色盲，比较少见。如果对两种颜色缺乏辨别力者，称为全色盲，较为罕见。色盲多为先天性遗传所致，少数为视路传导系统障碍所致。一般是女性传递，男性表现。</p><h3>色盲分类</h3><h4>1.全色盲</h4><p>属于完全性视锥细胞功能障碍，与夜盲（视杆细胞功能障碍）恰好相反，患者尤喜暗，畏光，表现为昼盲，七彩世界在其眼中是一片灰暗，如同观黑白电视一般，仅有明暗之分，而无颜色差别，而且所见红色发暗，蓝色光亮，此外还有视力差，弱视，中心性暗点，摆动性眼球震颤等症状，它是色觉障碍中最严重的一种，患者较少见。</p><h4>2.红色色盲</h4><p>又称第一色盲，患者主要是不能分辨红色，对红色与深绿色，蓝色与紫红色以及紫色不能分辨，常把绿色视为黄色，紫色看成蓝色，将绿色和蓝色相混为白色，曾有一老成持重的中年男子买了件灰色羊毛衫，穿上后招来嘲笑，原来他是位红色色盲患者，误红色为灰色，早年还有过报道，一红色色盲患者当了火车司机，因看错了信号而造成火车相撞。</p><h4>3.绿色色盲</h4><p>又称第二色盲，患者不能分辨淡绿色与深红色，紫色与青蓝色，紫红色与灰色，把绿色视为灰色或暗黑色，一美术训练班上有位画画得很好的小朋友，总是把太阳绘成绿色，树冠，草地绘成棕色，原来他是绿色色盲患者，临床上把红色色盲与绿色色盲统称为红绿色色盲，患者较常见，我们平常说的色盲一般就是指红绿色色盲。</p><h4>4.蓝黄色盲</h4><p>又称第三色盲，患者蓝黄色混淆不清，对红，绿色可辨，较少见。</p><h4>5.全色弱</h4><p>又称红绿蓝黄色弱，其色觉障碍比全色盲程度要低，视力无任何异常，也无全色盲的其它并发症，在物体颜色深且鲜明时，则能够分辨;若颜色浅而不饱和时，则分辨困难，患者也少见。</p><h4>6.部分色弱</h4><p>有红色弱（第一色弱），绿色弱（第二色弱）和蓝黄色弱（第三色弱）等，其中红绿色弱较多见，患者对红，绿色感受力差，照明不良时，其辨色能力近于红绿色色盲；但物质色深，鲜明且照明度佳时，其辨色能力接近正常。</p>
             </div>
         </div>
