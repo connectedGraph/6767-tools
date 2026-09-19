@@ -17,136 +17,701 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
 
     <style>
-        .category-container {
-            max-width: 1320px;
-            margin: 0 auto;
-            padding: 24px 16px 80px;
-        }
-
-        /* 顶部 Header */
-        .cat-hero {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 24px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
-        }
-        .cat-title-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .cat-title {
-            font-size: 24px;
-            font-weight: 800;
-            color: #f8fafc;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .cat-badge {
-            font-family: 'JetBrains Mono', Consolas, monospace;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 999px;
-            background: rgba(56, 189, 248, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8;
-        }
-        .cat-search-input {
-            width: 260px;
-            height: 38px;
-            background: #090f1d !important;
-            border: 1px solid rgba(51, 65, 85, 0.8);
-            border-radius: 8px;
-            padding: 0 14px;
-            color: #f1f5f9 !important;
-            font-size: 13px;
-            outline: none;
-            transition: all 0.2s;
+        /* 音视频分类页：所有规则均限定在本页组件树内，避免污染站点其它页面。 */
+        .main-body.tool-page-body,
+        .main-body.tool-page-body * {
             box-sizing: border-box;
         }
-        .cat-search-input:focus {
+
+        .main-body.tool-page-body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: clip;
+        }
+
+        .tool-page-body .tool-body {
+            width: 100%;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 32px 20px 72px;
+        }
+
+        .tool-page-body .card-model {
+            width: 100%;
+        }
+
+        .tool-page-body .card-body {
+            width: 100%;
+            padding: clamp(22px, 4vw, 42px);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .tool-page-body {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body {
+            color: #1e293b;
+        }
+
+        html.dark .tool-page-body .card-body {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 20px 60px rgba(2, 6, 23, 0.34), inset 0 1px 0 rgba(148, 163, 184, 0.04);
+        }
+
+        html:not(.dark) .tool-page-body .card-body {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .tool-page-body .tool-head {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 0 0 10px;
+        }
+
+        .tool-page-body .tool-eyebrow,
+        .tool-page-body .dashboard-kicker,
+        .tool-page-body .section-kicker {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        .tool-page-body .tool-eyebrow {
+            padding-top: 8px;
+        }
+
+        .tool-page-body .title {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 46px);
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -0.045em;
+        }
+
+        html.dark .tool-page-body .tool-eyebrow,
+        html.dark .tool-page-body .dashboard-kicker,
+        html.dark .tool-page-body .section-kicker {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .tool-page-body .tool-eyebrow,
+        html:not(.dark) .tool-page-body .dashboard-kicker,
+        html:not(.dark) .tool-page-body .section-kicker {
+            color: #0369a1;
+        }
+
+        html.dark .tool-page-body .title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .title {
+            color: #0f172a;
+        }
+
+        .tool-page-body .description {
+            max-width: 720px;
+            margin: 0 0 28px;
+            font-size: 15px;
+            line-height: 1.75;
+        }
+
+        html.dark .tool-page-body .description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .description {
+            color: #475569;
+        }
+
+        .tool-page-body .media-catalog {
+            width: 100%;
+        }
+
+        .tool-page-body .tool-dashboard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            width: 100%;
+            margin-bottom: 14px;
+            padding: 16px 18px;
+            border: 1px solid;
+            border-radius: 12px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        html.dark .tool-page-body .tool-dashboard {
+            background: #090e1f;
+            border-color: #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .tool-page-body .tool-dashboard {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .tool-page-body .dashboard-intro {
+            display: flex;
+            flex: 1 1 240px;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .tool-page-body .dashboard-heading {
+            font-size: 16px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        .tool-page-body .dashboard-note {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        html.dark .tool-page-body .dashboard-heading {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .dashboard-heading {
+            color: #0f172a;
+        }
+
+        html.dark .tool-page-body .dashboard-note {
+            color: #64748b;
+        }
+
+        html:not(.dark) .tool-page-body .dashboard-note {
+            color: #64748b;
+        }
+
+        .tool-page-body .dashboard-actions {
+            display: flex;
+            flex: 1 1 430px;
+            align-items: flex-end;
+            justify-content: flex-end;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .tool-page-body .search-field {
+            display: flex;
+            flex: 1 1 260px;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+            max-width: 430px;
+        }
+
+        .tool-page-body .search-label {
+            padding-left: 2px;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        html.dark .tool-page-body .search-label {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .search-label {
+            color: #475569;
+        }
+
+        .tool-page-body .search-control {
+            position: relative;
+            width: 100%;
+        }
+
+        .tool-page-body .search-symbol {
+            position: absolute;
+            top: 50%;
+            left: 13px;
+            z-index: 1;
+            font-size: 18px;
+            line-height: 1;
+            pointer-events: none;
+            transform: translateY(-52%);
+        }
+
+        html.dark .tool-page-body .search-symbol {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .tool-page-body .search-symbol {
+            color: #0369a1;
+        }
+
+        .tool-page-body .cat-search-input {
+            display: block;
+            width: 100%;
+            min-height: 42px;
+            padding: 8px 13px 8px 38px;
+            border: 1px solid;
+            border-radius: 9px;
+            outline: none;
+            font: inherit;
+            font-size: 13px;
+            line-height: 1.4;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+        }
+
+        html.dark .tool-page-body .cat-search-input {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .cat-search-input {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        html.dark .tool-page-body .cat-search-input::placeholder {
+            color: #64748b;
+        }
+
+        html:not(.dark) .tool-page-body .cat-search-input::placeholder {
+            color: #64748b;
+        }
+
+        .tool-page-body .cat-search-input:focus {
             border-color: #38bdf8;
             box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
         }
 
-        /* 响应式网格 */
-        .cat-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-            gap: 12px;
-        }
-        .cat-tool-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 14px;
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(51, 65, 85, 0.7);
-            border-radius: 10px;
-            text-decoration: none;
-            color: #cbd5e1;
-            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-            min-width: 0;
-            backdrop-filter: blur(8px);
-        }
-        .cat-tool-card:hover {
-            background: rgba(8, 47, 73, 0.5);
-            border-color: rgba(56, 189, 248, 0.6);
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 14px rgba(56, 189, 248, 0.15);
-        }
-        .cat-tool-icon {
-            width: 26px;
-            height: 26px;
-            object-fit: contain;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-        .cat-tool-name {
-            font-size: 13px;
-            font-weight: 500;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            letter-spacing: 0.01em;
+        .tool-page-body .cat-search-input:focus-visible {
+            outline: 2px solid transparent;
         }
 
-        /* 子分组 (脑力训练等) */
-        .subgroup-section {
-            margin-bottom: 28px;
-        }
-        .subgroup-title {
+        .tool-page-body .status-badge {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 42px;
+            padding: 8px 12px;
+            border: 1px solid;
+            border-radius: 9px;
             font-family: 'JetBrains Mono', Consolas, monospace;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;
-            color: #94a3b8;
-            margin-bottom: 12px;
+            white-space: nowrap;
+        }
+
+        html.dark .tool-page-body .status-badge {
+            background: rgba(14, 116, 144, 0.2);
+            border-color: #155e75;
+            color: #bae6fd;
+        }
+
+        html:not(.dark) .tool-page-body .status-badge {
+            background: #ecfeff;
+            border-color: #a5f3fc;
+            color: #0e7490;
+        }
+
+        .tool-page-body .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.14);
+        }
+
+        .tool-page-body .tool-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tool-page-body .metric-card {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            min-width: 0;
+            min-height: 54px;
+            padding: 10px 13px;
+            border: 1px solid;
+            border-radius: 10px;
         }
-        .subgroup-title::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 14px;
-            background: #38bdf8;
-            border-radius: 2px;
+
+        html.dark .tool-page-body .metric-card {
+            background: #0f172a;
+            border-color: #1e293b;
         }
-        .empty-hint {
-            text-align: center;
-            padding: 60px 0;
+
+        html:not(.dark) .tool-page-body .metric-card {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        .tool-page-body .metric-value {
+            flex: 0 0 auto;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 18px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        html.dark .tool-page-body .metric-value {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .metric-value {
+            color: #0f172a;
+        }
+
+        .tool-page-body .metric-label {
+            min-width: 0;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        html.dark .tool-page-body .metric-label {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .metric-label {
+            color: #475569;
+        }
+
+        .tool-page-body .tool-list-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .tool-page-body .tool-list-heading h2 {
+            margin: 4px 0 0;
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: -0.025em;
+        }
+
+        html.dark .tool-page-body .tool-list-heading h2 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .tool-list-heading h2 {
+            color: #0f172a;
+        }
+
+        .tool-page-body .tool-list-summary {
+            margin: 0;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            line-height: 1.5;
+            text-align: right;
+        }
+
+        html.dark .tool-page-body .tool-list-summary {
             color: #64748b;
-            font-size: 14px;
-            font-family: 'JetBrains Mono', monospace;
+        }
+
+        html:not(.dark) .tool-page-body .tool-list-summary {
+            color: #64748b;
+        }
+
+        .tool-page-body .cat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+            gap: 12px;
+            width: 100%;
+        }
+
+        .tool-page-body .cat-tool-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            min-height: 70px;
+            padding: 12px 13px;
+            border: 1px solid;
+            border-radius: 11px;
+            text-decoration: none;
+            transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        html.dark .tool-page-body .cat-tool-card {
+            background: #111b2e;
+            border-color: #24334b;
+            color: #e2e8f0;
+            box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.03);
+        }
+
+        html:not(.dark) .tool-page-body .cat-tool-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            color: #1e293b;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+        }
+
+        html.dark .tool-page-body .cat-tool-card:hover,
+        html.dark .tool-page-body .cat-tool-card:focus-visible {
+            background: #0f2a43;
+            border-color: #38bdf8;
+            color: #f8fafc;
+            box-shadow: 0 10px 26px rgba(2, 6, 23, 0.35), 0 0 16px rgba(56, 189, 248, 0.12);
+            transform: translateY(-2px);
+        }
+
+        html:not(.dark) .tool-page-body .cat-tool-card:hover,
+        html:not(.dark) .tool-page-body .cat-tool-card:focus-visible {
+            background: #f0f9ff;
+            border-color: #0284c7;
+            color: #0f172a;
+            box-shadow: 0 10px 24px rgba(14, 116, 144, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .tool-page-body .cat-tool-card:focus-visible {
+            outline: 3px solid rgba(56, 189, 248, 0.3);
+            outline-offset: 2px;
+        }
+
+        .tool-page-body .cat-tool-card:active {
+            transform: translateY(0);
+        }
+
+        .tool-page-body .cat-tool-icon-wrap {
+            display: inline-flex;
+            flex: 0 0 44px;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border: 1px solid;
+            border-radius: 10px;
+        }
+
+        html.dark .tool-page-body .cat-tool-icon-wrap {
+            background: #0b1120;
+            border-color: #1e293b;
+        }
+
+        html:not(.dark) .tool-page-body .cat-tool-icon-wrap {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+        }
+
+        .tool-page-body .cat-tool-icon {
+            display: block;
+            width: 30px;
+            height: 30px;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: 7px;
+        }
+
+        .tool-page-body .cat-tool-content {
+            display: flex;
+            flex: 1 1 auto;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .tool-page-body .cat-tool-name {
+            display: block;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            font-size: 13px;
+            font-weight: 650;
+            line-height: 1.45;
+            letter-spacing: 0.005em;
+        }
+
+        .tool-page-body .cat-tool-code {
+            display: block;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 10px;
+            line-height: 1.35;
+        }
+
+        html.dark .tool-page-body .cat-tool-code {
+            color: #64748b;
+        }
+
+        html:not(.dark) .tool-page-body .cat-tool-code {
+            color: #64748b;
+        }
+
+        .tool-page-body .cat-tool-arrow {
+            flex: 0 0 auto;
+            align-self: center;
+            font-size: 18px;
+            line-height: 1;
+            transition: transform 0.18s ease;
+        }
+
+        html.dark .tool-page-body .cat-tool-arrow {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .tool-page-body .cat-tool-arrow {
+            color: #0369a1;
+        }
+
+        .tool-page-body .cat-tool-card:hover .cat-tool-arrow,
+        .tool-page-body .cat-tool-card:focus-visible .cat-tool-arrow {
+            transform: translate(2px, -2px);
+        }
+
+        .tool-page-body .empty-hint {
+            width: 100%;
+            padding: 48px 18px;
+            border: 1px dashed;
+            border-radius: 11px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .tool-page-body .empty-hint {
+            background: #0f172a;
+            border-color: #334155;
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .empty-hint {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #475569;
+        }
+
+        @media (max-width: 768px) {
+            .tool-page-body .tool-body {
+                padding: 22px 16px 56px;
+            }
+
+            .tool-page-body .card-body {
+                padding: 24px;
+            }
+
+            .tool-page-body .tool-dashboard {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .tool-page-body .dashboard-actions {
+                align-items: flex-end;
+                flex-basis: auto;
+                width: 100%;
+            }
+
+            .tool-page-body .search-field {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tool-page-body .tool-body {
+                padding: 12px 10px 48px;
+            }
+
+            .tool-page-body .card-body {
+                padding: 19px 13px 20px;
+                border-radius: 12px;
+            }
+
+            .tool-page-body .tool-head {
+                display: block;
+            }
+
+            .tool-page-body .tool-eyebrow {
+                display: block;
+                padding-top: 0;
+                margin-bottom: 7px;
+            }
+
+            .tool-page-body .title {
+                font-size: 34px;
+            }
+
+            .tool-page-body .description {
+                margin-bottom: 22px;
+                font-size: 14px;
+            }
+
+            .tool-page-body .tool-dashboard {
+                padding: 14px;
+            }
+
+            .tool-page-body .dashboard-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .tool-page-body .search-field {
+                flex-basis: auto;
+                width: 100%;
+            }
+
+            .tool-page-body .status-badge {
+                width: 100%;
+            }
+
+            .tool-page-body .tool-metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+                margin-bottom: 24px;
+            }
+
+            .tool-page-body .metric-card {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 6px;
+                min-height: 76px;
+                padding: 11px;
+            }
+
+            .tool-page-body .tool-list-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .tool-page-body .tool-list-summary {
+                text-align: left;
+            }
+
+            .tool-page-body .cat-tool-card {
+                min-height: 66px;
+                padding: 11px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tool-page-body .card-body,
+            .tool-page-body .tool-dashboard,
+            .tool-page-body .cat-search-input,
+            .tool-page-body .cat-tool-card,
+            .tool-page-body .cat-tool-arrow {
+                transition: none;
+            }
         }
     </style>
 </head>
@@ -161,31 +726,82 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-<main class="category-container" id="app">
-    <!-- Hero & Search Header -->
-    <div class="cat-hero">
-        <div class="cat-title-group">
-            <h1 class="cat-title">音视频</h1>
-            <span class="cat-badge">{{ filteredCount }} 款工具</span>
-        </div>
-        <div>
-            <input type="text" v-model="searchQuery" placeholder="在当前分类中快速筛选..." class="cat-search-input" />
-        </div>
-    </div>
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <span class="tool-eyebrow">MEDIA / TOOLKIT</span>
+                    <h1 class="title">音视频</h1>
+                </div>
+                <div class="description">
+                    在一个清晰、专注的工作区里访问音视频工具，快速完成录制、播放、节拍与桌面端媒体处理任务。
+                </div>
 
-    <!-- Brain Children View -->
-    
-    <!-- Standard Category Grid -->
-    <div v-if="filteredList.length" class="cat-grid">
-        <a v-for="t in filteredList" :key="t.toolCode" :href="'/' + t.toolCode" class="cat-tool-card" :title="t.toolName">
-            <img :src="t.icon || './img/icons/default.svg'" alt="" class="cat-tool-icon" />
-            <span class="cat-tool-name">{{ t.toolName }}</span>
-        </a>
+                <section class="media-catalog" aria-labelledby="catalog-heading">
+                    <div class="tool-dashboard">
+                        <div class="dashboard-intro">
+                            <span class="dashboard-kicker">MEDIA WORKSPACE</span>
+                            <strong class="dashboard-heading">选择一个工具开始</strong>
+                            <span class="dashboard-note">按工具名称或路径即时筛选，结果会实时更新。</span>
+                        </div>
+                        <div class="dashboard-actions">
+                            <div class="search-field">
+                                <label class="search-label" for="audio-video-search">搜索工具</label>
+                                <div class="search-control">
+                                    <span class="search-symbol" aria-hidden="true">⌕</span>
+                                    <input id="audio-video-search" type="search" v-model="searchQuery" placeholder="例如：录音、视频、节拍器..." class="cat-search-input" autocomplete="off" spellcheck="false" />
+                                </div>
+                            </div>
+                            <span class="status-badge" role="status" aria-live="polite">
+                                <span class="status-dot" aria-hidden="true"></span>
+                                {{ filteredCount }} 项结果
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="tool-metrics" aria-label="分类概览">
+                        <div class="metric-card">
+                            <strong class="metric-value">{{ filteredCount }}</strong>
+                            <span class="metric-label">当前匹配工具</span>
+                        </div>
+                        <div class="metric-card">
+                            <strong class="metric-value">12</strong>
+                            <span class="metric-label">音视频工具总览</span>
+                        </div>
+                        <div class="metric-card">
+                            <strong class="metric-value">↗</strong>
+                            <span class="metric-label">点击卡片即可进入</span>
+                        </div>
+                    </div>
+
+                    <div class="tool-list-heading">
+                        <div>
+                            <span class="section-kicker">CATALOG / AUDIO &amp; VIDEO</span>
+                            <h2 id="catalog-heading">工具目录</h2>
+                        </div>
+                        <p v-if="filteredList.length" class="tool-list-summary">显示 {{ filteredCount }} 项可用工具</p>
+                    </div>
+
+                    <div v-if="filteredList.length" class="cat-grid">
+                        <a v-for="t in filteredList" :key="t.toolCode" :href="'/' + t.toolCode" class="cat-tool-card" :title="t.toolName">
+                            <span class="cat-tool-icon-wrap" aria-hidden="true">
+                                <img :src="t.icon || './img/icons/default.svg'" alt="" class="cat-tool-icon" />
+                            </span>
+                            <span class="cat-tool-content">
+                                <span class="cat-tool-name">{{ t.toolName }}</span>
+                                <span class="cat-tool-code">/{{ t.toolCode }}</span>
+                            </span>
+                            <span class="cat-tool-arrow" aria-hidden="true">↗</span>
+                        </a>
+                    </div>
+                    <div v-else class="empty-hint" role="status">
+                        // 未找到匹配的工具: "{{ searchQuery }}"
+                    </div>
+                </section>
+            </div>
+        </div>
     </div>
-    <div v-else class="empty-hint">
-        // 未找到匹配的工具: "{{ searchQuery }}"
-    </div>
-    
 </main>
 
 <script src="./lib/vue/vue.global.prod.js"></script>
