@@ -27,6 +27,827 @@
     <meta name="twitter:description" content="体脂率计算器, 身体脂肪率计算, BFR计算，过高的体脂肪率是造成各种慢性疾病的主要导火线。一旦发现脂肪率偏高，就必须检测自己的血压、血糖、肝功能等情况，是否潜藏危害健康因子。找出肥胖原因后，再设计出适合自己并可持续的饮食控制、规律的有氧运动及改变生活方式。" />
     <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
     <link rel="canonical" href="https://tool.6767.chat/bfr" />
+    <style>
+        /* BFR calculator refresh: a compact, accessible workspace that follows the site theme. */
+        .bfr-page,
+        .bfr-page * {
+            box-sizing: border-box;
+        }
+
+        .bfr-page {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: clamp(16px, 3vw, 30px);
+            overflow: hidden;
+            border-radius: 14px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .bfr-page {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 18px 48px rgba(2, 6, 23, 0.28), inset 0 1px 2px rgba(255, 255, 255, 0.02);
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .bfr-page {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+            color: #0f172a;
+        }
+
+        .bfr-page .bfr-head {
+            margin: 0 0 8px;
+            padding: 0;
+            border: 0;
+        }
+
+        .bfr-eyebrow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px 14px;
+            margin-bottom: 10px;
+            min-width: 0;
+        }
+
+        .bfr-eyebrow-label,
+        .bfr-chip,
+        .bfr-dashboard-kicker {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        .bfr-eyebrow-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .bfr-eyebrow-label::before {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            content: "";
+        }
+
+        html.dark .bfr-eyebrow-label {
+            color: #67e8f9;
+        }
+
+        html.dark .bfr-eyebrow-label::before {
+            background: #22d3ee;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12);
+        }
+
+        html:not(.dark) .bfr-eyebrow-label {
+            color: #0369a1;
+        }
+
+        html:not(.dark) .bfr-eyebrow-label::before {
+            background: #0284c7;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+
+        .bfr-chip {
+            padding: 5px 9px;
+            border-radius: 999px;
+            letter-spacing: 0.08em;
+        }
+
+        html.dark .bfr-chip {
+            background: rgba(14, 116, 144, 0.16);
+            border: 1px solid #155e75;
+            color: #a5f3fc;
+        }
+
+        html:not(.dark) .bfr-chip {
+            background: #ecfeff;
+            border: 1px solid #a5f3fc;
+            color: #0e7490;
+        }
+
+        .bfr-page .bfr-title {
+            margin: 0;
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.15;
+        }
+
+        html.dark .bfr-page .bfr-title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .bfr-page .bfr-title {
+            color: #0f172a;
+        }
+
+        .bfr-page .bfr-description {
+            max-width: 920px;
+            margin: 0 0 22px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        html.dark .bfr-page .bfr-description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bfr-page .bfr-description {
+            color: #475569;
+        }
+
+        .bfr-dashboard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px 20px;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 14px;
+            padding: 16px 18px;
+            border-radius: 12px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        html.dark .bfr-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .bfr-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .bfr-dashboard-copy {
+            flex: 1 1 260px;
+            min-width: 0;
+        }
+
+        .bfr-dashboard-kicker {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        html.dark .bfr-dashboard-kicker {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .bfr-dashboard-kicker {
+            color: #0369a1;
+        }
+
+        .bfr-dashboard-title {
+            margin: 0;
+            font-size: clamp(18px, 2.3vw, 23px);
+            font-weight: 750;
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        html.dark .bfr-dashboard-title {
+            color: #f1f5f9;
+        }
+
+        html:not(.dark) .bfr-dashboard-title {
+            color: #1e293b;
+        }
+
+        .bfr-dashboard-hint {
+            margin: 4px 0 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        html.dark .bfr-dashboard-hint {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bfr-dashboard-hint {
+            color: #64748b;
+        }
+
+        .bfr-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex: 0 0 auto;
+            min-height: 36px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        html.dark .bfr-status {
+            background: rgba(14, 116, 144, 0.18);
+            border: 1px solid #155e75;
+            color: #a5f3fc;
+        }
+
+        html:not(.dark) .bfr-status {
+            background: #ecfeff;
+            border: 1px solid #a5f3fc;
+            color: #0e7490;
+        }
+
+        .bfr-status-dot {
+            width: 8px;
+            height: 8px;
+            flex: 0 0 8px;
+            border-radius: 50%;
+        }
+
+        html.dark .bfr-status-dot {
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.13);
+        }
+
+        html:not(.dark) .bfr-status-dot {
+            background: #059669;
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.12);
+        }
+
+        .bfr-page .bfr-form {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: clamp(14px, 2.4vw, 20px);
+            border-radius: 12px;
+        }
+
+        html.dark .bfr-page .bfr-form {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .bfr-page .bfr-form {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bfr-form-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px 12px;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .bfr-form-grid .bfr-field {
+            align-self: start;
+            min-width: 0;
+            margin: 0;
+        }
+
+        .bfr-page .bfr-field .el-form-item__label {
+            display: block;
+            height: auto;
+            margin: 0 0 7px;
+            padding: 0;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        html.dark .bfr-page .bfr-field .el-form-item__label {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .bfr-page .bfr-field .el-form-item__label {
+            color: #334155;
+        }
+
+        .bfr-page .bfr-field .el-form-item__content {
+            display: block;
+            min-width: 0;
+            line-height: normal;
+        }
+
+        .bfr-page .bfr-field .w100,
+        .bfr-page .bfr-field.el-select,
+        .bfr-page .bfr-field .el-input,
+        .bfr-page .bfr-field .el-select,
+        .bfr-page .bfr-field el-input-extend {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .bfr-page .el-input__wrapper,
+        .bfr-page .el-select__wrapper {
+            min-height: 46px;
+            border-radius: 10px;
+            transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        html.dark .bfr-page .el-input__wrapper,
+        html.dark .bfr-page .el-select__wrapper {
+            background: #111b2f;
+            box-shadow: 0 0 0 1px #334155 inset;
+        }
+
+        html:not(.dark) .bfr-page .el-input__wrapper,
+        html:not(.dark) .bfr-page .el-select__wrapper {
+            background: #ffffff;
+            box-shadow: 0 0 0 1px #cbd5e1 inset;
+        }
+
+        html.dark .bfr-page .el-input__wrapper:hover,
+        html.dark .bfr-page .el-select__wrapper:hover {
+            box-shadow: 0 0 0 1px #38bdf8 inset, 0 5px 14px rgba(2, 132, 199, 0.12);
+        }
+
+        html:not(.dark) .bfr-page .el-input__wrapper:hover,
+        html:not(.dark) .bfr-page .el-select__wrapper:hover {
+            box-shadow: 0 0 0 1px #0284c7 inset, 0 5px 14px rgba(2, 132, 199, 0.1);
+        }
+
+        html.dark .bfr-page .el-input__wrapper:focus-within,
+        html.dark .bfr-page .el-select__wrapper:focus-within,
+        html.dark .bfr-page .el-select.is-focused .el-select__wrapper {
+            box-shadow: 0 0 0 2px #38bdf8 inset, 0 0 0 4px rgba(56, 189, 248, 0.13);
+        }
+
+        html:not(.dark) .bfr-page .el-input__wrapper:focus-within,
+        html:not(.dark) .bfr-page .el-select__wrapper:focus-within,
+        html:not(.dark) .bfr-page .el-select.is-focused .el-select__wrapper {
+            box-shadow: 0 0 0 2px #0284c7 inset, 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+
+        html.dark .bfr-page .el-input__inner,
+        html.dark .bfr-page .el-select__selected-item,
+        html.dark .bfr-page .el-select__input {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .bfr-page .el-input__inner,
+        html:not(.dark) .bfr-page .el-select__selected-item,
+        html:not(.dark) .bfr-page .el-select__input {
+            color: #0f172a;
+        }
+
+        html.dark .bfr-page .el-input__inner::placeholder,
+        html.dark .bfr-page .el-select__placeholder {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bfr-page .el-input__inner::placeholder,
+        html:not(.dark) .bfr-page .el-select__placeholder {
+            color: #64748b;
+        }
+
+        html.dark .bfr-page .el-form-item__error {
+            color: #fda4af;
+        }
+
+        html:not(.dark) .bfr-page .el-form-item__error {
+            color: #be123c;
+        }
+
+        .bfr-form-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px 18px;
+            margin-top: 16px;
+        }
+
+        .bfr-form-tip {
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 8px;
+            flex: 1 1 260px;
+            min-width: 0;
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        html.dark .bfr-form-tip {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bfr-form-tip {
+            color: #64748b;
+        }
+
+        .bfr-form-tip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            flex: 0 0 18px;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        html.dark .bfr-form-tip-icon {
+            background: rgba(56, 189, 248, 0.14);
+            border: 1px solid #0e7490;
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .bfr-form-tip-icon {
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+            color: #0369a1;
+        }
+
+        .bfr-page .bfr-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 0 0 auto;
+            min-height: 44px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.2;
+            transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        html.dark .bfr-page .bfr-submit {
+            background: rgba(14, 116, 144, 0.35) !important;
+            border: 1px solid #38bdf8 !important;
+            color: #e0f2fe !important;
+            box-shadow: 0 8px 18px rgba(8, 47, 73, 0.24);
+        }
+
+        html:not(.dark) .bfr-page .bfr-submit {
+            background: #0284c7 !important;
+            border: 1px solid #0284c7 !important;
+            color: #ffffff !important;
+            box-shadow: 0 8px 18px rgba(2, 132, 199, 0.2);
+        }
+
+        html.dark .bfr-page .bfr-submit:hover {
+            background: #0284c7 !important;
+            border-color: #38bdf8 !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 22px rgba(2, 132, 199, 0.3);
+        }
+
+        html:not(.dark) .bfr-page .bfr-submit:hover {
+            background: #0369a1 !important;
+            border-color: #0369a1 !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 22px rgba(3, 105, 161, 0.24);
+        }
+
+        .bfr-page .bfr-submit:active {
+            transform: translateY(1px);
+        }
+
+        html.dark .bfr-page .bfr-submit:focus-visible {
+            outline: 3px solid rgba(125, 211, 252, 0.55);
+            outline-offset: 3px;
+        }
+
+        html:not(.dark) .bfr-page .bfr-submit:focus-visible {
+            outline: 3px solid rgba(2, 132, 199, 0.35);
+            outline-offset: 3px;
+        }
+
+        .bfr-submit-arrow {
+            font-size: 18px;
+            line-height: 0.8;
+        }
+
+        .bfr-result-panel {
+            width: 100%;
+            max-width: 100%;
+            margin-top: 14px;
+            padding: 16px 18px;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        html.dark .bfr-result-panel {
+            background: linear-gradient(135deg, #0c1a2d 0%, #0f172a 100%);
+            border: 1px solid #164e63;
+            box-shadow: inset 0 1px 2px rgba(125, 211, 252, 0.04);
+        }
+
+        html:not(.dark) .bfr-result-panel {
+            background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+            border: 1px solid #bae6fd;
+            box-shadow: inset 0 1px 2px rgba(2, 132, 199, 0.04);
+        }
+
+        .bfr-result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+            margin-bottom: 10px;
+        }
+
+        .bfr-result-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        .bfr-result-label::before {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            content: "";
+            transform: rotate(45deg);
+        }
+
+        html.dark .bfr-result-label {
+            color: #e0f2fe;
+        }
+
+        html.dark .bfr-result-label::before {
+            background: #22d3ee;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12);
+        }
+
+        html:not(.dark) .bfr-result-label {
+            color: #0c4a6e;
+        }
+
+        html:not(.dark) .bfr-result-label::before {
+            background: #0284c7;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+
+        .bfr-result-tag {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        html.dark .bfr-result-tag {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .bfr-result-tag {
+            color: #0369a1;
+        }
+
+        .bfr-page .compute-result {
+            overflow-wrap: anywhere;
+            font-size: clamp(20px, 3.3vw, 30px);
+            font-variant-numeric: tabular-nums;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.35;
+        }
+
+        html.dark .bfr-page .compute-result {
+            color: #f8fafc;
+            text-shadow: 0 0 20px rgba(34, 211, 238, 0.12);
+        }
+
+        html:not(.dark) .bfr-page .compute-result {
+            color: #0f172a;
+        }
+
+        .bfr-page .compute-result * {
+            max-width: 100%;
+            overflow-wrap: anywhere;
+        }
+
+        .bfr-empty-result {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        html.dark .bfr-empty-result {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .bfr-empty-result {
+            color: #64748b;
+        }
+
+        .bfr-page .bfr-divider {
+            height: 1px;
+            margin: 22px 0 0;
+            border: 0;
+        }
+
+        html.dark .bfr-page .bfr-divider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) .bfr-page .bfr-divider {
+            background: #e2e8f0;
+        }
+
+        .bfr-page .bfr-content {
+            width: 100%;
+            max-width: 100%;
+            margin-top: 22px;
+            overflow: hidden;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        html.dark .bfr-page .bfr-content {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .bfr-page .bfr-content {
+            color: #334155;
+        }
+
+        .bfr-page .bfr-content h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 24px 0 9px;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.015em;
+            line-height: 1.4;
+        }
+
+        .bfr-page .bfr-content h3:first-child {
+            margin-top: 0;
+        }
+
+        .bfr-page .bfr-content h3::before {
+            width: 5px;
+            height: 20px;
+            flex: 0 0 5px;
+            border-radius: 999px;
+            content: "";
+        }
+
+        html.dark .bfr-page .bfr-content h3 {
+            color: #f1f5f9;
+        }
+
+        html.dark .bfr-page .bfr-content h3::before {
+            background: #22d3ee;
+        }
+
+        html:not(.dark) .bfr-page .bfr-content h3 {
+            color: #1e293b;
+        }
+
+        html:not(.dark) .bfr-page .bfr-content h3::before {
+            background: #0284c7;
+        }
+
+        .bfr-page .bfr-content p {
+            max-width: 900px;
+            margin: 0 0 7px;
+            overflow-wrap: anywhere;
+        }
+
+        .bfr-table-wrap {
+            width: 100%;
+            max-width: 100%;
+            margin-top: 14px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            border-radius: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .bfr-page .bfr-table {
+            width: 100%;
+            max-width: 100%;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .bfr-page .bfr-table td {
+            padding: 9px 6px;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        html.dark .bfr-page .bfr-table {
+            background: #0f172a;
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .bfr-page .bfr-table {
+            background: #ffffff;
+            color: #334155;
+        }
+
+        html.dark .bfr-page .bfr-table td {
+            border-top: 1px solid #1e293b;
+            border-left: 1px solid #1e293b;
+        }
+
+        html:not(.dark) .bfr-page .bfr-table td {
+            border-top: 1px solid #e2e8f0;
+            border-left: 1px solid #e2e8f0;
+        }
+
+        .bfr-page .bfr-table tr:first-child td {
+            border-top: 0;
+        }
+
+        .bfr-page .bfr-table td:last-child {
+            border-right: 0;
+        }
+
+        html.dark .bfr-page .bfr-table tr:last-child td {
+            background: #111b2f;
+            color: #7dd3fc;
+            font-weight: 800;
+        }
+
+        html:not(.dark) .bfr-page .bfr-table tr:last-child td {
+            background: #f0f9ff;
+            color: #0369a1;
+            font-weight: 800;
+        }
+
+        @media (max-width: 768px) {
+            .bfr-form-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .bfr-form-footer {
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bfr-page {
+                padding: 14px;
+                border-radius: 12px;
+            }
+
+            .bfr-dashboard {
+                align-items: flex-start;
+                padding: 14px;
+            }
+
+            .bfr-status {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .bfr-form-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .bfr-form-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .bfr-page .bfr-submit {
+                width: 100%;
+            }
+
+            .bfr-page .bfr-table {
+                font-size: 11px;
+            }
+
+            .bfr-page .bfr-table td {
+                padding: 8px 3px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bfr-page,
+            .bfr-page * {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="grid-bg"></div>
@@ -39,39 +860,66 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
 <div class="tool-body">
     <div class="card-model">
-        <div class="card-body">
-            <div class="tool-head">
-                <h1 class="title">体脂率（BFR）计算器</h1>
+        <div class="card-body bfr-page">
+            <div class="tool-head bfr-head">
+                <div class="bfr-eyebrow">
+                    <span class="bfr-eyebrow-label">Health / Metrics</span>
+                    <span class="bfr-chip">BFR · BMI MODEL</span>
+                </div>
+                <h1 class="title bfr-title">体脂率（BFR）计算器</h1>
             </div>
-            <div class="description">体脂率计算器, 身体脂肪率计算, BFR计算，过高的体脂肪率是造成各种慢性疾病的主要导火线。一旦发现脂肪率偏高，就必须检测自己的血压、血糖、肝功能等情况，是否潜藏危害健康因子。找出肥胖原因后，再设计出适合自己并可持续的饮食控制、规律的有氧运动及改变生活方式。</div>
-            <el-form :model="formData" ref="computeForm" size="large" class="tool-form">
-                <el-form-item>
-                    <el-select v-model="formData.sex" class="w100">
-                                <el-option :key="1" label="男性" :value="1"></el-option>
-                                <el-option :key="2" label="女性" :value="2"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="height" :rules="[{required: true, message: `请输入身高`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
-                    <el-input-extend type="number" v-model="formData.height" label="身高(CM)" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-form-item prop="weight" :rules="[{required: true, message: `请输入体重`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
-                    <el-input-extend type="number" v-model="formData.weight" label="体重(KG)" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-form-item prop="age" :rules="[{required: true, message: `请输入年龄`, trigger: 'blur'}, { pattern: /^[1-9]\d*$/, message: `必须是大于0的整数`, trigger: 'blur' }]">
-                    <el-input-extend type="number" v-model="formData.age" label="年龄" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-button type="primary" v-on:click="compute">计算</el-button>
+            <div class="description bfr-description">体脂率计算器, 身体脂肪率计算, BFR计算，过高的体脂肪率是造成各种慢性疾病的主要导火线。一旦发现脂肪率偏高，就必须检测自己的血压、血糖、肝功能等情况，是否潜藏危害健康因子。找出肥胖原因后，再设计出适合自己并可持续的饮食控制、规律的有氧运动及改变生活方式。</div>
+            <section class="bfr-dashboard" aria-label="体脂率计算控制台">
+                <div class="bfr-dashboard-copy">
+                    <span class="bfr-dashboard-kicker">BFR / BODY FAT RATIO</span>
+                    <h2 class="bfr-dashboard-title">开始一次快速评估</h2>
+                    <p class="bfr-dashboard-hint">输入基本身体数据，获取基于 BMI 公式的体脂率估算。</p>
+                </div>
+                <div class="bfr-status" role="status" aria-label="计算模型状态">
+                    <span class="bfr-status-dot" aria-hidden="true"></span>
+                    <span>估算模型已就绪</span>
+                </div>
+            </section>
+            <el-form :model="formData" ref="computeForm" size="large" class="tool-form bfr-form" aria-label="体脂率计算表单">
+                <div class="bfr-form-grid">
+                    <el-form-item label="生理性别" class="bfr-field bfr-field-select">
+                        <el-select v-model="formData.sex" class="w100" aria-label="生理性别">
+                            <el-option :key="1" label="男性" :value="1"></el-option>
+                            <el-option :key="2" label="女性" :value="2"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item prop="height" class="bfr-field" :rules="[{required: true, message: `请输入身高`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
+                        <el-input-extend type="number" v-model="formData.height" label="身高(CM)" aria-label="身高，单位厘米" class="w100"></el-input-extend>
+                    </el-form-item>
+                    <el-form-item prop="weight" class="bfr-field" :rules="[{required: true, message: `请输入体重`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
+                        <el-input-extend type="number" v-model="formData.weight" label="体重(KG)" aria-label="体重，单位千克" class="w100"></el-input-extend>
+                    </el-form-item>
+                    <el-form-item prop="age" class="bfr-field" :rules="[{required: true, message: `请输入年龄`, trigger: 'blur'}, { pattern: /^[1-9]\d*$/, message: `必须是大于0的整数`, trigger: 'blur' }]">
+                        <el-input-extend type="number" v-model="formData.age" label="年龄" aria-label="年龄" class="w100"></el-input-extend>
+                    </el-form-item>
+                </div>
+                <div class="bfr-form-footer">
+                    <p class="bfr-form-tip"><span class="bfr-form-tip-icon" aria-hidden="true">i</span><span>请填写真实测量值；结果仅供健康管理参考，不替代专业医疗建议。</span></p>
+                    <el-button type="primary" class="bfr-submit" v-on:click="compute" aria-label="计算体脂率"><span>计算体脂率</span><span class="bfr-submit-arrow" aria-hidden="true">→</span></el-button>
+                </div>
             </el-form>
-            <div class="compute-result" v-if="computeResult!=null" v-html="computeResult"></div>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>介绍</h3><p>在线体脂率BFR计算器，可以通过BMI公式根据您的身高体重，年龄及性别快速计算出您的体脂率，随时了解您的身体健康状况。</p><p>成年人的体脂率正常范围分别是：女性20%～25%，男性15%～18%。若体脂率过高，体重超过正常值的20%以上就可视为肥胖。运动员的体脂率可随运动项目而定，一般男运动员为7%～15%，女运动员为12%—20%。</p><h3>计算方法</h3><p>BMI算法计算：</p><p>（1）BMI=体重（公斤）÷（身高×身高）（米）</p><p>（2）体脂百分比 = 1.39 x BMI + 0.16 x 年龄 – 9.00，女性</p><p>（3）体脂百分比 = 1.39 x BMI + 0.16 x 年龄 – 19.34，男性</p><p>另一种体脂率算法：</p><p>成年女性：</p><p>参数a=腰围（cm）×0.74</p><p>参数b=体重（kg）×0.082+34.89</p><p>体脂肪重量（kg）=a－b</p><p>体脂率=（身体脂肪总重量÷体重）×100%</p><p>成年男性的：</p><p>参数a=腰围（cm）×0.74</p><p>参数b=体重（kg）×0.082+44.74</p><p>体脂肪重量（kg）=a－b</p><p>体脂率=（身体脂肪总重量÷体重）×100%</p><h3>体脂率对照表</h3><table style="width: 100%;"><tbody><tr><td rowSpan="3">女性</td><td>18-39岁</td><td>5-20%</td><td>21-34%</td><td>35-39%</td><td>40-45%</td></tr><tr><td>40-59岁</td><td>5-21%</td><td>22-35%</td><td>36-40%</td><td>41-45%</td></tr><tr><td>60岁以上</td><td>5-22%</td><td>23-36%</td><td>37-41%</td><td>42-45%</td></tr><tr><td rowSpan="3">男</td><td>18-39岁</td><td>5-10%</td><td>11-21%</td><td>22-26%</td><td>27--45%</td></tr><tr><td>40-59岁</td><td>5-11%</td><td>12-22%</td><td>23-27%</td><td>28-45%</td></tr><tr><td>60岁以上</td><td>5-13%</td><td>14-24%</td><td>25-29%</td><td>30-45%</td></tr><tr><td></td><td></td><td>偏瘦</td><td>正常</td><td>超重</td><td>肥胖</td></tr></tbody></table>
+            <section class="bfr-result-panel" aria-labelledby="bfr-result-title">
+                <div class="bfr-result-header">
+                    <span class="bfr-result-label" id="bfr-result-title">评估结果</span>
+                    <span class="bfr-result-tag">BMI FORMULA</span>
+                </div>
+                <div class="compute-result" v-if="computeResult!=null" v-html="computeResult" role="status" aria-live="polite"></div>
+                <p class="bfr-empty-result" v-else>填写身高、体重和年龄后，结果将在这里显示。</p>
+            </section>
+            <div class="divider bfr-divider" role="presentation"></div>
+            <div class="content bfr-content">
+                <h3>介绍</h3><p>在线体脂率BFR计算器，可以通过BMI公式根据您的身高体重，年龄及性别快速计算出您的体脂率，随时了解您的身体健康状况。</p><p>成年人的体脂率正常范围分别是：女性20%～25%，男性15%～18%。若体脂率过高，体重超过正常值的20%以上就可视为肥胖。运动员的体脂率可随运动项目而定，一般男运动员为7%～15%，女运动员为12%—20%。</p><h3>计算方法</h3><p>BMI算法计算：</p><p>（1）BMI=体重（公斤）÷（身高×身高）（米）</p><p>（2）体脂百分比 = 1.39 x BMI + 0.16 x 年龄 – 9.00，女性</p><p>（3）体脂百分比 = 1.39 x BMI + 0.16 x 年龄 – 19.34，男性</p><p>另一种体脂率算法：</p><p>成年女性：</p><p>参数a=腰围（cm）×0.74</p><p>参数b=体重（kg）×0.082+34.89</p><p>体脂肪重量（kg）=a－b</p><p>体脂率=（身体脂肪总重量÷体重）×100%</p><p>成年男性的：</p><p>参数a=腰围（cm）×0.74</p><p>参数b=体重（kg）×0.082+44.74</p><p>体脂肪重量（kg）=a－b</p><p>体脂率=（身体脂肪总重量÷体重）×100%</p><h3>体脂率对照表</h3><div class="bfr-table-wrap"><table class="bfr-table" style="width: 100%;"><tbody><tr><td rowSpan="3">女性</td><td>18-39岁</td><td>5-20%</td><td>21-34%</td><td>35-39%</td><td>40-45%</td></tr><tr><td>40-59岁</td><td>5-21%</td><td>22-35%</td><td>36-40%</td><td>41-45%</td></tr><tr><td>60岁以上</td><td>5-22%</td><td>23-36%</td><td>37-41%</td><td>42-45%</td></tr><tr><td rowSpan="3">男</td><td>18-39岁</td><td>5-10%</td><td>11-21%</td><td>22-26%</td><td>27--45%</td></tr><tr><td>40-59岁</td><td>5-11%</td><td>12-22%</td><td>23-27%</td><td>28-45%</td></tr><tr><td>60岁以上</td><td>5-13%</td><td>14-24%</td><td>25-29%</td><td>30-45%</td></tr><tr><td></td><td></td><td>偏瘦</td><td>正常</td><td>超重</td><td>肥胖</td></tr></tbody></table></div>
             </div>
         </div>
     </div>
