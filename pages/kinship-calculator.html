@@ -16,139 +16,62 @@
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     <style>
-        .control-bar {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(251, 191, 36, 0.25);
-            backdrop-filter: blur(16px);
-            border-radius: 12px;
-            padding: 14px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        .geek-select {
-            background: #090f1d !important;
-            border: 1px solid rgba(51, 65, 85, 0.8) !important;
-            color: #e2e8f0 !important;
-            font-size: 12px;
-            font-family: 'JetBrains Mono', monospace;
-            border-radius: 6px;
-            padding: 6px 12px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .result-card {
-            background: #070b14;
-            border: 1px solid rgba(251, 191, 36, 0.35);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(251, 191, 36, 0.08);
-            margin-bottom: 24px;
-        }
-        .result-chain {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 6px;
-        }
-        .result-chain-text {
-            font-size: 18px;
-            font-weight: 700;
-            color: #f1f5f9;
-            min-height: 32px;
-            margin-bottom: 16px;
-        }
-        .result-title-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-top: 1px solid rgba(51, 65, 85, 0.6);
-            padding-top: 16px;
-        }
-        .result-title-text {
-            font-size: 28px;
-            font-weight: 900;
-            color: #fde047;
-            letter-spacing: 0.02em;
-            text-shadow: 0 0 16px rgba(253, 224, 71, 0.35);
-        }
-
-        .keypad-card {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(51, 65, 85, 0.7);
-            border-radius: 14px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-        }
-        .keypad-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .kin-key {
-            height: 52px;
-            background: #090f1d;
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            border-radius: 10px;
-            color: #fde68a;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .kin-key:hover {
-            background: rgba(251, 191, 36, 0.15);
-            border-color: #fbbf24;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
-        }
-        .kin-key-op {
-            background: #18181b;
-            border-color: rgba(113, 113, 122, 0.5);
-            color: #e4e4e7;
-        }
-        .kin-key-op:hover {
-            border-color: #a1a1aa;
-            background: #27272a;
-        }
-        .kin-key:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
-        .sample-pills {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px;
-            border-top: 1px solid rgba(51, 65, 85, 0.6);
-            padding-top: 16px;
-        }
-        .sample-pill {
-            font-size: 12px;
-            padding: 5px 12px;
-            border-radius: 999px;
-            background: #090f1d;
-            border: 1px solid rgba(51, 65, 85, 0.8);
-            color: #cbd5e1;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .sample-pill:hover {
-            border-color: #fbbf24;
-            color: #fbbf24;
-        }
+        .kinship-shell { width: 100%; max-width: 920px; margin: 0 auto; color: #e2e8f0; }
+        .tool-dashboard { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:14px 18px; margin:0 0 16px; border-radius:12px; transition:all .2s ease; }
+        html.dark .tool-dashboard { background:#090e1f; border:1px solid #1e293b; box-shadow:inset 0 1px 3px rgba(0,0,0,.4); color:#cbd5e1; }
+        html:not(.dark) .tool-dashboard { background:#f8fafc; border:1px solid #e2e8f0; box-shadow:inset 0 1px 2px rgba(0,0,0,.03); color:#334155; }
+        .dashboard-group { display:flex; align-items:center; flex-wrap:wrap; gap:14px; font-size:13px; }
+        .setting-group { display:flex; align-items:center; flex-wrap:wrap; gap:9px; }
+        .setting-label { color:#94a3b8; font-size:12px; font-weight:700; letter-spacing:.02em; }
+        html:not(.dark) .setting-label { color:#475569; }
+        .radio-label { display:inline-flex; align-items:center; gap:5px; min-height:36px; cursor:pointer; font-weight:600; }
+        .radio-label input { accent-color:#0ea5e9; width:16px; height:16px; }
+        .geek-select { min-height:38px; width:100%; max-width:260px; padding:7px 32px 7px 11px; border-radius:8px; outline:none; cursor:pointer; font-size:13px; font-family:inherit; transition:border-color .15s, box-shadow .15s; }
+        html.dark .geek-select { background:#0f172a; border:1px solid #334155; color:#e2e8f0; }
+        html:not(.dark) .geek-select { background:#fff; border:1px solid #cbd5e1; color:#1e293b; }
+        .geek-select:focus { border-color:#38bdf8; box-shadow:0 0 0 3px rgba(14,165,233,.15); }
+        .action-btn { display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:8px 15px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; transition:all .15s ease; }
+        .action-btn-danger { background:rgba(244,63,94,.1); border:1px solid rgba(244,63,94,.45); color:#fb7185; }
+        .action-btn-danger:hover { background:#e11d48; color:#fff; border-color:#e11d48; }
+        .result-card { padding:20px 22px; margin-bottom:16px; border-radius:12px; transition:all .2s ease; }
+        html.dark .result-card { background:#0b1120; border:1px solid #334155; box-shadow:0 12px 30px rgba(0,0,0,.28); }
+        html:not(.dark) .result-card { background:#fff; border:1px solid #e2e8f0; box-shadow:0 10px 24px rgba(15,23,42,.06); color:#1e293b; }
+        .result-chain { margin-bottom:6px; color:#94a3b8; font:700 11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; text-transform:uppercase; letter-spacing:.08em; }
+        html:not(.dark) .result-chain { color:#64748b; }
+        .result-chain-text { min-height:30px; margin-bottom:14px; color:#f1f5f9; font-size:18px; font-weight:700; overflow-wrap:anywhere; }
+        html:not(.dark) .result-chain-text { color:#1e293b; }
+        .result-title-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding-top:15px; border-top:1px solid #334155; }
+        html:not(.dark) .result-title-row { border-top-color:#e2e8f0; }
+        .result-title-label { margin-bottom:3px; color:#fbbf24; font:700 11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+        .result-title-text { color:#fde047; font-size:clamp(24px,4vw,32px); font-weight:900; letter-spacing:.02em; overflow-wrap:anywhere; }
+        html:not(.dark) .result-title-text { color:#a16207; }
+        .copy-btn { flex:0 0 auto; min-height:38px; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; transition:all .15s; }
+        html.dark .copy-btn { background:rgba(251,191,36,.16); border:1px solid #fbbf24; color:#fde68a; }
+        html:not(.dark) .copy-btn { background:#fffbeb; border:1px solid #d97706; color:#92400e; }
+        .copy-btn:hover { background:#f59e0b; color:#fff; }
+        .keypad-card { padding:18px; border-radius:12px; transition:all .2s ease; }
+        html.dark .keypad-card { background:#0f172a; border:1px solid #1e293b; box-shadow:0 10px 28px rgba(0,0,0,.22); }
+        html:not(.dark) .keypad-card { background:#f8fafc; border:1px solid #e2e8f0; box-shadow:0 8px 22px rgba(15,23,42,.05); }
+        .keypad-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:18px; }
+        .kin-key { min-height:50px; padding:7px 6px; border-radius:9px; cursor:pointer; font-size:14px; font-weight:750; transition:all .15s ease; }
+        html.dark .kin-key { background:#111c31; border:1px solid #475569; color:#fde68a; }
+        html:not(.dark) .kin-key { background:#fff; border:1px solid #cbd5e1; color:#92400e; }
+        .kin-key:hover { transform:translateY(-2px); border-color:#f59e0b; box-shadow:0 5px 13px rgba(245,158,11,.18); }
+        .kin-key:active { transform:translateY(0); }
+        .kin-key-op { color:#cbd5e1 !important; }
+        html.dark .kin-key-op { background:#1e293b; }
+        html:not(.dark) .kin-key-op { background:#eef2f7; color:#334155 !important; }
+        .kin-key:disabled { opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
+        .sample-pills { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding-top:16px; border-top:1px solid #334155; }
+        html:not(.dark) .sample-pills { border-top-color:#e2e8f0; }
+        .sample-label { margin-right:3px; color:#64748b; font:700 11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+        .sample-pill { min-height:36px; padding:7px 12px; border-radius:999px; cursor:pointer; font-size:12px; font-weight:650; transition:all .15s; }
+        html.dark .sample-pill { background:#111c31; border:1px solid #334155; color:#cbd5e1; }
+        html:not(.dark) .sample-pill { background:#fff; border:1px solid #cbd5e1; color:#334155; }
+        .sample-pill:hover { border-color:#f59e0b; color:#b45309; }
+        html.dark .sample-pill:hover { color:#fbbf24; }
+        @media (max-width:768px) { .tool-dashboard { align-items:stretch; } .dashboard-group { width:100%; } .setting-group { flex:1 1 100%; } .geek-select { max-width:none; } .action-btn { width:100%; } }
+        @media (max-width:480px) { .result-card,.keypad-card { padding:14px; } .keypad-grid { gap:7px; } .kin-key { min-height:48px; font-size:12px; } .result-title-row { align-items:flex-start; flex-direction:column; } .copy-btn { width:100%; } }
     </style>
 </head>
 <body>
@@ -166,85 +89,34 @@
     <div class="tool-body">
         <div class="card-model">
             <div class="card-body">
-                <div class="tool-head">
-                    <h1 class="title">中国亲戚关系称谓换算器</h1>
-                </div>
+                <div class="tool-head"><h1 class="title">中国亲戚关系称谓换算器</h1></div>
                 <div class="description">中国传统亲戚称谓换算计算器，支持输入关系链（如爸爸的哥哥的儿子）双向互查亲戚称谓、区分长幼尊卑与辈分关系。</div>
+                <div class="kinship-shell">
+                    <div class="tool-dashboard">
+                        <div class="dashboard-group">
+                            <div class="setting-group"><span class="setting-label">我的性别</span><label class="radio-label"><input type="radio" value="male" v-model="myGender" @change="calculate" /> 男</label><label class="radio-label"><input type="radio" value="female" v-model="myGender" @change="calculate" /> 女</label></div>
+                            <div class="setting-group"><span class="setting-label">计算方向</span><select v-model="mode" @change="calculate" class="geek-select"><option value="forward">我应该怎么称呼对方（正向）</option><option value="reverse">对方应该怎么称呼我（反向）</option></select></div>
+                        </div>
+                        <button @click="clearChain" class="action-btn action-btn-danger">清空输入</button>
+                    </div>
 
-    <!-- Options Control Bar -->
-    <div class="control-bar">
-        <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #94a3b8; font-family: 'JetBrains Mono', monospace;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span>我的性别:</span>
-                <label style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                    <input type="radio" value="male" v-model="myGender" @change="calculate" /> 男
-                </label>
-                <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; margin-left: 8px;">
-                    <input type="radio" value="female" v-model="myGender" @change="calculate" /> 女
-                </label>
-            </div>
+                    <div class="result-card">
+                        <div class="result-chain">// 关系路径 · Relationship Path</div>
+                        <div class="result-chain-text">{{ chainText || '我' }}</div>
+                        <div class="result-title-row"><div><div class="result-title-label">// 对应称谓:</div><div class="result-title-text">{{ resultTitles.join(' / ') || '自己' }}</div></div><button v-if="resultTitles.length" @click="copyResult" class="copy-btn">复制称谓</button></div>
+                    </div>
 
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span>计算方向:</span>
-                <select v-model="mode" @change="calculate" class="geek-select">
-                    <option value="forward">我应该怎么称呼对方 (正向)</option>
-                    <option value="reverse">对方应该怎么称呼我 (反向)</option>
-                </select>
-            </div>
-        </div>
-
-        <button @click="clearChain" style="padding: 6px 14px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(244,63,94,0.4); background: rgba(244,63,94,0.1); color: #f43f5e; cursor: pointer;">清空输入</button>
-    </div>
-
-    <!-- Result Display -->
-    <div class="result-card">
-        <div class="result-chain">// 关系路径 (Relationship Path)</div>
-        <div class="result-chain-text">{{ chainText || '我' }}</div>
-
-        <div class="result-title-row">
-            <div>
-                <div style="font-size: 12px; color: #fbbf24; font-family: 'JetBrains Mono', monospace;">// 对应称谓:</div>
-                <div class="result-title-text">{{ resultTitles.join(' / ') || '自己' }}</div>
-            </div>
-            <button v-if="resultTitles.length" @click="copyResult" style="padding: 8px 16px; font-size: 12px; font-weight: 600; border-radius: 8px; border: 1px solid #fbbf24; background: rgba(251,191,36,0.2); color: #fde68a; cursor: pointer;">复制称谓</button>
-        </div>
-    </div>
-
-    <!-- Keypad -->
-    <div class="keypad-card">
-        <div class="keypad-grid">
-            <button @click="addRelation('父')" class="kin-key">父 (爸爸)</button>
-            <button @click="addRelation('母')" class="kin-key">母 (妈妈)</button>
-            <button @click="addRelation('夫')" class="kin-key" :disabled="myGender==='male'">夫 (老公)</button>
-            <button @click="addRelation('妻')" class="kin-key" :disabled="myGender==='female'">妻 (老婆)</button>
-
-            <button @click="addRelation('兄')" class="kin-key">兄 (哥哥)</button>
-            <button @click="addRelation('弟')" class="kin-key">弟 (弟弟)</button>
-            <button @click="addRelation('姐')" class="kin-key">姐 (姐姐)</button>
-            <button @click="addRelation('妹')" class="kin-key">妹 (妹妹)</button>
-
-            <button @click="addRelation('子')" class="kin-key">子 (儿子)</button>
-            <button @click="addRelation('女')" class="kin-key">女 (女儿)</button>
-            <button @click="backspace" class="kin-key kin-key-op">⌫ 退格</button>
-            <button @click="clearChain" class="kin-key kin-key-op" style="color: #f43f5e;">C 清空</button>
-        </div>
-
-        <!-- Quick Samples -->
-        <div class="sample-pills">
-            <span style="font-size: 12px; color: #64748b; font-family: 'JetBrains Mono', monospace; margin-right: 4px;">常见关系:</span>
-            <button @click="setChain(['父', '兄', '子'])" class="sample-pill">堂哥/堂弟</button>
-            <button @click="setChain(['母', '妹', '女'])" class="sample-pill">表姐/表妹</button>
-            <button @click="setChain(['父', '姐'])" class="sample-pill">姑妈</button>
-            <button @click="setChain(['母', '兄'])" class="sample-pill">舅舅</button>
-            <button @click="setChain(['妻', '妹'])" class="sample-pill">小姨子</button>
-            <button @click="setChain(['夫', '兄'])" class="sample-pill">大伯子</button>
-        </div>
-    </div>
-                <div class="divider"></div>
-                <div class="content">
-                    <h3>介绍</h3>
-                    <p>中国亲戚称谓系统结构庞大、分支复杂。逢年过节遇到各种亲戚长辈常常不知道如何称呼。本工具采用关系链多级推导算法，支持正向查询（我对他的称呼）与反向查询（对方对我的称呼），轻松理清三姑六婆与复杂家族辈分。</p>
+                    <div class="keypad-card">
+                        <div class="keypad-grid">
+                            <button @click="addRelation('父')" class="kin-key">父（爸爸）</button><button @click="addRelation('母')" class="kin-key">母（妈妈）</button><button @click="addRelation('夫')" class="kin-key" :disabled="myGender==='male'">夫（老公）</button><button @click="addRelation('妻')" class="kin-key" :disabled="myGender==='female'">妻（老婆）</button>
+                            <button @click="addRelation('兄')" class="kin-key">兄（哥哥）</button><button @click="addRelation('弟')" class="kin-key">弟（弟弟）</button><button @click="addRelation('姐')" class="kin-key">姐（姐姐）</button><button @click="addRelation('妹')" class="kin-key">妹（妹妹）</button>
+                            <button @click="addRelation('子')" class="kin-key">子（儿子）</button><button @click="addRelation('女')" class="kin-key">女（女儿）</button><button @click="backspace" class="kin-key kin-key-op">⌫ 退格</button><button @click="clearChain" class="kin-key kin-key-op">C 清空</button>
+                        </div>
+                        <div class="sample-pills"><span class="sample-label">常见关系:</span><button @click="setChain(['父', '兄', '子'])" class="sample-pill">堂哥/堂弟</button><button @click="setChain(['母', '妹', '女'])" class="sample-pill">表姐/表妹</button><button @click="setChain(['父', '姐'])" class="sample-pill">姑妈</button><button @click="setChain(['母', '兄'])" class="sample-pill">舅舅</button><button @click="setChain(['妻', '妹'])" class="sample-pill">小姨子</button><button @click="setChain(['夫', '兄'])" class="sample-pill">大伯子</button></div>
+                    </div>
                 </div>
+                <div class="divider"></div>
+                <div class="content"><h3>介绍</h3><p>中国亲戚称谓系统结构庞大、分支复杂。逢年过节遇到各种亲戚长辈常常不知道如何称呼。本工具采用关系链多级推导算法，支持正向查询（我对他的称呼）与反向查询（对方对我的称呼），轻松理清三姑六婆与复杂家族辈分。</p></div>
             </div>
         </div>
     </div>
@@ -253,176 +125,25 @@
 
 <script src="./lib/vue/vue.global.prod.js"></script>
 <script src="./lib/element-plus/index.js"></script>
-    <script src="./lib/element-plus/locale/en.js"></script>
-    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/element-plus/locale/en.js"></script>
+<script src="./lib/element-plus/locale/zh-tw.js"></script>
 <script>
     const { createApp, ref, computed } = Vue;
-
     const KIN_MAP = {
-        '父': ['爸爸', '父亲'],
-        '母': ['妈妈', '母亲'],
-        '夫': ['丈夫', '老公'],
-        '妻': ['妻子', '老婆'],
-        '兄': ['哥哥'],
-        '弟': ['弟弟'],
-        '姐': ['姐姐'],
-        '妹': ['妹妹'],
-        '子': ['儿子'],
-        '女': ['女儿'],
-        '父,父': ['爷爷', '祖父'],
-        '父,母': ['奶奶', '祖母'],
-        '父,兄': ['大伯', '伯父'],
-        '父,弟': ['叔叔', '叔父'],
-        '父,姐': ['姑妈', '大姑'],
-        '父,妹': ['姑姑', '小姑'],
-        '父,兄,妻': ['伯母', '大娘'],
-        '父,弟,妻': ['婶婶', '婶母'],
-        '父,姐,夫': ['姑父', '大姑父'],
-        '父,妹,夫': ['姑父', '小姑父'],
-        '父,兄,子': ['堂哥', '堂弟'],
-        '父,弟,子': ['堂弟', '堂哥'],
-        '父,兄,女': ['堂姐', '堂妹'],
-        '父,弟,女': ['堂妹', '堂姐'],
-        '父,姐,子': ['表哥', '表弟'],
-        '父,妹,子': ['表弟', '表哥'],
-        '父,姐,女': ['表姐', '表妹'],
-        '父,妹,女': ['表妹', '表姐'],
-        '母,父': ['外公', '姥爷'],
-        '母,母': ['外婆', '姥姥'],
-        '母,兄': ['大舅', '舅父'],
-        '母,弟': ['小舅', '舅舅'],
-        '母,姐': ['大姨', '姨妈'],
-        '母,妹': ['小姨', '姨母'],
-        '母,兄,妻': ['舅妈', '大舅母'],
-        '母,弟,妻': ['舅妈', '小舅母'],
-        '母,姐,夫': ['大姨父', '姨夫'],
-        '母,妹,夫': ['小姨父', '姨母夫'],
-        '母,兄,子': ['表哥', '表弟'],
-        '母,弟,子': ['表弟', '表哥'],
-        '母,姐,子': ['表哥', '表弟'],
-        '母,妹,子': ['表弟', '表哥'],
-        '母,兄,女': ['表姐', '表妹'],
-        '母,弟,女': ['表妹', '表姐'],
-        '母,姐,女': ['表姐', '表妹'],
-        '母,妹,女': ['表妹', '表姐'],
-        '兄,妻': ['嫂子', '大嫂'],
-        '弟,妻': ['弟妹', '弟媳'],
-        '姐,夫': ['姐夫'],
-        '妹,夫': ['妹夫'],
-        '兄,子': ['侄子'],
-        '弟,子': ['侄子'],
-        '兄,女': ['侄女'],
-        '弟,女': ['侄女'],
-        '姐,子': ['外甥'],
-        '妹,子': ['外甥'],
-        '姐,女': ['外甥女'],
-        '妹,女': ['外甥女'],
-        '子,妻': ['儿媳妇', '儿媳'],
-        '女,夫': ['女婿'],
-        '子,子': ['孙子'],
-        '子,女': ['孙女'],
-        '女,子': ['外孙'],
-        '女,女': ['外孙女'],
-        '夫,父': ['公公'],
-        '夫,母': ['婆婆'],
-        '夫,兄': ['大伯子'],
-        '夫,弟': ['小叔子'],
-        '夫,姐': ['大姑子'],
-        '夫,妹': ['小姑子'],
-        '妻,父': ['岳父', '老丈人'],
-        '妻,母': ['岳母', '丈母娘'],
-        '妻,兄': ['大舅子'],
-        '妻,弟': ['小舅子'],
-        '妻,姐': ['大姨子'],
-        '妻,妹': ['小姨子'],
+        '父': ['爸爸', '父亲'], '母': ['妈妈', '母亲'], '夫': ['丈夫', '老公'], '妻': ['妻子', '老婆'], '兄': ['哥哥'], '弟': ['弟弟'], '姐': ['姐姐'], '妹': ['妹妹'], '子': ['儿子'], '女': ['女儿'],
+        '父,父': ['爷爷', '祖父'], '父,母': ['奶奶', '祖母'], '父,兄': ['大伯', '伯父'], '父,弟': ['叔叔', '叔父'], '父,姐': ['姑妈', '大姑'], '父,妹': ['姑姑', '小姑'], '父,兄,妻': ['伯母', '大娘'], '父,弟,妻': ['婶婶', '婶母'], '父,姐,夫': ['姑父', '大姑父'], '父,妹,夫': ['姑父', '小姑父'], '父,兄,子': ['堂哥', '堂弟'], '父,弟,子': ['堂弟', '堂哥'], '父,兄,女': ['堂姐', '堂妹'], '父,弟,女': ['堂妹', '堂姐'], '父,姐,子': ['表哥', '表弟'], '父,妹,子': ['表弟', '表哥'], '父,姐,女': ['表姐', '表妹'], '父,妹,女': ['表妹', '表姐'],
+        '母,父': ['外公', '姥爷'], '母,母': ['外婆', '姥姥'], '母,兄': ['大舅', '舅父'], '母,弟': ['小舅', '舅舅'], '母,姐': ['大姨', '姨妈'], '母,妹': ['小姨', '姨母'], '母,兄,妻': ['舅妈', '大舅母'], '母,弟,妻': ['舅妈', '小舅母'], '母,姐,夫': ['大姨父', '姨夫'], '母,妹,夫': ['小姨父', '姨母夫'], '母,兄,子': ['表哥', '表弟'], '母,弟,子': ['表弟', '表哥'], '母,姐,子': ['表哥', '表弟'], '母,妹,子': ['表弟', '表哥'], '母,兄,女': ['表姐', '表妹'], '母,弟,女': ['表妹', '表姐'], '母,姐,女': ['表姐', '表妹'], '母,妹,女': ['表妹', '表姐'],
+        '兄,妻': ['嫂子', '大嫂'], '弟,妻': ['弟妹', '弟媳'], '姐,夫': ['姐夫'], '妹,夫': ['妹夫'], '兄,子': ['侄子'], '弟,子': ['侄子'], '兄,女': ['侄女'], '弟,女': ['侄女'], '姐,子': ['外甥'], '妹,子': ['外甥'], '姐,女': ['外甥女'], '妹,女': ['外甥女'], '子,妻': ['儿媳妇', '儿媳'], '女,夫': ['女婿'], '子,子': ['孙子'], '子,女': ['孙女'], '女,子': ['外孙'], '女,女': ['外孙女'],
+        '夫,父': ['公公'], '夫,母': ['婆婆'], '夫,兄': ['大伯子'], '夫,弟': ['小叔子'], '夫,姐': ['大姑子'], '夫,妹': ['小姑子'], '妻,父': ['岳父', '老丈人'], '妻,母': ['岳母', '丈母娘'], '妻,兄': ['大舅子'], '妻,弟': ['小舅子'], '妻,姐': ['大姨子'], '妻,妹': ['小姨子']
     };
-
-    createApp({
-        setup() {
-            const chain = ref([]);
-            const myGender = ref('male');
-            const mode = ref('forward');
-            const resultTitles = ref([]);
-
-            const chainText = computed(() => {
-                if (!chain.value.length) return '我';
-                return '我的 ' + chain.value.map(c => ({
-                    '父': '爸爸', '母': '妈妈', '夫': '丈夫', '妻': '妻子',
-                    '兄': '哥哥', '弟': '弟弟', '姐': '姐姐', '妹': '妹妹',
-                    '子': '儿子', '女': '女儿'
-                }[c] || c)).join(' 的 ');
-            });
-
-            function calculate() {
-                if (!chain.value.length) {
-                    resultTitles.value = ['自己'];
-                    return;
-                }
-                const key = chain.value.join(',');
-                if (mode.value === 'forward') {
-                    resultTitles.value = KIN_MAP[key] || ['暂未收录该较远亲属称谓或关系过长'];
-                } else {
-                    const revMap = {
-                        '父': myGender.value === 'male' ? ['儿子'] : ['女儿'],
-                        '母': myGender.value === 'male' ? ['儿子'] : ['女儿'],
-                        '夫': ['妻子', '老婆'],
-                        '妻': ['丈夫', '老公'],
-                        '兄': myGender.value === 'male' ? ['弟弟'] : ['妹妹'],
-                        '弟': myGender.value === 'male' ? ['哥哥'] : ['姐姐'],
-                        '姐': myGender.value === 'male' ? ['弟弟'] : ['妹妹'],
-                        '妹': myGender.value === 'male' ? ['哥哥'] : ['姐姐'],
-                        '子': myGender.value === 'male' ? ['爸爸'] : ['妈妈'],
-                        '女': myGender.value === 'male' ? ['爸爸'] : ['妈妈'],
-                        '父,兄': myGender.value === 'male' ? ['侄子'] : ['侄女'],
-                        '父,弟': myGender.value === 'male' ? ['侄子'] : ['侄女'],
-                        '母,兄': myGender.value === 'male' ? ['外甥'] : ['外甥女'],
-                        '母,弟': myGender.value === 'male' ? ['外甥'] : ['外甥女'],
-                    };
-                    resultTitles.value = revMap[key] || ['请使用正向模式换算或关系较为复杂'];
-                }
-            }
-
-            function addRelation(rel) {
-                chain.value.push(rel);
-                calculate();
-            }
-
-            function backspace() {
-                chain.value.pop();
-                calculate();
-            }
-
-            function clearChain() {
-                chain.value = [];
-                calculate();
-            }
-
-            function setChain(arr) {
-                chain.value = [...arr];
-                calculate();
-            }
-
-            function copyResult() {
-                if (!resultTitles.value.length) return;
-                navigator.clipboard.writeText(resultTitles.value.join(' / ')).then(() => {
-                    ElementPlus.ElMessage.success('已复制亲戚称谓！');
-                });
-            }
-
-            return {
-                chain,
-                myGender,
-                mode,
-                resultTitles,
-                chainText,
-                addRelation,
-                backspace,
-                clearChain,
-                setChain,
-                copyResult
-            };
-        }
-    }).use(ElementPlus).mount('#app');
+    createApp({ setup() {
+        const chain = ref([]); const myGender = ref('male'); const mode = ref('forward'); const resultTitles = ref([]);
+        const chainText = computed(() => { if (!chain.value.length) return '我'; return '我的 ' + chain.value.map(c => ({'父':'爸爸','母':'妈妈','夫':'丈夫','妻':'妻子','兄':'哥哥','弟':'弟弟','姐':'姐姐','妹':'妹妹','子':'儿子','女':'女儿'}[c] || c)).join(' 的 '); });
+        function calculate() { if (!chain.value.length) { resultTitles.value = ['自己']; return; } const key = chain.value.join(','); if (mode.value === 'forward') { resultTitles.value = KIN_MAP[key] || ['暂未收录该较远亲属称谓或关系过长']; } else { const revMap = {'父':myGender.value==='male'?['儿子']:['女儿'],'母':myGender.value==='male'?['儿子']:['女儿'],'夫':['妻子','老婆'],'妻':['丈夫','老公'],'兄':myGender.value==='male'?['弟弟']:['妹妹'],'弟':myGender.value==='male'?['哥哥']:['姐姐'],'姐':myGender.value==='male'?['弟弟']:['妹妹'],'妹':myGender.value==='male'?['哥哥']:['姐姐'],'子':myGender.value==='male'?['爸爸']:['妈妈'],'女':myGender.value==='male'?['爸爸']:['妈妈'],'父,兄':myGender.value==='male'?['侄子']:['侄女'],'父,弟':myGender.value==='male'?['侄子']:['侄女'],'母,兄':myGender.value==='male'?['外甥']:['外甥女'],'母,弟':myGender.value==='male'?['外甥']:['外甥女']}; resultTitles.value = revMap[key] || ['请使用正向模式换算或关系较为复杂']; } }
+        function addRelation(rel) { chain.value.push(rel); calculate(); } function backspace() { chain.value.pop(); calculate(); } function clearChain() { chain.value = []; calculate(); } function setChain(arr) { chain.value = [...arr]; calculate(); }
+        function copyResult() { if (!resultTitles.value.length) return; navigator.clipboard.writeText(resultTitles.value.join(' / ')).then(() => { ElementPlus.ElMessage.success('已复制亲戚称谓！'); }); }
+        return { chain, myGender, mode, resultTitles, chainText, addRelation, backspace, clearChain, setChain, copyResult };
+    }}).use(ElementPlus).mount('#app');
 </script>
 </body>
 </html>
