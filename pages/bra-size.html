@@ -27,6 +27,1036 @@
     <meta name="twitter:description" content="文胸尺码在线计算，测量出自己上胸围和下胸围，输入数值自动计算出罩杯尺码，比罩杯尺码表需要自己去查要方便很多。罩杯计算结果仅供参考，多试试找到最适合自己的文胸罩杯。" />
     <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
     <link rel="canonical" href="https://tool.6767.chat/bra-size" />
+<style>
+/* Bra-size calculator: a self-contained, dual-theme interface. */
+.bra-size-page,
+.bra-size-page * {
+    box-sizing: border-box;
+}
+
+.bra-size-page {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    font-family: Inter, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.5;
+}
+
+html.dark .bra-size-page {
+    --bra-card-bg: #0b1120;
+    --bra-panel-bg: #090e1f;
+    --bra-raised-bg: #111c32;
+    --bra-border: #1e293b;
+    --bra-border-strong: #334155;
+    --bra-text: #f8fafc;
+    --bra-muted: #94a3b8;
+    --bra-subtle: #64748b;
+    --bra-accent: #38bdf8;
+    --bra-accent-strong: #0284c7;
+    --bra-accent-contrast: #e0f2fe;
+    --bra-accent-soft: rgba(14, 116, 144, 0.28);
+    --bra-table-head: #13233b;
+    --bra-table-alt: #0f1a2f;
+    --bra-info-bg: #10243a;
+    --bra-success: #34d399;
+    color: #f8fafc;
+    color-scheme: dark;
+}
+
+html:not(.dark) .bra-size-page {
+    --bra-card-bg: #ffffff;
+    --bra-panel-bg: #f8fafc;
+    --bra-raised-bg: #ffffff;
+    --bra-border: #e2e8f0;
+    --bra-border-strong: #cbd5e1;
+    --bra-text: #0f172a;
+    --bra-muted: #475569;
+    --bra-subtle: #64748b;
+    --bra-accent: #0284c7;
+    --bra-accent-strong: #0369a1;
+    --bra-accent-contrast: #0c4a6e;
+    --bra-accent-soft: #e0f2fe;
+    --bra-table-head: #e0f2fe;
+    --bra-table-alt: #f8fafc;
+    --bra-info-bg: #f0f9ff;
+    --bra-success: #047857;
+    color: #0f172a;
+    color-scheme: light;
+}
+
+.bra-size-page [v-cloak] {
+    display: none;
+}
+
+.bra-tool-body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+}
+
+.bra-card-model {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.bra-size-card {
+    width: 100%;
+    max-width: 100%;
+    padding: clamp(24px, 4vw, 42px);
+    border-radius: 14px;
+    overflow: hidden;
+    color: var(--bra-text);
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+html.dark .bra-size-page .bra-size-card {
+    background: #0b1120;
+    border: 1px solid #1e293b;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(148, 163, 184, 0.04);
+}
+
+html:not(.dark) .bra-size-page .bra-size-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.bra-tool-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    min-width: 0;
+    margin: 0;
+    padding: 0 0 20px;
+}
+
+html.dark .bra-size-page .bra-tool-head {
+    border-bottom: 1px solid #1e293b;
+}
+
+html:not(.dark) .bra-size-page .bra-tool-head {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.bra-heading-copy {
+    min-width: 0;
+}
+
+.bra-kicker,
+.bra-overline {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+html.dark .bra-size-page .bra-kicker,
+html.dark .bra-size-page .bra-overline {
+    color: #38bdf8;
+}
+
+html:not(.dark) .bra-size-page .bra-kicker,
+html:not(.dark) .bra-size-page .bra-overline {
+    color: #0369a1;
+}
+
+.bra-title {
+    margin: 0;
+    color: var(--bra-text);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+}
+
+html.dark .bra-size-page .bra-title {
+    color: #f8fafc;
+}
+
+html:not(.dark) .bra-size-page .bra-title {
+    color: #0f172a;
+}
+
+.bra-heading-mark {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    flex: 0 0 auto;
+    height: 36px;
+    padding-bottom: 2px;
+}
+
+.bra-heading-mark span {
+    display: block;
+    width: 6px;
+    border-radius: 4px 4px 1px 1px;
+}
+
+.bra-heading-mark span:nth-child(1) { height: 13px; opacity: 0.45; }
+.bra-heading-mark span:nth-child(2) { height: 24px; opacity: 0.7; }
+.bra-heading-mark span:nth-child(3) { height: 36px; }
+
+html.dark .bra-size-page .bra-heading-mark span {
+    background: #38bdf8;
+}
+
+html:not(.dark) .bra-size-page .bra-heading-mark span {
+    background: #0284c7;
+}
+
+.bra-description {
+    max-width: 760px;
+    margin: 18px 0 0;
+    color: var(--bra-muted);
+    font-size: 15px;
+    line-height: 1.85;
+}
+
+html.dark .bra-size-page .bra-description {
+    color: #94a3b8;
+}
+
+html:not(.dark) .bra-size-page .bra-description {
+    color: #475569;
+}
+
+.bra-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.bra-meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 32px;
+    padding: 6px 10px;
+    border: 1px solid var(--bra-border);
+    border-radius: 999px;
+    color: var(--bra-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+html.dark .bra-size-page .bra-meta-chip {
+    background: #111c32;
+    border-color: #1e293b;
+    color: #cbd5e1;
+}
+
+html:not(.dark) .bra-size-page .bra-meta-chip {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #475569;
+}
+
+.bra-meta-chip.is-accent {
+    border-color: var(--bra-accent);
+}
+
+html.dark .bra-size-page .bra-meta-chip.is-accent {
+    background: rgba(14, 116, 144, 0.2);
+    color: #e0f2fe;
+}
+
+html:not(.dark) .bra-size-page .bra-meta-chip.is-accent {
+    background: #f0f9ff;
+    color: #0c4a6e;
+}
+
+.bra-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+html.dark .bra-size-page .bra-status-dot {
+    background: #34d399;
+    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.14);
+}
+
+html:not(.dark) .bra-size-page .bra-status-dot {
+    background: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+}
+
+.bra-calculator-panel {
+    margin-top: 26px;
+    padding: clamp(16px, 3vw, 24px);
+    border-radius: 12px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+html.dark .bra-size-page .bra-calculator-panel {
+    background: #090e1f;
+    border: 1px solid #1e293b;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.32);
+}
+
+html:not(.dark) .bra-size-page .bra-calculator-panel {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.bra-panel-heading,
+.bra-content-heading,
+.bra-guide-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.bra-panel-heading h2 {
+    margin: 0;
+    color: var(--bra-text);
+    font-size: clamp(19px, 2.5vw, 24px);
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
+
+html.dark .bra-size-page .bra-panel-heading h2,
+html.dark .bra-size-page .bra-content-heading h3,
+html.dark .bra-size-page .bra-guide-heading h2,
+html.dark .bra-size-page .bra-info-heading h3 {
+    color: #f8fafc;
+}
+
+html:not(.dark) .bra-size-page .bra-panel-heading h2,
+html:not(.dark) .bra-size-page .bra-content-heading h3,
+html:not(.dark) .bra-size-page .bra-guide-heading h2,
+html:not(.dark) .bra-size-page .bra-info-heading h3 {
+    color: #0f172a;
+}
+
+.bra-panel-step {
+    flex: 0 0 auto;
+    padding: 6px 9px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+}
+
+html.dark .bra-size-page .bra-panel-step {
+    background: #10243a;
+    color: #7dd3fc;
+}
+
+html:not(.dark) .bra-size-page .bra-panel-step {
+    background: #e0f2fe;
+    color: #075985;
+}
+
+.bra-panel-copy {
+    margin: 12px 0 0;
+    color: var(--bra-muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+html.dark .bra-size-page .bra-panel-copy {
+    color: #94a3b8;
+}
+
+html:not(.dark) .bra-size-page .bra-panel-copy {
+    color: #475569;
+}
+
+.bra-form {
+    width: 100%;
+    margin-top: 18px;
+}
+
+.bra-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+.bra-field {
+    min-width: 0;
+    margin: 0 !important;
+}
+
+.bra-field .el-form-item__content {
+    display: block;
+    min-width: 0;
+    line-height: normal;
+}
+
+.bra-field el-input-extend,
+.bra-field .el-input,
+.bra-field .el-input-extend {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
+.bra-field .el-form-item__label,
+.bra-field label {
+    color: var(--bra-muted);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+html.dark .bra-size-page .bra-field .el-form-item__label,
+html.dark .bra-size-page .bra-field label {
+    color: #cbd5e1;
+}
+
+html:not(.dark) .bra-size-page .bra-field .el-form-item__label,
+html:not(.dark) .bra-size-page .bra-field label {
+    color: #334155;
+}
+
+.bra-field .el-input__wrapper {
+    min-height: 48px;
+    border-radius: 10px;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+html.dark .bra-size-page .bra-field .el-input__wrapper {
+    background: #0f172a;
+    box-shadow: 0 0 0 1px #334155 inset;
+}
+
+html:not(.dark) .bra-size-page .bra-field .el-input__wrapper {
+    background: #ffffff;
+    box-shadow: 0 0 0 1px #cbd5e1 inset;
+}
+
+html.dark .bra-size-page .bra-field .el-input__wrapper:hover {
+    box-shadow: 0 0 0 1px #64748b inset;
+}
+
+html:not(.dark) .bra-size-page .bra-field .el-input__wrapper:hover {
+    box-shadow: 0 0 0 1px #94a3b8 inset;
+}
+
+html.dark .bra-size-page .bra-field .el-input__wrapper:focus-within {
+    box-shadow: 0 0 0 1px #38bdf8 inset, 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+html:not(.dark) .bra-size-page .bra-field .el-input__wrapper:focus-within {
+    box-shadow: 0 0 0 1px #0284c7 inset, 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.bra-field .el-input__inner {
+    color: var(--bra-text);
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+}
+
+html.dark .bra-size-page .bra-field .el-input__inner {
+    color: #f8fafc;
+}
+
+html:not(.dark) .bra-size-page .bra-field .el-input__inner {
+    color: #0f172a;
+}
+
+.bra-field .el-input__inner::placeholder {
+    color: var(--bra-subtle);
+}
+
+html.dark .bra-size-page .bra-field .el-input__inner::placeholder {
+    color: #64748b;
+}
+
+html:not(.dark) .bra-size-page .bra-field .el-input__inner::placeholder {
+    color: #94a3b8;
+}
+
+html.dark .bra-size-page .bra-field.is-error .el-input__wrapper {
+    box-shadow: 0 0 0 1px #fb7185 inset, 0 0 0 3px rgba(251, 113, 133, 0.12);
+}
+
+html:not(.dark) .bra-size-page .bra-field.is-error .el-input__wrapper {
+    box-shadow: 0 0 0 1px #e11d48 inset, 0 0 0 3px rgba(225, 29, 72, 0.1);
+}
+
+html.dark .bra-size-page .bra-field .el-form-item__error {
+    color: #fda4af;
+}
+
+html:not(.dark) .bra-size-page .bra-field .el-form-item__error {
+    color: #be123c;
+}
+
+.bra-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.bra-action-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 9px 18px !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    font-weight: 750 !important;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+html.dark .bra-size-page .bra-action-button {
+    background: #075985 !important;
+    border: 1px solid #38bdf8 !important;
+    color: #e0f2fe !important;
+    box-shadow: 0 6px 14px rgba(2, 132, 199, 0.18);
+}
+
+html:not(.dark) .bra-size-page .bra-action-button {
+    background: #0284c7 !important;
+    border: 1px solid #0284c7 !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 14px rgba(2, 132, 199, 0.18);
+}
+
+html.dark .bra-size-page .bra-action-button:hover {
+    background: #0284c7 !important;
+    border-color: #7dd3fc !important;
+}
+
+html:not(.dark) .bra-size-page .bra-action-button:hover {
+    background: #0369a1 !important;
+    border-color: #0369a1 !important;
+}
+
+.bra-action-button:hover {
+    transform: translateY(-1px);
+}
+
+.bra-action-button:active {
+    transform: translateY(0);
+}
+
+html.dark .bra-size-page .bra-action-button:focus-visible {
+    outline: 3px solid rgba(125, 211, 252, 0.38);
+    outline-offset: 2px;
+}
+
+html:not(.dark) .bra-size-page .bra-action-button:focus-visible {
+    outline: 3px solid rgba(2, 132, 199, 0.24);
+    outline-offset: 2px;
+}
+
+.bra-button-symbol {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 0.8;
+}
+
+.bra-action-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--bra-subtle);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+html.dark .bra-size-page .bra-action-note {
+    color: #94a3b8;
+}
+
+html:not(.dark) .bra-size-page .bra-action-note {
+    color: #64748b;
+}
+
+.bra-action-note::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+html.dark .bra-size-page .bra-action-note::before {
+    background: #38bdf8;
+}
+
+html:not(.dark) .bra-size-page .bra-action-note::before {
+    background: #0284c7;
+}
+
+.bra-result {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin-top: 16px;
+    padding: 16px 18px;
+    border-radius: 10px;
+    color: var(--bra-text);
+}
+
+html.dark .bra-size-page .bra-result {
+    background: #082f49;
+    border: 1px solid #0e7490;
+    color: #e0f2fe;
+}
+
+html:not(.dark) .bra-size-page .bra-result {
+    background: #ecfeff;
+    border: 1px solid #a5f3fc;
+    color: #164e63;
+}
+
+.bra-result-label {
+    color: inherit;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.bra-result-value {
+    min-width: 0;
+    color: inherit;
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    text-align: right;
+}
+
+.bra-result-value * {
+    color: inherit;
+}
+
+.bra-measure-guide {
+    margin-top: 24px;
+}
+
+.bra-guide-heading h2 {
+    margin: 0;
+    color: var(--bra-text);
+    font-size: 18px;
+    font-weight: 750;
+    letter-spacing: -0.015em;
+}
+
+.bra-guide-heading p {
+    margin: 3px 0 0;
+    color: var(--bra-muted);
+    font-size: 13px;
+}
+
+html.dark .bra-size-page .bra-guide-heading p {
+    color: #94a3b8;
+}
+
+html:not(.dark) .bra-size-page .bra-guide-heading p {
+    color: #475569;
+}
+
+.bra-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.bra-guide-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+    padding: 15px;
+    border: 1px solid var(--bra-border);
+    border-radius: 10px;
+}
+
+html.dark .bra-size-page .bra-guide-card {
+    background: #0f172a;
+    border-color: #1e293b;
+}
+
+html:not(.dark) .bra-size-page .bra-guide-card {
+    background: #ffffff;
+    border-color: #e2e8f0;
+}
+
+.bra-guide-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+html.dark .bra-size-page .bra-guide-index {
+    background: rgba(14, 116, 144, 0.28);
+    color: #7dd3fc;
+}
+
+html:not(.dark) .bra-size-page .bra-guide-index {
+    background: #e0f2fe;
+    color: #075985;
+}
+
+.bra-guide-card h3 {
+    margin: 0;
+    color: var(--bra-text);
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.bra-guide-card p {
+    margin: 5px 0 0;
+    color: var(--bra-muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+html.dark .bra-size-page .bra-guide-card h3 {
+    color: #f8fafc;
+}
+
+html:not(.dark) .bra-size-page .bra-guide-card h3 {
+    color: #0f172a;
+}
+
+html.dark .bra-size-page .bra-guide-card p {
+    color: #94a3b8;
+}
+
+html:not(.dark) .bra-size-page .bra-guide-card p {
+    color: #475569;
+}
+
+.bra-divider {
+    width: 100%;
+    height: 1px;
+    margin: 30px 0;
+}
+
+html.dark .bra-size-page .bra-divider {
+    background: #1e293b;
+}
+
+html:not(.dark) .bra-size-page .bra-divider {
+    background: #e2e8f0;
+}
+
+.bra-content {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    color: var(--bra-text);
+}
+
+.bra-content-heading {
+    align-items: flex-end;
+    margin-bottom: 14px;
+}
+
+.bra-content-heading h3,
+.bra-info-heading h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
+
+.bra-content-heading > span {
+    flex: 0 0 auto;
+    color: var(--bra-subtle);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+html.dark .bra-size-page .bra-content-heading > span {
+    color: #64748b;
+}
+
+html:not(.dark) .bra-size-page .bra-content-heading > span {
+    color: #64748b;
+}
+
+.bra-table-shell {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+html.dark .bra-size-page .bra-table-shell {
+    border: 1px solid #1e293b;
+}
+
+html:not(.dark) .bra-size-page .bra-table-shell {
+    border: 1px solid #e2e8f0;
+}
+
+.bra-size-table {
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    color: var(--bra-text);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.bra-size-table caption {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+html.dark .bra-size-page .bra-size-table caption {
+    background: #0f172a;
+    color: #94a3b8;
+}
+
+html:not(.dark) .bra-size-page .bra-size-table caption {
+    background: #f8fafc;
+    color: #475569;
+}
+
+.bra-size-table th,
+.bra-size-table td {
+    width: 33.333%;
+    padding: 10px 8px;
+    border-top: 1px solid var(--bra-border);
+    overflow-wrap: anywhere;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.bra-size-table th {
+    font-size: 12px;
+    font-weight: 750;
+}
+
+html.dark .bra-size-page .bra-size-table th {
+    background: #13233b;
+    border-top-color: #334155;
+    color: #e0f2fe;
+}
+
+html:not(.dark) .bra-size-page .bra-size-table th {
+    background: #e0f2fe;
+    border-top-color: #bae6fd;
+    color: #0c4a6e;
+}
+
+html.dark .bra-size-page .bra-size-table td {
+    background: #0b1120;
+    border-top-color: #1e293b;
+    color: #cbd5e1;
+}
+
+html:not(.dark) .bra-size-page .bra-size-table td {
+    background: #ffffff;
+    border-top-color: #e2e8f0;
+    color: #334155;
+}
+
+html.dark .bra-size-page .bra-size-table tbody tr:nth-child(even) td {
+    background: #0f1a2f;
+}
+
+html:not(.dark) .bra-size-page .bra-size-table tbody tr:nth-child(even) td {
+    background: #f8fafc;
+}
+
+html.dark .bra-size-page .bra-size-table tbody tr:hover td {
+    background: #10243a;
+    color: #f8fafc;
+}
+
+html:not(.dark) .bra-size-page .bra-size-table tbody tr:hover td {
+    background: #f0f9ff;
+    color: #0f172a;
+}
+
+.bra-info-section {
+    margin-top: 30px;
+}
+
+.bra-info-heading {
+    margin-bottom: 14px;
+}
+
+.bra-info-copy {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.bra-info-copy p {
+    min-width: 0;
+    margin: 0;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+html.dark .bra-size-page .bra-info-copy p {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    color: #cbd5e1;
+}
+
+html:not(.dark) .bra-size-page .bra-info-copy p {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+}
+
+.bra-info-copy strong {
+    font-weight: 750;
+}
+
+html.dark .bra-size-page .bra-info-copy strong {
+    color: #f8fafc;
+}
+
+html:not(.dark) .bra-size-page .bra-info-copy strong {
+    color: #0f172a;
+}
+
+.bra-size-page button:focus-visible,
+.bra-size-page input:focus-visible {
+    outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+    .bra-tool-body {
+        padding: 12px 10px 32px;
+    }
+
+    .bra-size-card {
+        padding: 20px 14px;
+        border-radius: 12px;
+    }
+
+    .bra-tool-head {
+        align-items: flex-start;
+        padding-bottom: 16px;
+    }
+
+    .bra-heading-mark {
+        display: none;
+    }
+
+    .bra-title {
+        font-size: clamp(27px, 8vw, 34px);
+    }
+
+    .bra-description {
+        margin-top: 15px;
+        font-size: 14px;
+        line-height: 1.75;
+    }
+
+    .bra-meta-row {
+        margin-top: 14px;
+    }
+
+    .bra-calculator-panel {
+        margin-top: 20px;
+        padding: 16px;
+    }
+
+    .bra-form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bra-form-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .bra-action-button {
+        width: 100%;
+    }
+
+    .bra-action-note {
+        justify-content: center;
+    }
+
+    .bra-guide-grid,
+    .bra-info-copy {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bra-content-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .bra-size-table {
+        font-size: 12px;
+    }
+
+    .bra-size-table th,
+    .bra-size-table td {
+        padding: 8px 5px;
+    }
+}
+
+@media (max-width: 420px) {
+    .bra-meta-chip {
+        flex: 1 1 100%;
+    }
+
+    .bra-panel-heading {
+        gap: 10px;
+    }
+
+    .bra-panel-step {
+        padding: 5px 7px;
+        font-size: 10px;
+    }
+
+    .bra-size-table {
+        font-size: 11px;
+    }
+
+    .bra-size-table th,
+    .bra-size-table td {
+        padding: 8px 4px;
+    }
+}
+</style>
 </head>
 <body>
 <div class="grid-bg"></div>
@@ -39,32 +1069,141 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body bra-size-page" id="app">
         
 
 
-<div class="tool-body">
-    <div class="card-model">
-        <div class="card-body">
-            <div class="tool-head">
-                <h1 class="title">文胸尺码查询</h1>
+<div class="tool-body bra-tool-body">
+    <div class="card-model bra-card-model">
+        <div class="card-body bra-size-card">
+            <div class="tool-head bra-tool-head">
+                <div class="bra-heading-copy">
+                    <span class="bra-kicker">FIT CHECK / 01</span>
+                    <h1 class="title bra-title">文胸尺码查询</h1>
+                </div>
+                <div class="bra-heading-mark" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                </div>
             </div>
-            <div class="description">文胸尺码在线计算，测量出自己上胸围和下胸围，输入数值自动计算出罩杯尺码，比罩杯尺码表需要自己去查要方便很多。罩杯计算结果仅供参考，多试试找到最适合自己的文胸罩杯。</div>
-            <el-form :model="formData" ref="computeForm" size="large" class="tool-form">
-                <el-form-item prop="upperBust" :rules="[{required: true, message: `请输入上胸围`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
-                    <el-input-extend v-model="formData.upperBust" label="上胸围(cm)" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-form-item prop="underBust" :rules="[{required: true, message: `请输入下胸围`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
-                    <el-input-extend v-model="formData.underBust" label="下胸围(cm)" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-button type="primary" v-on:click="compute">计算</el-button>
-            </el-form>
-            <div v-cloak class="compute-result" v-if="computeResult!=null">
-                <div v-html="computeResult"></div>
+            <div class="description bra-description">文胸尺码在线计算，测量出自己上胸围和下胸围，输入数值自动计算出罩杯尺码，比罩杯尺码表需要自己去查要方便很多。罩杯计算结果仅供参考，多试试找到最适合自己的文胸罩杯。</div>
+
+            <div class="bra-meta-row" aria-label="工具信息">
+                <span class="bra-meta-chip is-accent"><span class="bra-status-dot" aria-hidden="true"></span>快速估算</span>
+                <span class="bra-meta-chip">单位：cm</span>
+                <span class="bra-meta-chip">结果仅供选码参考</span>
             </div>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>文胸尺码参考表</h3><table style="width: 100%;"><tbody><tr><th>下胸围(cm)</th><th>上胸围(cm)</th><th>国际尺码</th></tr><tr><td rowSpan="4">68-72</td><td>80</td><td>32/70A</td></tr><tr><td>83</td><td>32/70B</td></tr><tr><td>85</td><td>32/70C</td></tr><tr><td>88</td><td>32/70D</td></tr><tr><td rowSpan="5">73-77</td><td>85</td><td>34/75A</td></tr><tr><td>88</td><td>34/75B</td></tr><tr><td>90</td><td>34/75C</td></tr><tr><td>95</td><td>34/75D</td></tr><tr><td>98</td><td>34/75E</td></tr><tr><td rowSpan="5">78-82</td><td>90</td><td>36/80A</td></tr><tr><td>93</td><td>36/80B</td></tr><tr><td>95</td><td>36/80C</td></tr><tr><td>98</td><td>36/80D</td></tr><tr><td>103</td><td>36/80E</td></tr><tr><td rowSpan="4">83-87</td><td>95-97</td><td>38/85A</td></tr><tr><td>99-101</td><td>38/85B</td></tr><tr><td>101-103</td><td>38/85C</td></tr><tr><td>103-105</td><td>338/85D</td></tr><tr><td rowSpan="4">88-92</td><td>103</td><td>40/90B </td></tr><tr><td>105</td><td>40/90C </td></tr><tr><td>108</td><td>40/90D</td></tr><tr><td>113</td><td>40/90E</td></tr></tbody></table><h3>介绍</h3><p>上胸围测量方法：上胸围是测量胸部最为丰满的地方，以乳头为基准点，测量的时候，需要向前倾斜45度，这样测量的数据比较准确，测量的数据如果有小数点，直接进一位，比如80.2，直接选购81的码数，这个不需要“四舍五入”，凡是出现小数点直接进一位。</p><p>下胸围测量方法：水平围绕胸部乳房底部一周的长度，即为胸部下围尺寸,单位cm。</p><p>文胸计算方法：罩杯就是上胸围减掉下胸围得出的数据。罩杯就是我们常见的“A、B、C”等这些字母，具体数据为：AA杯：7.5cm以内；A杯：10.0cm以内；B杯：12.5cm以内；C杯：15.0cm以内；D杯：17.5cm以内；E杯：20.0cm以内。这个都可以对照胸围表，比如你量出的上胸围是80，下胸围是68，两个数据相减得出的数字是12，那么就是B罩杯，对照胸围表，可以得知你需要选择的文胸码数是70A。两个数据相减得出的数字是12.6，那应该选择C罩杯的。</p>
+
+            <section class="bra-calculator-panel" aria-labelledby="bra-input-title">
+                <div class="bra-panel-heading">
+                    <div>
+                        <span class="bra-overline">MEASUREMENTS</span>
+                        <h2 id="bra-input-title">输入围度，获得推荐尺码</h2>
+                    </div>
+                    <span class="bra-panel-step">STEP 01</span>
+                </div>
+                <p class="bra-panel-copy">请使用软尺水平贴合身体测量，填写两个数值后点击计算。</p>
+
+                <el-form :model="formData" ref="computeForm" size="large" class="tool-form bra-form">
+                    <div class="bra-form-grid">
+                        <el-form-item prop="upperBust" class="bra-field" :rules="[{required: true, message: `请输入上胸围`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
+                            <el-input-extend v-model="formData.upperBust" label="上胸围(cm)" class="w100"></el-input-extend>
+                        </el-form-item>
+                        <el-form-item prop="underBust" class="bra-field" :rules="[{required: true, message: `请输入下胸围`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
+                            <el-input-extend v-model="formData.underBust" label="下胸围(cm)" class="w100"></el-input-extend>
+                        </el-form-item>
+                    </div>
+                    <div class="bra-form-actions">
+                        <el-button type="primary" class="bra-action-button" v-on:click="compute" aria-label="计算文胸尺码"><span class="bra-button-symbol" aria-hidden="true">→</span>计算尺码</el-button>
+                        <span class="bra-action-note">数据仅在当前页面计算</span>
+                    </div>
+                </el-form>
+            </section>
+
+            <div v-cloak class="compute-result bra-result" v-if="computeResult!=null" role="status" aria-live="polite">
+                <span class="bra-result-label">推荐结果</span>
+                <div class="bra-result-value" v-html="computeResult"></div>
+            </div>
+
+            <section class="bra-measure-guide" aria-labelledby="bra-guide-title">
+                <div class="bra-guide-heading">
+                    <div>
+                        <h2 id="bra-guide-title">测量小提示</h2>
+                        <p>读数准确，推荐尺码才更接近你的实际感受。</p>
+                    </div>
+                </div>
+                <div class="bra-guide-grid">
+                    <article class="bra-guide-card">
+                        <span class="bra-guide-index">01</span>
+                        <div>
+                            <h3>上胸围</h3>
+                            <p>身体前倾约 45°，软尺经过胸部最丰满处，保持自然呼吸。</p>
+                        </div>
+                    </article>
+                    <article class="bra-guide-card">
+                        <span class="bra-guide-index">02</span>
+                        <div>
+                            <h3>下胸围</h3>
+                            <p>软尺水平围绕乳房底部一周，贴合但不要勒紧，单位为 cm。</p>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <div class="divider bra-divider"></div>
+            <div class="content bra-content">
+                <section class="bra-reference-section" aria-labelledby="bra-reference-title">
+                    <div class="bra-content-heading">
+                        <div>
+                            <span class="bra-overline">REFERENCE TABLE</span>
+                            <h3 id="bra-reference-title">文胸尺码参考表</h3>
+                        </div>
+                        <span>常用换算</span>
+                    </div>
+                    <div class="bra-table-shell">
+                        <table class="bra-size-table" aria-label="文胸尺码参考表">
+                            <caption>根据下胸围与上胸围，快速找到常见国际尺码。</caption>
+                            <thead>
+                                <tr><th scope="col">下胸围(cm)</th><th scope="col">上胸围(cm)</th><th scope="col">国际尺码</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td rowSpan="4">68-72</td><td>80</td><td>32/70A</td></tr>
+                                <tr><td>83</td><td>32/70B</td></tr>
+                                <tr><td>85</td><td>32/70C</td></tr>
+                                <tr><td>88</td><td>32/70D</td></tr>
+                                <tr><td rowSpan="5">73-77</td><td>85</td><td>34/75A</td></tr>
+                                <tr><td>88</td><td>34/75B</td></tr>
+                                <tr><td>90</td><td>34/75C</td></tr>
+                                <tr><td>95</td><td>34/75D</td></tr>
+                                <tr><td>98</td><td>34/75E</td></tr>
+                                <tr><td rowSpan="5">78-82</td><td>90</td><td>36/80A</td></tr>
+                                <tr><td>93</td><td>36/80B</td></tr>
+                                <tr><td>95</td><td>36/80C</td></tr>
+                                <tr><td>98</td><td>36/80D</td></tr>
+                                <tr><td>103</td><td>36/80E</td></tr>
+                                <tr><td rowSpan="4">83-87</td><td>95-97</td><td>38/85A</td></tr>
+                                <tr><td>99-101</td><td>38/85B</td></tr>
+                                <tr><td>101-103</td><td>38/85C</td></tr>
+                                <tr><td>103-105</td><td>38/85D</td></tr>
+                                <tr><td rowSpan="4">88-92</td><td>103</td><td>40/90B</td></tr>
+                                <tr><td>105</td><td>40/90C</td></tr>
+                                <tr><td>108</td><td>40/90D</td></tr>
+                                <tr><td>113</td><td>40/90E</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="bra-info-section" aria-labelledby="bra-intro-title">
+                    <div class="bra-info-heading">
+                        <span class="bra-overline">HOW TO MEASURE</span>
+                        <h3 id="bra-intro-title">介绍</h3>
+                    </div>
+                    <div class="bra-info-copy">
+                        <p><strong>上胸围测量：</strong>上胸围是测量胸部最为丰满的地方，以乳头为基准点，测量时向前倾斜 45°，这样测量的数据比较准确。如果数据有小数点，直接进一位，比如 80.2，直接选购 81 的码数，不需要“四舍五入”。</p>
+                        <p><strong>下胸围测量：</strong>水平围绕胸部乳房底部一周的长度，即为胸部下围尺寸，单位 cm。</p>
+                        <p><strong>文胸计算方法：</strong>罩杯是上胸围减掉下胸围得出的数据，对应常见的 A、B、C 等字母：AA 杯 7.5cm 以内，A 杯 10.0cm 以内，B 杯 12.5cm 以内，C 杯 15.0cm 以内，D 杯 17.5cm 以内，E 杯 20.0cm 以内。比如上胸围 80、下胸围 68，差值为 12，即为 B 罩杯，再结合胸围表选择合适码数。结果仅供参考，实际试穿感受同样重要。</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
