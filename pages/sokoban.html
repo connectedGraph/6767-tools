@@ -16,40 +16,246 @@
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     <style>
-        /* 顶部数码仪表盘 */
+        /* ── 顶部数码仪表盘 (双模质感与高反差对比度) ── */
         .sk-dashboard {
-            background: #020617;
-            border: 1px solid #1e293b;
-            border-radius: 10px;
-            padding: 10px 16px;
+            border-radius: 12px;
+            padding: 12px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 14px;
             margin-bottom: 16px;
+            transition: all 0.25s ease;
+        }
+
+        html.dark .sk-dashboard {
+            background: #030712;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        html:not(.dark) .sk-dashboard {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .sk-stat-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sk-stat-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        html.dark .sk-stat-label {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .sk-stat-label {
+            color: #475569;
         }
 
         .sk-digital-val {
             font-family: 'JetBrains Mono', Consolas, monospace;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 800;
-            color: #f59e0b;
-            text-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
         }
 
-        /* 游戏主画布容器 */
+        html.dark .sk-digital-amber {
+            color: #fbbf24;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+        }
+        html:not(.dark) .sk-digital-amber {
+            color: #b45309;
+        }
+
+        html.dark .sk-digital-default {
+            color: #e2e8f0;
+            text-shadow: 0 0 8px rgba(226, 232, 240, 0.3);
+        }
+        html:not(.dark) .sk-digital-default {
+            color: #0f172a;
+        }
+
+        html.dark .sk-digital-sky {
+            color: #38bdf8;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+        html:not(.dark) .sk-digital-sky {
+            color: #0284c7;
+        }
+
+        html.dark .sk-digital-emerald {
+            color: #34d399;
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+        }
+        html:not(.dark) .sk-digital-emerald {
+            color: #059669;
+        }
+
+        /* ── 专属控制按钮组 (杜绝任何白底白字与样式冲突) ── */
+        .sk-btn-group {
+            display: inline-flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .sk-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            outline: none;
+        }
+
+        .sk-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .sk-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .sk-btn:disabled {
+            opacity: 0.42;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* 蓝色主操作按钮 */
+        .sk-btn-primary {
+            background: #0284c7;
+            border: 1px solid #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+        }
+        .sk-btn-primary:hover:not(:disabled) {
+            background: #0369a1;
+            border-color: #0369a1;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+        }
+        html.dark .sk-btn-primary {
+            background: rgba(14, 116, 144, 0.35);
+            border: 1px solid #38bdf8;
+            color: #e0f2fe;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+        html.dark .sk-btn-primary:hover:not(:disabled) {
+            background: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+        }
+
+        /* 琥珀色撤回按钮 */
+        .sk-btn-warning {
+            background: #d97706;
+            border: 1px solid #d97706;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
+        }
+        .sk-btn-warning:hover:not(:disabled) {
+            background: #b45309;
+            border-color: #b45309;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+        }
+        html.dark .sk-btn-warning {
+            background: rgba(180, 83, 9, 0.35);
+            border: 1px solid #fbbf24;
+            color: #fef3c7;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+        }
+        html.dark .sk-btn-warning:hover:not(:disabled) {
+            background: #d97706;
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.4);
+        }
+
+        /* 红色重置按钮 */
+        .sk-btn-danger {
+            background: #dc2626;
+            border: 1px solid #dc2626;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+        }
+        .sk-btn-danger:hover:not(:disabled) {
+            background: #b91c1c;
+            border-color: #b91c1c;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+        }
+        html.dark .sk-btn-danger {
+            background: rgba(185, 28, 28, 0.35);
+            border: 1px solid #f87171;
+            color: #fee2e2;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+        }
+        html.dark .sk-btn-danger:hover:not(:disabled) {
+            background: #dc2626;
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.4);
+        }
+
+        /* 次要按钮 (音效开关等) */
+        .sk-btn-secondary {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        .sk-btn-secondary:hover:not(:disabled) {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+        html.dark .sk-btn-secondary {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+        }
+        html.dark .sk-btn-secondary:hover:not(:disabled) {
+            background: #1e293b;
+            border-color: #475569;
+            color: #f8fafc;
+        }
+
+        /* ── 游戏主画布容器 (自适应铺满与沉浸光影) ── */
         .game-canvas-wrapper {
             position: relative;
-            background: #040914;
-            border: 2px solid #1e293b;
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 480px;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+            padding: 16px;
+            transition: all 0.25s ease;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        html.dark .game-canvas-wrapper {
+            background: radial-gradient(circle at center, #091122 0%, #030712 100%);
+            border: 2px solid #1e293b;
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.85), 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .game-canvas-wrapper {
+            background: radial-gradient(circle at center, #e2e8f0 0%, #cbd5e1 100%);
+            border: 2px solid #94a3b8;
+            box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.08);
         }
 
         #sokobanCanvas {
@@ -58,38 +264,128 @@
             image-rendering: crisp-edges;
             cursor: pointer;
             touch-action: none;
+            border-radius: 10px;
+            transition: box-shadow 0.25s;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        /* 移动端虚拟方向摇杆 / 按键区 */
+        html.dark #sokobanCanvas {
+            box-shadow: 0 10px 36px rgba(0, 0, 0, 0.75), 0 0 2px rgba(56, 189, 248, 0.3);
+        }
+
+        html:not(.dark) #sokobanCanvas {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 1px #94a3b8;
+        }
+
+        /* ── 移动端虚拟方向键盘 ── */
         .dpad-container {
             display: grid;
-            grid-template-columns: repeat(3, 56px);
-            grid-template-rows: repeat(3, 56px);
-            gap: 6px;
+            grid-template-columns: repeat(3, 58px);
+            grid-template-rows: repeat(3, 58px);
+            gap: 8px;
             justify-content: center;
-            margin: 16px auto 0;
+            margin: 18px auto 0;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .dpad-btn {
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 10px;
-            color: #cbd5e1;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 22px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.1s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s ease;
+            outline: none;
         }
-        .dpad-btn:active {
+
+        html.dark .dpad-btn {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+        html.dark .dpad-btn:active {
             background: #f59e0b;
             color: #020617;
             transform: scale(0.92);
         }
 
-        /* 选关网格 */
+        html:not(.dark) .dpad-btn {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+        html:not(.dark) .dpad-btn:active {
+            background: #0284c7;
+            color: #ffffff;
+            transform: scale(0.92);
+        }
+
+        /* ── 关卡前后切换与提示条 (高对比度双模适配) ── */
+        .sk-level-switch-bar {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        html.dark .sk-level-switch-bar {
+            border-color: #1e293b;
+        }
+        html:not(.dark) .sk-level-switch-bar {
+            border-color: #e2e8f0;
+        }
+
+        .sk-switch-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        html.dark .sk-switch-btn {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+        }
+        html.dark .sk-switch-btn:hover:not(:disabled) {
+            background: #334155;
+            color: #ffffff;
+        }
+        html:not(.dark) .sk-switch-btn {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+        html:not(.dark) .sk-switch-btn:hover:not(:disabled) {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .sk-switch-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .sk-hint-text {
+            font-size: 12px;
+        }
+        html.dark .sk-hint-text {
+            color: #64748b;
+        }
+        html:not(.dark) .sk-hint-text {
+            color: #64748b;
+        }
+
+        /* ── 选关网格 ── */
         .level-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
@@ -101,37 +397,62 @@
 
         .level-btn {
             aspect-ratio: 1/1;
-            background: #090e1f;
-            border: 1px solid #1e293b;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #94a3b8;
             cursor: pointer;
             transition: all 0.15s;
             font-family: 'JetBrains Mono', monospace;
             font-size: 14px;
             font-weight: 700;
         }
-        .level-btn:hover {
+
+        html.dark .level-btn {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            color: #94a3b8;
+        }
+        html.dark .level-btn:hover {
             border-color: #f59e0b;
             color: #ffffff;
             transform: scale(1.05);
         }
-        .level-btn.current {
+        html.dark .level-btn.current {
             background: #78350f;
             border-color: #f59e0b;
             color: #fef3c7;
             box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
         }
-        .level-btn.cleared {
+        html.dark .level-btn.cleared {
             border-color: #10b981;
             color: #34d399;
         }
 
-        /* 通关模态框高质感样式 (明暗双模支持) */
+        html:not(.dark) .level-btn {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        html:not(.dark) .level-btn:hover {
+            border-color: #0284c7;
+            color: #0284c7;
+            transform: scale(1.05);
+        }
+        html:not(.dark) .level-btn.current {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(2, 132, 199, 0.35);
+        }
+        html:not(.dark) .level-btn.cleared {
+            border-color: #16a34a;
+            color: #15803d;
+            background: #f0fdf4;
+        }
+
+        /* 通关模态框高质感样式 */
         .victory-trophy-box {
             font-size: 42px;
             line-height: 1;
@@ -205,45 +526,45 @@
                 </div>
                 <div class="description">经典复古推箱子 50 关益智在线小游戏，精选 50 道渐进难度关卡。支持键盘方向键/WASD/移动端虚拟方向手柄/点击寻路、无限撤销(Undo)、重置关卡、音效合成与通关战绩本地保存。</div>
         
-        <!-- 顶部数码仪表盘与关卡控制 -->
+        <!-- 顶部数码仪表盘与关卡控制 (双模高对比度) -->
         <div class="sk-dashboard">
-            <div class="flex items-center flex-wrap gap-3">
-                <div class="flex items-center gap-1.5">
-                    <span class="text-xs text-slate-400 font-bold">关卡:</span>
-                    <span class="sk-digital-val text-amber-400">第 {{ currentLevelIdx + 1 }} / {{ totalLevels }} 关</span>
+            <div class="flex items-center flex-wrap gap-4">
+                <div class="sk-stat-pill">
+                    <span class="sk-stat-label">关卡:</span>
+                    <span class="sk-digital-val sk-digital-amber">第 {{ currentLevelIdx + 1 }} / {{ totalLevels }} 关</span>
                 </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="text-xs text-slate-400 font-bold">移动:</span>
-                    <span class="sk-digital-val">{{ movesCount }}</span>
+                <div class="sk-stat-pill">
+                    <span class="sk-stat-label">移动:</span>
+                    <span class="sk-digital-val sk-digital-default">{{ movesCount }}</span>
                 </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="text-xs text-slate-400 font-bold">推箱:</span>
-                    <span class="sk-digital-val text-sky-400">{{ pushesCount }}</span>
+                <div class="sk-stat-pill">
+                    <span class="sk-stat-label">推箱:</span>
+                    <span class="sk-digital-val sk-digital-sky">{{ pushesCount }}</span>
                 </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="text-xs text-slate-400 font-bold">用时:</span>
-                    <span class="sk-digital-val text-emerald-400">{{ formattedTime }}</span>
+                <div class="sk-stat-pill">
+                    <span class="sk-stat-label">用时:</span>
+                    <span class="sk-digital-val sk-digital-emerald">{{ formattedTime }}</span>
                 </div>
             </div>
 
-            <!-- 控制按钮组 -->
-            <div class="flex items-center flex-wrap gap-2 mt-2 sm:mt-0">
-                <el-button size="small" type="primary" plain @click="showLevelModal = true">
+            <!-- 控制按钮组 (双模超清高反差，彻底免疫样式冲突与白底白字) -->
+            <div class="sk-btn-group">
+                <button class="sk-btn sk-btn-primary" @click="showLevelModal = true">
                     选关 (50关)
-                </el-button>
-                <el-button size="small" type="warning" plain @click="undoMove" :disabled="historyStack.length === 0" title="快捷键: Z">
+                </button>
+                <button class="sk-btn sk-btn-warning" @click="undoMove" :disabled="historyStack.length === 0" title="快捷键: Z">
                     撤回 (Z)
-                </el-button>
-                <el-button size="small" type="danger" plain @click="restartLevel" title="快捷键: R">
+                </button>
+                <button class="sk-btn sk-btn-danger" @click="restartLevel" title="快捷键: R">
                     重置 (R)
-                </el-button>
-                <el-button size="small" @click="soundEnabled = !soundEnabled" :title="soundEnabled ? '音效开启' : '音效静音'">
-                    {{ soundEnabled ? '🔊' : '🔇' }}
-                </el-button>
+                </button>
+                <button class="sk-btn sk-btn-secondary" @click="soundEnabled = !soundEnabled" :title="soundEnabled ? '音效开启' : '音效静音'">
+                    {{ soundEnabled ? '🔊 开启' : '🔇 静音' }}
+                </button>
             </div>
         </div>
 
-        <!-- 游戏主画布 -->
+        <!-- 游戏主画布容器 (自适应铺满最大化显示) -->
         <div class="game-canvas-wrapper" ref="canvasWrapper">
             <canvas id="sokobanCanvas" ref="canvas" @click="onCanvasClick"></canvas>
         </div>
@@ -261,18 +582,18 @@
             <div></div>
         </div>
 
-        <!-- 关卡前后切换条 -->
-        <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+        <!-- 关卡前后切换条 (日夜模式自适应高清晰度) -->
+        <div class="sk-level-switch-bar">
             <div class="flex items-center gap-2">
-                <button class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded transition-colors" @click="changeLevel(currentLevelIdx - 1)" :disabled="currentLevelIdx <= 0">
-                    上一关
+                <button class="sk-switch-btn" @click="changeLevel(currentLevelIdx - 1)" :disabled="currentLevelIdx <= 0">
+                    &#8592; 上一关
                 </button>
-                <button class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded transition-colors" @click="changeLevel(currentLevelIdx + 1)" :disabled="currentLevelIdx >= totalLevels - 1">
-                    下一关
+                <button class="sk-switch-btn" @click="changeLevel(currentLevelIdx + 1)" :disabled="currentLevelIdx >= totalLevels - 1">
+                    下一关 &#8594;
                 </button>
             </div>
-            <div class="hidden sm:block text-slate-500 font-mono">
-                操作方式：方向键 / W A S D 移动，Z 键撤回，R 键重置关卡，支持鼠标点击空地智能寻路
+            <div class="hidden sm:block sk-hint-text font-mono">
+                操作快捷键：方向键 / W A S D 移动，Z 撤回，R 重置关卡，支持鼠标点击空地智能寻路
             </div>
         </div>
 
@@ -907,7 +1228,7 @@ window.sokobanAppInstance = createApp({
                     if (char === '#') {
                         grid[r][c] = '#';
                     } else if (char === '@') {
-                        player = { x: c, y: r };
+                        player = { x: c, y: r, dir: 'down' };
                     } else if (char === '$') {
                         boxes.push({ x: c, y: r });
                     } else if (char === '.') {
@@ -916,7 +1237,7 @@ window.sokobanAppInstance = createApp({
                         boxes.push({ x: c, y: r });
                         goals.push({ x: c, y: r });
                     } else if (char === '+') {
-                        player = { x: c, y: r };
+                        player = { x: c, y: r, dir: 'down' };
                         goals.push({ x: c, y: r });
                     }
                 }
@@ -958,10 +1279,18 @@ window.sokobanAppInstance = createApp({
         }
 
         function tryMove(dx, dy) {
+            if (dx === 1) player.dir = 'right';
+            else if (dx === -1) player.dir = 'left';
+            else if (dy === -1) player.dir = 'up';
+            else if (dy === 1) player.dir = 'down';
+
             const nextX = player.x + dx;
             const nextY = player.y + dy;
 
-            if (isWall(nextX, nextY)) return false;
+            if (isWall(nextX, nextY)) {
+                draw(); // 更新朝向
+                return false;
+            }
 
             const box = getBoxAt(nextX, nextY);
             if (box) {
@@ -1057,136 +1386,277 @@ window.sokobanAppInstance = createApp({
             initLevel(idx);
         }
 
-        // 绘制复古像素画面
+        // ── 绘制复古像素画面 (双模高质感 + 视网膜高清适配) ──
         function draw() {
-            if (!canvas.value) return;
+            if (!canvas.value || !ctx) return;
             const cvs = canvas.value;
+            const isDark = document.documentElement.classList.contains('dark');
+            const dpr = Math.min(window.devicePixelRatio || 1, 3);
+
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.clearRect(0, 0, cvs.width, cvs.height);
+            ctx.scale(dpr, dpr);
 
-            const offsetX = Math.floor((cvs.width - cols * tileSize) / 2);
-            const offsetY = Math.floor((cvs.height - rows * tileSize) / 2);
+            const offsetX = 0;
+            const offsetY = 0;
 
-            // 1. 地板与目标点
+            // 背景底色与纹理
+            ctx.fillStyle = isDark ? '#050a17' : '#f1f5f9';
+            ctx.fillRect(0, 0, cols * tileSize, rows * tileSize);
+
+            // 1. 地面与墙壁渲染
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     const x = offsetX + c * tileSize;
                     const y = offsetY + r * tileSize;
+                    const char = grid[r][c];
 
-                    if (grid[r][c] === '#') {
-                        // 绘制石砖墙壁 (Stone Bricks)
-                        ctx.fillStyle = '#1e293b';
+                    if (char === '#') {
+                        // ── 石砖墙壁 (Stone Bricks with Chamfer) ──
+                        if (isDark) {
+                            ctx.fillStyle = '#0f172a';
+                            ctx.fillRect(x, y, tileSize, tileSize);
+                            // 砖体主色
+                            ctx.fillStyle = '#1e293b';
+                            ctx.fillRect(x + 1, y + 1, tileSize - 2, tileSize - 2);
+                            // 顶部高光
+                            ctx.fillStyle = '#334155';
+                            ctx.fillRect(x + 2, y + 2, tileSize - 4, Math.max(Math.floor(tileSize * 0.12), 2));
+                            // 中心岩石纹理
+                            ctx.fillStyle = '#162032';
+                            ctx.fillRect(x + 4, y + Math.floor(tileSize * 0.3), tileSize - 8, tileSize - Math.floor(tileSize * 0.45));
+                            // 底边暗影
+                            ctx.fillStyle = '#090d16';
+                            ctx.fillRect(x + 1, y + tileSize - 3, tileSize - 2, 2);
+                        } else {
+                            ctx.fillStyle = '#94a3b8';
+                            ctx.fillRect(x, y, tileSize, tileSize);
+                            ctx.fillStyle = '#cbd5e1';
+                            ctx.fillRect(x + 1, y + 1, tileSize - 2, tileSize - 2);
+                            ctx.fillStyle = '#e2e8f0';
+                            ctx.fillRect(x + 2, y + 2, tileSize - 4, Math.max(Math.floor(tileSize * 0.12), 2));
+                            ctx.fillStyle = '#b0c0d4';
+                            ctx.fillRect(x + 4, y + Math.floor(tileSize * 0.3), tileSize - 8, tileSize - Math.floor(tileSize * 0.45));
+                            ctx.fillStyle = '#64748b';
+                            ctx.fillRect(x + 1, y + tileSize - 3, tileSize - 2, 2);
+                        }
+                    } else if (char !== ' ') {
+                        // ── 走廊地砖 (Floor Tiles) ──
+                        ctx.fillStyle = isDark ? '#080e1c' : '#f8fafc';
                         ctx.fillRect(x, y, tileSize, tileSize);
-                        ctx.fillStyle = '#334155';
-                        ctx.fillRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
-                        ctx.fillStyle = '#0f172a';
-                        ctx.fillRect(x + 4, y + 4, tileSize - 8, tileSize - 8);
-                        ctx.fillStyle = '#475569';
-                        ctx.fillRect(x + 2, y + 2, tileSize - 4, 3);
-                    } else if (grid[r][c] !== ' ') {
-                        // 地板
-                        ctx.fillStyle = '#0a0f1d';
-                        ctx.fillRect(x, y, tileSize, tileSize);
-                        ctx.strokeStyle = '#111827';
-                        ctx.strokeRect(x, y, tileSize, tileSize);
+                        
+                        // 地砖缝隙微弱网格
+                        ctx.strokeStyle = isDark ? 'rgba(30, 41, 59, 0.4)' : 'rgba(203, 213, 225, 0.6)';
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(x + 0.5, y + 0.5, tileSize - 1, tileSize - 1);
                     }
                 }
             }
 
-            // 2. 目标点 (Goal Spots)
+            // 2. 目标点 (Ancient Magic Glyph / Target Spots)
             goals.forEach(g => {
                 const gx = offsetX + g.x * tileSize + tileSize / 2;
                 const gy = offsetY + g.y * tileSize + tileSize / 2;
+                const rad = tileSize * 0.32;
 
+                // 外层发光圆环
                 ctx.beginPath();
-                ctx.arc(gx, gy, tileSize * 0.28, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(245, 158, 11, 0.25)';
+                ctx.arc(gx, gy, rad, 0, Math.PI * 2);
+                ctx.fillStyle = isDark ? 'rgba(245, 158, 11, 0.15)' : 'rgba(217, 119, 6, 0.12)';
+                ctx.fill();
+                ctx.strokeStyle = isDark ? 'rgba(251, 191, 36, 0.4)' : 'rgba(217, 119, 6, 0.4)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // 中心芒星/光标印记
+                ctx.beginPath();
+                ctx.arc(gx, gy, tileSize * 0.14, 0, Math.PI * 2);
+                ctx.fillStyle = isDark ? '#fbbf24' : '#d97706';
                 ctx.fill();
 
-                ctx.beginPath();
-                ctx.arc(gx, gy, tileSize * 0.12, 0, Math.PI * 2);
-                ctx.fillStyle = '#fbbf24';
-                ctx.fill();
-            });
-
-            // 3. 箱子 (Crates)
-            boxes.forEach(b => {
-                const bx = offsetX + b.x * tileSize + 4;
-                const by = offsetY + b.y * tileSize + 4;
-                const bw = tileSize - 8;
-                const onGoal = isGoal(b.x, b.y);
-
-                if (onGoal) {
-                    ctx.fillStyle = '#10b981';
-                    ctx.fillRect(bx - 2, by - 2, bw + 4, bw + 4);
-                    ctx.fillStyle = '#065f46';
-                    ctx.fillRect(bx, by, bw, bw);
-                } else {
-                    ctx.fillStyle = '#b45309';
-                    ctx.fillRect(bx, by, bw, bw);
-                }
-
-                ctx.fillStyle = onGoal ? '#34d399' : '#d97706';
-                ctx.fillRect(bx + 2, by + 2, bw - 4, bw - 4);
-
-                // 箱子 X 交叉木纹
-                ctx.strokeStyle = onGoal ? '#064e3b' : '#78350f';
+                // 细小四方光十字
+                ctx.strokeStyle = isDark ? '#fef08a' : '#b45309';
                 ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.moveTo(bx + 4, by + 4);
-                ctx.lineTo(bx + bw - 4, by + bw - 4);
-                ctx.moveTo(bx + bw - 4, by + 4);
-                ctx.lineTo(bx + 4, by + bw - 4);
+                ctx.moveTo(gx - rad * 0.7, gy);
+                ctx.lineTo(gx + rad * 0.7, gy);
+                ctx.moveTo(gx, gy - rad * 0.7);
+                ctx.lineTo(gx, gy + rad * 0.7);
                 ctx.stroke();
             });
 
-            // 4. 玩家角色 (Player)
+            // 3. 箱子 (Vintage Wooden Crates & Emerald Completed Crates)
+            boxes.forEach(b => {
+                const pad = Math.max(Math.floor(tileSize * 0.08), 2);
+                const bx = offsetX + b.x * tileSize + pad;
+                const by = offsetY + b.y * tileSize + pad;
+                const bw = tileSize - pad * 2;
+                const onGoal = isGoal(b.x, b.y);
+
+                if (onGoal) {
+                    // ── 通关翡翠晶石箱 ──
+                    // 外发光边
+                    ctx.fillStyle = isDark ? '#059669' : '#10b981';
+                    ctx.fillRect(bx, by, bw, bw);
+                    // 内胆高光宝石绿
+                    ctx.fillStyle = isDark ? '#10b981' : '#34d399';
+                    ctx.fillRect(bx + 2, by + 2, bw - 4, bw - 4);
+                    // 核心亮翡翠
+                    ctx.fillStyle = isDark ? '#34d399' : '#6ee7b7';
+                    ctx.fillRect(bx + 4, by + 4, bw - 8, bw - 8);
+
+                    // 居中打上高对比度通关确认勾选 ✔
+                    ctx.fillStyle = '#064e3b';
+                    ctx.font = `bold ${Math.floor(bw * 0.55)}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('✔', bx + bw / 2, by + bw / 2 + 1);
+                } else {
+                    // ── 经典复古硬木箱 ──
+                    // 木箱深色底框
+                    ctx.fillStyle = isDark ? '#78350f' : '#92400e';
+                    ctx.fillRect(bx, by, bw, bw);
+                    // 木料主体色
+                    ctx.fillStyle = isDark ? '#b45309' : '#d97706';
+                    ctx.fillRect(bx + 2, by + 2, bw - 4, bw - 4);
+                    // 顶部受光亮纹
+                    ctx.fillStyle = isDark ? '#d97706' : '#f59e0b';
+                    ctx.fillRect(bx + 3, by + 3, bw - 6, Math.max(Math.floor(bw * 0.16), 2));
+
+                    // X 型加固交叉木梁
+                    ctx.strokeStyle = isDark ? '#451a03' : '#78350f';
+                    ctx.lineWidth = Math.max(Math.floor(bw * 0.1), 2);
+                    ctx.beginPath();
+                    ctx.moveTo(bx + 4, by + 4);
+                    ctx.lineTo(bx + bw - 4, by + bw - 4);
+                    ctx.moveTo(bx + bw - 4, by + 4);
+                    ctx.lineTo(bx + 4, by + bw - 4);
+                    ctx.stroke();
+
+                    // 四角金属铆钉
+                    ctx.fillStyle = '#fde68a';
+                    const rivetSize = Math.max(Math.floor(bw * 0.1), 2);
+                    ctx.fillRect(bx + 3, by + 3, rivetSize, rivetSize);
+                    ctx.fillRect(bx + bw - 3 - rivetSize, by + 3, rivetSize, rivetSize);
+                    ctx.fillRect(bx + 3, by + bw - 3 - rivetSize, rivetSize, rivetSize);
+                    ctx.fillRect(bx + bw - 3 - rivetSize, by + bw - 3 - rivetSize, rivetSize, rivetSize);
+                }
+            });
+
+            // 4. 玩家角色 (Animated Responsive Explorer)
             const px = offsetX + player.x * tileSize + tileSize / 2;
             const py = offsetY + player.y * tileSize + tileSize / 2;
-            const pr = tileSize * 0.36;
+            const pr = tileSize * 0.38;
 
-            // 角色身体
+            // 角色身体底色 (探险家亮蓝外套)
             ctx.beginPath();
             ctx.arc(px, py, pr, 0, Math.PI * 2);
-            ctx.fillStyle = '#38bdf8';
+            ctx.fillStyle = '#0284c7';
             ctx.fill();
             ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = Math.max(Math.floor(tileSize * 0.06), 2);
             ctx.stroke();
 
-            // 角色眼睛
-            ctx.fillStyle = '#0f172a';
+            // 角色内圈明亮受光面
             ctx.beginPath();
-            ctx.arc(px - pr * 0.35, py - pr * 0.15, 2.5, 0, Math.PI * 2);
-            ctx.arc(px + pr * 0.35, py - pr * 0.15, 2.5, 0, Math.PI * 2);
+            ctx.arc(px, py - 1, pr * 0.85, 0, Math.PI * 2);
+            ctx.fillStyle = '#38bdf8';
             ctx.fill();
 
-            // 微笑嘴型
-            ctx.beginPath();
-            ctx.arc(px, py + pr * 0.1, pr * 0.4, 0, Math.PI);
-            ctx.strokeStyle = '#0f172a';
-            ctx.lineWidth = 1.8;
-            ctx.stroke();
+            // 根据朝向 (dir) 绘制生动眼神与面部
+            const dir = player.dir || 'down';
+            ctx.fillStyle = '#0f172a';
+
+            if (dir === 'up') {
+                // 后脑勺帽带与探险徽章
+                ctx.fillStyle = '#0369a1';
+                ctx.beginPath();
+                ctx.arc(px, py - pr * 0.2, pr * 0.35, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#fbbf24';
+                ctx.fillRect(px - 3, py - pr * 0.35, 6, 4);
+            } else if (dir === 'left') {
+                // 侧脸朝左
+                ctx.beginPath();
+                ctx.arc(px - pr * 0.35, py - pr * 0.1, pr * 0.22, 0, Math.PI * 2);
+                ctx.fill();
+                // 眼睛高光
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(px - pr * 0.42, py - pr * 0.16, pr * 0.08, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (dir === 'right') {
+                // 侧脸朝右
+                ctx.beginPath();
+                ctx.arc(px + pr * 0.35, py - pr * 0.1, pr * 0.22, 0, Math.PI * 2);
+                ctx.fill();
+                // 眼睛高光
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(px + pr * 0.28, py - pr * 0.16, pr * 0.08, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // 默认正面朝下 (双眼有神)
+                const eyeR = Math.max(Math.floor(tileSize * 0.07), 2);
+                ctx.beginPath();
+                ctx.arc(px - pr * 0.35, py - pr * 0.12, eyeR, 0, Math.PI * 2);
+                ctx.arc(px + pr * 0.35, py - pr * 0.12, eyeR, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 眼睛高光点
+                ctx.fillStyle = '#ffffff';
+                const hlR = Math.max(Math.floor(eyeR * 0.4), 1);
+                ctx.beginPath();
+                ctx.arc(px - pr * 0.38, py - pr * 0.16, hlR, 0, Math.PI * 2);
+                ctx.arc(px + pr * 0.32, py - pr * 0.16, hlR, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 自信微笑嘴型
+                ctx.beginPath();
+                ctx.arc(px, py + pr * 0.15, pr * 0.35, 0.1 * Math.PI, 0.9 * Math.PI);
+                ctx.strokeStyle = '#0f172a';
+                ctx.lineWidth = Math.max(Math.floor(tileSize * 0.05), 1.6);
+                ctx.stroke();
+            }
+
+            ctx.restore();
         }
 
+        // ── 动态自适应尺寸计算 (彻底破除固定小尺寸限制) ──
         function resizeAndDraw() {
             if (!canvasWrapper.value || !canvas.value) return;
             const wrapper = canvasWrapper.value;
-            const dpr = window.devicePixelRatio || 1;
+            const dpr = Math.min(window.devicePixelRatio || 1, 3);
 
-            const maxWidth = wrapper.clientWidth - 20;
-            const maxHeight = 540;
+            // 测量可用容器内部宽度与高度
+            const availW = Math.max(wrapper.clientWidth - 32, 260);
+            const isMobile = window.innerWidth < 640;
+            
+            // 桌面端根据视口高度动态分配合理画布高 (最高可达 640px，充分展现大图细节)
+            const maxAvailH = isMobile
+                ? Math.max(window.innerHeight - 440, 280)
+                : Math.max(Math.min(window.innerHeight - 300, 640), 400);
 
-            tileSize = Math.min(Math.floor(maxWidth / Math.max(cols, 1)), Math.floor(maxHeight / Math.max(rows, 1)), 52);
-            tileSize = Math.max(tileSize, 28);
+            // 计算最大化铺满的 tileSize
+            let calculatedTile = Math.floor(Math.min(availW / Math.max(cols, 1), maxAvailH / Math.max(rows, 1)));
+            
+            // 智能弹性上下限：小屏幕不溢出，大屏幕饱满不缩水
+            const minTile = isMobile ? 18 : 26;
+            const maxTile = isMobile ? 48 : 76;
+            tileSize = Math.max(Math.min(calculatedTile, maxTile), minTile);
 
-            canvas.value.width = cols * tileSize * dpr;
-            canvas.value.height = rows * tileSize * dpr;
-            canvas.value.style.width = (cols * tileSize) + 'px';
-            canvas.value.style.height = (rows * tileSize) + 'px';
+            const renderW = cols * tileSize;
+            const renderH = rows * tileSize;
+
+            canvas.value.width = Math.round(renderW * dpr);
+            canvas.value.height = Math.round(renderH * dpr);
+            canvas.value.style.width = renderW + 'px';
+            canvas.value.style.height = renderH + 'px';
+
+            wrapper.style.minHeight = Math.max(renderH + 28, isMobile ? 310 : 420) + 'px';
 
             ctx = canvas.value.getContext('2d');
-            ctx.scale(dpr, dpr);
-
             draw();
         }
 
@@ -1200,8 +1670,16 @@ window.sokobanAppInstance = createApp({
             else if (e.code === 'KeyR') { e.preventDefault(); restartLevel(); }
         }
 
-        // 点击画布智能寻路 (BFS Pathfinding)
+        // 寻路连续平滑移动定时器
+        let pathAnimationTimer = null;
+
+        // 点击画布智能寻路 (BFS Pathfinding with Smooth Step Execution)
         function onCanvasClick(e) {
+            if (pathAnimationTimer) {
+                clearInterval(pathAnimationTimer);
+                pathAnimationTimer = null;
+            }
+
             const rect = canvas.value.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const clickY = e.clientY - rect.top;
@@ -1219,9 +1697,22 @@ window.sokobanAppInstance = createApp({
             while (queue.length > 0) {
                 const [cx, cy, path] = queue.shift();
                 if (cx === targetC && cy === targetR) {
-                    // 执行路径第一步
                     if (path.length > 0) {
-                        tryMove(path[0][0], path[0][1]);
+                        let stepIdx = 0;
+                        pathAnimationTimer = setInterval(() => {
+                            if (stepIdx < path.length) {
+                                const [dx, dy] = path[stepIdx];
+                                const ok = tryMove(dx, dy);
+                                stepIdx++;
+                                if (!ok) {
+                                    clearInterval(pathAnimationTimer);
+                                    pathAnimationTimer = null;
+                                }
+                            } else {
+                                clearInterval(pathAnimationTimer);
+                                pathAnimationTimer = null;
+                            }
+                        }, 75);
                     }
                     return;
                 }
@@ -1239,15 +1730,26 @@ window.sokobanAppInstance = createApp({
             }
         }
 
+        // 主题变化监听器 (保证切换暗黑/浅色瞬间重绘)
+        let themeObserver = null;
+
         onMounted(() => {
             loadRecords();
             initLevel(0);
             window.addEventListener('keydown', handleKeyDown);
             window.addEventListener('resize', resizeAndDraw);
+
+            // 监听 html.dark 类名变化
+            themeObserver = new MutationObserver(() => {
+                draw();
+            });
+            themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
         });
 
         onUnmounted(() => {
             clearInterval(timerInterval);
+            if (pathAnimationTimer) clearInterval(pathAnimationTimer);
+            if (themeObserver) themeObserver.disconnect();
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('resize', resizeAndDraw);
         });

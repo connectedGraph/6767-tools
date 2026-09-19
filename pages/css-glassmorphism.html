@@ -113,6 +113,15 @@
             border-color: #38bdf8;
             background: rgba(56, 189, 248, 0.12);
         }
+        html:not(.dark) .preset-pill {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        html:not(.dark) .preset-pill:hover,
+        html:not(.dark) .preset-pill.active {
+            border-color: #0284c7;
+            background: #f0f9ff;
+        }
 
         .code-output {
             background: #090e17;
@@ -125,6 +134,11 @@
             white-space: pre-wrap;
             word-break: break-all;
             line-height: 1.6;
+        }
+        html:not(.dark) .code-output {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0369a1;
         }
     </style>
 

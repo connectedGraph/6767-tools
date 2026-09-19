@@ -34,6 +34,13 @@
             padding: 16px;
             max-width: 100%;
             overflow-x: auto;
+            transition: all 0.25s ease;
+        }
+
+        html:not(.dark) .ms-container {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
         }
 
         /* 顶部数码管控制台 */
@@ -47,6 +54,13 @@
             padding: 8px 16px;
             margin-bottom: 14px;
             box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
+            transition: all 0.25s ease;
+        }
+
+        html:not(.dark) .ms-header {
+            background: #cbd5e1;
+            border-color: #94a3b8;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.12);
         }
 
         .digital-display {
@@ -79,6 +93,11 @@
             box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2);
             transition: all 0.1s ease;
         }
+        html:not(.dark) .face-btn {
+            background: linear-gradient(145deg, #ffffff, #e2e8f0);
+            border: 2px solid #94a3b8;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+        }
 
         .face-btn:active {
             transform: scale(0.92);
@@ -95,6 +114,10 @@
             background: #090d16;
             border: 2px solid #1e293b;
         }
+        html:not(.dark) .ms-board-scroll {
+            background: #cbd5e1;
+            border-color: #94a3b8;
+        }
 
         .ms-grid {
             display: grid;
@@ -104,6 +127,9 @@
             border-radius: 4px;
             margin: 0 auto;
             touch-action: manipulation;
+        }
+        html:not(.dark) .ms-grid {
+            background: #94a3b8;
         }
 
         /* 单个方格样式 */
@@ -120,6 +146,17 @@
             cursor: pointer;
             position: relative;
             transition: background 0.05s ease;
+        }
+
+        @media (max-width: 480px) {
+            .ms-cell {
+                --cell-size: 28px !important;
+            }
+        }
+        @media (max-width: 360px) {
+            .ms-cell {
+                --cell-size: 25px !important;
+            }
         }
 
         /* 未翻开 */

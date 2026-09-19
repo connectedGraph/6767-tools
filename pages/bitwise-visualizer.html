@@ -22,6 +22,11 @@
             border-radius: 12px;
             padding: 18px;
             margin-bottom: 18px;
+            transition: all 0.2s ease;
+        }
+        html:not(.dark) .tech-card {
+            background: #f8fafc;
+            border-color: #cbd5e1;
         }
 
         .tech-title {
@@ -29,11 +34,14 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: #38bdf8;
+            color: #0284c7;
             margin-bottom: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+        html.dark .tech-title {
+            color: #38bdf8;
         }
 
         /* 比特网格容器 */
@@ -47,6 +55,10 @@
             border-radius: 10px;
             border: 1px solid #1e293b;
         }
+        html:not(.dark) .bit-container {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
 
         .nibble-group {
             display: flex;
@@ -55,6 +67,10 @@
             padding: 4px;
             border-radius: 8px;
             border: 1px solid #1e293b;
+        }
+        html:not(.dark) .nibble-group {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
         }
 
         .bit-box {
@@ -71,6 +87,27 @@
             user-select: none;
             padding: 3px 0;
             transition: all 0.12s;
+        }
+        html:not(.dark) .bit-box {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        html:not(.dark) .bit-val {
+            color: #0f172a;
+        }
+        html:not(.dark) .bit-idx,
+        html:not(.dark) .bit-weight {
+            color: #64748b;
+        }
+        html:not(.dark) .op-btn {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+        html:not(.dark) .op-btn:hover {
+            background: #f1f5f9;
+            color: #0284c7;
+            border-color: #0284c7;
         }
         @media (max-width: 640px) {
             .bit-container { gap: 4px; padding: 8px 4px; }
@@ -92,28 +129,53 @@
             box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
         }
         .bit-box.bit-1 .bit-val {
-            color: #34d399;
+            color: #6ee7b7;
             font-weight: 900;
+        }
+        .bit-box.bit-1 .bit-idx {
+            color: #a7f3d0;
+            font-weight: 700;
+        }
+        .bit-box.bit-1 .bit-weight {
+            color: #d1fae5;
+            font-weight: 700;
+        }
+        html:not(.dark) .bit-box.bit-1 {
+            background: #059669;
+            border-color: #047857;
+            box-shadow: 0 1px 6px rgba(5, 150, 105, 0.4);
+        }
+        html:not(.dark) .bit-box.bit-1 .bit-val {
+            color: #ffffff !important;
+            font-weight: 900;
+        }
+        html:not(.dark) .bit-box.bit-1 .bit-idx {
+            color: #d1fae5 !important;
+            font-weight: 700;
+        }
+        html:not(.dark) .bit-box.bit-1 .bit-weight {
+            color: #ecfdf5 !important;
+            font-weight: 700;
         }
 
         .bit-idx {
             font-family: 'JetBrains Mono', Consolas, monospace;
             font-size: 9px;
-            color: #64748b;
+            color: #94a3b8;
         }
 
         .bit-val {
             font-family: 'JetBrains Mono', Consolas, monospace;
             font-size: 16px;
             font-weight: 700;
-            color: #94a3b8;
+            color: #e2e8f0;
             line-height: 1;
         }
 
         .bit-weight {
             font-family: 'JetBrains Mono', monospace;
             font-size: 8px;
-            color: #475569;
+            color: #94a3b8;
         }
 
         /* 运算符按钮条 */

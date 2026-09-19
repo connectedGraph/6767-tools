@@ -429,6 +429,11 @@ function resolveFile(urlPath) {
     if (fs.existsSync(path.join(ROOT, 'pages', p + '.html'))) return 'pages/' + p + '.html';
     if (fs.existsSync(path.join(ROOT, 'pages', p, 'index.html'))) return 'pages/' + p + '/index.html';
   }
+  // 兼容直接访问 /pages/xxx.html 时页面内部相对引用的根目录静态资源 (如 /pages/lib/..., /pages/css/...)
+  if (p.startsWith('/pages/') && !p.endsWith('.html')) {
+    const sub = p.slice(7); // 去除 '/pages/'
+    if (fs.existsSync(path.join(ROOT, sub))) return sub;
+  }
   return p;   // 有扩展名（/js/... /lib/... /favicon.ico）直接从 ROOT 读
 }
 

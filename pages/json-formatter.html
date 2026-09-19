@@ -78,7 +78,7 @@
             padding: 12px 6px;
             text-align: right;
             background: #0b1326;
-            color: #475569;
+            color: #64748b;
             user-select: none;
             border-right: 1px solid rgba(51, 65, 85, 0.4);
             line-height: 20px;
@@ -316,6 +316,121 @@
             color: #94a3b8;
             border-bottom: 1px solid rgba(51, 65, 85, 0.4);
         }
+
+        /* 浅色模式适配 */
+        html:not(.dark) .terminal-panel {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+        html:not(.dark) .terminal-header {
+            background: #f8fafc;
+            border-bottom-color: #cbd5e1;
+            color: #475569;
+        }
+        html:not(.dark) .editor-wrapper {
+            background: #ffffff;
+        }
+        html:not(.dark) .line-numbers {
+            background: #f8fafc;
+            color: #64748b;
+            border-right-color: #e2e8f0;
+        }
+        html:not(.dark) .json-textarea {
+            color: #0f172a;
+        }
+        html:not(.dark) .json-textarea::placeholder {
+            color: #94a3b8;
+        }
+        html:not(.dark) .highlighted-viewer {
+            background: #ffffff;
+            color: #0f172a;
+        }
+        html:not(.dark) .hl-key { color: #0284c7; }
+        html:not(.dark) .hl-string { color: #15803d; }
+        html:not(.dark) .hl-number { color: #b91c1c; }
+        html:not(.dark) .hl-boolean { color: #b45309; }
+        html:not(.dark) .hl-null { color: #64748b; }
+        html:not(.dark) .hl-bracket { color: #475569; }
+        html:not(.dark) .tree-container {
+            background: #ffffff;
+            color: #0f172a;
+        }
+        html:not(.dark) .tree-toggle {
+            background: #e2e8f0;
+            color: #475569;
+        }
+        html:not(.dark) .tree-toggle:hover {
+            background: #0284c7;
+            color: #ffffff;
+        }
+        html:not(.dark) .jf-toolbar {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        html:not(.dark) .jf-stats-bar {
+            color: #64748b;
+        }
+        html:not(.dark) .jf-stat-item {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+        html:not(.dark) .jf-stat-val {
+            color: #0284c7;
+        }
+        html:not(.dark) .jf-tabs-nav {
+            background: #f8fafc;
+            border-bottom-color: #cbd5e1;
+        }
+        html:not(.dark) .jf-tab-btn {
+            color: #64748b;
+        }
+        html:not(.dark) .jf-tab-btn:hover {
+            color: #0284c7;
+            background: #f1f5f9;
+        }
+        html:not(.dark) .jf-tab-btn.active {
+            color: #0284c7;
+            border-bottom-color: #0284c7;
+            background: #e0f2fe;
+        }
+        html:not(.dark) .code-gen-box {
+            background: #ffffff;
+            color: #0f172a;
+        }
+        html:not(.dark) .code-gen-toolbar,
+        html:not(.dark) .query-input-bar {
+            background: #f8fafc;
+            border-bottom-color: #cbd5e1;
+        }
+        html:not(.dark) .query-result-meta {
+            background: #f1f5f9;
+            border-bottom-color: #cbd5e1;
+            color: #64748b;
+        }
+        .jf-stat-valid { color: #4ade80; }
+        .terminal-title { margin-left: 6px; font-weight: 600; color: #cbd5e1; }
+        .jf-guide-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(51, 65, 85, 0.4);
+        }
+        html:not(.dark) .jf-stat-valid { color: #15803d !important; }
+        html:not(.dark) .terminal-title { color: #0f172a !important; }
+        html:not(.dark) .jf-guide-card {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        html:not(.dark) .jf-guide-card h4 {
+            color: #0369a1 !important;
+        }
+        html:not(.dark) .jf-guide-card code {
+            background: #e2e8f0;
+            color: #0369a1;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
     </style>
 
     <meta property="og:type" content="website" />
@@ -400,7 +515,7 @@
 
                 <!-- 统计状态栏 -->
                 <div class="jf-stats-bar" v-if="isValidJson">
-                    <div class="jf-stat-item">状态: <span class="jf-stat-val" style="color: #4ade80;">有效 JSON</span></div>
+                    <div class="jf-stat-item">状态: <span class="jf-stat-val jf-stat-valid">有效 JSON</span></div>
                     <div class="jf-stat-item">字符数: <span class="jf-stat-val">{{ stats.charCount }}</span></div>
                     <div class="jf-stat-item">大小: <span class="jf-stat-val">{{ stats.formattedSize }}</span></div>
                     <div class="jf-stat-item">压缩后: <span class="jf-stat-val">{{ stats.minifiedSize }} (-{{ stats.savingPercent }}%)</span></div>
@@ -417,7 +532,7 @@
                                 <span class="terminal-dot dot-red"></span>
                                 <span class="terminal-dot dot-yellow"></span>
                                 <span class="terminal-dot dot-green"></span>
-                                <span style="margin-left: 6px; font-weight: 600; color: #cbd5e1;">JSON 原始输入</span>
+                                <span class="terminal-title">JSON 原始输入</span>
                             </div>
                             <div style="font-size: 0.72rem;">
                                 {{ inputLineCount }} 行 | {{ rawInput.length }} 字符
@@ -618,7 +733,7 @@
                     <h3>JSON 格式与开发规范说明</h3>
                     <p><strong>JavaScript Object Notation (JSON)</strong> 是一种轻量级的数据交换格式，基于 ECMAScript 标准衍生，广泛应用于 Web API、微服务通信、配置文件及持久化存储中。</p>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0;">
-                        <div style="background: rgba(30, 41, 59, 0.5); padding: 12px; border-radius: 6px; border: 1px solid rgba(51, 65, 85, 0.4);">
+                        <div class="jf-guide-card">
                             <h4 style="margin-top: 0; color: #38bdf8;">标准 JSON 格式约束</h4>
                             <ul style="padding-left: 18px; margin: 0; font-size: 0.84rem; line-height: 1.7;">
                                 <li>键名 (Key) 必须用双引号 <code>"..."</code> 包裹，不允许单引号或无引号。</li>
@@ -627,7 +742,7 @@
                                 <li>支持的值类型：字符串 (String)、数值 (Number)、布尔值 (true/false)、空值 (null)、对象 (Object)、数组 (Array)。</li>
                             </ul>
                         </div>
-                        <div style="background: rgba(30, 41, 59, 0.5); padding: 12px; border-radius: 6px; border: 1px solid rgba(51, 65, 85, 0.4);">
+                        <div class="jf-guide-card">
                             <h4 style="margin-top: 0; color: #4ade80;">本工具箱特色优势</h4>
                             <ul style="padding-left: 18px; margin: 0; font-size: 0.84rem; line-height: 1.7;">
                                 <li><strong>行号精确报错与自愈：</strong>精准定位语法错误行与列，并能智能自动修复单引号、尾随逗号及未加引号键名。</li>

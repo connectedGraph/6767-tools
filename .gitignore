@@ -3,3 +3,5 @@ _server_data
 *.tar.gz
 *.log
 full_audit_screenshots/
+screenshots/
+*_report.json
