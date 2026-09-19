@@ -27,6 +27,1090 @@
     <meta name="twitter:description" content="血型与性格为您提供血型自测，血型遗传规律表，亲子鉴定血型对照表，血型配对表，血型测试，子女血型查询，孩子血型查询，后代血型查询，在线亲子鉴定，子女与父母的血型等各类血型相关服务。" />
     <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
     <link rel="canonical" href="https://tool.6767.chat/bood-type" />
+
+    <style>
+        /* Blood type reference page: a focused, responsive surface that works in both themes. */
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            min-width: 0;
+            font-family: Inter, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+        }
+
+        html.dark body {
+            background: #070b16;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) body {
+            background: #f4f7fb;
+            color: #334155;
+        }
+
+        html.dark .grid-bg {
+            opacity: 0.42;
+            background-image: linear-gradient(rgba(56, 189, 248, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.045) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        html:not(.dark) .grid-bg {
+            opacity: 0.55;
+            background-image: linear-gradient(rgba(14, 116, 144, 0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 116, 144, 0.055) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        .tool-topbar {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 58px;
+            width: 100%;
+            padding: 10px clamp(14px, 4vw, 48px);
+            border-bottom: 1px solid transparent;
+        }
+
+        html.dark .tool-topbar {
+            background: rgba(7, 11, 22, 0.88);
+            border-bottom-color: #1e293b;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-topbar {
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom-color: #e2e8f0;
+            color: #334155;
+        }
+
+        .tool-topbar-logo,
+        .tool-topbar-title,
+        .tool-topbar-home,
+        .tool-topbar-sep {
+            min-width: 0;
+        }
+
+        .tool-topbar-logo {
+            display: inline-flex;
+            align-items: center;
+            min-height: 36px;
+            color: inherit;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        html.dark .tool-topbar-logo {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-topbar-logo {
+            color: #0f172a;
+        }
+
+        .tool-topbar-sep {
+            color: #64748b;
+            user-select: none;
+        }
+
+        .tool-topbar-title {
+            flex: 1 1 auto;
+            overflow: hidden;
+            color: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.4;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tool-topbar-home {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            flex: 0 0 auto;
+            padding: 6px 12px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+        }
+
+        html.dark .tool-topbar-home {
+            background: rgba(14, 116, 144, 0.18);
+            border-color: #155e75;
+            color: #bae6fd;
+        }
+
+        html.dark .tool-topbar-home:hover,
+        html.dark .tool-topbar-home:focus-visible {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        html:not(.dark) .tool-topbar-home {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+            color: #0369a1;
+        }
+
+        html:not(.dark) .tool-topbar-home:hover,
+        html:not(.dark) .tool-topbar-home:focus-visible {
+            background: #e0f2fe;
+            border-color: #0284c7;
+            color: #0c4a6e;
+            transform: translateY(-1px);
+        }
+
+        #app,
+        #app * {
+            box-sizing: border-box;
+        }
+
+        html.dark #app {
+            --bt-page: #070b16;
+            --bt-surface: #0d1424;
+            --bt-surface-raised: #111b2e;
+            --bt-surface-soft: #0b1220;
+            --bt-border: #1e293b;
+            --bt-border-strong: #334155;
+            --bt-text: #e2e8f0;
+            --bt-text-strong: #f8fafc;
+            --bt-muted: #94a3b8;
+            --bt-faint: #64748b;
+            --bt-accent: #38bdf8;
+            --bt-accent-strong: #0284c7;
+            --bt-accent-soft: rgba(14, 116, 144, 0.24);
+            --bt-success: #34d399;
+            --bt-success-soft: rgba(16, 185, 129, 0.14);
+            --bt-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+        }
+
+        html:not(.dark) #app {
+            --bt-page: #f4f7fb;
+            --bt-surface: #ffffff;
+            --bt-surface-raised: #f8fafc;
+            --bt-surface-soft: #f1f5f9;
+            --bt-border: #e2e8f0;
+            --bt-border-strong: #cbd5e1;
+            --bt-text: #334155;
+            --bt-text-strong: #0f172a;
+            --bt-muted: #475569;
+            --bt-faint: #64748b;
+            --bt-accent: #0284c7;
+            --bt-accent-strong: #0369a1;
+            --bt-accent-soft: #e0f2fe;
+            --bt-success: #047857;
+            --bt-success-soft: #ecfdf5;
+            --bt-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+        }
+
+        #app.main-body.tool-page-body {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: none;
+            min-width: 0;
+            margin: 0;
+            padding: clamp(18px, 3vw, 36px) clamp(12px, 4vw, 48px) 48px;
+            color: var(--bt-text);
+        }
+
+        html.dark #app.main-body.tool-page-body {
+            background: transparent;
+        }
+
+        html:not(.dark) #app.main-body.tool-page-body {
+            background: transparent;
+        }
+
+        #app .tool-body {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+            align-items: start;
+            gap: clamp(16px, 2.2vw, 26px);
+            width: 100%;
+            max-width: 1460px;
+            min-width: 0;
+            margin: 0 auto;
+        }
+
+        #app .left,
+        #app .right {
+            width: 100%;
+            min-width: 0;
+        }
+
+        #app .card-model {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--bt-border);
+            border-radius: 14px;
+            background: var(--bt-surface);
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark #app .card-model {
+            border-color: #1e293b;
+            background: #0d1424;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+        }
+
+        html:not(.dark) #app .card-model {
+            border-color: #e2e8f0;
+            background: #ffffff;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+        }
+
+        #app .left > .card-model > .card-body {
+            min-width: 0;
+            padding: clamp(18px, 3vw, 34px);
+        }
+
+        #app .card-body {
+            min-width: 0;
+            color: var(--bt-text);
+        }
+
+        #app .tool-head {
+            display: flex;
+            align-items: flex-start;
+            min-width: 0;
+            margin: 0 0 10px;
+        }
+
+        #app .tool-head .title {
+            position: relative;
+            min-width: 0;
+            margin: 0;
+            padding-left: 16px;
+            color: var(--bt-text-strong);
+            font-size: clamp(24px, 3.2vw, 38px);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.2;
+            overflow-wrap: anywhere;
+        }
+
+        #app .tool-head .title::before {
+            position: absolute;
+            top: 0.16em;
+            bottom: 0.16em;
+            left: 0;
+            width: 4px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, var(--bt-accent), var(--bt-accent-strong));
+            content: "";
+        }
+
+        #app .description {
+            max-width: 82ch;
+            margin: 0 0 22px;
+            color: var(--bt-muted);
+            font-size: 14px;
+            line-height: 1.85;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark #app .description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) #app .description {
+            color: #475569;
+        }
+
+        #app .tool-dashboard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            min-width: 0;
+            margin: 0 0 18px;
+            padding: 16px 18px;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        html.dark #app .tool-dashboard {
+            border-color: #164e63;
+            background: linear-gradient(135deg, rgba(8, 47, 73, 0.72), rgba(15, 23, 42, 0.82));
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.32);
+        }
+
+        html:not(.dark) #app .tool-dashboard {
+            border-color: #bae6fd;
+            background: linear-gradient(135deg, #f0f9ff, #f8fafc);
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        #app .dashboard-main {
+            min-width: 0;
+        }
+
+        #app .dashboard-kicker,
+        #app .section-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--bt-accent);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        html.dark #app .dashboard-kicker,
+        html.dark #app .section-kicker {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) #app .dashboard-kicker,
+        html:not(.dark) #app .section-kicker {
+            color: #0369a1;
+        }
+
+        #app .dashboard-title {
+            margin-top: 5px;
+            color: var(--bt-text-strong);
+            font-size: clamp(16px, 2vw, 20px);
+            font-weight: 800;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+
+        #app .dashboard-subtitle {
+            margin: 4px 0 0;
+            color: var(--bt-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        html.dark #app .dashboard-subtitle {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) #app .dashboard-subtitle {
+            color: #475569;
+        }
+
+        #app .dashboard-meta {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 0 1 auto;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        #app .status-badge,
+        #app .metric-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 36px;
+            padding: 7px 10px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        html.dark #app .status-badge {
+            border-color: rgba(52, 211, 153, 0.36);
+            background: rgba(16, 185, 129, 0.13);
+            color: #a7f3d0;
+        }
+
+        html:not(.dark) #app .status-badge {
+            border-color: #a7f3d0;
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        #app .status-dot {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+            background: var(--bt-success);
+            box-shadow: 0 0 0 3px var(--bt-success-soft);
+        }
+
+        html.dark #app .metric-chip {
+            border-color: #334155;
+            background: rgba(15, 23, 42, 0.62);
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) #app .metric-chip {
+            border-color: #cbd5e1;
+            background: #ffffff;
+            color: #475569;
+        }
+
+        #app .metric-chip strong {
+            color: var(--bt-text-strong);
+            font-size: 16px;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+
+        #app .content-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            min-width: 0;
+            margin: 0 2px 10px;
+        }
+
+        #app .toolbar-hint {
+            color: var(--bt-faint);
+            font-size: 12px;
+            line-height: 1.5;
+            text-align: right;
+        }
+
+        html.dark #app .toolbar-hint {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) #app .toolbar-hint {
+            color: #64748b;
+        }
+
+        #app .content {
+            min-width: 0;
+            overflow: hidden;
+            padding: clamp(12px, 2.2vw, 24px);
+            border: 1px solid var(--bt-border);
+            border-radius: 12px;
+            background: var(--bt-surface-soft);
+            color: var(--bt-text);
+            line-height: 1.9;
+        }
+
+        html.dark #app .content {
+            border-color: #1e293b;
+            background: #0b1220;
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) #app .content {
+            border-color: #e2e8f0;
+            background: #f8fafc;
+            color: #334155;
+        }
+
+        #app .content table {
+            display: table;
+            width: 100% !important;
+            max-width: 100%;
+            margin: 0 0 28px;
+            table-layout: fixed;
+            border: 1px solid var(--bt-border-strong);
+            border-radius: 10px;
+            border-spacing: 0;
+            border-collapse: separate;
+            overflow: hidden;
+            font-size: clamp(12px, 1.25vw, 14px);
+            line-height: 1.45;
+        }
+
+        #app .content table th,
+        #app .content table td {
+            width: auto;
+            padding: 11px 8px;
+            border: 0;
+            color: inherit;
+            text-align: center;
+            vertical-align: middle;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        #app .content table tr > * + * {
+            border-left: 1px solid var(--bt-border);
+        }
+
+        #app .content table tbody tr:not(:last-child) > * {
+            border-bottom: 1px solid var(--bt-border);
+        }
+
+        #app .content table tr:nth-child(2) th {
+            font-weight: 800;
+        }
+
+        #app .content table tr:first-child th {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        #app .content table tr:nth-child(2) th:first-child,
+        #app .content table tr:nth-child(2) th:nth-child(2) {
+            width: 16%;
+        }
+
+        #app .content table tr:nth-child(2) th:nth-child(3) {
+            width: 36%;
+        }
+
+        #app .content table tr:nth-child(2) th:nth-child(4) {
+            width: 32%;
+        }
+
+        html.dark #app .content table {
+            border-color: #334155;
+            background: #0f172a;
+        }
+
+        html.dark #app .content table tr:first-child th {
+            background: #12304a;
+            color: #e0f2fe;
+        }
+
+        html.dark #app .content table tr:nth-child(2) th {
+            background: #16233a;
+            color: #cbd5e1;
+        }
+
+        html.dark #app .content table tr:nth-child(n+3) td {
+            background: #0f172a;
+            color: #cbd5e1;
+        }
+
+        html.dark #app .content table tr:nth-child(n+3):hover td {
+            background: #13243a;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) #app .content table {
+            border-color: #cbd5e1;
+            background: #ffffff;
+        }
+
+        html:not(.dark) #app .content table tr:first-child th {
+            background: #e0f2fe;
+            color: #0c4a6e;
+        }
+
+        html:not(.dark) #app .content table tr:nth-child(2) th {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        html:not(.dark) #app .content table tr:nth-child(n+3) td {
+            background: #ffffff;
+            color: #334155;
+        }
+
+        html:not(.dark) #app .content table tr:nth-child(n+3):hover td {
+            background: #f0f9ff;
+            color: #0f172a;
+        }
+
+        #app .content h3 {
+            margin: 30px 0 12px;
+            padding: 11px 14px;
+            border: 1px solid var(--bt-border);
+            border-left: 3px solid var(--bt-accent);
+            border-radius: 8px;
+            color: var(--bt-text-strong);
+            font-size: clamp(17px, 2vw, 21px);
+            font-weight: 800;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+        }
+
+        #app .content h3:first-of-type {
+            margin-top: 0;
+        }
+
+        html.dark #app .content h3 {
+            border-color: #1e293b;
+            border-left-color: #38bdf8;
+            background: #111b2e;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) #app .content h3 {
+            border-color: #e2e8f0;
+            border-left-color: #0284c7;
+            background: #ffffff;
+            color: #0f172a;
+        }
+
+        #app .content p {
+            max-width: 86ch;
+            margin: 0 0 15px;
+            color: inherit;
+            font-size: 14px;
+            line-height: 1.95;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        #app .content p:last-child {
+            margin-bottom: 0;
+        }
+
+        #app .content p > span[style*="color"] {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            margin: 3px 0 5px;
+            padding: 3px 9px;
+            border-left: 3px solid var(--bt-accent);
+            border-radius: 5px;
+            font-weight: 800;
+            line-height: 1.45;
+        }
+
+        html.dark #app .content p > span[style*="color"] {
+            border-left-color: #38bdf8;
+            color: #7dd3fc !important;
+        }
+
+        html:not(.dark) #app .content p > span[style*="color"] {
+            border-left-color: #0284c7;
+            color: #0369a1 !important;
+        }
+
+        #app .content a {
+            color: var(--bt-accent);
+        }
+
+        html.dark #app .content a {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) #app .content a {
+            color: #0369a1;
+        }
+
+        #app .right .card-model {
+            position: sticky;
+            top: 76px;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 100px);
+        }
+
+        #app .right .card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            min-height: 56px;
+            padding: 10px 12px 10px 16px;
+            border-bottom: 1px solid var(--bt-border);
+        }
+
+        html.dark #app .right .card-head {
+            border-bottom-color: #1e293b;
+            background: #111b2e;
+        }
+
+        html:not(.dark) #app .right .card-head {
+            border-bottom-color: #e2e8f0;
+            background: #f8fafc;
+        }
+
+        #app .right .card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            color: var(--bt-text-strong);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        #app .right .card-title .my-icon {
+            color: var(--bt-accent);
+            font-size: 18px;
+        }
+
+        #app .catalog-close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            flex: 0 0 36px;
+            padding: 0;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            background: transparent;
+            cursor: pointer;
+            transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+        }
+
+        html.dark #app .catalog-close {
+            color: #94a3b8;
+        }
+
+        html.dark #app .catalog-close:hover,
+        html.dark #app .catalog-close:focus-visible {
+            border-color: #475569;
+            background: #1e293b;
+            color: #f8fafc;
+            transform: rotate(3deg);
+        }
+
+        html:not(.dark) #app .catalog-close {
+            color: #64748b;
+        }
+
+        html:not(.dark) #app .catalog-close:hover,
+        html:not(.dark) #app .catalog-close:focus-visible {
+            border-color: #cbd5e1;
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: rotate(3deg);
+        }
+
+        #app .right > .card-model > .card-body {
+            min-height: 0;
+            padding: 10px;
+            overflow: auto;
+        }
+
+        #app .catalog-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #app .catalog-list li {
+            min-width: 0;
+            margin-top: 3px;
+        }
+
+        #app .catalog-list li:first-child {
+            margin-top: 0;
+        }
+
+        #app .catalog-list a {
+            display: flex;
+            align-items: center;
+            min-height: 36px;
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            color: var(--bt-muted);
+            font-size: 13px;
+            line-height: 1.45;
+            text-decoration: none;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+        }
+
+        html.dark #app .catalog-list a {
+            color: #94a3b8;
+        }
+
+        html.dark #app .catalog-list a:hover,
+        html.dark #app .catalog-list a:focus-visible {
+            border-color: #155e75;
+            background: rgba(14, 116, 144, 0.18);
+            color: #e0f2fe;
+            transform: translateX(2px);
+        }
+
+        html.dark #app .catalog-list a.active {
+            border-color: #0e7490;
+            background: rgba(14, 116, 144, 0.3);
+            color: #e0f2fe;
+            font-weight: 800;
+        }
+
+        html:not(.dark) #app .catalog-list a {
+            color: #475569;
+        }
+
+        html:not(.dark) #app .catalog-list a:hover,
+        html:not(.dark) #app .catalog-list a:focus-visible {
+            border-color: #bae6fd;
+            background: #f0f9ff;
+            color: #0369a1;
+            transform: translateX(2px);
+        }
+
+        html:not(.dark) #app .catalog-list a.active {
+            border-color: #7dd3fc;
+            background: #e0f2fe;
+            color: #0c4a6e;
+            font-weight: 800;
+        }
+
+        #app .right-mask-icon {
+            display: none;
+        }
+
+        #app :focus-visible {
+            outline-offset: 2px;
+        }
+
+        html.dark #app :focus-visible {
+            outline: 3px solid rgba(56, 189, 248, 0.72);
+        }
+
+        html:not(.dark) #app :focus-visible {
+            outline: 3px solid rgba(2, 132, 199, 0.45);
+        }
+
+        #app .left > comment {
+            display: block;
+            min-width: 0;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 900px) {
+            #app .tool-body {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            #app .right {
+                position: fixed;
+                top: 72px;
+                right: 10px;
+                bottom: 10px;
+                z-index: 50;
+                width: min(320px, calc(100vw - 20px));
+                max-width: calc(100vw - 20px);
+                opacity: 0;
+                pointer-events: none;
+                transform: translate3d(calc(100% + 18px), 0, 0);
+                transition: opacity 0.2s ease, transform 0.24s ease, visibility 0.24s ease;
+                visibility: hidden;
+            }
+
+            #app .right.right-drawer {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translate3d(0, 0, 0);
+                visibility: visible;
+            }
+
+            #app .right .card-model {
+                position: static;
+                width: 100%;
+                height: 100%;
+                max-height: none;
+            }
+
+            #app .right .card-body {
+                flex: 1 1 auto;
+            }
+
+            #app .right-mask-icon {
+                position: fixed;
+                right: 14px;
+                bottom: 14px;
+                z-index: 60;
+                display: block;
+                width: 48px;
+                height: 48px;
+                pointer-events: none;
+            }
+
+            #app .right-mask-icon .mask {
+                position: fixed;
+                z-index: -1;
+                inset: 0;
+                background: rgba(2, 6, 23, 0.58);
+                pointer-events: auto;
+            }
+
+            #app .right-mask-icon .icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 48px;
+                padding: 0;
+                border: 1px solid transparent;
+                border-radius: 12px;
+                cursor: pointer;
+                pointer-events: auto;
+                box-shadow: 0 10px 24px rgba(2, 6, 23, 0.22);
+                transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+            }
+
+            html.dark #app .right-mask-icon .icon {
+                border-color: #38bdf8;
+                background: #0e7490;
+                color: #f0f9ff;
+            }
+
+            html.dark #app .right-mask-icon .icon:hover,
+            html.dark #app .right-mask-icon .icon:focus-visible {
+                background: #0284c7;
+                color: #ffffff;
+                transform: translateY(-2px);
+            }
+
+            html:not(.dark) #app .right-mask-icon .icon {
+                border-color: #0284c7;
+                background: #ffffff;
+                color: #0369a1;
+            }
+
+            html:not(.dark) #app .right-mask-icon .icon:hover,
+            html:not(.dark) #app .right-mask-icon .icon:focus-visible {
+                background: #e0f2fe;
+                color: #0c4a6e;
+                transform: translateY(-2px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tool-topbar {
+                gap: 8px;
+                padding: 9px 12px;
+            }
+
+            .tool-topbar-logo {
+                font-size: 14px;
+            }
+
+            .tool-topbar-sep {
+                display: none;
+            }
+
+            .tool-topbar-title {
+                font-size: 13px;
+            }
+
+            .tool-topbar-home {
+                padding-inline: 10px;
+                font-size: 12px;
+            }
+
+            #app.main-body.tool-page-body {
+                padding: 14px 10px 32px;
+            }
+
+            #app .left > .card-model > .card-body {
+                padding: 16px 12px 20px;
+            }
+
+            #app .tool-head .title {
+                padding-left: 13px;
+                font-size: clamp(23px, 7vw, 30px);
+            }
+
+            #app .description {
+                margin-bottom: 18px;
+                font-size: 13px;
+                line-height: 1.75;
+            }
+
+            #app .tool-dashboard {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 13px;
+                padding: 14px;
+            }
+
+            #app .dashboard-meta {
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+            #app .content-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 4px;
+                margin-inline: 0;
+            }
+
+            #app .toolbar-hint {
+                text-align: left;
+            }
+
+            #app .content {
+                padding: 10px;
+                border-radius: 10px;
+                line-height: 1.82;
+            }
+
+            #app .content table {
+                margin-bottom: 22px;
+                font-size: 11px;
+            }
+
+            #app .content table th,
+            #app .content table td {
+                padding: 9px 4px;
+            }
+
+            #app .content table tr:first-child th {
+                font-size: 14px;
+            }
+
+            #app .content h3 {
+                margin-top: 24px;
+                margin-bottom: 10px;
+                padding: 9px 10px;
+                font-size: 17px;
+            }
+
+            #app .content p {
+                margin-bottom: 13px;
+                font-size: 13px;
+                line-height: 1.88;
+            }
+
+            #app .content p > span[style*="color"] {
+                min-height: 28px;
+                padding-inline: 7px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #app .dashboard-meta {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            #app .status-badge {
+                grid-column: 1 / -1;
+            }
+
+            #app .status-badge,
+            #app .metric-chip {
+                width: 100%;
+            }
+
+            #app .right-mask-icon {
+                right: 10px;
+                bottom: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="grid-bg"></div>
@@ -39,7 +1123,7 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
@@ -51,7 +1135,23 @@
                     <h1 class="title">血型遗传规律和血型性格</h1>
                 </div>
                 <div class="description">血型与性格为您提供血型自测，血型遗传规律表，亲子鉴定血型对照表，血型配对表，血型测试，子女血型查询，孩子血型查询，后代血型查询，在线亲子鉴定，子女与父母的血型等各类血型相关服务。</div>
-                <div class="content">
+                <div class="tool-dashboard" aria-label="血型工具概览">
+                    <div class="dashboard-main">
+                        <span class="dashboard-kicker">ABO / QUICK REFERENCE</span>
+                        <div class="dashboard-title">从遗传规律开始，快速建立血型认知</div>
+                        <p class="dashboard-subtitle">先查父母组合，再阅读对应的性格专题。</p>
+                    </div>
+                    <div class="dashboard-meta" aria-label="内容摘要">
+                        <span class="status-badge"><span class="status-dot" aria-hidden="true"></span>知识参考</span>
+                        <span class="metric-chip"><strong>4</strong><span>种血型</span></span>
+                        <span class="metric-chip"><strong>10</strong><span>遗传组合</span></span>
+                    </div>
+                </div>
+                <div class="content-toolbar" aria-label="内容导航提示">
+                    <span class="section-kicker">KNOWLEDGE BASE</span>
+                    <span class="toolbar-hint">右侧目录可快速跳转</span>
+                </div>
+                <div class="content" aria-label="血型遗传规律与性格知识">
 					<table style="width: 100%; text-align: center;"><tbody><tr><th colspan="4">血型遗传规律表</th></tr><tr><th>一方血型</th><th>另一方血型</th><th>孩子可能的血型</th><th>孩子不可能的血型</th></tr><tr><td>A</td><td>A</td><td>A、O</td><td>B、AB</td></tr><tr><td>B</td><td>B</td><td>B、O</td><td>A、AB</td></tr><tr><td>A</td><td>B</td><td>A、B、O、AB</td><td>无</td></tr><tr><td>AB</td><td>A</td><td>A、B、AB</td><td>O</td></tr><tr><td>AB</td><td>B</td><td>A、B、AB</td><td>O</td></tr><tr><td>O</td><td>A</td><td>O、A</td><td>B、AB</td></tr><tr><td>O</td><td>B</td><td>O、B</td><td>A、AB</td></tr><tr><td>O</td><td>AB</td><td>A、B</td><td>O、AB</td></tr><tr><td>AB</td><td>AB</td><td>A、B、AB</td><td>O</td></tr><tr><td>O</td><td>O</td><td>O</td><td>A、B、AB<br></td></tr></tbody></table><h3>血型相关知识：</h3><p>根据红细胞膜上是否存在抗原A与抗原B将血液分成4种血型：A、AB、B、O</p><p>血型是指血液成分（包括红zd细胞、白细胞、血小板）表面的抗原类型。通常所说的血型是指红细胞膜上特异性抗原类型，而与临床关系最密切，人们所熟知的是红细胞ABO血型系统及Rh血型系统。</p><p>红细胞上仅有抗原A为A型，只有抗原B为B型，若同时存在A和B抗原则为AB型，这两种抗原俱无的为O型。不同血型的人血清中含有度不同的抗体，但不含有对抗自身红细胞抗原的抗体。如：在A型血血清中只含有抗B抗体。我国各族人民中A型、B型及O型血各占约30%，AB型仅占10%左右。</p><p>血型是遗传性物质，可从已知的父母血型推知子女可能的血型。通过鉴定一个人的血型，也可以推测出亲属的血缘关系，这在法医学上有重要意义。在知道了父母的血型之后，便可大致了解子女可能的血型。</p><h3>A型性格分析</h3><p><span style="color: rgb(20, 121, 215);">A型血人的性格特点</span></p><p>A型人小时候比较任性，年轻时性格果断刚毅，时时处处要强。随着年龄增长和社会经验的积累，他们开始克制自己的情绪，表现出稳重谦虚的态度，容易成为不愿过份表现自己的谨慎派。A型人在老年时，则显得很固执。</p><p><span style="color: rgb(20, 121, 215);">A型血人的处世态度</span></p><p>待人接物细心谨慎，避免伤害他人的感情，也不给对方或周围的人带来不愉快。有克制自己积极为人服务的一面和不肯轻易相信人——说得坏一点，就是多疑的特点。我们可以把这看作是A型人的两重性之一。</p><p>与A型人初次见面，一般都觉得他们和蔼可亲；但是令人难耐的是，接触了多次，他们的态度仍象初见面时那样。不说一句心里话，正因为如此，A型人的内心想与人交往的愿望比一般人强烈得多，但这种愿望一般不外露；强烈的自尊心是A型人的招牌。被人小看对A型人来说是莫大的侮辱，往往会恼羞成怒；但反过来，也有不少A型人好嘲弄别人……</p><p><span style="color: rgb(20, 121, 215);">A型血人的优点</span></p><p>待人诚实，不轻口许诺，一旦应诺会全力以赴，决不失信。从这一点来说，A型人是可以信赖的相处共事的合作者。但另一方面，我觉得他们在与人交往中有过分区别对待的倾向，自己人与外面人，本公司与他公司的人，他们划得一清二楚。不过，A型人对为数不多的知心朋友是很重信义的。一旦结成莫逆，他就会无微不至地关心对方，情真意切。</p><p><span style="color: rgb(20, 121, 215);">A型血人的爱</span></p><p>A型人对别人的示爱，一般不轻易作出反应，更不会贸然敞接受。对自己喜欢的人也会多次反复。A型人在恋爱问题上最为小心谨慎。还有一点，A型人自尊心很强，所以遭拒绝被抛弃，对他们来说是难以经受的。</p><p>在择偶上，A型人一般不是很注重外貌，因为他们最怕受骗，所以首先考虑的是“安全感”，希望自己信得过的生活伴侣。A型人不论男女似乎都有选择傻乎乎的人作爱人的现象，并不是他们有所偏爱，而是因为他们的择偶先决条件是，宁要日后的平衡生活也不要头脑灵活反应敏感的爱人。而与此似有矛盾的是，一旦遇上能理解自己的人他们会立即倾心。这是因为A型人是完美主义者，他们常为别人对自己的偏见和不正确评价而苦恼。正因为如此 当A型人一旦认为对方是能理解自己的人时，他们的心立刻就会被吸引过去。</p><p>A型人的爱是以稳步渐进的形式发展的。恋爱过程中，他们注重感情的自然流露。A型人讲究恋爱的气氛和情绪，喜欢在隐蔽的场所幽会，不过，他们不会轻易冲动起来。</p><p><span style="color: rgb(20, 121, 215);">A型血人好痴情</span></p><p>A型人的爱若燃成熊熊烈焰，其面貌会变得与恬静爱时完全不同。A型人的爱一旦喷发出烈焰，其火力远远超过石油燃烧，有烧毁一切的危险。“非他(她)不嫁(娶)”，痴情之恋，便是A型人恋爱之写照。陷入热恋中的A型人，在他(她)们眼里，对方的一句话一个动作都是美好的，对方的缺陷或坏的地方全然不见，成了名副其实的盲目之恋。</p><p>为什么会这样的呢？原因之一恐怕是前面提到的乞求理解之心。在得不到他人理解 而郁郁寡欢之时，突然觉得有人同情自己，A型人便会一往情深，有时仅仅觉得对方可能是自己的同情者，他们也会一下子燃起感情的火焰。这种心情在A型人之间较易产生。</p><p>另一个原因是，A型人对具有(或者可能具有)自己所没有的东西的人怀有崇拜心，这样的人对他们具有很强的吸引力。这可能也是由于尽善尽美的愿望不能如愿以偿产生可怜的心情吧。</p><p><span style="color: rgb(20, 121, 215);">A型血人的性爱</span></p><p>在性关系方面，A型人也是偏于克制的。虽然也有人出于A型人的服务意识，说些春话但听上去有点别扭，笨拙，旁边人也为之难堪。其实，心底里对性关系最感兴趣的是A型人，也许可以送他们一个绰号，叫“沉默寡言的好色者”——这话太刻薄了点。不少A型人酒后失去控制，会变得十分猥劣，与平常判若两人。不过，能任意寻欢作乐的A型人毕竟还是少数。因为A型人总要考虑社会和世俗的忌 讳、龉龃感、疾病、别人看法、妊娠之忧等。因此，A型人中为人正派者也是不乏其人的。</p><p>在这方面A型人好象还是有其两重性的。对钟情于自己的对象，A型人就会严肃地考虑性的问题。并诚实地处理之。也就是说他们把性的关系看作爱的证明和保证，对性关系负责；同时也要求对方负责。与A型对象的婚前性关系往往会进一步加强爱的纽带，成为促成爱的契机，这种现象并不鲜见。 重视交媾情绪也以A型人为甚。交欢时十注意对方的反应，受服务意识的支配，一般很少有单方面行动(幼稚期例外)。只是A型人不善于性方面的交谈，特别是女性，碍于自尊，不会主动提出性的要求，因此而产生性不自由感和不幸感的人也不少。</p><h3>B型性格分析</h3><p><span style="color: rgb(20, 121, 215);">B型血人的性格特点</span></p><p>B型人大都有一个天真浪漫的幼年期，随着年龄的增长，逐渐分成心直口快和不擅交际应酬型两种倾向。B型人由于性格自幼倒老变化不大，相对来说会让人感到他们越活越年轻。</p><p><span style="color: rgb(20, 121, 215);">B型血人的处世态度</span></p><p>B型人常给人以冷漠简慢不拘小节的印象。他们心直口快，不讲虚礼但缺乏亲切热情之感，其实，对谁都坦诚相见，一处就熟的倒是B型人。这不能称作两重性，这是因为他们生来不习惯于繁文缛节，也不擅礼尚往来。不了解的人，会耽心其是否心怀歹意，可是接触后会觉得很好相处。他们不计较小事，虽欠浪漫情怀但心地善良，富有人情味。他们助人为乐到了近乎管闲事的程序。<br>B型的人爱与人相处，他们一般不愿积极配合别人，常常喜欢自行其事。可是落了伍或遭到抛弃却特别焦急。人们都把B型人叫做“乖僻B”。从调查情况看，不少B型人待人冷若冰霜，而内心却希望别人能热情相待自己。</p><p><span style="color: rgb(20, 121, 215);">B型血人的爱</span></p><p>B型者的爱与友爱十分相似两者较难区分。这是因为B型人很少有占有欲和保护或依 附的愿望；而这种欲望在男女之爱中通常是占中心位置的。<br>B型人喜欢与这样的人交朋友：健谈，对自己的谈话感兴趣，并能共鸣；还能适当地给自己以刺激。仅这些条件的话，与交同性朋友就毫无二致了。所以还有一条：你可以隐约地感觉到他们喜欢接触异性。对他们来说异性的完全不同于自己的言谈举止是带来愉悦的一种刺激。此外，B型人有注重感觉的特点，所以喜欢欣赏异性朋友的容貌风姿和谈话的表情语调。<br>B型人善于理解别人的立场和心情。B型人有羞于浪漫式谈清说爱的一面，所以虽能给对方以温暖，然而不易喷发爱的火焰。不过，随着与对方接触次数的增多，B型人的爱会渐渐地出现过热的现象。B型人的爱的发展似乎与双方接触的时间、距离和频度等都是成正比例的，其爱的发热内容表现为希望接触的时间更长，距离更近次数更频繁。核心是接触欲望。为了实现这种欲望，连平日里懒散的B型人也会突然向对方献起殷勤来。</p><p><span style="color: rgb(20, 121, 215);">B型血人爱得执着</span></p><p>B型人有一个如上所说的处于静态爱和燃烧爱之间的过热的阶段。这种热能适当散 发的话，不会出什么问题；可是，如果其接触欲望不能如愿，蓄热于内，就有突然喷发 烈焰的可能。到那时，已经是无法控制了。<br>B型人的爱情之火为什么是这个样的呢？具体的原因不详。有把握说的只有一点，那就是B型人对同自己接触越久，距离越近，次数越多的人，容易燃起爱之火。</p><p><span style="color: rgb(20, 121, 215);">B型血人的性爱</span></p><p>B型人的性行为中功能大于精神因素。换言之他们能自如地将性关系与爱情分开。他们能够一面对张三燃烧山火一般的爱，一面在李四那儿搞性为以求得官能上的满足。<br>B型人不太讲究气氛和情绪准备。不少B型人只要有性的快乐就行，也有的千方百计地想作各种技巧性尝试。另外，韧性子的B型人也有沉溺于性生活的，有的表现为某个时期里性生活无度。<br>不过，总的看来，B型人中好色的人是不多的。这是因为他们较为害羞；另外B型人 的兴趣较易偏向自然科学方面，也是一个原因。津津乐道于淫事亵情的B型人是不多见的。<br>还有一点也应了解，B型人若一头扎进工作或爱好中，对性生活几乎不感兴趣。</p><h3>AB型性格分析</h3><p><span style="color: rgb(20, 121, 215);">AB型血人的性格特点</span></p><p>AB型人大多小时候怕陌生人，很闭塞，但长大以后善交朋友，交际广泛。AB型人因 过于自信，容易自满，老年时给人感觉很傲慢。</p><p><span style="color: rgb(20, 121, 215);">AB型血人的处世态度</span></p><p>多数人童年时与成年后性格很不一致。小时候特别认生，与人接触时，表面看似乎很安静心里却十分害怕生人或大人。可是，到了青少年时期，会一改旧态，变得善与人相处而且能圆满地处理各种关系。所以不少人专事调解工作，成名者尤多。然而，AB型人在心理上与人的距离感是始终不变的。即便是对亲近的人也保持一定距离。这是AB型人感情淡薄的根源。尽管如此，AB型人仍属热心人，办事虽无O型人那么积极主动，但一般不会拒绝别人的请求。他们常常担任某些团体的联络人，为于已无利的事奔走忙碌。<br>AB型人还有一个优点，那就是对人绝对公平，他们不会搞宗派，这点是有别于O型 人的。不顺心时，特别会讲俏皮话。<br>AB型人中爱交际的人虽不少，但他们共同的特别是嫌恶世俗人情。<br>AB型人对人有强烈的好恶感，特别厌恶伪善和自私的人。不过，他们不直接表在自己的这种感情，对自己所厌恶的人也能笑脸相迎，可以说这是AB型人的处世特技。AB型人不喜欢与人相争，遇事不爱出头，是天生的温和主义者。</p><p><span style="color: rgb(20, 121, 215);">AB型血人的爱</span></p><p>AB型人好燃烧绚丽的爱情之火。这种爱往往带有戏剧味儿，但有点过于戏剧化了，那倒并非他们矫柔造作，而是本人向往追求这种爱。既有合理而又显得冷酷无情的理性主义思想方法，又有爱好空想想入非非的特点，这是AB型人气质的重要的两重性。在爱情方面，他们往往要把自己比作恋爱剧中的主人公，在这种情况下，对方是什么样的人变得无关紧要，因为他(她)是自己虚构的恋爱剧的对方角色。如果他们的爱在现实中陷入难以进展的境地，AB型的人的爱的感情便会充分抒发而大放光彩，恋爱悲剧会演得淋淳尽致。<br>AB型人之爱戏剧味儿越深越缺乏现实感，所以因倾心于对方的外貌而起燃的现象似乎很多，那倒未必是他们以貌取人，不过AB型人不论男女，对对方的外表评头品足的人是不少的。不过，我们不能因此而断言这种绚烂多彩的爱就是AB型人之爱的本质。在很多情况下，AB型的人的爱还是十分可靠的，即使有时如加调味品似的，出现戏剧情节……</p><p><span style="color: rgb(20, 121, 215);">AB型血人经不起爱情挫折</span></p><p>AB型人求偶的心理中寻求保障的心情是十分强烈的。女性表现为希望得到各方面强有力的(包括经济上)心胸豁达的男子的保护，以使自己有所依靠；男性希望自己的生活伴侣是一个不会欺骗、背弃自己的绝对忠贞可靠的女子。前面已经说过，AB型人的爱情特征是：好依赖对方，但不善于使对方依赖自己。AB型人的这种特性出自追求有保障之爱的心理。因此，AB型女子更显出女性的温柔而获好评；而男性那赫然闯入对方印象的粗犷形象使一部分女性有美中不足之感。<br>AB型的人的恋爱关系，一般都显得较为平淡，AB型人恋爱对象也喜欢以要好朋友的关系相处。在这样的相处关系中，AB型人不断观察对方；观察的主要内容还是对方的人品。在婚恋问题上，愿意倾听朋友和周围意见的AB型人是很多的，特别是当他们碰上难题，拿不定主意的时候。</p><p><span style="color: rgb(20, 121, 215);">AB型血人的性爱</span></p><p>AB型人极为嫌恶人们赤裸裸地表现自己的欲望—包括性欲。即便是在激光式的爱放射绚丽光彩的时候，对方若表现出露骨的本能行为，AB型人也会立刻产生嫌恶情绪，有的甚至会因恐惧而逃跑。<br>对性的关系，AB型人也是取冷静态度的，很少有沉溺的现象。但是，我们不能因此说AB型人嫌恶性关系。他们感起兴趣来，却很会寻欢作乐，花花公子、浪荡女子还是以AB型人为多。若任其本能为之，他们做乐的余兴反倒会消失。<br>总之，在性关系方面，有挖空心思作乐、交媾术谙练的AB型人，也有兴味淡薄的AB型人，可以说是随兴趣而异的。</p><h3>O型性格分析</h3><p><span style="color: rgb(20, 121, 215);">O型血人的性格特点</span></p><p>O型人年少时比较温顺，但随着年龄的增长，他们会积极地呈现出强烈的自我主张和自我表现，甚至成为非常有魄力的人。O型人从小至老的变化是最大的，往往是少年温顺，老来强硬。<br>O型人的处世态度有三种：好与人进行力量的对比、对于善恶敏感、重信用讲友情。<br>O型人对不明其底细和不甚了解其意图的人的警惕心比普通人高一倍。相识的时候，O型人则十分注意对方的态度是友好的还是敌意的，而且这方面的感觉特别灵敏。尤其是在公共场合发表观点时，他对赞成和反对他的人都十分注意。<br>O型人若认为对方是可以信赖的朋友时，其态度会出现一百八十度的变化：直爽开朗，亲切随和；热情主动的关照，虽带有强加于人的色彩却充满人情的温暖。反之，若认定对方是敌人的话，O型人的反应也是够强烈的。<br>O型人对弱小者表现为豁达大度，而对大大强于自己的人则会出人意外地无条件服从之，可是，遇上势均力敌者又有好较高低的一面。O型人最厌恶论资排辈，不愿屈从于徒有虚名而无真才实学的位尊者。</p><p><span style="color: rgb(20, 121, 215);">O型血人的爱</span></p><p>O型人的爱有稳重恬静的和炽烈燃烧的两种。<br>O型人的恬静爱是以注重现实为基础的。它的基调是：男性一般表现为希望女方依 附于自己的保护爱；女性则希望嫁一个强有力的男人，表现为“大树底下乘凉”的依附爱。这种爱也可能发展为占有爱。因此，他(她)们希望找到聪明能干的对象。不知不觉地计算着要找一个有一技之长有生活能力的男子，或者可靠的女性。<br>有的O型人追求浪漫主义的爱情，陶醉于情书频递，细语绵绵，以至于忘却了自己 这个O型人是注重现实的。所以一当要办婚事，或进入婚后共同生活阶段，看到了一些 出乎意外的侧面，便六神无主了。<br>O型人的另一个特点是，过分地相信自己的眼力，总认为自己选定的对象是无可指 责的。所以，一般不为他人劝说所动。反过来，别人提醒他注意，只要是关于男女关系 的问题，常常连听都不听。</p><p><span style="color: rgb(20, 121, 215);">O型血人一见钟情</span></p><p>O型人容易燃起炽烈的爱之火。恋爱剧里往往少不了O型人物，否则难以成戏。<br>奇怪的是，O型人中“一见钟情”者特别多，这一点与他们注重对方能力是矛盾的；不知是由于人的两重性之故还是因为O型对自己的观察力抱有信心，能在一瞬间洞察对方的一切？<br>O型人的爱与其说是产生于与对方的交谈，不如说大多触发于偶然事件，一下子燃起爱之火焰。O型人爱的基本条件是信任感，可以说这是通过行动不难获得的。O型人的心中火焰一经点燃，便灿烂生辉，火势最旺。<br>O型人的爱情烈焰不仅灿烂绚丽，而且具有专一性。他们能将火力集中于一下目标，大有不将对方烧化决不罢休之势，这一点也使人联想到石油燃烧器。他们目的性强，怎么想便怎么做，所以在爱情舞台上也显示出直接式的特点。在各种血型中，获得爱情能力最强的当首推O型人。<br>O型人的爱，跟石油燃烧器一样，不会有连烧其它之意外。我们常常可以看到热恋中的O型人总是严格地将自己的日常生活限制在最小范围里。生活上的顽强精神，不沾三拈四也是O型人的一大特点。不过一旦遇上对手，强烈的竞争意识也会使O型人生活出现混乱。对本来并不十分 喜欢的对象也紧追不舍，就发生在这种情况下。<br>失恋的O型人往往会苦恼一阵。不过当他们知道已完全没希望时，却会出人意外地坦然处之。这一点也有些象关上阀站，就会自行熄火的石油燃烧器。</p><p><span style="color: rgb(20, 121, 215);">O型血人的性爱</span></p><p>O型人好将爱的心情与性关系直接联系起来，一般地说O型人对性关系——无论是夫妇间的还是短期的姘居，都怀有交流爱情的意识。<br>热恋中，将爱的情感直付性行为的以O型人为多。可是，值得注意的是，O型人爱的火焰有时会随交媾的告终而熄灭。所以与O型男朋友的婚前性关系，还是小心为妙。<br>粗看起来，O型人中好色者似乎较多，热衷于讲色情话。使人意外的是这些人嘴里 虽然常常浪言浪语，但其情欲却并不是这么持久不衰。他们有时欲念特别强烈；有时却处于完全无欲的状态，时间上阶段分明。对夫妇间的生活、O型人给人的印象甚至是冷 淡的。虽受爱情占欲的驱策，有时会不能自拔，但沉湎于床第之欢者似乎很少。<br>在交媾动作方面，O型人似有只顾自己的倾向。部分调查资料反映时间过短。这种 情况是否具有一般性，尚不清楚。<br>O型人中有少数人，也许是童年时受过迫害，或有自卑心理体验，以致爱的火焰难 以点燃。这是例外。这小部分人走向反面时，有纵欲之虞。</p>
                 </div>
             </div>
@@ -61,8 +1161,10 @@
     <div class="right" v-bind:class="{'right-drawer':showRightDrawer}">
         <div class="card-model sticky">
             <div class="card-head">
-                <div class="card-title flex"><i class="my-icon my-icon-catalog"></i>目录</div>
-                <i class="my-icon my-icon-cuo" v-on:click="showRightDrawer=false"></i>
+                <div class="card-title flex"><i class="my-icon my-icon-catalog" aria-hidden="true"></i><span>目录</span></div>
+                <button type="button" class="catalog-close" aria-label="关闭目录" v-on:click="showRightDrawer=false">
+                    <i class="my-icon my-icon-cuo" aria-hidden="true"></i>
+                </button>
             </div>
             <div class="card-body">
                 <ul class="catalog-list" v-cloak>
@@ -76,9 +1178,9 @@
 
     <div class="right-mask-icon">
         <div class="mask" v-bind:style="'display:'+(showRightDrawer?'block':'none')" v-on:click="showRightDrawer=!showRightDrawer"></div>
-        <div class="icon" v-on:click="showRightDrawer=!showRightDrawer" title="目录">
-            <div class="my-icon my-icon-catalog"></div>
-        </div>
+        <button type="button" class="icon" v-on:click="showRightDrawer=!showRightDrawer" title="目录" aria-label="打开目录">
+            <span class="my-icon my-icon-catalog" aria-hidden="true"></span>
+        </button>
     </div>
 </div>
 
