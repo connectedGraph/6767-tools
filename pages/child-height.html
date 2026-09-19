@@ -27,6 +27,943 @@
     <meta name="twitter:description" content="身高预测,子女身高预测孩子身高预测,身高预测计算器,最准的预测身高公式,最科学的身高预测方法,身高遗传在线计算器，预测儿童身高，预测身高计算器，如何预测小孩身高" />
     <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
     <link rel="canonical" href="https://tool.6767.chat/child-height" />
+    <style>
+        .child-height-tool,
+        .child-height-tool * {
+            box-sizing: border-box;
+        }
+
+        .child-height-tool {
+            width: 100%;
+            max-width: 1120px;
+            min-width: 0;
+            margin: 24px auto 0;
+            overflow-wrap: anywhere;
+        }
+
+        .child-height-title {
+            letter-spacing: -0.02em;
+        }
+
+        html.dark .child-height-title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .child-height-title {
+            color: #0f172a;
+        }
+
+        .child-height-description {
+            max-width: 960px;
+            margin-top: 8px;
+            line-height: 1.7;
+        }
+
+        html.dark .child-height-description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .child-height-description {
+            color: #475569;
+        }
+
+        .child-height-hero {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            padding: clamp(22px, 4vw, 36px);
+            border: 1px solid;
+            border-radius: 14px;
+            overflow: hidden;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        html.dark .child-height-hero {
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #0b1120 0%, #102442 100%);
+            border-color: #243b5a;
+            box-shadow: 0 14px 34px rgba(2, 6, 23, 0.28), inset 0 1px 0 rgba(148, 163, 184, 0.08);
+        }
+
+        html:not(.dark) .child-height-hero {
+            color: #1e293b;
+            background: linear-gradient(135deg, #f8fbff 0%, #eff6ff 100%);
+            border-color: #dbeafe;
+            box-shadow: 0 14px 34px rgba(30, 64, 175, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .child-height-hero-copy {
+            flex: 1 1 30rem;
+            min-width: 0;
+        }
+
+        .child-height-kicker,
+        .child-height-overline,
+        .child-height-insight-overline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        html.dark .child-height-kicker,
+        html.dark .child-height-insight-overline {
+            color: #67e8f9;
+        }
+
+        html:not(.dark) .child-height-kicker,
+        html:not(.dark) .child-height-insight-overline {
+            color: #0369a1;
+        }
+
+        .child-height-kicker-mark {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            flex: 0 0 8px;
+            border-radius: 50%;
+        }
+
+        html.dark .child-height-kicker-mark {
+            background: #22d3ee;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.14), 0 0 16px rgba(34, 211, 238, 0.5);
+        }
+
+        html:not(.dark) .child-height-kicker-mark {
+            background: #0284c7;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+
+        .child-height-hero h2 {
+            max-width: 720px;
+            margin: 10px 0 8px;
+            font-size: clamp(1.45rem, 3vw, 2.1rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+        }
+
+        html.dark .child-height-hero h2 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .child-height-hero h2 {
+            color: #0f172a;
+        }
+
+        .child-height-hero-copy > p:last-child {
+            max-width: 660px;
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        html.dark .child-height-hero-copy > p:last-child {
+            color: #bfdbfe;
+        }
+
+        html:not(.dark) .child-height-hero-copy > p:last-child {
+            color: #475569;
+        }
+
+        .child-height-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            flex: 0 1 auto;
+            min-height: 36px;
+            padding: 8px 12px;
+            border: 1px solid;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.3;
+            white-space: nowrap;
+        }
+
+        html.dark .child-height-status {
+            color: #bae6fd;
+            background: rgba(14, 116, 144, 0.2);
+            border-color: #285579;
+        }
+
+        html:not(.dark) .child-height-status {
+            color: #075985;
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .child-height-status-dot {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+        }
+
+        html.dark .child-height-status-dot {
+            background: #22d3ee;
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.75);
+        }
+
+        html:not(.dark) .child-height-status-dot {
+            background: #0284c7;
+        }
+
+        .child-height-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .child-height-panel,
+        .child-height-insight,
+        .child-height-content {
+            min-width: 0;
+            border: 1px solid;
+            border-radius: 14px;
+        }
+
+        html.dark .child-height-panel,
+        html.dark .child-height-insight,
+        html.dark .child-height-content {
+            color: #e2e8f0;
+            background: #0c1427;
+            border-color: #24324a;
+            box-shadow: 0 10px 26px rgba(2, 6, 23, 0.2), inset 0 1px 0 rgba(148, 163, 184, 0.04);
+        }
+
+        html:not(.dark) .child-height-panel,
+        html:not(.dark) .child-height-insight,
+        html:not(.dark) .child-height-content {
+            color: #1e293b;
+            background: #ffffff;
+            border-color: #dbe5f0;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .child-height-panel,
+        .child-height-insight {
+            padding: clamp(20px, 3vw, 28px);
+        }
+
+        .child-height-panel-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .child-height-step {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            flex: 0 0 32px;
+            border: 1px solid;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+
+        html.dark .child-height-step {
+            color: #a5f3fc;
+            background: rgba(14, 116, 144, 0.28);
+            border-color: #38bdf8;
+        }
+
+        html:not(.dark) .child-height-step {
+            color: #075985;
+            background: #e0f2fe;
+            border-color: #7dd3fc;
+        }
+
+        .child-height-panel-heading h2,
+        .child-height-insight-heading h2 {
+            margin: 4px 0 0;
+            font-size: 1.15rem;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+
+        html.dark .child-height-panel-heading h2,
+        html.dark .child-height-insight-heading h2 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .child-height-panel-heading h2,
+        html:not(.dark) .child-height-insight-heading h2 {
+            color: #0f172a;
+        }
+
+        html.dark .child-height-overline {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .child-height-overline {
+            color: #64748b;
+        }
+
+        .child-height-panel-copy {
+            margin: 6px 0 0;
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        html.dark .child-height-panel-copy {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .child-height-panel-copy {
+            color: #64748b;
+        }
+
+        .child-height-form {
+            margin-top: 22px;
+        }
+
+        .child-height-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            min-width: 0;
+        }
+
+        .child-height-field {
+            min-width: 0;
+        }
+
+        .child-height-form .el-form-item {
+            min-width: 0;
+            margin-bottom: 0;
+        }
+
+        .child-height-form .el-form-item__content {
+            display: block;
+            min-width: 0;
+            width: 100%;
+            margin-left: 0 !important;
+            line-height: normal;
+        }
+
+        .child-height-form .el-input-extend,
+        .child-height-form .el-input,
+        .child-height-form .el-select {
+            display: block;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .child-height-field-label {
+            display: block;
+            min-height: 20px;
+            margin: 0 0 8px;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        html.dark .child-height-field-label,
+        html.dark .child-height-form .el-input-extend {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .child-height-field-label,
+        html:not(.dark) .child-height-form .el-input-extend {
+            color: #334155;
+        }
+
+        .child-height-form .el-input__wrapper,
+        .child-height-form .el-select__wrapper {
+            min-height: 44px;
+            border-radius: 10px;
+            transition: background 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+
+        html.dark .child-height-form .el-input__wrapper,
+        html.dark .child-height-form .el-select__wrapper {
+            color: #f8fafc !important;
+            background: #0b1120 !important;
+            box-shadow: 0 0 0 1px #334155 inset !important;
+        }
+
+        html:not(.dark) .child-height-form .el-input__wrapper,
+        html:not(.dark) .child-height-form .el-select__wrapper {
+            color: #0f172a !important;
+            background: #ffffff !important;
+            box-shadow: 0 0 0 1px #cbd5e1 inset !important;
+        }
+
+        html.dark .child-height-form .el-input__wrapper:hover,
+        html.dark .child-height-form .el-select__wrapper:hover {
+            box-shadow: 0 0 0 1px #64748b inset !important;
+        }
+
+        html:not(.dark) .child-height-form .el-input__wrapper:hover,
+        html:not(.dark) .child-height-form .el-select__wrapper:hover {
+            box-shadow: 0 0 0 1px #94a3b8 inset !important;
+        }
+
+        html.dark .child-height-form .el-input__wrapper.is-focus,
+        html.dark .child-height-form .el-select__wrapper.is-focused {
+            box-shadow: 0 0 0 1px #38bdf8 inset, 0 0 0 3px rgba(56, 189, 248, 0.18) !important;
+        }
+
+        html:not(.dark) .child-height-form .el-input__wrapper.is-focus,
+        html:not(.dark) .child-height-form .el-select__wrapper.is-focused {
+            box-shadow: 0 0 0 1px #0284c7 inset, 0 0 0 3px rgba(2, 132, 199, 0.14) !important;
+        }
+
+        html.dark .child-height-form .el-input__inner,
+        html.dark .child-height-form .el-select__selected-item,
+        html.dark .child-height-form .el-select__placeholder {
+            color: #f8fafc !important;
+        }
+
+        html:not(.dark) .child-height-form .el-input__inner,
+        html:not(.dark) .child-height-form .el-select__selected-item,
+        html:not(.dark) .child-height-form .el-select__placeholder {
+            color: #0f172a !important;
+        }
+
+        html.dark .child-height-form .el-input__inner::placeholder,
+        html.dark .child-height-form .el-select__placeholder {
+            color: #64748b !important;
+            opacity: 1;
+        }
+
+        html:not(.dark) .child-height-form .el-input__inner::placeholder,
+        html:not(.dark) .child-height-form .el-select__placeholder {
+            color: #64748b !important;
+            opacity: 1;
+        }
+
+        html.dark .child-height-form .el-input__icon,
+        html.dark .child-height-form .el-select__caret,
+        html.dark .child-height-form .el-input__suffix-inner {
+            color: #94a3b8 !important;
+        }
+
+        html:not(.dark) .child-height-form .el-input__icon,
+        html:not(.dark) .child-height-form .el-select__caret,
+        html:not(.dark) .child-height-form .el-input__suffix-inner {
+            color: #64748b !important;
+        }
+
+        html.dark .child-height-form .el-form-item__error {
+            color: #fda4af;
+        }
+
+        html:not(.dark) .child-height-form .el-form-item__error {
+            color: #b42318;
+        }
+
+        .child-height-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 44px;
+            margin-top: 18px;
+            padding: 9px 18px;
+            border: 1px solid;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            cursor: pointer;
+            transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+        }
+
+        html.dark .child-height-submit {
+            color: #e0f2fe !important;
+            background: #0e7490 !important;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 8px 18px rgba(8, 145, 178, 0.2);
+        }
+
+        html:not(.dark) .child-height-submit {
+            color: #ffffff !important;
+            background: #0284c7 !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 8px 18px rgba(2, 132, 199, 0.2);
+        }
+
+        html.dark .child-height-submit:hover {
+            color: #ffffff !important;
+            background: #0284c7 !important;
+            border-color: #67e8f9 !important;
+            box-shadow: 0 10px 22px rgba(8, 145, 178, 0.3);
+        }
+
+        html:not(.dark) .child-height-submit:hover {
+            color: #ffffff !important;
+            background: #0369a1 !important;
+            border-color: #0369a1 !important;
+            box-shadow: 0 10px 22px rgba(2, 132, 199, 0.28);
+        }
+
+        .child-height-submit:active {
+            transform: translateY(1px);
+        }
+
+        .child-height-submit:focus-visible {
+            outline: 3px solid rgba(56, 189, 248, 0.42);
+            outline-offset: 2px;
+        }
+
+        .child-height-panel-note {
+            display: flex;
+            gap: 8px;
+            margin: 14px 0 0;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        html.dark .child-height-panel-note {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .child-height-panel-note {
+            color: #64748b;
+        }
+
+        .child-height-panel-note-mark {
+            color: #f59e0b;
+            font-weight: 900;
+        }
+
+        .child-height-insight {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .child-height-insight-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .child-height-reference-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 30px;
+            padding: 5px 9px;
+            border: 1px solid;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        html.dark .child-height-reference-badge {
+            color: #a5f3fc;
+            background: rgba(14, 116, 144, 0.18);
+            border-color: #285579;
+        }
+
+        html:not(.dark) .child-height-reference-badge {
+            color: #075985;
+            background: #e0f2fe;
+            border-color: #bae6fd;
+        }
+
+        .child-height-readout {
+            padding: 16px;
+            border: 1px solid;
+            border-radius: 12px;
+        }
+
+        html.dark .child-height-readout {
+            background: linear-gradient(135deg, #101d35, #0d172b);
+            border-color: #2b4564;
+        }
+
+        html:not(.dark) .child-height-readout {
+            background: linear-gradient(135deg, #f8fafc, #f0f9ff);
+            border-color: #dbeafe;
+        }
+
+        .child-height-readout-label,
+        .child-height-readout-caption {
+            display: block;
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        html.dark .child-height-readout-label,
+        html.dark .child-height-readout-caption {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .child-height-readout-label,
+        html:not(.dark) .child-height-readout-caption {
+            color: #64748b;
+        }
+
+        .child-height-readout-value {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 7px 0 4px;
+        }
+
+        .child-height-readout-value strong {
+            font-size: clamp(1.35rem, 3vw, 1.8rem);
+            font-weight: 850;
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+        }
+
+        html.dark .child-height-readout-value strong {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .child-height-readout-value strong {
+            color: #0f172a;
+        }
+
+        .child-height-readout-value span {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        html.dark .child-height-readout-value span {
+            color: #67e8f9;
+        }
+
+        html:not(.dark) .child-height-readout-value span {
+            color: #0369a1;
+        }
+
+        .child-height-formula-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .child-height-formula-row {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            padding: 11px 12px;
+            border: 1px solid;
+            border-radius: 10px;
+        }
+
+        html.dark .child-height-formula-row {
+            background: #0b1120;
+            border-color: #263a57;
+        }
+
+        html:not(.dark) .child-height-formula-row {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        .child-height-formula-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 26px;
+            padding: 4px 8px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        html.dark .child-height-formula-badge.is-male {
+            color: #bae6fd;
+            background: rgba(3, 105, 161, 0.3);
+        }
+
+        html:not(.dark) .child-height-formula-badge.is-male {
+            color: #075985;
+            background: #e0f2fe;
+        }
+
+        html.dark .child-height-formula-badge.is-female {
+            color: #fbcfe8;
+            background: rgba(157, 23, 77, 0.28);
+        }
+
+        html:not(.dark) .child-height-formula-badge.is-female {
+            color: #9d174d;
+            background: #fce7f3;
+        }
+
+        .child-height-formula-row code {
+            min-width: 0;
+            overflow-wrap: anywhere;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        html.dark .child-height-formula-row code {
+            color: #e0f2fe;
+        }
+
+        html:not(.dark) .child-height-formula-row code {
+            color: #1e3a5f;
+        }
+
+        .child-height-disclaimer {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            padding-top: 2px;
+            font-size: 12px;
+            line-height: 1.65;
+        }
+
+        html.dark .child-height-disclaimer {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .child-height-disclaimer {
+            color: #64748b;
+        }
+
+        .child-height-disclaimer-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            flex: 0 0 18px;
+            border: 1px solid;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        html.dark .child-height-disclaimer-icon {
+            color: #67e8f9;
+            border-color: #2b7892;
+        }
+
+        html:not(.dark) .child-height-disclaimer-icon {
+            color: #0369a1;
+            border-color: #7dd3fc;
+        }
+
+        .child-height-divider {
+            height: 1px;
+            margin: 24px 0;
+            border: 0;
+        }
+
+        html.dark .child-height-divider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) .child-height-divider {
+            background: #e2e8f0;
+        }
+
+        .child-height-content {
+            padding: clamp(20px, 4vw, 32px);
+            overflow-wrap: anywhere;
+        }
+
+        .child-height-content h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 12px;
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .child-height-content h2:not(:first-child) {
+            margin-top: 30px;
+        }
+
+        .child-height-content h2::before {
+            display: inline-block;
+            width: 6px;
+            height: 22px;
+            flex: 0 0 6px;
+            border-radius: 999px;
+            content: "";
+        }
+
+        html.dark .child-height-content h2 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .child-height-content h2 {
+            color: #0f172a;
+        }
+
+        html.dark .child-height-content h2::before {
+            background: #22d3ee;
+            box-shadow: 0 0 12px rgba(34, 211, 238, 0.35);
+        }
+
+        html:not(.dark) .child-height-content h2::before {
+            background: #0284c7;
+        }
+
+        .child-height-content p,
+        .child-height-content li {
+            font-size: 14px;
+            line-height: 1.85;
+        }
+
+        .child-height-content p {
+            margin: 8px 0;
+        }
+
+        html.dark .child-height-content p,
+        html.dark .child-height-content li {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .child-height-content p,
+        html:not(.dark) .child-height-content li {
+            color: #334155;
+        }
+
+        .child-height-content ul {
+            margin: 8px 0 16px;
+            padding-left: 1.35rem;
+        }
+
+        .child-height-content li {
+            padding-left: 4px;
+        }
+
+        html.dark .child-height-content li::marker {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .child-height-content li::marker {
+            color: #0284c7;
+        }
+
+        html.dark .child-height-content strong {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .child-height-content strong {
+            color: #0f172a;
+        }
+
+        .child-height-select-popper {
+            border-radius: 10px !important;
+            overflow: hidden;
+        }
+
+        html.dark .child-height-select-popper,
+        html.dark .child-height-select-popper .el-select-dropdown {
+            color: #e2e8f0;
+            background: #0f172a;
+            border-color: #334155;
+        }
+
+        html:not(.dark) .child-height-select-popper,
+        html:not(.dark) .child-height-select-popper .el-select-dropdown {
+            color: #1e293b;
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+
+        html.dark .child-height-select-popper .el-select-dropdown__item {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .child-height-select-popper .el-select-dropdown__item {
+            color: #334155;
+        }
+
+        html.dark .child-height-select-popper .el-select-dropdown__item.hover,
+        html.dark .child-height-select-popper .el-select-dropdown__item:hover {
+            color: #f8fafc;
+            background: #1e3a5f;
+        }
+
+        html:not(.dark) .child-height-select-popper .el-select-dropdown__item.hover,
+        html:not(.dark) .child-height-select-popper .el-select-dropdown__item:hover {
+            color: #0f172a;
+            background: #e0f2fe;
+        }
+
+        @media (max-width: 768px) {
+            .child-height-tool {
+                margin-top: 20px;
+            }
+
+            .child-height-hero {
+                flex-direction: column;
+                padding: 22px 20px;
+            }
+
+            .child-height-status {
+                align-self: stretch;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .child-height-layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .child-height-tool {
+                margin-top: 16px;
+            }
+
+            .child-height-hero {
+                padding: 20px 16px;
+            }
+
+            .child-height-hero h2 {
+                font-size: 1.4rem;
+            }
+
+            .child-height-form-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .child-height-panel,
+            .child-height-insight,
+            .child-height-content {
+                padding: 16px;
+            }
+
+            .child-height-formula-row {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 8px;
+            }
+
+            .child-height-content p,
+            .child-height-content li {
+                font-size: 13px;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="grid-bg"></div>
@@ -39,7 +976,7 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
@@ -47,28 +984,90 @@
     <div class="card-model">
         <div class="card-body">
             <div class="tool-head">
-                <h1 class="title">孩子身高预测</h1>
+                <h1 class="title child-height-title">孩子身高预测</h1>
             </div>
-            <div class="description">身高预测,子女身高预测孩子身高预测,身高预测计算器,最准的预测身高公式,最科学的身高预测方法,身高遗传在线计算器，预测儿童身高，预测身高计算器，如何预测小孩身高</div>
-            <el-form :model="formData" ref="computeForm" size="large" class="tool-form">
-                <el-form-item prop="fatherHeight" :rules="[{required: true, message: `请输入`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
-                    <el-input-extend type="number" v-model="formData.fatherHeight" label="父亲身高(cm)" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-form-item prop="motherHeight" :rules="[{required: true, message: `请输入`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
-                    <el-input-extend type="number" v-model="formData.motherHeight" label="母亲身高(cm)" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-form-item>
-                    <el-select v-model="formData.sex" class="w100">
-                                <el-option :key="1" label="男性" :value="1"></el-option>
-                                <el-option :key="2" label="女性" :value="2"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-button type="primary" v-on:click="compute">计算</el-button>
-            </el-form>
-            <div class="divider"></div>
-            <div class="content">
-                <h2><strong>身高预测公式</strong></h2><p> &nbsp;男性身高＝（父亲身高＋母亲身高+13）÷2（厘米）</p><p> &nbsp;女性身高＝（父亲身高＋母亲身高-13）÷2（厘米）</p><p> &nbsp;口诀：高加高生高，高加矮生高，矮加矮生矮。</p><p>影响孩子身高的因素有很多，预测结果只是一个大概率的趋势，个人成长的各方面影响也很大，因此仅供参考。</p><p>各地人口身高有区域化的特点，北方人一般比较高大威猛，而南方人则比较瘦小一点，所以孩子身高对比不能绝对化。</p><h2><strong>影响身高的因素</strong></h2><p>在所有影响身高的因素里，遗传是绝对第一位的，影响远大于其他所有因素。</p><p>1. 影响最大的：遗传（占比约 60%～80%）</p><ul><li>父母身高基本决定了孩子的身高潜力区间</li><li>你之前用的父母身高预测公式，本质就是遗传身高公式</li><li>高个子父母，孩子大概率高；矮个子父母，孩子大多偏矮</li><li>兄弟姐妹之间身高相近，也主要是遗传在起作用</li></ul><p>2. 影响第二大的：睡眠（尤其是生长激素）</p><ul><li>生长激素主要在夜间深睡眠分泌</li><li>熬夜、睡眠不足，会直接拉低最终身高</li></ul><p>3. 第三：营养</p><ul><li>蛋白质、钙、维生素 D 充足，能让遗传潜力充分发挥</li><li>但营养不能逆天改命，很难让孩子大幅超出遗传上限</li></ul><p>4. 第四：运动</p><ul><li>纵向拉伸、跳跃类运动（篮球、跳绳、游泳）有辅助作用</li><li>同样是帮助长到上限，不能凭空拔高</li></ul><p>5. 其他：性早熟、疾病、情绪等</p><ul><li>性早熟会导致骨骺提前闭合，直接缩短长高时间</li><li>慢性病、长期压力大也会影响身高</li></ul><p><strong>遗传定上限和下限，后天因素决定你能不能长到这个上限。</strong></p>
-            </div>
+            <div class="description child-height-description">身高预测,子女身高预测孩子身高预测,身高预测计算器,最准的预测身高公式,最科学的身高预测方法,身高遗传在线计算器，预测儿童身高，预测身高计算器，如何预测小孩身高</div>
+            <section class="child-height-tool" aria-labelledby="child-height-heading">
+                <div class="child-height-hero">
+                    <div class="child-height-hero-copy">
+                        <p class="child-height-kicker"><span class="child-height-kicker-mark" aria-hidden="true"></span>家庭成长参考</p>
+                        <h2 id="child-height-heading">用父母身高，快速得到遗传参考值</h2>
+                        <p>输入父母身高并选择孩子性别，系统会按照常用遗传身高公式给出成长趋势参考。</p>
+                    </div>
+                    <div class="child-height-status" role="status">
+                        <span class="child-height-status-dot" aria-hidden="true"></span>
+                        <span>仅作成长趋势参考</span>
+                    </div>
+                </div>
+
+                <div class="child-height-layout">
+                    <section class="child-height-panel" aria-labelledby="child-height-form-heading">
+                        <div class="child-height-panel-heading">
+                            <span class="child-height-step" aria-hidden="true">01</span>
+                            <div>
+                                <p class="child-height-overline">输入数据</p>
+                                <h2 id="child-height-form-heading">填写家庭身高信息</h2>
+                                <p class="child-height-panel-copy">单位为厘米，支持小数；数据越准确，参考值越有意义。</p>
+                            </div>
+                        </div>
+
+                        <el-form :model="formData" ref="computeForm" size="large" class="tool-form child-height-form" aria-describedby="child-height-form-note">
+                            <div class="child-height-form-grid">
+                                <el-form-item class="child-height-field" prop="fatherHeight" :rules="[{required: true, message: `请输入`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
+                                    <el-input-extend type="number" v-model="formData.fatherHeight" label="父亲身高(cm)" aria-label="父亲身高（厘米）" class="w100"></el-input-extend>
+                                </el-form-item>
+                                <el-form-item class="child-height-field" prop="motherHeight" :rules="[{required: true, message: `请输入`, trigger: 'blur'}, { pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, message: `必须是大于0的数字`, trigger: 'blur' }]">
+                                    <el-input-extend type="number" v-model="formData.motherHeight" label="母亲身高(cm)" aria-label="母亲身高（厘米）" class="w100"></el-input-extend>
+                                </el-form-item>
+                                <el-form-item class="child-height-field child-height-sex-field">
+                                    <label class="child-height-field-label" for="child-height-sex">孩子性别</label>
+                                    <el-select id="child-height-sex" v-model="formData.sex" class="w100 child-height-select" aria-label="孩子性别" popper-class="child-height-select-popper">
+                                        <el-option :key="1" label="男性" :value="1"></el-option>
+                                        <el-option :key="2" label="女性" :value="2"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </div>
+                            <el-button type="primary" class="child-height-submit" v-on:click="compute">计算预测身高</el-button>
+                        </el-form>
+                        <p id="child-height-form-note" class="child-height-panel-note"><span class="child-height-panel-note-mark" aria-hidden="true">↗</span><span>提交后会根据所选性别跳转到对应的预测结果。</span></p>
+                    </section>
+
+                    <aside class="child-height-insight" aria-labelledby="child-height-insight-heading">
+                        <div class="child-height-insight-heading">
+                            <div>
+                                <p class="child-height-insight-overline">Model snapshot</p>
+                                <h2 id="child-height-insight-heading">公式预览</h2>
+                            </div>
+                            <span class="child-height-reference-badge">±13 cm</span>
+                        </div>
+                        <div class="child-height-readout">
+                            <span class="child-height-readout-label">遗传身高参考</span>
+                            <div class="child-height-readout-value"><strong>父母身高中点</strong><span>按性别校正</span></div>
+                            <span class="child-height-readout-caption">结果为统计学参考，不代表个人最终身高。</span>
+                        </div>
+                        <div class="child-height-formula-list" aria-label="身高预测公式">
+                            <div class="child-height-formula-row">
+                                <span class="child-height-formula-badge is-male">男性</span>
+                                <code>（父亲 + 母亲 + 13）÷ 2</code>
+                            </div>
+                            <div class="child-height-formula-row">
+                                <span class="child-height-formula-badge is-female">女性</span>
+                                <code>（父亲 + 母亲 - 13）÷ 2</code>
+                            </div>
+                        </div>
+                        <div class="child-height-disclaimer">
+                            <span class="child-height-disclaimer-icon" aria-hidden="true">i</span>
+                            <span>遗传、睡眠、营养和运动都会影响孩子的实际成长轨迹。</span>
+                        </div>
+                    </aside>
+                </div>
+
+                <div class="divider child-height-divider" role="presentation"></div>
+                <section class="content child-height-content" aria-labelledby="child-height-guide-heading">
+                    <h2 id="child-height-guide-heading"><strong>身高预测公式</strong></h2>
+                    <p> &nbsp;男性身高＝（父亲身高＋母亲身高+13）÷2（厘米）</p><p> &nbsp;女性身高＝（父亲身高＋母亲身高-13）÷2（厘米）</p><p> &nbsp;口诀：高加高生高，高加矮生高，矮加矮生矮。</p><p>影响孩子身高的因素有很多，预测结果只是一个大概率的趋势，个人成长的各方面影响也很大，因此仅供参考。</p><p>各地人口身高有区域化的特点，北方人一般比较高大威猛，而南方人则比较瘦小一点，所以孩子身高对比不能绝对化。</p><h2><strong>影响身高的因素</strong></h2><p>在所有影响身高的因素里，遗传是绝对第一位的，影响远大于其他所有因素。</p><p>1. 影响最大的：遗传（占比约 60%～80%）</p><ul><li>父母身高基本决定了孩子的身高潜力区间</li><li>你之前用的父母身高预测公式，本质就是遗传身高公式</li><li>高个子父母，孩子大概率高；矮个子父母，孩子大多偏矮</li><li>兄弟姐妹之间身高相近，也主要是遗传在起作用</li></ul><p>2. 影响第二大的：睡眠（尤其是生长激素）</p><ul><li>生长激素主要在夜间深睡眠分泌</li><li>熬夜、睡眠不足，会直接拉低最终身高</li></ul><p>3. 第三：营养</p><ul><li>蛋白质、钙、维生素 D 充足，能让遗传潜力充分发挥</li><li>但营养不能逆天改命，很难让孩子大幅超出遗传上限</li></ul><p>4. 第四：运动</p><ul><li>纵向拉伸、跳跃类运动（篮球、跳绳、游泳）有辅助作用</li><li>同样是帮助长到上限，不能凭空拔高</li></ul><p>5. 其他：性早熟、疾病、情绪等</p><ul><li>性早熟会导致骨骺提前闭合，直接缩短长高时间</li><li>慢性病、长期压力大也会影响身高</li></ul><p><strong>遗传定上限和下限，后天因素决定你能不能长到这个上限。</strong></p>
+                </section>
+            </section>
         </div>
     </div>
 </div>
