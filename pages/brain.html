@@ -17,136 +17,976 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
 
     <style>
-        .category-container {
-            max-width: 1320px;
-            margin: 0 auto;
-            padding: 24px 16px 80px;
-        }
-
-        /* 顶部 Header */
-        .cat-hero {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 24px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
-        }
-        .cat-title-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .cat-title {
-            font-size: 24px;
-            font-weight: 800;
-            color: #f8fafc;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .cat-badge {
-            font-family: 'JetBrains Mono', Consolas, monospace;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 999px;
-            background: rgba(56, 189, 248, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8;
-        }
-        .cat-search-input {
-            width: 260px;
-            height: 38px;
-            background: #090f1d !important;
-            border: 1px solid rgba(51, 65, 85, 0.8);
-            border-radius: 8px;
-            padding: 0 14px;
-            color: #f1f5f9 !important;
-            font-size: 13px;
-            outline: none;
-            transition: all 0.2s;
+        /* Brain training page: the component owns its layout so it remains legible
+           regardless of the surrounding site theme. */
+        .tool-page-body,
+        .tool-page-body * {
             box-sizing: border-box;
         }
-        .cat-search-input:focus {
+
+        .tool-page-body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .tool-page-body .tool-body {
+            width: 100%;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: clamp(16px, 3vw, 32px) clamp(12px, 3vw, 24px) 72px;
+        }
+
+        .tool-page-body .card-model {
+            width: 100%;
+            max-width: 1160px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 16px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .tool-page-body .tool-body {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body .tool-body {
+            color: #1e293b;
+        }
+
+        html.dark .tool-page-body .card-model {
+            background: linear-gradient(180deg, #0f172a 0%, #0b1120 100%);
+            border: 1px solid #1e293b;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(148, 163, 184, 0.04);
+        }
+
+        html:not(.dark) .tool-page-body .card-model {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .tool-page-body .card-body {
+            width: 100%;
+            padding: 0;
+        }
+
+        html.dark .tool-page-body .card-body {
+            background: transparent;
+        }
+
+        html:not(.dark) .tool-page-body .card-body {
+            background: transparent;
+        }
+
+        .tool-page-body .tool-head {
+            position: relative;
+            padding: 30px 30px 0;
+        }
+
+        .tool-page-body .tool-head::after {
+            content: '';
+            display: block;
+            width: 64px;
+            height: 3px;
+            margin-top: 16px;
+            border-radius: 999px;
+        }
+
+        html.dark .tool-page-body .tool-head::after {
+            background: linear-gradient(90deg, #38bdf8, rgba(56, 189, 248, 0));
+        }
+
+        html:not(.dark) .tool-page-body .tool-head::after {
+            background: linear-gradient(90deg, #0284c7, rgba(2, 132, 199, 0));
+        }
+
+        .tool-page-body .title {
+            margin: 0;
+            max-width: 100%;
+            font-size: clamp(28px, 3.5vw, 42px);
+            line-height: 1.15;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .tool-page-body .title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .title {
+            color: #0f172a;
+        }
+
+        .tool-page-body .description {
+            max-width: 760px;
+            margin: 12px 30px 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        html.dark .tool-page-body .description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .description {
+            color: #475569;
+        }
+
+        .brain-page {
+            width: 100%;
+            min-width: 0;
+            padding: 26px 30px 34px;
+        }
+
+        html.dark .brain-page {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .brain-page {
+            color: #1e293b;
+        }
+
+        .tool-page-body .tool-dashboard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            width: 100%;
+            min-width: 0;
+            padding: 16px;
+            border-radius: 14px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .tool-page-body .tool-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .tool-page-body .tool-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .brain-toolbar-main {
+            min-width: 0;
+            flex: 1 1 260px;
+        }
+
+        .brain-toolbar-kicker {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        html.dark .brain-toolbar-kicker {
+            color: #67e8f9;
+        }
+
+        html:not(.dark) .brain-toolbar-kicker {
+            color: #0369a1;
+        }
+
+        .brain-status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex: 0 0 auto;
+        }
+
+        html.dark .brain-status-dot {
+            background: #22d3ee;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12), 0 0 12px rgba(34, 211, 238, 0.6);
+        }
+
+        html:not(.dark) .brain-status-dot {
+            background: #0284c7;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+
+        .brain-toolbar-title {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 650;
+            line-height: 1.5;
+        }
+
+        html.dark .brain-toolbar-title {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .brain-toolbar-title {
+            color: #1e293b;
+        }
+
+        .brain-search {
+            position: relative;
+            width: 100%;
+            max-width: 390px;
+            min-width: 0;
+            flex: 1 1 280px;
+        }
+
+        .brain-search-label {
+            position: absolute !important;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .brain-search-input {
+            display: block;
+            width: 100%;
+            min-width: 0;
+            min-height: 44px;
+            height: 44px;
+            padding: 9px 54px 9px 40px;
+            border-radius: 10px;
+            outline: none;
+            font: inherit;
+            font-size: 14px;
+            line-height: 1.4;
+            appearance: none;
+            -webkit-appearance: none;
+            transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        html.dark .brain-search-input {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .brain-search-input {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+        }
+
+        html.dark .brain-search-input::placeholder {
+            color: #64748b;
+        }
+
+        html:not(.dark) .brain-search-input::placeholder {
+            color: #64748b;
+        }
+
+        html.dark .brain-search-input:hover {
+            border-color: #475569;
+        }
+
+        html:not(.dark) .brain-search-input:hover {
+            border-color: #94a3b8;
+        }
+
+        html.dark .brain-search-input:focus {
             border-color: #38bdf8;
             box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
         }
 
-        /* 响应式网格 */
+        html:not(.dark) .brain-search-input:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
+        }
+
+        .brain-search-icon {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            z-index: 1;
+            width: 18px;
+            height: 18px;
+            transform: translateY(-50%);
+            font-size: 20px;
+            line-height: 18px;
+            pointer-events: none;
+        }
+
+        html.dark .brain-search-icon {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .brain-search-icon {
+            color: #64748b;
+        }
+
+        .brain-search-count {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px;
+            min-height: 24px;
+            padding: 2px 7px;
+            transform: translateY(-50%);
+            border-radius: 999px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        html.dark .brain-search-count {
+            background: rgba(14, 165, 233, 0.16);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .brain-search-count {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+        }
+
+        .brain-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            width: 100%;
+            margin: 16px 0 30px;
+        }
+
+        .brain-stat {
+            min-width: 0;
+            min-height: 80px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        html.dark .brain-stat {
+            background: #111c2f;
+            border: 1px solid #24344d;
+        }
+
+        html:not(.dark) .brain-stat {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .brain-stat:hover {
+            transform: translateY(-1px);
+        }
+
+        html.dark .brain-stat:hover {
+            border-color: #36506e;
+        }
+
+        html:not(.dark) .brain-stat:hover {
+            border-color: #bfdbfe;
+        }
+
+        .brain-stat-label {
+            display: block;
+            margin-bottom: 7px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+
+        html.dark .brain-stat-label {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .brain-stat-label {
+            color: #64748b;
+        }
+
+        .brain-stat-readout {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .brain-stat-value {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: clamp(20px, 2.3vw, 27px);
+            line-height: 1;
+            letter-spacing: -0.04em;
+        }
+
+        html.dark .brain-stat-value {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .brain-stat-value {
+            color: #0f172a;
+        }
+
+        .brain-stat-unit {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        html.dark .brain-stat-unit {
+            color: #64748b;
+        }
+
+        html:not(.dark) .brain-stat-unit {
+            color: #64748b;
+        }
+
+        .brain-state {
+            display: inline-flex;
+            align-items: center;
+            min-height: 26px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+        }
+
+        html.dark .brain-state {
+            background: rgba(34, 197, 94, 0.13);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: #86efac;
+        }
+
+        html:not(.dark) .brain-state {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+        }
+
+        .brain-results-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px 18px;
+            margin-bottom: 20px;
+        }
+
+        .brain-results-kicker {
+            display: block;
+            margin-bottom: 5px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        html.dark .brain-results-kicker {
+            color: #38bdf8;
+        }
+
+        html:not(.dark) .brain-results-kicker {
+            color: #0284c7;
+        }
+
+        .brain-results-title {
+            margin: 0;
+            font-size: clamp(18px, 2.3vw, 23px);
+            line-height: 1.25;
+            font-weight: 750;
+        }
+
+        html.dark .brain-results-title {
+            color: #f1f5f9;
+        }
+
+        html:not(.dark) .brain-results-title {
+            color: #1e293b;
+        }
+
+        .brain-results-note {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        html.dark .brain-results-note {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .brain-results-note {
+            color: #64748b;
+        }
+
+        .subgroup-section {
+            width: 100%;
+            min-width: 0;
+            margin-bottom: 28px;
+        }
+
+        .subgroup-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid;
+        }
+
+        html.dark .subgroup-heading {
+            border-color: #1e293b;
+        }
+
+        html:not(.dark) .subgroup-heading {
+            border-color: #e2e8f0;
+        }
+
+        .subgroup-heading-main {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .subgroup-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            flex: 0 0 auto;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        html.dark .subgroup-index {
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.24);
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .subgroup-index {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #0369a1;
+        }
+
+        .subgroup-title {
+            min-width: 0;
+            margin: 0;
+            overflow-wrap: anywhere;
+            font-size: 16px;
+            line-height: 1.35;
+            font-weight: 750;
+        }
+
+        html.dark .subgroup-title {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .subgroup-title {
+            color: #1e293b;
+        }
+
+        .subgroup-count {
+            flex: 0 0 auto;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        html.dark .subgroup-count {
+            color: #64748b;
+        }
+
+        html:not(.dark) .subgroup-count {
+            color: #64748b;
+        }
+
         .cat-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 248px), 1fr));
             gap: 12px;
+            width: 100%;
+            min-width: 0;
         }
+
         .cat-tool-card {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 14px;
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(51, 65, 85, 0.7);
-            border-radius: 10px;
-            text-decoration: none;
-            color: #cbd5e1;
-            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
             min-width: 0;
-            backdrop-filter: blur(8px);
-        }
-        .cat-tool-card:hover {
-            background: rgba(8, 47, 73, 0.5);
-            border-color: rgba(56, 189, 248, 0.6);
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 14px rgba(56, 189, 248, 0.15);
-        }
-        .cat-tool-icon {
-            width: 26px;
-            height: 26px;
-            object-fit: contain;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-        .cat-tool-name {
-            font-size: 13px;
-            font-weight: 500;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            letter-spacing: 0.01em;
+            min-height: 76px;
+            padding: 12px 13px;
+            border: 1px solid;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* 子分组 (脑力训练等) */
-        .subgroup-section {
-            margin-bottom: 28px;
+        html.dark .cat-tool-card {
+            background: #101b2f;
+            border-color: #26364d;
+            color: #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
-        .subgroup-title {
-            font-family: 'JetBrains Mono', Consolas, monospace;
+
+        html:not(.dark) .cat-tool-card {
+            background: #ffffff;
+            border-color: #dbe4ee;
+            color: #1e293b;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        html.dark .cat-tool-card:hover {
+            background: #132943;
+            border-color: #38bdf8;
+            color: #f8fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28), 0 0 16px rgba(56, 189, 248, 0.12);
+        }
+
+        html:not(.dark) .cat-tool-card:hover {
+            background: #f0f9ff;
+            border-color: #0284c7;
+            color: #0f172a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(14, 116, 144, 0.12);
+        }
+
+        html.dark .cat-tool-card:active,
+        html:not(.dark) .cat-tool-card:active {
+            transform: translateY(0);
+        }
+
+        html.dark .cat-tool-card:focus-visible {
+            outline: 3px solid rgba(56, 189, 248, 0.42);
+            outline-offset: 2px;
+        }
+
+        html:not(.dark) .cat-tool-card:focus-visible {
+            outline: 3px solid rgba(2, 132, 199, 0.28);
+            outline-offset: 2px;
+        }
+
+        .cat-tool-icon-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border-radius: 10px;
+        }
+
+        html.dark .cat-tool-icon-wrap {
+            background: #17263d;
+            border: 1px solid #2b405c;
+        }
+
+        html:not(.dark) .cat-tool-icon-wrap {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+
+        .cat-tool-icon {
+            display: block;
+            width: 32px;
+            height: 32px;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: 7px;
+            flex-shrink: 0;
+        }
+
+        .cat-tool-content {
+            display: flex;
+            flex: 1 1 auto;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .cat-tool-name {
+            display: -webkit-box;
+            overflow: hidden;
+            overflow-wrap: anywhere;
             font-size: 14px;
-            font-weight: 700;
-            color: #94a3b8;
-            margin-bottom: 12px;
+            font-weight: 650;
+            line-height: 1.35;
+            letter-spacing: 0.005em;
+            text-overflow: ellipsis;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+
+        html.dark .cat-tool-name {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .cat-tool-name {
+            color: #1e293b;
+        }
+
+        .cat-tool-code {
+            overflow: hidden;
+            color: #64748b;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 10px;
+            line-height: 1.25;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        html.dark .cat-tool-code {
+            color: #64748b;
+        }
+
+        html:not(.dark) .cat-tool-code {
+            color: #64748b;
+        }
+
+        .cat-tool-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            flex: 0 0 28px;
+            border-radius: 8px;
+            font-size: 17px;
+            line-height: 1;
+            transition: transform 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+        }
+
+        html.dark .cat-tool-arrow {
+            background: rgba(148, 163, 184, 0.08);
+            color: #64748b;
+        }
+
+        html:not(.dark) .cat-tool-arrow {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        html.dark .cat-tool-card:hover .cat-tool-arrow {
+            background: rgba(56, 189, 248, 0.14);
+            color: #7dd3fc;
+            transform: translate(2px, -2px);
+        }
+
+        html:not(.dark) .cat-tool-card:hover .cat-tool-arrow {
+            background: #e0f2fe;
+            color: #0369a1;
+            transform: translate(2px, -2px);
+        }
+
+        .empty-hint {
             display: flex;
             align-items: center;
+            justify-content: center;
+            flex-direction: column;
             gap: 8px;
-        }
-        .subgroup-title::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 14px;
-            background: #38bdf8;
-            border-radius: 2px;
-        }
-        .empty-hint {
+            min-height: 190px;
+            padding: 28px 20px;
+            border: 1px dashed;
+            border-radius: 12px;
             text-align: center;
-            padding: 60px 0;
+        }
+
+        html.dark .empty-hint {
+            background: rgba(15, 23, 42, 0.5);
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .empty-hint {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+
+        .empty-hint strong {
+            font-size: 15px;
+        }
+
+        .empty-hint span:last-child {
+            font-size: 13px;
+        }
+
+        html.dark .empty-hint span:last-child {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .empty-hint span:last-child {
             color: #64748b;
-            font-size: 14px;
-            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .empty-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 22px;
+        }
+
+        html.dark .empty-icon {
+            background: rgba(56, 189, 248, 0.12);
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .empty-icon {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .brain-footnote {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 4px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        html.dark .brain-footnote {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .brain-footnote {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        .brain-footnote-mark {
+            flex: 0 0 auto;
+            padding: 3px 6px;
+            border-radius: 5px;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        html.dark .brain-footnote-mark {
+            background: rgba(56, 189, 248, 0.14);
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .brain-footnote-mark {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        @media (max-width: 768px) {
+            .tool-page-body .tool-body {
+                padding: 12px 10px 48px;
+            }
+
+            .tool-page-body .card-model {
+                border-radius: 14px;
+            }
+
+            .tool-page-body .tool-head {
+                padding: 24px 18px 0;
+            }
+
+            .tool-page-body .description {
+                margin: 10px 18px 0;
+                font-size: 14px;
+            }
+
+            .brain-page {
+                padding: 22px 18px 26px;
+            }
+
+            .tool-page-body .tool-dashboard {
+                align-items: stretch;
+                padding: 13px;
+            }
+
+            .brain-toolbar-main,
+            .brain-search {
+                flex-basis: 100%;
+                max-width: none;
+            }
+
+            .brain-stats {
+                gap: 8px;
+                margin-bottom: 24px;
+            }
+
+            .brain-stat {
+                padding: 12px;
+            }
+
+            .cat-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (max-width: 420px) {
+            .tool-page-body .tool-body {
+                padding-right: 6px;
+                padding-left: 6px;
+            }
+
+            .tool-page-body .tool-head {
+                padding-right: 16px;
+                padding-left: 16px;
+            }
+
+            .tool-page-body .description {
+                margin-right: 16px;
+                margin-left: 16px;
+            }
+
+            .brain-page {
+                padding-right: 16px;
+                padding-left: 16px;
+            }
+
+            .brain-stats {
+                gap: 6px;
+            }
+
+            .brain-stat {
+                min-height: 74px;
+                padding: 11px 10px;
+            }
+
+            .brain-stat-label {
+                font-size: 11px;
+            }
+
+            .cat-tool-card {
+                padding-right: 10px;
+                padding-left: 10px;
+            }
         }
     </style>
 </head>
@@ -161,30 +1001,100 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-<main class="category-container" id="app">
-    <!-- Hero & Search Header -->
-    <div class="cat-hero">
-        <div class="cat-title-group">
-            <h1 class="cat-title">脑力训练</h1>
-            <span class="cat-badge">{{ filteredCount }} 款工具</span>
-        </div>
-        <div>
-            <input type="text" v-model="searchQuery" placeholder="在当前分类中快速筛选..." class="cat-search-input" />
-        </div>
-    </div>
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">脑力训练</h1>
+                </div>
+                <div class="description">训练记忆、专注、推演、反应、感知与空间能力。选择一个项目，开启一轮专注练习。</div>
 
-    <!-- Brain Children View -->
-    
-    <div v-for="sub in filteredSubgroups" :key="sub.key" class="subgroup-section">
-        <div class="subgroup-title">{{ sub.desc }} ({{ sub.toolList.length }})</div>
-        <div class="cat-grid">
-            <a v-for="t in sub.toolList" :key="t.toolCode" :href="'/' + t.toolCode" class="cat-tool-card" :title="t.toolName">
-                <img :src="t.icon || './img/icons/default.svg'" alt="" class="cat-tool-icon" />
-                <span class="cat-tool-name">{{ t.toolName }}</span>
-            </a>
+                <div class="brain-page">
+                    <div class="tool-dashboard brain-toolbar" role="search" aria-label="脑力训练工具筛选">
+                        <div class="brain-toolbar-main">
+                            <div class="brain-toolbar-kicker">
+                                <span class="brain-status-dot" aria-hidden="true"></span>
+                                <span>COGNITIVE TRAINING INDEX</span>
+                            </div>
+                            <p class="brain-toolbar-title">从训练方向中选择一个模块，保持专注，持续进步。</p>
+                        </div>
+                        <div class="brain-search">
+                            <label class="brain-search-label" for="brain-search">筛选脑力训练工具</label>
+                            <span class="brain-search-icon" aria-hidden="true">⌕</span>
+                            <input id="brain-search" type="search" v-model="searchQuery" placeholder="搜索工具名称或代码..." class="brain-search-input" autocomplete="off" spellcheck="false" aria-label="搜索脑力训练工具" />
+                            <span class="brain-search-count" aria-live="polite">{{ filteredCount }}</span>
+                        </div>
+                    </div>
+
+                    <div class="brain-stats" aria-label="训练概览">
+                        <div class="brain-stat">
+                            <span class="brain-stat-label">当前筛选</span>
+                            <div class="brain-stat-readout">
+                                <strong class="brain-stat-value">{{ filteredCount }}</strong>
+                                <span class="brain-stat-unit">项工具</span>
+                            </div>
+                        </div>
+                        <div class="brain-stat">
+                            <span class="brain-stat-label">训练维度</span>
+                            <div class="brain-stat-readout">
+                                <strong class="brain-stat-value">{{ filteredSubgroups.length }}</strong>
+                                <span class="brain-stat-unit">个方向</span>
+                            </div>
+                        </div>
+                        <div class="brain-stat">
+                            <span class="brain-stat-label">系统状态</span>
+                            <div class="brain-stat-readout">
+                                <span class="brain-state">READY</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="brain-results-header">
+                        <div>
+                            <span class="brain-results-kicker">TRAINING MODULES</span>
+                            <h2 class="brain-results-title">选择训练方向</h2>
+                        </div>
+                        <span class="brain-results-note" aria-live="polite">已为你整理 {{ filteredCount }} 项练习</span>
+                    </div>
+
+                    <div v-if="filteredSubgroups.length > 0">
+                        <section v-for="(sub, groupIndex) in filteredSubgroups" :key="sub.key" class="subgroup-section" :aria-labelledby="'brain-group-' + sub.key">
+                            <div class="subgroup-heading">
+                                <div class="subgroup-heading-main">
+                                    <span class="subgroup-index" aria-hidden="true">{{ groupIndex + 1 < 10 ? '0' + (groupIndex + 1) : groupIndex + 1 }}</span>
+                                    <h3 class="subgroup-title" :id="'brain-group-' + sub.key">{{ sub.desc }}</h3>
+                                </div>
+                                <span class="subgroup-count">{{ sub.toolList.length }} 项训练</span>
+                            </div>
+                            <div class="cat-grid">
+                                <a v-for="t in sub.toolList" :key="t.toolCode" :href="'/' + t.toolCode" class="cat-tool-card" :title="t.toolName" :aria-label="t.toolName">
+                                    <span class="cat-tool-icon-wrap">
+                                        <img :src="t.icon || './img/icons/default.svg'" alt="" class="cat-tool-icon" />
+                                    </span>
+                                    <span class="cat-tool-content">
+                                        <span class="cat-tool-name">{{ t.toolName }}</span>
+                                        <span class="cat-tool-code">{{ t.toolCode }}</span>
+                                    </span>
+                                    <span class="cat-tool-arrow" aria-hidden="true">↗</span>
+                                </a>
+                            </div>
+                        </section>
+                    </div>
+                    <div v-else class="empty-hint" role="status">
+                        <span class="empty-icon" aria-hidden="true">⌁</span>
+                        <strong>没有匹配的训练工具</strong>
+                        <span>试试更短的关键词，或搜索工具代码。</span>
+                    </div>
+
+                    <div class="brain-footnote">
+                        <span class="brain-footnote-mark">TIP</span>
+                        <span>建议从熟悉的训练开始，每次专注完成一轮，再逐步挑战更高难度。</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    
 </main>
 
 <script src="./lib/vue/vue.global.prod.js"></script>
