@@ -27,6 +27,790 @@
     <meta name="twitter:description" content="在线有氧运动最佳心率计算器。方便快捷的燃脂心率测试，通过有氧心率计算获得您的燃脂有氧运动最佳心率数据。" />
     <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
     <link rel="canonical" href="https://tool.6767.chat/burn-fat-heart-rate" />
+    <style>
+        /* Page-local UI: the calculator keeps its own high-contrast dark/light system. */
+        .burn-fat-tool,
+        .burn-fat-tool * {
+            box-sizing: border-box;
+        }
+
+        html.dark .burn-fat-tool {
+            --bf-surface: #0b1120;
+            --bf-surface-raised: #0f172a;
+            --bf-surface-soft: #111c31;
+            --bf-border: #1e293b;
+            --bf-border-strong: #334155;
+            --bf-text: #f8fafc;
+            --bf-text-soft: #cbd5e1;
+            --bf-text-muted: #94a3b8;
+            --bf-accent: #38bdf8;
+            --bf-accent-strong: #0ea5e9;
+            --bf-accent-wash: rgba(14, 116, 144, 0.22);
+            --bf-success: #34d399;
+            --bf-warning: #fbbf24;
+            --bf-warning-wash: rgba(245, 158, 11, 0.12);
+            --bf-warning-border: #d97706;
+            --bf-danger: #fca5a5;
+            --bf-button-bg: #0e7490;
+            --bf-button-fg: #e0f2fe;
+            --bf-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+            color: var(--bf-text);
+            background: transparent;
+        }
+
+        html:not(.dark) .burn-fat-tool {
+            --bf-surface: #ffffff;
+            --bf-surface-raised: #f8fafc;
+            --bf-surface-soft: #f1f5f9;
+            --bf-border: #e2e8f0;
+            --bf-border-strong: #cbd5e1;
+            --bf-text: #0f172a;
+            --bf-text-soft: #334155;
+            --bf-text-muted: #475569;
+            --bf-accent: #0284c7;
+            --bf-accent-strong: #0369a1;
+            --bf-accent-wash: rgba(2, 132, 199, 0.09);
+            --bf-success: #047857;
+            --bf-warning: #b45309;
+            --bf-warning-wash: rgba(180, 83, 9, 0.08);
+            --bf-warning-border: #b45309;
+            --bf-danger: #b91c1c;
+            --bf-button-bg: #0284c7;
+            --bf-button-fg: #ffffff;
+            --bf-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+            color: var(--bf-text);
+            background: transparent;
+        }
+
+        .burn-fat-tool {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            overflow: hidden;
+            color: var(--bf-text);
+        }
+
+        .burn-fat-tool .tool-head-modern {
+            display: block;
+            margin: 0 0 8px;
+        }
+
+        .burn-fat-tool .tool-head-modern .title {
+            margin: 0;
+            color: var(--bf-text);
+            font-size: clamp(1.7rem, 3vw, 2.4rem) !important;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+        }
+
+        .burn-fat-tool .description-modern {
+            max-width: 760px;
+            margin: 0 0 20px;
+            color: var(--bf-text-muted);
+            font-size: 15px;
+            line-height: 1.75;
+        }
+
+        .burn-fat-tool .tool-dashboard,
+        .burn-fat-tool .calculator-panel,
+        .burn-fat-tool .insight-panel,
+        .burn-fat-tool .info-card,
+        .burn-fat-tool .formula-card,
+        .burn-fat-tool .warning-note {
+            border: 1px solid var(--bf-border);
+            color: var(--bf-text);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        html.dark .burn-fat-tool .tool-dashboard {
+            background: #090e1f;
+            border-color: #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .burn-fat-tool .tool-dashboard {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .burn-fat-tool .tool-dashboard {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            margin: 0 0 18px;
+            padding: 14px 16px;
+            border-radius: 12px;
+        }
+
+        html.dark .burn-fat-tool .dashboard-mark {
+            background: rgba(14, 116, 144, 0.28);
+            border-color: rgba(56, 189, 248, 0.42);
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .burn-fat-tool .dashboard-mark {
+            background: #e0f2fe;
+            border-color: #bae6fd;
+            color: #0369a1;
+        }
+
+        .burn-fat-tool .dashboard-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border: 1px solid;
+            border-radius: 12px;
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .burn-fat-tool .dashboard-copy {
+            min-width: 0;
+        }
+
+        .burn-fat-tool .dashboard-eyebrow,
+        .burn-fat-tool .panel-kicker,
+        .burn-fat-tool .section-kicker {
+            display: block;
+            color: var(--bf-accent);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.4;
+            text-transform: uppercase;
+            overflow-wrap: anywhere;
+        }
+
+        .burn-fat-tool .dashboard-title {
+            margin: 3px 0 0;
+            color: var(--bf-text);
+            font-size: 15px;
+            font-weight: 750;
+            line-height: 1.45;
+        }
+
+        .burn-fat-tool .dashboard-summary {
+            margin: 2px 0 0;
+            color: var(--bf-text-muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        html.dark .burn-fat-tool .status-badge {
+            background: rgba(52, 211, 153, 0.1);
+            border-color: rgba(52, 211, 153, 0.3);
+            color: #6ee7b7;
+        }
+
+        html:not(.dark) .burn-fat-tool .status-badge {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #047857;
+        }
+
+        .burn-fat-tool .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 30px;
+            padding: 5px 10px;
+            border: 1px solid;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .burn-fat-tool .status-dot {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+            background: var(--bf-success);
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.14);
+        }
+
+        .burn-fat-tool .calculator-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        html.dark .burn-fat-tool .calculator-panel,
+        html.dark .burn-fat-tool .insight-panel,
+        html.dark .burn-fat-tool .info-card,
+        html.dark .burn-fat-tool .formula-card {
+            background: #0b1120;
+            border-color: #1e293b;
+            box-shadow: var(--bf-shadow);
+        }
+
+        html:not(.dark) .burn-fat-tool .calculator-panel,
+        html:not(.dark) .burn-fat-tool .insight-panel,
+        html:not(.dark) .burn-fat-tool .info-card,
+        html:not(.dark) .burn-fat-tool .formula-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: var(--bf-shadow);
+        }
+
+        .burn-fat-tool .calculator-panel,
+        .burn-fat-tool .insight-panel {
+            min-width: 0;
+            padding: clamp(18px, 3vw, 26px);
+            border-radius: 12px;
+        }
+
+        .burn-fat-tool .panel-heading h2,
+        .burn-fat-tool .section-heading h2 {
+            margin: 5px 0 0;
+            color: var(--bf-text);
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+        }
+
+        .burn-fat-tool .panel-heading p,
+        .burn-fat-tool .section-heading p {
+            max-width: 650px;
+            margin: 8px 0 0;
+            color: var(--bf-text-muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .burn-fat-tool .modern-form {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: end;
+            gap: 14px;
+            width: 100%;
+            max-width: 100%;
+            margin: 22px 0 0;
+        }
+
+        .burn-fat-tool .modern-form .el-form-item {
+            min-width: 0;
+            margin: 0;
+        }
+
+        .burn-fat-tool .modern-form .el-form-item__content {
+            display: block;
+            min-width: 0;
+            margin-left: 0 !important;
+            line-height: normal;
+        }
+
+        .burn-fat-tool .modern-form .el-input-extend,
+        .burn-fat-tool .modern-form .age-input {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .burn-fat-tool .modern-form input {
+            max-width: 100%;
+            color: var(--bf-text);
+        }
+
+        .burn-fat-tool .modern-form .el-input__wrapper {
+            min-height: 44px;
+            border-radius: 9px;
+            background: var(--bf-surface-raised);
+            box-shadow: 0 0 0 1px var(--bf-border) inset;
+            transition: background 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .burn-fat-tool .modern-form .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px var(--bf-border-strong) inset;
+        }
+
+        .burn-fat-tool .modern-form .el-input__wrapper:focus-within {
+            background: var(--bf-surface);
+            box-shadow: 0 0 0 2px var(--bf-accent) inset, 0 0 0 3px var(--bf-accent-wash);
+        }
+
+        .burn-fat-tool .modern-form .el-input__inner {
+            color: var(--bf-text);
+        }
+
+        .burn-fat-tool .modern-form .el-input__inner::placeholder {
+            color: var(--bf-text-muted);
+        }
+
+        .burn-fat-tool .modern-form .el-form-item__error {
+            padding-top: 5px;
+            color: var(--bf-danger);
+            line-height: 1.4;
+        }
+
+        .burn-fat-tool .input-hint {
+            margin-top: 7px;
+            color: var(--bf-text-muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .burn-fat-tool .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 42px;
+            padding: 9px 17px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 750;
+            line-height: 1.2;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+            transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        html.dark .burn-fat-tool .action-btn-primary {
+            background: #0e7490;
+            border-color: #38bdf8;
+            color: #e0f2fe;
+        }
+
+        html:not(.dark) .burn-fat-tool .action-btn-primary {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #ffffff;
+        }
+
+        html.dark .burn-fat-tool .action-btn-primary:hover {
+            background: #0284c7;
+            border-color: #7dd3fc;
+            color: #ffffff;
+        }
+
+        html:not(.dark) .burn-fat-tool .action-btn-primary:hover {
+            background: #0369a1;
+            border-color: #0369a1;
+            color: #ffffff;
+        }
+
+        .burn-fat-tool .action-btn-primary:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        .burn-fat-tool .action-btn:focus-visible,
+        .burn-fat-tool .age-input:focus-visible,
+        .burn-fat-tool .modern-form input:focus-visible {
+            outline: 3px solid var(--bf-accent);
+            outline-offset: 2px;
+        }
+
+        .burn-fat-tool .button-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .burn-fat-tool .privacy-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin: 18px 0 0;
+            color: var(--bf-text-muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .burn-fat-tool .privacy-note-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            flex: 0 0 18px;
+            border: 1px solid var(--bf-border-strong);
+            border-radius: 50%;
+            color: var(--bf-accent);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .burn-fat-tool .insight-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .burn-fat-tool .insight-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        html.dark .burn-fat-tool .ratio-badge {
+            background: rgba(56, 189, 248, 0.12);
+            border-color: rgba(56, 189, 248, 0.35);
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .burn-fat-tool .ratio-badge {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+            color: #0369a1;
+        }
+
+        .burn-fat-tool .ratio-badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            padding: 4px 9px;
+            border: 1px solid;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .burn-fat-tool .zone-meter {
+            margin-top: 22px;
+        }
+
+        html.dark .burn-fat-tool .zone-track {
+            background: #1e293b;
+        }
+
+        html:not(.dark) .burn-fat-tool .zone-track {
+            background: #e2e8f0;
+        }
+
+        .burn-fat-tool .zone-track {
+            position: relative;
+            height: 11px;
+            overflow: hidden;
+            border-radius: 999px;
+        }
+
+        .burn-fat-tool .zone-fill {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 60%;
+            width: 15%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #0ea5e9, #34d399);
+            box-shadow: 0 0 14px rgba(52, 211, 153, 0.42);
+        }
+
+        .burn-fat-tool .zone-scale {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 8px;
+            color: var(--bf-text-muted);
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .burn-fat-tool .insight-copy strong {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--bf-text);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .burn-fat-tool .insight-copy p {
+            margin: 0;
+            color: var(--bf-text-muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .burn-fat-tool .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0;
+            border-top: 1px solid var(--bf-border);
+        }
+
+        .burn-fat-tool .quick-stat {
+            min-width: 0;
+            padding: 14px 12px 0 0;
+        }
+
+        .burn-fat-tool .quick-stat + .quick-stat {
+            padding-left: 12px;
+            border-left: 1px solid var(--bf-border);
+        }
+
+        .burn-fat-tool .quick-stat-label {
+            display: block;
+            color: var(--bf-text-muted);
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .burn-fat-tool .quick-stat-value {
+            display: block;
+            margin-top: 4px;
+            color: var(--bf-text);
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .burn-fat-tool .divider-modern {
+            height: 1px;
+            margin: 30px 0 26px;
+            border: 0;
+            background: var(--bf-border);
+        }
+
+        .burn-fat-tool .info-content {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            color: var(--bf-text-soft);
+        }
+
+        .burn-fat-tool .section-heading {
+            margin-bottom: 18px;
+        }
+
+        .burn-fat-tool .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .burn-fat-tool .info-card {
+            min-width: 0;
+            padding: 18px;
+            border-radius: 11px;
+        }
+
+        .burn-fat-tool .info-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        html.dark .burn-fat-tool .info-number {
+            background: rgba(56, 189, 248, 0.12);
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .burn-fat-tool .info-number {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .burn-fat-tool .info-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 850;
+        }
+
+        .burn-fat-tool .info-tag {
+            color: var(--bf-text-muted);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .burn-fat-tool .info-card h3 {
+            margin: 0 0 8px;
+            color: var(--bf-text);
+            font-size: 16px;
+            line-height: 1.45;
+        }
+
+        .burn-fat-tool .info-card p {
+            margin: 0;
+            color: var(--bf-text-muted);
+            font-size: 13px;
+            line-height: 1.75;
+            overflow-wrap: anywhere;
+        }
+
+        .burn-fat-tool .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        html.dark .burn-fat-tool .formula-card {
+            background: #0f172a;
+        }
+
+        html:not(.dark) .burn-fat-tool .formula-card {
+            background: #f8fafc;
+        }
+
+        .burn-fat-tool .formula-card {
+            min-width: 0;
+            padding: 16px 18px;
+            border-radius: 11px;
+        }
+
+        .burn-fat-tool .formula-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--bf-accent);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        .burn-fat-tool .formula-card p {
+            margin: 0;
+            color: var(--bf-text-soft);
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .burn-fat-tool .warning-note {
+            background: rgba(120, 53, 15, 0.18);
+            border-color: rgba(245, 158, 11, 0.42);
+        }
+
+        html:not(.dark) .burn-fat-tool .warning-note {
+            background: #fffbeb;
+            border-color: #fcd34d;
+        }
+
+        .burn-fat-tool .warning-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 14px;
+            padding: 15px 17px;
+            border-radius: 11px;
+        }
+
+        html.dark .burn-fat-tool .warning-icon {
+            background: rgba(251, 191, 36, 0.16);
+            color: #fcd34d;
+        }
+
+        html:not(.dark) .burn-fat-tool .warning-icon {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .burn-fat-tool .warning-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            flex: 0 0 24px;
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .burn-fat-tool .warning-note strong {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--bf-text);
+            font-size: 13px;
+        }
+
+        .burn-fat-tool .warning-note p {
+            margin: 0;
+            color: var(--bf-text-soft);
+            font-size: 13px;
+            line-height: 1.65;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 768px) {
+            .burn-fat-tool .tool-dashboard {
+                grid-template-columns: auto minmax(0, 1fr);
+            }
+
+            .burn-fat-tool .status-badge {
+                grid-column: 2;
+                justify-self: start;
+            }
+
+            .burn-fat-tool .calculator-layout,
+            .burn-fat-tool .info-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .burn-fat-tool .modern-form {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .burn-fat-tool .action-btn-primary {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .burn-fat-tool .tool-dashboard {
+                gap: 11px;
+                padding: 13px;
+            }
+
+            .burn-fat-tool .dashboard-mark {
+                width: 40px;
+                height: 40px;
+                flex-basis: 40px;
+            }
+
+            .burn-fat-tool .dashboard-summary {
+                font-size: 12px;
+            }
+
+            .burn-fat-tool .calculator-panel,
+            .burn-fat-tool .insight-panel,
+            .burn-fat-tool .info-card {
+                padding: 17px;
+            }
+
+            .burn-fat-tool .formula-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .burn-fat-tool .divider-modern {
+                margin: 24px 0 22px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .burn-fat-tool *,
+            .burn-fat-tool *::before,
+            .burn-fat-tool *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="grid-bg"></div>
@@ -39,27 +823,105 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
 <div class="tool-body">
     <div class="card-model">
-        <div class="card-body">
-            <div class="tool-head">
+        <div class="card-body burn-fat-tool">
+            <div class="tool-head tool-head-modern">
                 <h1 class="title">燃脂心率计算器</h1>
             </div>
-            <div class="description">在线有氧运动最佳心率计算器。方便快捷的燃脂心率测试，通过有氧心率计算获得您的燃脂有氧运动最佳心率数据。</div>
-            <el-form :model="formData" ref="computeForm" size="large" class="tool-form" v-on:submit.native.prevent>
-                <el-form-item prop="age" :rules="[{required: true, message: `请输入年龄`, trigger: 'blur'}, { pattern: /^[1-9]\d*$/, message: `必须是大于0的整数`, trigger: 'blur' }]">
-                    <el-input-extend type="number" v-model="formData.age" label="年龄" class="w100"></el-input-extend>
-                </el-form-item>
-                <el-button type="primary" v-on:click="compute">计算</el-button>
-            </el-form>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>介绍</h3><p>1、运动生理学家发现，运动量达到最大心率的 60% 时，身体开始大量消耗脂肪供能。当最大心率达到 75% 以上时，身体在消耗脂肪的同时开始增大蛋白质（肌肉）消耗供能比例。因此最大心率的 60% ~ 75%（称为目标心率或靶心率）即为有氧运动燃脂的最佳心率区间。</p><p>2、有氧运动最佳心率的计算方式一般有最高心率法（Maximal Heart Rate Method）和心率储备法（Heart Rate Reserve Method）两种。最高心率法简单易行，可以直接根据公式获得目标心率；而心率储备法则需要预先测量静息心率（静止心率），会提供更准确的数据。</p><p>3、测量静息心率：记录极度安静状态下 1 分钟内的脉搏跳动次数。测量的最佳时间是早晨起床之前。</p><p> • 最高心率法：有氧运动最佳心率 =（最大心率）X（60% ~ 75%）</p><p> • 心率储备法：有氧运动最佳心率 =（最大心率 - 静息心率）X（60% ~ 75%）+ 静息心率</p><p><span style="color: rgb(225, 60, 57);">提醒：这个测试不适用于儿童和心脏病等相关疾病患者。</span></p>
+            <div class="description description-modern">在线有氧运动最佳心率计算器。方便快捷的燃脂心率测试，通过有氧心率计算获得您的燃脂有氧运动最佳心率数据。</div>
+            <div class="tool-dashboard burn-fat-dashboard" aria-label="计算器概览">
+                <div class="dashboard-mark" aria-hidden="true">♥</div>
+                <div class="dashboard-copy">
+                    <span class="dashboard-eyebrow">HEART RATE / AEROBIC ZONE</span>
+                    <p class="dashboard-title">用合适的强度，让每一次有氧都更有效</p>
+                    <p class="dashboard-summary">输入年龄，快速估算适合持续训练的燃脂心率区间。</p>
+                </div>
+                <span class="status-badge"><span class="status-dot" aria-hidden="true"></span>快速估算</span>
             </div>
+
+            <div class="calculator-layout">
+                <section class="calculator-panel" aria-labelledby="input-panel-title">
+                    <div class="panel-heading">
+                        <span class="panel-kicker">01 / INPUT</span>
+                        <h2 id="input-panel-title">先告诉我们你的年龄</h2>
+                        <p>年龄是估算最大心率的基础数据，填写后即可获得更适合你的训练参考。</p>
+                    </div>
+                    <el-form :model="formData" ref="computeForm" size="large" class="tool-form modern-form" v-on:submit.native.prevent>
+                        <el-form-item prop="age" :rules="[{required: true, message: `请输入年龄`, trigger: 'blur'}, { pattern: /^[1-9]\d*$/, message: `必须是大于0的整数`, trigger: 'blur' }]">
+                            <el-input-extend id="burn-fat-age" type="number" v-model="formData.age" label="年龄" class="w100 age-input" aria-label="年龄（周岁）" inputmode="numeric" min="1"></el-input-extend>
+                            <div class="input-hint">请输入大于 0 的整数，例如 30。</div>
+                        </el-form-item>
+                        <el-button type="primary" class="action-btn action-btn-primary" v-on:click="compute" aria-label="计算最佳燃脂心率区间"><span>计算最佳区间</span><span class="button-icon" aria-hidden="true">→</span></el-button>
+                    </el-form>
+                    <p class="privacy-note"><span class="privacy-note-mark" aria-hidden="true">i</span><span>结果用于日常训练规划参考，不替代专业医疗建议。</span></p>
+                </section>
+
+                <aside class="insight-panel" aria-label="燃脂心率训练指南">
+                    <div>
+                        <div class="insight-header">
+                            <span class="panel-kicker">TARGET ZONE</span>
+                            <span class="ratio-badge">60%–75%</span>
+                        </div>
+                        <div class="zone-meter" role="img" aria-label="目标心率区间为最大心率的百分之六十到百分之七十五">
+                            <div class="zone-track"><span class="zone-fill"></span></div>
+                            <div class="zone-scale" aria-hidden="true"><span>0%</span><span>60%</span><span>75%</span><span>100%</span></div>
+                        </div>
+                        <div class="insight-copy">
+                            <strong>保持在可持续、有节奏的强度</strong>
+                            <p>这个区间适合多数人的持续有氧训练。运动时仍应根据自身感受及时调整。</p>
+                        </div>
+                    </div>
+                    <div class="quick-stats" aria-label="训练参考">
+                        <div class="quick-stat"><span class="quick-stat-label">目标区间</span><span class="quick-stat-value">最大心率 × 60%–75%</span></div>
+                        <div class="quick-stat"><span class="quick-stat-label">静息心率</span><span class="quick-stat-value">晨起测量更稳定</span></div>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="divider divider-modern" role="presentation"></div>
+            <section class="content info-content" aria-labelledby="guide-title">
+                <div class="section-heading">
+                    <span class="section-kicker">HOW IT WORKS</span>
+                    <h2 id="guide-title">把心率变成可执行的训练提示</h2>
+                    <p>了解区间背后的计算逻辑，再把结果融入你的日常运动节奏。</p>
+                </div>
+                <div class="info-grid">
+                    <article class="info-card">
+                        <div class="info-card-top"><span class="info-number">01</span><span class="info-tag">目标区间</span></div>
+                        <h3>为什么是 60%–75%？</h3>
+                        <p>运动量达到最大心率的 60% 时，身体开始大量消耗脂肪供能；达到 75% 以上后，蛋白质（肌肉）的供能比例也会增加。因此，60%–75% 常被作为有氧燃脂的目标心率区间。</p>
+                    </article>
+                    <article class="info-card">
+                        <div class="info-card-top"><span class="info-number">02</span><span class="info-tag">两种算法</span></div>
+                        <h3>选择适合你的计算方式</h3>
+                        <p>最高心率法简单易行，可以直接获得目标心率；心率储备法会结合静息心率，通常能提供更贴近个人状态的数据。</p>
+                    </article>
+                    <article class="info-card">
+                        <div class="info-card-top"><span class="info-number">03</span><span class="info-tag">测量建议</span></div>
+                        <h3>先记录静息心率</h3>
+                        <p>在极度安静状态下记录 1 分钟内的脉搏跳动次数，最佳时间是早晨起床之前。连续记录几天可减少偶然波动。</p>
+                    </article>
+                </div>
+                <div class="formula-grid">
+                    <article class="formula-card">
+                        <span class="formula-label">最高心率法 / MAX HR</span>
+                        <p>有氧运动最佳心率 = 最大心率 × (60%–75%)</p>
+                    </article>
+                    <article class="formula-card">
+                        <span class="formula-label">心率储备法 / HRR</span>
+                        <p>有氧运动最佳心率 = (最大心率 − 静息心率) × (60%–75%) + 静息心率</p>
+                    </article>
+                </div>
+                <div class="warning-note" role="note">
+                    <span class="warning-icon" aria-hidden="true">!</span>
+                    <div><strong>安全提醒</strong><p>这个测试不适用于儿童和心脏病等相关疾病患者。如有不适，请立即停止运动并咨询专业人士。</p></div>
+                </div>
+            </section>
         </div>
     </div>
 </div>
