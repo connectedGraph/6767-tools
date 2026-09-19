@@ -17,17 +17,979 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .op-box{margin-bottom:10px;}
-        .editor-menu { width: 100%; border: 1px solid #808080; border-bottom: 0; display: flex; align-items: center; flex-wrap: wrap; }
-        .editor-menu .item{padding:4px;}
-        .editor-menu .item:first-child { width: 49%; }
-        .editor-menu .item:last-child{flex:1;}
-        #editor-container { width: 100%; height: 600px; border: 1px solid #808080; max-width: 100%; overflow: hidden; }
+        /* Page frame: deliberately scoped so this tool stays independent of shared tool styles. */
+        .tool-page-body,
+        .tool-page-body .tool-body,
+        .tool-page-body .card-model,
+        .tool-page-body .card-body {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .tool-page-body {
+            overflow-x: hidden;
+        }
+
+        html.dark .tool-page-body {
+            background: transparent;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body {
+            background: transparent;
+            color: #0f172a;
+        }
+
+        .tool-page-body .card-model {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        html.dark .tool-page-body .card-model {
+            background: transparent;
+        }
+
+        html:not(.dark) .tool-page-body .card-model {
+            background: transparent;
+        }
+
+        .tool-page-body .card-body {
+            padding: clamp(20px, 3vw, 36px);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        html.dark .tool-page-body .card-body {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 18px 48px rgba(2, 6, 23, 0.3), inset 0 1px 0 rgba(148, 163, 184, 0.04);
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .tool-page-body .card-body {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            color: #0f172a;
+        }
+
+        .tool-page-body .tool-head {
+            display: flex;
+            align-items: flex-start;
+            min-width: 0;
+            margin: 0 0 10px;
+        }
+
+        .tool-page-body .tool-head .title {
+            margin: 0;
+            max-width: 100%;
+            color: inherit;
+            font-size: clamp(24px, 3vw, 36px);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .tool-page-body .tool-head .title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .tool-page-body .tool-head .title {
+            color: #0f172a;
+        }
+
+        .tool-page-body .description {
+            max-width: 860px;
+            margin: 0 0 24px;
+            line-height: 1.75;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .tool-page-body .description {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .tool-page-body .description {
+            color: #475569;
+        }
+
+        /* Compare workspace */
+        .compare-tool,
+        .compare-tool * {
+            box-sizing: border-box;
+        }
+
+        .compare-tool {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            color: var(--compare-text);
+        }
+
+        html.dark .compare-tool {
+            --compare-text: #e2e8f0;
+            --compare-heading: #f8fafc;
+            --compare-muted: #94a3b8;
+            --compare-subtle: #64748b;
+            --compare-surface: #0b1120;
+            --compare-raised: #0f172a;
+            --compare-soft: #111c31;
+            --compare-border: #1e293b;
+            --compare-border-strong: #334155;
+            --compare-accent: #38bdf8;
+            --compare-accent-deep: #0e7490;
+            --compare-accent-soft: rgba(14, 116, 144, 0.2);
+            --compare-shadow: rgba(2, 6, 23, 0.42);
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .compare-tool {
+            --compare-text: #1e293b;
+            --compare-heading: #0f172a;
+            --compare-muted: #475569;
+            --compare-subtle: #64748b;
+            --compare-surface: #ffffff;
+            --compare-raised: #f8fafc;
+            --compare-soft: #f1f5f9;
+            --compare-border: #e2e8f0;
+            --compare-border-strong: #cbd5e1;
+            --compare-accent: #0284c7;
+            --compare-accent-deep: #0369a1;
+            --compare-accent-soft: #e0f2fe;
+            --compare-shadow: rgba(15, 23, 42, 0.08);
+            color: #1e293b;
+        }
+
+        .compare-tool .compare-dashboard {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(220px, 290px);
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            min-width: 0;
+            margin: 0 0 16px;
+            padding: 16px 18px;
+            border-radius: 12px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        html.dark .compare-tool .compare-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        html:not(.dark) .compare-tool .compare-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .compare-tool .compare-dashboard-copy,
+        .compare-tool .compare-language-field {
+            min-width: 0;
+        }
+
+        .compare-tool .compare-dashboard-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        html.dark .compare-tool .compare-dashboard-copy {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .compare-tool .compare-dashboard-copy {
+            color: #1e293b;
+        }
+
+        .compare-tool .compare-eyebrow {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        html.dark .compare-tool .compare-eyebrow {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .compare-tool .compare-eyebrow {
+            color: #0369a1;
+        }
+
+        .compare-tool .compare-dashboard-title {
+            margin: 0;
+            color: var(--compare-heading);
+            font-size: 18px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        html.dark .compare-tool .compare-dashboard-title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .compare-tool .compare-dashboard-title {
+            color: #0f172a;
+        }
+
+        .compare-tool .compare-dashboard-note {
+            max-width: 680px;
+            margin: 0;
+            color: var(--compare-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        html.dark .compare-tool .compare-dashboard-note {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .compare-tool .compare-dashboard-note {
+            color: #475569;
+        }
+
+        .compare-tool .compare-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 24px;
+            padding: 3px 8px;
+            border: 1px solid;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        html.dark .compare-tool .compare-status-badge {
+            background: rgba(14, 116, 144, 0.18);
+            border-color: #155e75;
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .compare-tool .compare-status-badge {
+            background: #ecfeff;
+            border-color: #bae6fd;
+            color: #075985;
+        }
+
+        .compare-tool .compare-status-dot,
+        .compare-tool .compare-live-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+        }
+
+        html.dark .compare-tool .compare-status-dot,
+        html.dark .compare-tool .compare-live-dot {
+            background: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14);
+        }
+
+        html:not(.dark) .compare-tool .compare-status-dot,
+        html:not(.dark) .compare-tool .compare-live-dot {
+            background: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+        }
+
+        .compare-tool .compare-language-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            width: 100%;
+        }
+
+        .compare-tool .compare-field-label {
+            color: var(--compare-muted);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        html.dark .compare-tool .compare-field-label {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .compare-tool .compare-field-label {
+            color: #334155;
+        }
+
+        .compare-tool .compare-language-select {
+            display: block;
+            width: 100%;
+            max-width: 290px;
+            min-width: 0;
+        }
+
+        .compare-tool .compare-language-select .el-input__wrapper,
+        .compare-tool .compare-language-select .el-select__wrapper {
+            min-height: 42px;
+            border-radius: 10px;
+            transition: box-shadow 0.18s ease, background-color 0.18s ease;
+        }
+
+        html.dark .compare-tool .compare-language-select .el-input__wrapper,
+        html.dark .compare-tool .compare-language-select .el-select__wrapper {
+            background: #111c31;
+            box-shadow: 0 0 0 1px #334155 inset, 0 4px 14px rgba(2, 6, 23, 0.22);
+        }
+
+        html:not(.dark) .compare-tool .compare-language-select .el-input__wrapper,
+        html:not(.dark) .compare-tool .compare-language-select .el-select__wrapper {
+            background: #ffffff;
+            box-shadow: 0 0 0 1px #cbd5e1 inset, 0 4px 14px rgba(15, 23, 42, 0.05);
+        }
+
+        html.dark .compare-tool .compare-language-select .el-input__wrapper:hover,
+        html.dark .compare-tool .compare-language-select .el-select__wrapper:hover {
+            box-shadow: 0 0 0 1px #38bdf8 inset, 0 4px 14px rgba(2, 6, 23, 0.26);
+        }
+
+        html:not(.dark) .compare-tool .compare-language-select .el-input__wrapper:hover,
+        html:not(.dark) .compare-tool .compare-language-select .el-select__wrapper:hover {
+            box-shadow: 0 0 0 1px #0284c7 inset, 0 4px 14px rgba(2, 132, 199, 0.1);
+        }
+
+        .compare-tool .compare-language-select .el-input__inner,
+        .compare-tool .compare-language-select .el-select__selected-item,
+        .compare-tool .compare-language-select .el-select__placeholder {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        html.dark .compare-tool .compare-language-select .el-input__inner,
+        html.dark .compare-tool .compare-language-select .el-select__selected-item,
+        html.dark .compare-tool .compare-language-select .el-select__placeholder {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .compare-tool .compare-language-select .el-input__inner,
+        html:not(.dark) .compare-tool .compare-language-select .el-select__selected-item,
+        html:not(.dark) .compare-tool .compare-language-select .el-select__placeholder {
+            color: #0f172a;
+        }
+
+        html.dark .compare-language-popper {
+            background: #0f172a;
+            border-color: #334155;
+            box-shadow: 0 16px 36px rgba(2, 6, 23, 0.46);
+        }
+
+        html:not(.dark) .compare-language-popper {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
+        }
+
+        html.dark .compare-language-popper .el-select-dropdown__item {
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .compare-language-popper .el-select-dropdown__item {
+            color: #334155;
+        }
+
+        html.dark .compare-language-popper .el-select-dropdown__item.hover,
+        html.dark .compare-language-popper .el-select-dropdown__item:hover {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .compare-language-popper .el-select-dropdown__item.hover,
+        html:not(.dark) .compare-language-popper .el-select-dropdown__item:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        html.dark .compare-language-popper .el-select-dropdown__item.selected {
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .compare-language-popper .el-select-dropdown__item.selected {
+            color: #0369a1;
+        }
+
+        .compare-tool .compare-editor-workspace {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            margin-top: 2px;
+        }
+
+        html.dark .compare-tool .compare-editor-workspace {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .compare-tool .compare-editor-workspace {
+            color: #1e293b;
+        }
+
+        .compare-tool .compare-editor-menu {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1px;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid;
+            border-radius: 12px 12px 0 0;
+        }
+
+        html.dark .compare-tool .compare-editor-menu {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        html:not(.dark) .compare-tool .compare-editor-menu {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+
+        .compare-tool .compare-editor-menu .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            min-width: 0;
+            padding: 14px 16px;
+        }
+
+        html.dark .compare-tool .compare-editor-menu .item {
+            background: #0f172a;
+        }
+
+        html:not(.dark) .compare-tool .compare-editor-menu .item {
+            background: #f8fafc;
+        }
+
+        .compare-tool .compare-pane-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .compare-tool .compare-pane-number,
+        .compare-tool .compare-info-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            width: 30px;
+            height: 30px;
+            border: 1px solid;
+            border-radius: 9px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        html.dark .compare-tool .compare-pane-number,
+        html.dark .compare-tool .compare-info-index {
+            background: rgba(14, 116, 144, 0.18);
+            border-color: #155e75;
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .compare-tool .compare-pane-number,
+        html:not(.dark) .compare-tool .compare-info-index {
+            background: #e0f2fe;
+            border-color: #bae6fd;
+            color: #075985;
+        }
+
+        .compare-tool .compare-pane-copy {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            gap: 2px;
+        }
+
+        .compare-tool .compare-pane-title {
+            margin: 0;
+            color: var(--compare-heading);
+            font-size: 14px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        html.dark .compare-tool .compare-pane-title {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .compare-tool .compare-pane-title {
+            color: #0f172a;
+        }
+
+        .compare-tool .compare-pane-subtitle {
+            margin: 0;
+            color: var(--compare-muted);
+            font-size: 12px;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .compare-tool .compare-pane-subtitle {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .compare-tool .compare-pane-subtitle {
+            color: #64748b;
+        }
+
+        .compare-tool .compare-action-group {
+            display: flex;
+            flex: 0 1 auto;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .compare-tool .compare-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            min-height: 40px;
+            margin: 0;
+            padding: 9px 14px;
+            border: 1px solid;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.2;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        .compare-tool .compare-action-group .compare-action + .compare-action {
+            margin-left: 0;
+        }
+
+        html.dark .compare-tool .compare-action-primary {
+            background: #0e7490 !important;
+            border-color: #38bdf8 !important;
+            color: #e0f2fe !important;
+        }
+
+        html:not(.dark) .compare-tool .compare-action-primary {
+            background: #0284c7 !important;
+            border-color: #0284c7 !important;
+            color: #ffffff !important;
+        }
+
+        html.dark .compare-tool .compare-action-secondary {
+            background: #172033 !important;
+            border-color: #475569 !important;
+            color: #e2e8f0 !important;
+        }
+
+        html:not(.dark) .compare-tool .compare-action-secondary {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+
+        html.dark .compare-tool .compare-action-primary:hover {
+            background: #0284c7 !important;
+            border-color: #7dd3fc !important;
+            color: #ffffff !important;
+        }
+
+        html:not(.dark) .compare-tool .compare-action-primary:hover {
+            background: #0369a1 !important;
+            border-color: #0369a1 !important;
+            color: #ffffff !important;
+        }
+
+        html.dark .compare-tool .compare-action-secondary:hover {
+            background: #24344d !important;
+            border-color: #64748b !important;
+            color: #f8fafc !important;
+        }
+
+        html:not(.dark) .compare-tool .compare-action-secondary:hover {
+            background: #f1f5f9 !important;
+            border-color: #94a3b8 !important;
+            color: #0f172a !important;
+        }
+
+        html.dark .compare-tool .compare-action:active {
+            background: #075985 !important;
+            transform: translateY(1px);
+        }
+
+        html:not(.dark) .compare-tool .compare-action:active {
+            background: #075985 !important;
+            border-color: #075985 !important;
+            color: #ffffff !important;
+            transform: translateY(1px);
+        }
+
+        html.dark .compare-tool .compare-action:focus-visible {
+            outline: 3px solid rgba(125, 211, 252, 0.32);
+            outline-offset: 2px;
+        }
+
+        html:not(.dark) .compare-tool .compare-action:focus-visible {
+            outline: 3px solid rgba(2, 132, 199, 0.25);
+            outline-offset: 2px;
+        }
+
+        .compare-tool .compare-file-input {
+            display: none;
+        }
+
+        .compare-tool .compare-editor-caption {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            min-height: 38px;
+            padding: 8px 12px;
+            border-inline: 1px solid;
+            border-bottom: 1px solid;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        html.dark .compare-tool .compare-editor-caption {
+            background: #0b1120;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+
+        html:not(.dark) .compare-tool .compare-editor-caption {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #475569;
+        }
+
+        .compare-tool .compare-editor-caption-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+
+        html.dark .compare-tool .compare-editor-caption-label {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .compare-tool .compare-editor-caption-label {
+            color: #1e293b;
+        }
+
+        .compare-tool .compare-editor-caption-hint {
+            color: var(--compare-muted);
+        }
+
+        html.dark .compare-tool .compare-editor-caption-hint {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .compare-tool .compare-editor-caption-hint {
+            color: #64748b;
+        }
+
+        .compare-tool #editor-container {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            height: clamp(420px, 68vh, 600px);
+            overflow: hidden;
+            border: 1px solid;
+            border-top: 0;
+            border-radius: 0 0 12px 12px;
+            isolation: isolate;
+        }
+
+        .compare-tool #editor-container > * {
+            max-width: 100%;
+        }
+
+        html.dark .compare-tool #editor-container {
+            background: #0b1120;
+            border-color: #334155;
+            box-shadow: 0 10px 26px rgba(2, 6, 23, 0.22);
+        }
+
+        html:not(.dark) .compare-tool #editor-container {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+        }
+
+        .compare-tool .compare-divider {
+            height: 1px;
+            margin: 26px 0 20px;
+            border: 0;
+        }
+
+        html.dark .compare-tool .compare-divider {
+            background: #1e293b;
+        }
+
+        html:not(.dark) .compare-tool .compare-divider {
+            background: #e2e8f0;
+        }
+
+        .compare-tool .compare-info {
+            margin: 0;
+            padding: 18px;
+            border: 1px solid;
+            border-radius: 12px;
+        }
+
+        html.dark .compare-tool .compare-info {
+            background: #0f172a;
+            border-color: #1e293b;
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .compare-tool .compare-info {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .compare-tool .compare-info-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .compare-tool .compare-info-heading-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .compare-tool .compare-info-kicker {
+            color: var(--compare-subtle);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            line-height: 1.3;
+            text-transform: uppercase;
+        }
+
+        html.dark .compare-tool .compare-info-kicker {
+            color: #64748b;
+        }
+
+        html:not(.dark) .compare-tool .compare-info-kicker {
+            color: #64748b;
+        }
+
+        .compare-tool .compare-info h3 {
+            margin: 0;
+            color: var(--compare-heading);
+            font-size: 17px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        html.dark .compare-tool .compare-info h3 {
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .compare-tool .compare-info h3 {
+            color: #0f172a;
+        }
+
+        .compare-tool .compare-info > p {
+            margin: 0 0 16px;
+            color: var(--compare-muted);
+            font-size: 13px;
+            line-height: 1.75;
+            overflow-wrap: anywhere;
+        }
+
+        html.dark .compare-tool .compare-info > p {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .compare-tool .compare-info > p {
+            color: #475569;
+        }
+
+        .compare-tool .compare-info-list {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .compare-tool .compare-info-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            min-width: 0;
+            padding: 11px;
+            border: 1px solid;
+            border-radius: 10px;
+        }
+
+        html.dark .compare-tool .compare-info-step {
+            background: #111c31;
+            border-color: #1e293b;
+        }
+
+        html:not(.dark) .compare-tool .compare-info-step {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        .compare-tool .compare-info-step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            width: 22px;
+            height: 22px;
+            border-radius: 7px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        html.dark .compare-tool .compare-info-step-number {
+            background: rgba(56, 189, 248, 0.12);
+            color: #7dd3fc;
+        }
+
+        html:not(.dark) .compare-tool .compare-info-step-number {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .compare-tool .compare-info-step-copy {
+            min-width: 0;
+            color: var(--compare-muted);
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        html.dark .compare-tool .compare-info-step-copy {
+            color: #94a3b8;
+        }
+
+        html:not(.dark) .compare-tool .compare-info-step-copy {
+            color: #475569;
+        }
+
+        .compare-tool .compare-info-step-copy strong {
+            display: block;
+            margin-bottom: 2px;
+            color: var(--compare-heading);
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        html.dark .compare-tool .compare-info-step-copy strong {
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .compare-tool .compare-info-step-copy strong {
+            color: #1e293b;
+        }
+
         @media (max-width: 768px) {
-            #editor-container, #editor-container * {
-                max-width: 100% !important;
+            .tool-page-body .card-body {
+                padding: 20px 14px 26px;
+                border-radius: 14px;
             }
-            .editor-menu .item:first-child { width: 100% !important; }
+
+            .compare-tool .compare-dashboard {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 14px;
+                padding: 14px;
+            }
+
+            .compare-tool .compare-language-select {
+                max-width: none;
+            }
+
+            .compare-tool .compare-editor-menu {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .compare-tool .compare-editor-menu .item {
+                align-items: stretch;
+                flex-wrap: wrap;
+                padding: 14px;
+            }
+
+            .compare-tool .compare-source-item > .compare-action,
+            .compare-tool .compare-action-group {
+                width: 100%;
+            }
+
+            .compare-tool .compare-action-group {
+                justify-content: stretch;
+            }
+
+            .compare-tool .compare-action-group .compare-action {
+                flex: 1 1 120px;
+            }
+
+            .compare-tool #editor-container {
+                height: 460px;
+            }
+
+            .compare-tool .compare-info-list {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tool-page-body .card-body {
+                padding-inline: 11px;
+            }
+
+            .compare-tool .compare-dashboard-title {
+                font-size: 16px;
+            }
+
+            .compare-tool .compare-editor-menu .item {
+                padding: 12px;
+            }
+
+            .compare-tool .compare-action-group .compare-action,
+            .compare-tool .compare-source-item > .compare-action {
+                flex-basis: 100%;
+                width: 100%;
+            }
+
+            .compare-tool .compare-info {
+                padding: 14px;
+            }
         }
     </style>
 
@@ -54,7 +1016,7 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
+    <main class="main-body tool-page-body" id="app">
         
 
 
@@ -65,26 +1027,86 @@
                 <h1 class="title">文本（代码）对比工具</h1>
             </div>
             <div class="description">在线文本差异对比，代码差异对比，在线文本对比，在线代码差异对比工具，可以在线对比两个文档之间的差异，还可对比两个代码之间的差异，如(HTML,CSS,JAVASCRIPT,PHP,XML,JAVA,C,C&#x2B;&#x2B;)等</div>
-            <div class="op-box">
-                <el-select v-model="language" filterable v-on:change="changeLanguage">
-                    <el-option v-for="item in languageArr" :key="item" :label="item" :value="item"></el-option>
-                </el-select>
-            </div>
-            <div class="editor-menu">
-                <div class="item">
-                    <el-button type="primary" v-on:click="selectFile('original')">选择文件</el-button>
+
+            <div class="compare-tool" role="region" aria-labelledby="compare-workspace-title">
+                <div class="op-box compare-dashboard" aria-label="对比设置">
+                    <div class="compare-dashboard-copy">
+                        <div class="compare-eyebrow">
+                            <span>TEXT DIFF</span>
+                            <span class="compare-status-badge"><span class="compare-status-dot" aria-hidden="true"></span>编辑器就绪</span>
+                        </div>
+                        <h2 id="compare-workspace-title" class="compare-dashboard-title">配置你的对比工作区</h2>
+                        <p class="compare-dashboard-note">先选择语法模式，再载入原始文本与修改后文本，差异会在编辑区内清晰高亮。</p>
+                    </div>
+                    <div class="compare-language-field">
+                        <label class="compare-field-label" for="compare-language-select">语言模式</label>
+                        <el-select id="compare-language-select" class="compare-language-select" popper-class="compare-language-popper" aria-label="选择语言模式" v-model="language" filterable v-on:change="changeLanguage">
+                            <el-option v-for="item in languageArr" :key="item" :label="item" :value="item"></el-option>
+                        </el-select>
+                    </div>
                 </div>
-                <div class="item">
-                    <el-button type="primary" v-on:click="selectFile('modified')">选择文件</el-button>
-                    <el-button type="primary" v-on:click="downloadCode">下载</el-button>
-                    <el-button type="primary" v-on:click="copyCode">复制到剪贴板</el-button>
+
+                <div class="compare-editor-workspace">
+                    <div class="editor-menu compare-editor-menu" role="toolbar" aria-label="文件与编辑操作">
+                        <div class="item compare-source-item">
+                            <div class="compare-pane-heading">
+                                <span class="compare-pane-number" aria-hidden="true">01</span>
+                                <div class="compare-pane-copy">
+                                    <p class="compare-pane-title">原始文本</p>
+                                    <p class="compare-pane-subtitle">作为差异比较的基准版本</p>
+                                </div>
+                            </div>
+                            <el-button class="compare-action compare-action-primary" type="primary" aria-label="选择原始文本文件" v-on:click="selectFile('original')">选择文件</el-button>
+                        </div>
+                        <div class="item compare-result-item">
+                            <div class="compare-pane-heading">
+                                <span class="compare-pane-number" aria-hidden="true">02</span>
+                                <div class="compare-pane-copy">
+                                    <p class="compare-pane-title">修改后文本</p>
+                                    <p class="compare-pane-subtitle">载入新版本并导出结果</p>
+                                </div>
+                            </div>
+                            <div class="compare-action-group">
+                                <el-button class="compare-action compare-action-primary" type="primary" aria-label="选择修改后文本文件" v-on:click="selectFile('modified')">选择文件</el-button>
+                                <el-button class="compare-action compare-action-secondary" type="primary" aria-label="下载修改后的代码" v-on:click="downloadCode">下载</el-button>
+                                <el-button class="compare-action compare-action-secondary" type="primary" aria-label="复制代码到剪贴板" v-on:click="copyCode">复制到剪贴板</el-button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="compare-editor-caption">
+                        <span class="compare-editor-caption-label"><span class="compare-live-dot" aria-hidden="true"></span>差异工作区</span>
+                        <span class="compare-editor-caption-hint">支持直接编辑、粘贴或拖动查看差异</span>
+                    </div>
+                    <input id="flFile" name="flFile" class="compare-file-input" type="file" tabindex="-1" aria-hidden="true" />
+                    <div id="editor-container" role="region" aria-label="文本差异编辑器"></div>
                 </div>
-            </div>
-            <input id="flFile" name="flFile" type="file" style="display:none;" />
-            <div id="editor-container"></div>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>介绍</h3><p>在线文本差异对比，代码差异对比，在线文本对比，在线代码差异对比工具，可以在线对比两个文档之间的差异，还可对比两个代码之间的差异，如(HTML,CSS,JAVASCRIPT,PHP,XML,JAVA,C,C++)等。</p>
+
+                <div class="divider compare-divider" aria-hidden="true"></div>
+                <section class="content compare-info" aria-labelledby="compare-about-title">
+                    <div class="compare-info-heading">
+                        <span class="compare-info-index" aria-hidden="true">03</span>
+                        <div class="compare-info-heading-copy">
+                            <span class="compare-info-kicker">WORKFLOW</span>
+                            <h3 id="compare-about-title">介绍</h3>
+                        </div>
+                    </div>
+                    <p>在线文本差异对比，代码差异对比，在线文本对比，在线代码差异对比工具，可以在线对比两个文档之间的差异，还可对比两个代码之间的差异，如(HTML,CSS,JAVASCRIPT,PHP,XML,JAVA,C,C++)等。</p>
+                    <ol class="compare-info-list">
+                        <li class="compare-info-step">
+                            <span class="compare-info-step-number" aria-hidden="true">01</span>
+                            <span class="compare-info-step-copy"><strong>选择语言</strong>匹配代码高亮与编辑体验。</span>
+                        </li>
+                        <li class="compare-info-step">
+                            <span class="compare-info-step-number" aria-hidden="true">02</span>
+                            <span class="compare-info-step-copy"><strong>载入两份文本</strong>分别指定原始与修改后版本。</span>
+                        </li>
+                        <li class="compare-info-step">
+                            <span class="compare-info-step-number" aria-hidden="true">03</span>
+                            <span class="compare-info-step-copy"><strong>检查并导出</strong>定位差异后复制或下载结果。</span>
+                        </li>
+                    </ol>
+                </section>
             </div>
         </div>
     </div>
@@ -93,7 +1115,6 @@
 
 
     </main>
-</div>
 
     <script>
         var languageCode = 'zh';
