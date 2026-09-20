@@ -31,177 +31,700 @@
     <link rel="canonical" href="https://tool.6767.chat/sleep-cycle-calculator" />
 
     <style>
-        .sleep-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .sleep-tab-btn {
-            padding: 10px 18px;
-            border-radius: 8px;
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(51, 65, 85, 0.7);
-            color: #94a3b8;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: all 0.2s;
+        /* ==========================================================
+           双模配色规范与核心布局 (Dual-Mode Design System)
+           ========================================================== */
+        
+        /* 1. 顶部控制栏 / 实时仪表盘 */
+        .sleep-dashboard {
+            border-radius: 14px;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
         }
-        .sleep-tab-btn:hover {
-            border-color: rgba(34, 211, 238, 0.5);
-            color: #e2e8f0;
+        html.dark .sleep-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
         }
-        .sleep-tab-btn.active {
-            background: rgba(34, 211, 238, 0.15);
-            border-color: #22d3ee;
-            color: #67e8f9;
-            font-weight: 600;
+        html:not(.dark) .sleep-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
         }
 
         .realtime-badge {
-            background: rgba(2, 6, 23, 0.6);
-            border: 1px solid rgba(51, 65, 85, 0.6);
-            border-radius: 6px;
-            padding: 6px 12px;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-            font-size: 0.85rem;
-            color: #38bdf8;
-            margin-bottom: 16px;
+            gap: 10px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
+        html.dark .realtime-badge {
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
+        }
+        html:not(.dark) .realtime-badge {
+            background: #ffffff;
+            border: 1px solid #bae6fd;
+            color: #0284c7;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
         .pulse-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #22d3ee;
-            box-shadow: 0 0 8px #22d3ee;
-            animation: pulse 2s infinite;
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse-beacon 2s infinite ease-in-out;
         }
-        @keyframes pulse {
+        @keyframes pulse-beacon {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
+            50% { opacity: 0.35; transform: scale(0.8); }
         }
 
-        /* 周期时间卡片 */
+        .dashboard-status-text {
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+        html.dark .dashboard-status-text { color: #94a3b8; }
+        html:not(.dark) .dashboard-status-text { color: #64748b; }
+
+        /* 2. 模式切换 Tabs 导航 */
+        .sleep-tabs-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+        .sleep-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 18px;
+            min-height: 42px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            border: 1px solid transparent;
+            flex: 1 1 auto;
+            text-align: center;
+        }
+        html.dark .sleep-tab-btn {
+            background: #0f172a;
+            border-color: #1e293b;
+            color: #94a3b8;
+        }
+        html.dark .sleep-tab-btn:hover {
+            border-color: #38bdf8;
+            color: #f1f5f9;
+            background: rgba(30, 41, 59, 0.8);
+        }
+        html.dark .sleep-tab-btn.active {
+            background: rgba(14, 116, 144, 0.25);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.15);
+        }
+        html:not(.dark) .sleep-tab-btn {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            color: #475569;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+        html:not(.dark) .sleep-tab-btn:hover {
+            border-color: #0284c7;
+            color: #0f172a;
+            background: #f8fafc;
+        }
+        html:not(.dark) .sleep-tab-btn.active {
+            background: #e0f2fe;
+            border-color: #0284c7;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.12);
+        }
+
+        /* 3. 参数配置面板 */
+        .config-panel {
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 24px;
+            transition: all 0.2s ease;
+        }
+        html.dark .config-panel {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .config-panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .config-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        html.dark .config-label { color: #cbd5e1; }
+        html:not(.dark) .config-label { color: #334155; }
+
+        .config-subtext {
+            font-size: 0.75rem;
+            font-weight: normal;
+        }
+        html.dark .config-subtext { color: #64748b; }
+        html:not(.dark) .config-subtext { color: #94a3b8; }
+
+        /* 快捷选择预设 Chip 胶囊 */
+        .preset-pills-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .preset-pill {
+            padding: 5px 12px;
+            min-height: 32px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        html.dark .preset-pill {
+            background: #0f172a;
+            border-color: #334155;
+            color: #94a3b8;
+        }
+        html.dark .preset-pill:hover {
+            border-color: #38bdf8;
+            color: #e2e8f0;
+        }
+        html.dark .preset-pill.active {
+            background: rgba(14, 116, 144, 0.4);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+        html:not(.dark) .preset-pill {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #475569;
+        }
+        html:not(.dark) .preset-pill:hover {
+            border-color: #0284c7;
+            color: #0f172a;
+        }
+        html:not(.dark) .preset-pill.active {
+            background: #e0f2fe;
+            border-color: #0284c7;
+            color: #0284c7;
+            font-weight: 600;
+        }
+
+        /* 4. 周期卡片网格系统 */
+        .cycles-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .cycles-section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
+        html.dark .cycles-section-title { color: #f8fafc; }
+        html:not(.dark) .cycles-section-title { color: #0f172a; }
+
+        .latency-note-tag {
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        html.dark .latency-note-tag {
+            background: rgba(30, 41, 59, 0.8);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        html:not(.dark) .latency-note-tag {
+            background: #f0fdfa;
+            color: #0d9488;
+            border: 1px solid #99f6e4;
+        }
+
         .cycles-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 14px;
-            margin: 20px 0;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 16px 0 28px;
         }
+
         .cycle-card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(51, 65, 85, 0.6);
-            border-radius: 12px;
-            padding: 18px;
+            border-radius: 14px;
+            padding: 20px;
             position: relative;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
         }
         .cycle-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-        }
-        .cycle-card.golden {
-            border-color: rgba(34, 211, 238, 0.8);
-            background: linear-gradient(135deg, rgba(8, 47, 73, 0.4), rgba(15, 23, 42, 0.8));
-        }
-        .cycle-card.good {
-            border-color: rgba(52, 211, 153, 0.6);
-            background: linear-gradient(135deg, rgba(6, 78, 59, 0.25), rgba(15, 23, 42, 0.8));
-        }
-        .cycle-card.warning {
-            border-color: rgba(251, 191, 36, 0.5);
-        }
-        .cycle-card.danger {
-            border-color: rgba(248, 113, 113, 0.4);
-            opacity: 0.85;
+            transform: translateY(-3px);
         }
 
+        /* 周期卡片四档色彩梯度规范 */
+        /* 黄金档：5周期 (7.5h 最佳推荐) 与 6周期 (9.0h 充足深度) */
+        html.dark .cycle-card.golden {
+            background: linear-gradient(145deg, rgba(8, 47, 73, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.6);
+            box-shadow: 0 4px 20px rgba(8, 145, 178, 0.15);
+        }
+        html.dark .cycle-card.golden:hover {
+            border-color: #38bdf8;
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);
+        }
+        html:not(.dark) .cycle-card.golden {
+            background: linear-gradient(145deg, #f0fdfa 0%, #ffffff 100%);
+            border: 1px solid #0d9488;
+            box-shadow: 0 4px 18px rgba(13, 148, 136, 0.12);
+        }
+        html:not(.dark) .cycle-card.golden:hover {
+            border-color: #0f766e;
+            box-shadow: 0 8px 24px rgba(13, 148, 136, 0.2);
+        }
+
+        /* 良好档：4周期 (6.0h 工作日标准) */
+        html.dark .cycle-card.good {
+            background: linear-gradient(145deg, rgba(6, 78, 59, 0.35) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 1px solid rgba(52, 211, 153, 0.5);
+            box-shadow: 0 4px 18px rgba(5, 150, 105, 0.12);
+        }
+        html.dark .cycle-card.good:hover {
+            border-color: #34d399;
+            box-shadow: 0 8px 22px rgba(52, 211, 153, 0.2);
+        }
+        html:not(.dark) .cycle-card.good {
+            background: linear-gradient(145deg, #f0fdf4 0%, #ffffff 100%);
+            border: 1px solid #059669;
+            box-shadow: 0 4px 16px rgba(5, 150, 105, 0.1);
+        }
+        html:not(.dark) .cycle-card.good:hover {
+            border-color: #047857;
+            box-shadow: 0 8px 22px rgba(5, 150, 105, 0.18);
+        }
+
+        /* 警告档：3周期 (4.5h 加班应急) */
+        html.dark .cycle-card.warning {
+            background: linear-gradient(145deg, rgba(120, 53, 15, 0.25) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+        }
+        html.dark .cycle-card.warning:hover {
+            border-color: #fbbf24;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.15);
+        }
+        html:not(.dark) .cycle-card.warning {
+            background: linear-gradient(145deg, #fffbeb 0%, #ffffff 100%);
+            border: 1px solid #d97706;
+            box-shadow: 0 4px 16px rgba(217, 119, 6, 0.08);
+        }
+        html:not(.dark) .cycle-card.warning:hover {
+            border-color: #b45309;
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.15);
+        }
+
+        /* 极低档：2周期 (3.0h) / 1周期 (1.5h) */
+        html.dark .cycle-card.danger {
+            background: linear-gradient(145deg, rgba(127, 29, 29, 0.25) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 1px solid rgba(248, 113, 113, 0.35);
+        }
+        html.dark .cycle-card.danger:hover {
+            border-color: #f87171;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.15);
+        }
+        html:not(.dark) .cycle-card.danger {
+            background: linear-gradient(145deg, #fef2f2 0%, #ffffff 100%);
+            border: 1px solid #dc2626;
+            box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
+        }
+        html:not(.dark) .cycle-card.danger:hover {
+            border-color: #b91c1c;
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.14);
+        }
+
+        /* 周期标签 Badge */
         .cycle-tag {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 14px;
+            right: 14px;
             font-size: 0.72rem;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-weight: 600;
-        }
-        .cycle-tag.golden { background: rgba(34, 211, 238, 0.2); color: #67e8f9; border: 1px solid rgba(34, 211, 238, 0.5); }
-        .cycle-tag.good { background: rgba(52, 211, 153, 0.2); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.4); }
-        .cycle-tag.warning { background: rgba(251, 191, 36, 0.2); color: #fcd34d; border: 1px solid rgba(251, 191, 36, 0.4); }
-        .cycle-tag.danger { background: rgba(248, 113, 113, 0.2); color: #fca5a5; border: 1px solid rgba(248, 113, 113, 0.4); }
-
-        .cycle-time {
-            font-size: 2.1rem;
+            padding: 3px 10px;
+            border-radius: 9999px;
             font-weight: 700;
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-            color: #f8fafc;
-            line-height: 1.2;
-            margin: 4px 0 8px;
+            letter-spacing: 0.02em;
         }
-        .cycle-card.golden .cycle-time { color: #22d3ee; }
-        .cycle-card.good .cycle-time { color: #34d399; }
-        .cycle-card.warning .cycle-time { color: #fbbf24; }
+        html.dark .cycle-tag.golden { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); }
+        html.dark .cycle-tag.good { background: rgba(52, 211, 153, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.5); }
+        html.dark .cycle-tag.warning { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.5); }
+        html.dark .cycle-tag.danger { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.5); }
+
+        html:not(.dark) .cycle-tag.golden { background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; }
+        html:not(.dark) .cycle-tag.good { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        html:not(.dark) .cycle-tag.warning { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        html:not(.dark) .cycle-tag.danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+        .cycle-time-header {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        html.dark .cycle-time-header { color: #94a3b8; }
+        html:not(.dark) .cycle-time-header { color: #64748b; }
+
+        .cycle-time-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 4px 0 10px;
+        }
+        .cycle-time {
+            font-size: 2.35rem;
+            font-weight: 800;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+        html.dark .cycle-card.golden .cycle-time { color: #38bdf8; text-shadow: 0 0 18px rgba(56, 189, 248, 0.3); }
+        html.dark .cycle-card.good .cycle-time { color: #34d399; text-shadow: 0 0 18px rgba(52, 211, 153, 0.3); }
+        html.dark .cycle-card.warning .cycle-time { color: #fbbf24; }
+        html.dark .cycle-card.danger .cycle-time { color: #f87171; }
+
+        html:not(.dark) .cycle-card.golden .cycle-time { color: #0284c7; }
+        html:not(.dark) .cycle-card.good .cycle-time { color: #059669; }
+        html:not(.dark) .cycle-card.warning .cycle-time { color: #d97706; }
+        html:not(.dark) .cycle-card.danger .cycle-time { color: #dc2626; }
+
+        .cycle-copy-btn {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        html.dark .cycle-copy-btn {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: #334155;
+            color: #94a3b8;
+        }
+        html.dark .cycle-copy-btn:hover {
+            background: #38bdf8;
+            border-color: #38bdf8;
+            color: #020617;
+        }
+        html:not(.dark) .cycle-copy-btn {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #475569;
+        }
+        html:not(.dark) .cycle-copy-btn:hover {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #ffffff;
+        }
 
         .cycle-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #cbd5e1;
-            margin-bottom: 4px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+        html.dark .cycle-title { color: #f1f5f9; }
+        html:not(.dark) .cycle-title { color: #1e293b; }
+
         .cycle-desc {
-            font-size: 0.78rem;
-            color: #94a3b8;
-            line-height: 1.5;
+            font-size: 0.82rem;
+            line-height: 1.55;
+            margin-bottom: 12px;
+            flex-grow: 1;
         }
+        html.dark .cycle-desc { color: #94a3b8; }
+        html:not(.dark) .cycle-desc { color: #475569; }
+
         .cycle-stats {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(51, 65, 85, 0.5);
+            padding-top: 12px;
             display: flex;
             justify-content: space-between;
-            font-size: 0.75rem;
+            align-items: center;
+            font-size: 0.76rem;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-weight: 600;
+        }
+        html.dark .cycle-stats {
+            border-top: 1px solid rgba(51, 65, 85, 0.6);
             color: #64748b;
-            font-family: ui-monospace, monospace;
+        }
+        html:not(.dark) .cycle-stats {
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
         }
 
-        /* 睡眠阶段示意波形图 */
-        .sleep-stage-box {
-            background: rgba(15, 23, 42, 0.65);
-            border: 1px solid rgba(51, 65, 85, 0.6);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 24px 0;
-        }
-        .sleep-stage-svg {
-            width: 100%;
-            height: 160px;
-            overflow: visible;
-        }
-
-        /* 小憩卡片 */
+        /* 5. 科学高效小憩 (Power Nap) 模块 */
         .nap-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 14px;
-            margin: 16px 0;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin: 18px 0 28px;
         }
         .nap-card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(51, 65, 85, 0.6);
-            border-radius: 12px;
-            padding: 18px;
-            transition: all 0.2s;
+            border-radius: 14px;
+            padding: 22px;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .nap-card:hover {
-            border-color: rgba(34, 211, 238, 0.5);
-            background: rgba(30, 41, 59, 0.4);
+            transform: translateY(-2px);
+        }
+
+        html.dark .nap-card.nap-cyan {
+            background: linear-gradient(145deg, rgba(8, 47, 73, 0.4) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            box-shadow: 0 4px 18px rgba(8, 145, 178, 0.1);
+        }
+        html:not(.dark) .nap-card.nap-cyan {
+            background: linear-gradient(145deg, #f0fdfa 0%, #ffffff 100%);
+            border: 1px solid #0d9488;
+            box-shadow: 0 4px 16px rgba(13, 148, 136, 0.08);
+        }
+
+        html.dark .nap-card.nap-amber {
+            background: linear-gradient(145deg, rgba(120, 53, 15, 0.3) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            box-shadow: 0 4px 18px rgba(245, 158, 11, 0.1);
+        }
+        html:not(.dark) .nap-card.nap-amber {
+            background: linear-gradient(145deg, #fffbeb 0%, #ffffff 100%);
+            border: 1px solid #d97706;
+            box-shadow: 0 4px 16px rgba(217, 119, 6, 0.08);
+        }
+
+        html.dark .nap-card.nap-emerald {
+            background: linear-gradient(145deg, rgba(6, 78, 59, 0.35) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            box-shadow: 0 4px 18px rgba(5, 150, 105, 0.1);
+        }
+        html:not(.dark) .nap-card.nap-emerald {
+            background: linear-gradient(145deg, #f0fdf4 0%, #ffffff 100%);
+            border: 1px solid #059669;
+            box-shadow: 0 4px 16px rgba(5, 150, 105, 0.08);
+        }
+
+        .nap-tip-box {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            margin-top: 12px;
+        }
+        html.dark .nap-tip-box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            color: #cbd5e1;
+        }
+        html:not(.dark) .nap-tip-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        /* 6. 睡眠阶段 Hypnogram 波形图 */
+        .sleep-stage-box {
+            border-radius: 14px;
+            padding: 22px;
+            margin: 28px 0;
+            transition: all 0.2s ease;
+        }
+        html.dark .sleep-stage-box {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .sleep-stage-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .sleep-stage-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .sleep-stage-title {
+            font-size: 0.98rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
+        html.dark .sleep-stage-title { color: #f8fafc; }
+        html:not(.dark) .sleep-stage-title { color: #0f172a; }
+
+        .sleep-stage-badge {
+            font-size: 0.76rem;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        html.dark .sleep-stage-badge {
+            background: rgba(14, 116, 144, 0.3);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+        }
+        html:not(.dark) .sleep-stage-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #7dd3fc;
+        }
+
+        .sleep-stage-scroll-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .sleep-stage-svg {
+            min-width: 680px;
+            width: 100%;
+            height: 180px;
+            display: block;
+        }
+
+        /* 7. 科学睡眠指南卡片区 */
+        .guide-section {
+            margin-top: 32px;
+        }
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .guide-card {
+            border-radius: 12px;
+            padding: 18px;
+            transition: all 0.2s ease;
+        }
+        html.dark .guide-card {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .guide-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .guide-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        html.dark .guide-card-title { color: #f1f5f9; }
+        html:not(.dark) .guide-card-title { color: #0f172a; }
+
+        .guide-card-desc {
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+        html.dark .guide-card-desc { color: #94a3b8; }
+        html:not(.dark) .guide-card-desc { color: #475569; }
+
+        /* Element Plus 统一暗黑与明亮模式无缝覆盖 */
+        html.dark .el-input__wrapper,
+        html.dark .el-select__wrapper {
+            background-color: #0f172a !important;
+            box-shadow: 0 0 0 1px #334155 inset !important;
+        }
+        html.dark .el-input__inner {
+            color: #f8fafc !important;
+        }
+        html:not(.dark) .el-input__wrapper,
+        html:not(.dark) .el-select__wrapper {
+            background-color: #ffffff !important;
+            box-shadow: 0 0 0 1px #cbd5e1 inset !important;
+        }
+        html:not(.dark) .el-input__inner {
+            color: #0f172a !important;
+        }
+        .el-button {
+            font-weight: 600 !important;
+            min-height: 40px !important;
+        }
+
+        /* 移动端响应式微调 */
+        @media (max-width: 640px) {
+            .sleep-tabs-container {
+                flex-direction: column;
+            }
+            .sleep-tab-btn {
+                width: 100%;
+            }
+            .cycle-time {
+                font-size: 2.1rem;
+            }
+            .sleep-dashboard {
+                padding: 12px 14px;
+            }
         }
     </style>
 </head>
@@ -218,7 +741,7 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-<main class="main-body tool-page-body">
+<main class="main-body tool-page-body" id="app">
     <div class="tool-body">
         <div class="card-model">
             <div class="card-body">
@@ -229,70 +752,103 @@
                     根据人体 90 分钟快速眼动（REM）睡眠周期节律计算。如果在深睡眠阶段被闹钟惊醒，会引发全天昏沉与“睡眠惯性”；而在一个完整周期结束的浅睡眠阶段醒来，则能神清气爽、精力充沛。
                 </div>
 
-                <!-- Vue 3 应用交互区域 -->
-                <div id="sleepApp">
-                    <!-- 实时时间与模式切换 -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
+                <!-- 核心交互区 -->
+                <div>
+                    <!-- 顶部实时时钟与状态指示仪表盘 -->
+                    <div class="sleep-dashboard">
                         <div class="realtime-badge">
                             <div class="pulse-dot"></div>
                             <span>当前系统时间: {{ currentTimeStr }}</span>
                         </div>
+                        <div class="dashboard-status-text">
+                            <span v-if="mode === 'sleep_now'">🌙 正在根据就寝时间规划最佳起床闹钟</span>
+                            <span v-else-if="mode === 'target_wake'">⏰ 正在倒推保证周期完整的最佳就寝时间</span>
+                            <span v-else>⚡ 科学充能小憩，避开深睡迟钝阶段</span>
+                        </div>
                     </div>
 
-                    <!-- 模式 Tab 切换 -->
-                    <div class="sleep-tabs">
+                    <!-- 模式三合一切换选项卡 -->
+                    <div class="sleep-tabs-container">
                         <button 
+                            type="button"
                             class="sleep-tab-btn" 
                             :class="{ active: mode === 'sleep_now' }"
                             @click="setMode('sleep_now')"
                         >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                            如果我现在睡觉（几点起床最清醒）
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                            </svg>
+                            <span>我现在就寝 (算最佳起床点)</span>
                         </button>
                         <button 
+                            type="button"
                             class="sleep-tab-btn" 
                             :class="{ active: mode === 'target_wake' }"
                             @click="setMode('target_wake')"
                         >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            我需要在某时间起床（几点就寝最好）
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            <span>我设定闹钟 (倒推最佳入睡点)</span>
                         </button>
                         <button 
+                            type="button"
                             class="sleep-tab-btn" 
                             :class="{ active: mode === 'power_nap' }"
                             @click="setMode('power_nap')"
                         >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            科学高效小憩 (Power Nap)
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            <span>科学高效小憩 (Power Nap 能量仓)</span>
                         </button>
                     </div>
 
-                    <!-- 参数配置表单 -->
-                    <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-800 mb-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- 模式一：现在睡觉参数 -->
-                            <template v-if="mode === 'sleep_now'">
-                                <div>
-                                    <label class="block text-xs text-slate-400 mb-1">入睡起始时间</label>
-                                    <div class="flex items-center gap-2">
-                                        <el-time-picker 
-                                            v-model="sleepNowTime" 
-                                            format="HH:mm" 
-                                            value-format="HH:mm" 
-                                            class="w-full" 
-                                            size="large"
-                                            :clearable="false"
-                                            @change="calculate"
-                                        />
-                                        <el-button size="large" @click="resetToNow" plain>设为当前时间</el-button>
-                                    </div>
+                    <!-- 参数配置面板 -->
+                    <div class="config-panel" v-if="mode !== 'power_nap'">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- 模式一：现在睡觉时间设定与快捷按钮 -->
+                            <div v-if="mode === 'sleep_now'">
+                                <div class="config-label">
+                                    <span>入睡起始时间</span>
+                                    <span class="config-subtext">建议设置实际上床关灯时刻</span>
                                 </div>
-                            </template>
+                                <div class="flex items-center gap-2">
+                                    <el-time-picker 
+                                        v-model="sleepNowTime" 
+                                        format="HH:mm" 
+                                        value-format="HH:mm" 
+                                        class="w-full" 
+                                        size="large"
+                                        :clearable="false"
+                                        @change="calculate"
+                                    />
+                                    <el-button size="large" @click="resetToNow" plain>
+                                        设为当前时刻
+                                    </el-button>
+                                </div>
+                                <div class="preset-pills-row">
+                                    <button 
+                                        type="button" 
+                                        v-for="t in ['22:00', '22:30', '23:00', '23:30', '00:00', '00:30']" 
+                                        :key="t"
+                                        class="preset-pill"
+                                        :class="{ active: sleepNowTime === t }"
+                                        @click="setSleepPreset(t)"
+                                    >
+                                        {{ t }}
+                                    </button>
+                                </div>
+                            </div>
 
-                            <!-- 模式二：目标起床时间参数 -->
-                            <template v-if="mode === 'target_wake'">
+                            <!-- 模式二：目标起床时间设定与快捷按钮 -->
+                            <div v-if="mode === 'target_wake'">
+                                <div class="config-label">
+                                    <span>目标起床闹钟时刻</span>
+                                    <span class="config-subtext">你计划明晨离床的时间</span>
+                                </div>
                                 <div>
-                                    <label class="block text-xs text-slate-400 mb-1">目标起床闹钟时间</label>
                                     <el-time-picker 
                                         v-model="targetWakeTime" 
                                         format="HH:mm" 
@@ -303,170 +859,313 @@
                                         @change="calculate"
                                     />
                                 </div>
-                            </template>
+                                <div class="preset-pills-row">
+                                    <button 
+                                        type="button" 
+                                        v-for="t in ['06:00', '06:30', '07:00', '07:30', '08:00', '08:30']" 
+                                        :key="t"
+                                        class="preset-pill"
+                                        :class="{ active: targetWakeTime === t }"
+                                        @click="setWakePreset(t)"
+                                    >
+                                        {{ t }}
+                                    </button>
+                                </div>
+                            </div>
 
-                            <!-- 入睡耗时（入睡潜伏期） -->
+                            <!-- 入睡潜伏期设定 (Latency) -->
                             <div>
-                                <label class="block text-xs text-slate-400 mb-1">入睡潜伏期 (平均入睡耗时)</label>
+                                <div class="config-label">
+                                    <span>入睡潜伏期 (闭眼到睡着的平均耗时)</span>
+                                    <span class="config-subtext">临床平均为 14 分钟</span>
+                                </div>
                                 <el-select v-model="latency" class="w-full" size="large" @change="calculate">
-                                    <el-option label="5 分钟 (秒睡极快体质)" :value="5" />
-                                    <el-option label="10 分钟 (较快入睡)" :value="10" />
-                                    <el-option label="14 分钟 (科学临床平均值, 推荐)" :value="14" />
-                                    <el-option label="20 分钟 (一般速度)" :value="20" />
-                                    <el-option label="30 分钟 (翻来覆去较难入睡)" :value="30" />
+                                    <el-option label="⚡ 5 分钟 (秒睡极快体质)" :value="5" />
+                                    <el-option label="🚀 10 分钟 (入睡较迅速)" :value="10" />
+                                    <el-option label="⭐ 14 分钟 (科学临床平均值, 推荐)" :value="14" />
+                                    <el-option label="🛋️ 20 分钟 (正常一般体质)" :value="20" />
+                                    <el-option label="⏳ 30 分钟 (思虑较多翻覆较久)" :value="30" />
                                 </el-select>
+                                <div class="preset-pills-row">
+                                    <button 
+                                        type="button" 
+                                        v-for="m in [5, 10, 14, 20, 30]" 
+                                        :key="'lat-'+m"
+                                        class="preset-pill"
+                                        :class="{ active: latency === m }"
+                                        @click="setLatencyPreset(m)"
+                                    >
+                                        {{ m }}分钟{{ m === 14 ? ' (推荐)' : '' }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 模式一与模式二：周期卡片列表 -->
-                    <template v-if="mode !== 'power_nap'">
-                        <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-base font-bold text-slate-200 m-0">
-                                {{ mode === 'sleep_now' ? '推荐最佳起床时间点' : '建议最佳就寝上床时间点' }}
-                            </h3>
-                            <span class="text-xs text-slate-400">已考虑 {{ latency }} 分钟入睡时间</span>
+                    <!-- 模式一与模式二：睡眠周期卡片列表 -->
+                    <div v-if="mode !== 'power_nap'">
+                        <div class="cycles-section-header">
+                            <h2 class="cycles-section-title">
+                                <span>{{ mode === 'sleep_now' ? '🎯 推荐最佳起床闹钟时刻' : '🛏️ 建议最佳就寝上床时刻' }}</span>
+                            </h2>
+                            <div class="latency-note-tag">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                <span>已计入 {{ latency }} 分钟入睡潜伏期 · 浅睡自然唤醒</span>
+                            </div>
                         </div>
 
+                        <!-- 6 组周期推荐卡片网格 -->
                         <div class="cycles-grid">
                             <div 
                                 v-for="c in cycleResults" 
                                 :key="c.cycles"
                                 class="cycle-card"
                                 :class="c.styleClass"
+                                @click="copyTime(c.timeStr, mode === 'sleep_now' ? '闹钟时间' : '就寝时间')"
                             >
                                 <span class="cycle-tag" :class="c.styleClass">{{ c.badge }}</span>
-                                <div class="text-xs text-slate-400">{{ mode === 'sleep_now' ? '起床闹钟设为' : '上床关灯就寝' }}</div>
-                                <div class="cycle-time">{{ c.timeStr }}</div>
-                                <div class="cycle-title">{{ c.title }}</div>
-                                <div class="cycle-desc">{{ c.desc }}</div>
+                                <div>
+                                    <div class="cycle-time-header">{{ mode === 'sleep_now' ? '建议闹钟设为' : '关灯闭眼时刻' }}</div>
+                                    <div class="cycle-time-row">
+                                        <div class="cycle-time">{{ c.timeStr }}</div>
+                                        <button 
+                                            type="button" 
+                                            class="cycle-copy-btn" 
+                                            @click.stop="copyTime(c.timeStr, mode === 'sleep_now' ? '闹钟时间' : '就寝时间')"
+                                            title="点击复制时间"
+                                        >
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                            <span>复制</span>
+                                        </button>
+                                    </div>
+                                    <div class="cycle-title">{{ c.title }}</div>
+                                    <div class="cycle-desc">{{ c.desc }}</div>
+                                </div>
                                 <div class="cycle-stats">
-                                    <span>周期: {{ c.cycles }} 个 ({{ c.cycles * 90 }} 分钟)</span>
+                                    <span>周期: {{ c.cycles }} 个 ({{ c.cycles * 90 }}分钟)</span>
                                     <span>净睡眠: {{ c.durationStr }}</span>
                                 </div>
                             </div>
                         </div>
-                    </template>
+                    </div>
 
-                    <!-- 模式三：高效小憩模式 -->
-                    <template v-if="mode === 'power_nap'">
-                        <div class="mb-4">
-                            <h3 class="text-base font-bold text-slate-200 mb-1">科学高效小憩 (Power Nap) 能量恢复方案</h3>
-                            <p class="text-xs text-slate-400">午间或大脑疲倦时的快速能量充电机理</p>
+                    <!-- 模式三：科学高效小憩 (Power Nap) 能量仓 -->
+                    <div v-if="mode === 'power_nap'">
+                        <div class="cycles-section-header">
+                            <div>
+                                <h2 class="cycles-section-title">⚡ 科学高效小憩 (Power Nap) 能量恢复方案</h2>
+                                <p class="text-xs text-slate-400 mt-1 mb-0">利用神经脑波节律清除腺苷，避免在深慢波睡眠（N3）阶段被闹钟叫醒引发迟钝</p>
+                            </div>
+                            <div class="latency-note-tag">
+                                <span>按当前时刻 ({{ currentTimeStr }}) 实时动态推算</span>
+                            </div>
                         </div>
 
                         <div class="nap-grid">
                             <!-- 20 分钟微小憩 -->
-                            <div class="nap-card border-cyan-500/50 bg-cyan-950/20">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">20-25 分钟 · 强效充电</span>
-                                    <span class="text-xs text-slate-400">醒来时间: {{ getNapWakeTime(20) }}</span>
+                            <div class="nap-card nap-cyan">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold text-cyan-500 uppercase tracking-wider">20-25 分钟 · 强效充电</span>
+                                        <span class="text-xs font-mono font-bold text-cyan-400 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/40">
+                                            醒来闹钟: {{ getNapWakeTime(20) }}
+                                        </span>
+                                    </div>
+                                    <div class="text-lg font-bold mb-2 flex items-center gap-1.5" style="color: #0ea5e9;">
+                                        <span>⚡ 快速精力回血 (Power Nap)</span>
+                                    </div>
+                                    <p class="text-xs leading-relaxed mb-2" style="color: #94a3b8;">
+                                        仅停留在第 1、2 阶段浅睡眠（Stage 1 & 2），尚未进入慢波深睡。醒来绝无头痛昏沉感，迅速清空大脑腺苷，极大提升警觉度、反应速度与下午工作专注度。
+                                    </p>
                                 </div>
-                                <div class="text-xl font-bold text-cyan-300 font-mono mb-2">⚡ 快速精力回血 (Power Nap)</div>
-                                <p class="text-xs text-slate-300 leading-relaxed mb-3">
-                                    仅停留在第 1、2 阶段浅睡眠（Stage 1 & 2），尚未进入深睡阶段。醒来绝无头痛昏沉感，迅速清空大脑腺苷，极大提升警觉度、反应速度与下午工作专注度。
-                                </p>
-                                <div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded">
-                                    💡 <strong>咖啡小憩秘籍 (Coffee Nap)</strong>：睡前喝一杯纯黑咖啡，咖啡因约需 20~25 分钟起效，小憩醒来时正好咖啡因发挥作用，提神效果翻倍！
+                                <div>
+                                    <div class="nap-tip-box">
+                                        💡 <strong>终极建议</strong>：睡前可喝一杯凉纯黑咖啡（Coffee Nap），咖啡因约需 20 分钟吸收起效，醒来时恰逢双重提神叠加，精力充沛！
+                                    </div>
+                                    <div class="mt-3 text-right">
+                                        <button 
+                                            type="button" 
+                                            class="cycle-copy-btn" 
+                                            @click="copyTime(getNapWakeTime(20), '小憩闹钟')"
+                                        >
+                                            设此时闹钟: {{ getNapWakeTime(20) }}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- 90 分钟单周期完全重启 -->
-                            <div class="nap-card border-emerald-500/50 bg-emerald-950/20">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">90 分钟 · 完整单周期</span>
-                                    <span class="text-xs text-slate-400">醒来时间: {{ getNapWakeTime(90 + latency) }}</span>
+                            <!-- 咖啡小憩 Coffee Nap -->
+                            <div class="nap-card nap-amber">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">25 分钟 · 双重提神</span>
+                                        <span class="text-xs font-mono font-bold text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-800/40">
+                                            醒来闹钟: {{ getNapWakeTime(25) }}
+                                        </span>
+                                    </div>
+                                    <div class="text-lg font-bold mb-2 flex items-center gap-1.5" style="color: #f59e0b;">
+                                        <span>☕ 咖啡小憩秘籍 (Coffee Nap)</span>
+                                    </div>
+                                    <p class="text-xs leading-relaxed mb-2" style="color: #94a3b8;">
+                                        科学界公认的最高效午间重启法。大脑疲倦是由于腺苷（Adenosine）结合受体，小憩清除了腺苷受体，而咖啡因分子迅速占据空位，形成 1+1>2 的清醒峰值。
+                                    </p>
                                 </div>
-                                <div class="text-xl font-bold text-emerald-300 font-mono mb-2">🔄 大脑记忆重置 (Full Cycle)</div>
-                                <p class="text-xs text-slate-300 leading-relaxed mb-3">
-                                    经历一次完整且包含深睡眠与快速眼动（REM）的闭环，在浅睡眠周期自然醒来。深度修复肌肉疲劳，强化创造力、情绪稳定性与逻辑记忆整合。
-                                </p>
-                                <div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded">
-                                    ⚠️ <strong>避坑提示</strong>：切忌睡 45~60 分钟！此时正处于深睡眠第三阶段（Slow-wave deep sleep），被强行叫醒会导致严重的“睡眠迟钝昏厥感”。
+                                <div>
+                                    <div class="nap-tip-box">
+                                        ☕ <strong>操作流程</strong>：5 分钟内喝下一杯意式浓缩或冰美式，立刻闭目养神 20 分钟，闹钟一响立即起床活动。
+                                    </div>
+                                    <div class="mt-3 text-right">
+                                        <button 
+                                            type="button" 
+                                            class="cycle-copy-btn" 
+                                            @click="copyTime(getNapWakeTime(25), '咖啡小憩闹钟')"
+                                        >
+                                            设此时闹钟: {{ getNapWakeTime(25) }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 90 分钟完整周期 -->
+                            <div class="nap-card nap-emerald">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold text-emerald-500 uppercase tracking-wider">90 分钟 · 完整单周期</span>
+                                        <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-800/40">
+                                            醒来闹钟: {{ getNapWakeTime(90 + latency) }}
+                                        </span>
+                                    </div>
+                                    <div class="text-lg font-bold mb-2 flex items-center gap-1.5" style="color: #10b981;">
+                                        <span>🔄 大脑记忆重置 (Full REM Cycle)</span>
+                                    </div>
+                                    <p class="text-xs leading-relaxed mb-2" style="color: #94a3b8;">
+                                        经历一次完整且包含深睡眠与快速眼动（REM）的闭环，在浅睡眠周期自然醒来。深度修复肌肉疲劳，强化创造力、情绪稳定性与逻辑记忆整合。
+                                    </p>
+                                </div>
+                                <div>
+                                    <div class="nap-tip-box">
+                                        ⚠️ <strong>避坑提示</strong>：切忌睡 45~60 分钟！此时正处于深睡眠慢波阶段（N3），强行叫醒会导致严重的“睡眠迟钝昏厥感”。
+                                    </div>
+                                    <div class="mt-3 text-right">
+                                        <button 
+                                            type="button" 
+                                            class="cycle-copy-btn" 
+                                            @click="copyTime(getNapWakeTime(90 + latency), '90分钟单周期闹钟')"
+                                        >
+                                            设此时闹钟: {{ getNapWakeTime(90 + latency) }}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </template>
+                    </div>
 
-                    <!-- 睡眠周期波形图展示 -->
+                    <!-- 人体 90 分钟睡眠周期节律与睡眠阶段波形图 (Hypnogram) -->
                     <div class="sleep-stage-box">
-                        <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-sm font-bold text-slate-200 m-0">人体 90 分钟睡眠周期节律与睡眠阶段波形图</h3>
-                            <span class="text-xs text-cyan-400 font-mono">Wake → Light → Deep → REM → Wake</span>
+                        <div class="sleep-stage-header">
+                            <h3 class="sleep-stage-title">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                </svg>
+                                <span>人体 90 分钟睡眠周期波形图 (Hypnogram 脑电阶段解析)</span>
+                            </h3>
+                            <span class="sleep-stage-badge">
+                                Awake → N1/N2 浅睡 → N3 深睡 → REM 做梦 → 醒来
+                            </span>
                         </div>
-                        <svg class="sleep-stage-svg" viewBox="0 0 800 160" preserveAspectRatio="none">
-                            <defs>
-                                <linearGradient id="sleepWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stop-color="#22d3ee" />
-                                    <stop offset="50%" stop-color="#3b82f6" />
-                                    <stop offset="100%" stop-color="#22d3ee" />
-                                </linearGradient>
-                                <linearGradient id="wakePointGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stop-color="#34d399" stop-opacity="0.8" />
-                                    <stop offset="100%" stop-color="#059669" stop-opacity="0.2" />
-                                </linearGradient>
-                            </defs>
 
-                            <!-- 背景网格与阶段标识 -->
-                            <line x1="0" y1="20" x2="800" y2="20" stroke="rgba(51,65,85,0.4)" stroke-dasharray="4" />
-                            <text x="10" y="16" fill="#94a3b8" font-size="10">清醒 / 浅睡 (Awake / Stage 1-2)</text>
+                        <div class="sleep-stage-scroll-wrapper">
+                            <svg class="sleep-stage-svg" viewBox="0 0 820 180" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="sleepWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#38bdf8" />
+                                        <stop offset="30%" stop-color="#818cf8" />
+                                        <stop offset="70%" stop-color="#34d399" />
+                                        <stop offset="100%" stop-color="#38bdf8" />
+                                    </linearGradient>
+                                </defs>
 
-                            <line x1="0" y1="75" x2="800" y2="75" stroke="rgba(51,65,85,0.3)" stroke-dasharray="4" />
-                            <text x="10" y="70" fill="#64748b" font-size="10">快速眼动 REM (做梦/记忆整理)</text>
+                                <!-- 阶段参考辅助横线 -->
+                                <line x1="0" y1="30" x2="820" y2="30" stroke="rgba(148, 163, 184, 0.25)" stroke-dasharray="4" />
+                                <text x="12" y="24" fill="#38bdf8" font-size="11" font-weight="bold">阶段 1: 清醒 / 浅睡期 (Awake & Light N1-N2)</text>
 
-                            <line x1="0" y1="140" x2="800" y2="140" stroke="rgba(51,65,85,0.4)" stroke-dasharray="4" />
-                            <text x="10" y="135" fill="#ef4444" font-size="10">深度睡眠 N3 (身体器官深度修复 - 切忌此时被叫醒)</text>
+                                <line x1="0" y1="85" x2="820" y2="85" stroke="rgba(148, 163, 184, 0.2)" stroke-dasharray="4" />
+                                <text x="12" y="80" fill="#a78bfa" font-size="11">阶段 2: 快速眼动 REM (大脑做梦 / 记忆固化)</text>
 
-                            <!-- 第 1 周期波形 (0 - 260) -->
-                            <path d="M 50 25 C 90 25, 110 145, 150 145 C 190 145, 210 70, 240 70 C 260 70, 270 30, 280 25" fill="none" stroke="url(#sleepWaveGrad)" stroke-width="3" />
-                            <!-- 最佳醒来点 1 -->
-                            <circle cx="280" cy="25" r="5" fill="#34d399" />
-                            <text x="250" y="15" fill="#34d399" font-size="11" font-weight="bold">90 min 醒来点</text>
+                                <line x1="0" y1="150" x2="820" y2="150" stroke="rgba(239, 68, 68, 0.25)" stroke-dasharray="4" />
+                                <text x="12" y="145" fill="#f87171" font-size="11" font-weight="bold">阶段 3: 慢波深度睡眠 N3 (身体组织与免疫修复 - 切忌此时被叫醒)</text>
 
-                            <!-- 第 2 周期波形 (280 - 510) -->
-                            <path d="M 280 25 C 320 25, 340 140, 380 140 C 420 140, 440 65, 470 65 C 490 65, 500 30, 510 25" fill="none" stroke="url(#sleepWaveGrad)" stroke-width="3" />
-                            <!-- 最佳醒来点 2 -->
-                            <circle cx="510" cy="25" r="5" fill="#34d399" />
-                            <text x="480" y="15" fill="#34d399" font-size="11" font-weight="bold">180 min 醒来点</text>
+                                <!-- 第 1 周期波形 (50 - 280) -->
+                                <path d="M 50 35 C 95 35, 115 155, 155 155 C 195 155, 215 80, 245 80 C 265 80, 275 40, 285 35" fill="none" stroke="url(#sleepWaveGrad)" stroke-width="3.5" stroke-linecap="round" />
+                                <circle cx="285" cy="35" r="5" fill="#34d399" />
+                                <text x="250" y="22" fill="#34d399" font-size="11" font-weight="bold">90分 醒来点</text>
 
-                            <!-- 第 3 周期波形 (510 - 740) -->
-                            <path d="M 510 25 C 550 25, 570 130, 610 130 C 650 130, 670 60, 700 60 C 720 60, 730 30, 740 25" fill="none" stroke="url(#sleepWaveGrad)" stroke-width="3" />
-                            <!-- 最佳醒来点 3 -->
-                            <circle cx="740" cy="25" r="5" fill="#22d3ee" />
-                            <text x="710" y="15" fill="#22d3ee" font-size="11" font-weight="bold">270 min 醒来点</text>
-                        </svg>
+                                <!-- 第 2 周期波形 (285 - 520) -->
+                                <path d="M 285 35 C 325 35, 345 150, 385 150 C 425 150, 445 75, 475 75 C 495 75, 505 40, 520 35" fill="none" stroke="url(#sleepWaveGrad)" stroke-width="3.5" stroke-linecap="round" />
+                                <circle cx="520" cy="35" r="5" fill="#34d399" />
+                                <text x="485" y="22" fill="#34d399" font-size="11" font-weight="bold">180分 醒来点</text>
+
+                                <!-- 第 3 周期波形 (520 - 755) -->
+                                <path d="M 520 35 C 560 35, 580 140, 620 140 C 660 140, 680 70, 710 70 C 730 70, 740 40, 755 35" fill="none" stroke="url(#sleepWaveGrad)" stroke-width="3.5" stroke-linecap="round" />
+                                <circle cx="755" cy="35" r="6" fill="#38bdf8" />
+                                <text x="720" y="22" fill="#38bdf8" font-size="11" font-weight="bold">270分 醒来点</text>
+                            </svg>
+                        </div>
                     </div>
 
                 </div>
 
                 <div class="divider"></div>
 
-                <!-- 科学睡眠指南与常见科普 -->
-                <div class="content">
-                    <h3>什么是 90 分钟睡眠周期？</h3>
-                    <p>
-                        临床睡眠医学研究表明，人类的睡眠并不是均匀持续的深度昏睡，而是由若干个由浅入深、再由深入浅的周期交替循环构成的。每个睡眠周期平均持续约 <strong>90 分钟</strong>（波动范围一般在 80~110 分钟之间）。
-                    </p>
-                    <p>
-                        在一个完整的 90 分钟周期内，我们会依次经历：<strong>非快速眼动入睡期 (N1) → 浅睡期 (N2) → 熟睡与深睡期 (N3) → 快速眼动期 (REM 做梦与大脑记忆整合)</strong>，最后再次回到浅睡眠阶段。
-                    </p>
+                <!-- 科学睡眠指南与常见科普 (Guide & FAQ) -->
+                <div class="content guide-section">
+                    <h2 class="text-lg font-bold mb-3">科学睡眠常识与黄金作息指南</h2>
+                    <div class="guide-grid">
+                        <div class="guide-card">
+                            <div class="guide-card-title">
+                                <span>🧠 什么是 90 分钟睡眠周期？</span>
+                            </div>
+                            <div class="guide-card-desc">
+                                临床睡眠医学研究表明，人类睡眠并非均匀昏睡，而是由约 <strong>90 分钟</strong>（个体在 80~110 分钟之间波动）的周期交替构成。经历入睡期 (N1) → 浅睡期 (N2) → 熟睡期 (N3) → 快速眼动期 (REM)，在浅睡期被唤醒即可毫无疲倦感。
+                            </div>
+                        </div>
 
-                    <h3>为什么“多睡 20 分钟”反而更累？（睡眠惯性）</h3>
-                    <p>
-                        如果在闹钟响起后按下“贪睡按钮 (Snooze)”继续睡 10~20 分钟，大脑会重新启动一个新的睡眠周期并一头扎进深度睡眠。当闹钟再次响起强行将你从深睡眠状态拽出时，大脑处于“睡眠惯性 (Sleep Inertia)”状态，神经递质尚未唤醒，会导致全天头脑昏胀、注意力涣散。
-                    </p>
+                        <div class="guide-card">
+                            <div class="guide-card-title">
+                                <span>⏰ 为什么“多赖床 15 分钟”反而更累？</span>
+                            </div>
+                            <div class="guide-card-desc">
+                                按下贪睡按钮后，大脑会重启一个新的 90 分钟睡眠循环并沉入深睡眠。当闹钟再次响起，强制将大脑从深睡慢波拽出，导致“睡眠惯性 (Sleep Inertia)”，神经递质未苏醒，全天头昏脑胀。
+                            </div>
+                        </div>
 
-                    <h3>黄金睡眠卫生守则 (Sleep Hygiene)</h3>
-                    <ul>
-                        <li><strong>固定起床时间</strong>：即便周末也不要推迟起床超过 1.5 小时，保持体内视交叉上核昼夜节律（生物钟）的稳定。</li>
-                        <li><strong>下午 14:00 后限制咖啡因</strong>：咖啡因在人体内的代谢半衰期约为 5~7 小时，傍晚摄入会显著抑制腺苷受体，推迟深睡眠来临。</li>
-                        <li><strong>睡前 30 分钟屏蔽电子蓝光</strong>：手机与电脑屏幕的 460nm 蓝光会强力抑制松果体分泌褪黑素（Melatonin），建议开启夜间护眼模式或远离手机。</li>
-                        <li><strong>卧室黄金环境</strong>：适宜温度约为 18℃~22℃，保持全遮光与安静环境有助于促进深度睡眠波生成。</li>
-                    </ul>
+                        <div class="guide-card">
+                            <div class="guide-card-title">
+                                <span>☕ 咖啡因与入睡潜伏期管理</span>
+                            </div>
+                            <div class="guide-card-desc">
+                                咖啡因在体内的半衰期长达 <strong>5~7 小时</strong>，建议下午 14:00 后避免饮用浓茶或咖啡。普通健康人群闭眼到睡着的平均潜伏期为 14 分钟，若长期秒睡往往意味着极度缺觉；若超过 30 分钟则属轻度失眠。
+                            </div>
+                        </div>
 
-                    <p class="text-xs text-slate-500 mt-4">
-                        <!-- 拓展时间: 2026-08-31 -->
-                        拓展时间: 2026-08-31 · 纯前端离线算法 · 基于国际睡眠医学标准
+                        <div class="guide-card">
+                            <div class="guide-card-title">
+                                <span>🌙 卧室黄金睡眠环境</span>
+                            </div>
+                            <div class="guide-card-desc">
+                                建议卧室室温控制在 <strong>18℃~21℃</strong>，睡前 45 分钟避开手机平板等 460nm 蓝光辐射，以防松果体褪黑素分泌受阻。全遮光窗帘与白噪音环境能显著增加深度慢波睡眠时长。
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-slate-500 mt-6 text-center">
+                        纯前端离线算法 · 基于国际睡眠医学标准 · 数据仅供健康作息参考
                     </p>
                 </div>
             </div>
@@ -476,8 +1175,8 @@
 
 <script src="./lib/vue/vue.global.prod.js"></script>
 <script src="./lib/element-plus/index.js"></script>
-    <script src="./lib/element-plus/locale/en.js"></script>
-    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/element-plus/locale/en.js"></script>
+<script src="./lib/element-plus/locale/zh-tw.js"></script>
 <script src="./js/common.js?260728100716"></script>
 <script>
     var languageCode = 'zh';
@@ -523,6 +1222,21 @@
 
             const setMode = (newMode) => {
                 mode.value = newMode;
+                calculate();
+            };
+
+            const setSleepPreset = (timeStr) => {
+                sleepNowTime.value = timeStr;
+                calculate();
+            };
+
+            const setWakePreset = (timeStr) => {
+                targetWakeTime.value = timeStr;
+                calculate();
+            };
+
+            const setLatencyPreset = (mins) => {
+                latency.value = mins;
                 calculate();
             };
 
@@ -662,6 +1376,37 @@
                 return `${h}:${m}`;
             };
 
+            const copyTime = (timeStr, label) => {
+                const successMsg = `已复制 ${label || '时间'}: ${timeStr}`;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(timeStr).then(() => {
+                        if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                            ElementPlus.ElMessage.success(successMsg);
+                        }
+                    }).catch(() => {
+                        fallbackCopy(timeStr, successMsg);
+                    });
+                } else {
+                    fallbackCopy(timeStr, successMsg);
+                }
+            };
+
+            const fallbackCopy = (text, msg) => {
+                try {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                        ElementPlus.ElMessage.success(msg);
+                    }
+                } catch (e) {}
+            };
+
             onMounted(() => {
                 resetToNow();
                 updateCurrentClock();
@@ -680,15 +1425,19 @@
                 currentTimeStr,
                 cycleResults,
                 setMode,
+                setSleepPreset,
+                setWakePreset,
+                setLatencyPreset,
                 resetToNow,
                 calculate,
-                getNapWakeTime
+                getNapWakeTime,
+                copyTime
             };
         }
     });
 
     app.use(ElementPlus);
-    app.mount('#sleepApp');
+    app.mount('#app');
 </script>
 </body>
 </html>
