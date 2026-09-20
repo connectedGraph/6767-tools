@@ -1,1149 +1,1674 @@
-<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
 <!DOCTYPE html>
 <html lang="zh" class="dark">
 <head>
-    <script src="./js/theme.js"></script>
-    <script src="./js/i18n.js"></script>
-    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-    <title>JWT 解码与调试器 - 在线工具</title>
-    <meta name="description" content="在线 JWT 解码与调试工具，支持粘贴 JWT 自动解构 Header、Payload，格式化呈现 Claims (iss, sub, exp, iat, nbf) 与过期状态诊断，HMAC-SHA256 签名校验与在线生成。" />
-    <meta name="keywords" content="JWT解码,JWT调试,JSON Web Token,JWT过期时间,JWT签名验证,HS256,JWT Claims,JWT生成器" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>JWT 解码与调试器 - 在线工具</title>
+<meta name="description" content="专业级在线 JWT 解码与调试工具，支持 Header、Payload、Claims 诊断与 HMAC 本地签名校验。">
+<link rel="shortcut icon" href="/favicon.ico">
+<script src="./js/theme.js"></script>
+<script src="./js/i18n.js"></script>
+<link href="./lib/element-plus/index.css" rel="stylesheet">
+<link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet">
+<link href="./css/6767-site.css?v=20260905" rel="stylesheet">
+<link href="./css/tool-dark.css?v=20260905" rel="stylesheet">
+<style>
+/* ==========================================================================
+   JWT Debugger Modernized Styles - Dual-Mode High Contrast (Light & Dark)
+   ========================================================================== */
+:root {
+  --jwt-header-color: #be123c;
+  --jwt-payload-color: #6d28d9;
+  --jwt-sig-color: #0369a1;
+  --jwt-dot-color: #475569;
+  --panel-radius: 14px;
+}
 
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link href="./lib/element-plus/index.css" rel="stylesheet" />
-    <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet" />
-    <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
-    <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
+/* Light Mode Baseline (WCAG AAA High-Contrast) */
+html:not(.dark) {
+  --jwt-header-color: #be123c;
+  --jwt-payload-color: #6d28d9;
+  --jwt-sig-color: #0369a1;
+  --jwt-dot-color: #334155;
+  --jwt-bg-page: #f8fafc;
+  --jwt-bg-card: #ffffff;
+  --jwt-bg-panel: #ffffff;
+  --jwt-bg-subtle: #f1f5f9;
+  --jwt-bg-code: #f8fafc;
+  --jwt-border: #cbd5e1;
+  --jwt-border-focus: #0284c7;
+  --jwt-text-main: #0f172a;
+  --jwt-text-muted: #334155;
+  --jwt-text-dim: #475569;
+  --jwt-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --jwt-code-border: #cbd5e1;
+}
 
-    <style>
-        .jwt-workspace {
-            display: grid;
-            grid-template-columns: 1fr 1.1fr;
-            gap: 16px;
-            margin-top: 16px;
-        }
-        @media (max-width: 860px) {
-            .jwt-workspace {
-                grid-template-columns: 1fr;
-            }
-        }
-        .terminal-panel {
-            background: rgba(15, 23, 42, 0.92);
-            border: 1px solid rgba(51, 65, 85, 0.7);
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-        }
-        .terminal-header {
-            background: #111c30;
-            padding: 9px 14px;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-        .terminal-dots {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        .terminal-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .dot-red { background: #ef4444; }
-        .dot-yellow { background: #f59e0b; }
-        .dot-green { background: #10b981; }
+/* Dark Mode Baseline */
+html.dark {
+  --jwt-header-color: #fb7185;
+  --jwt-payload-color: #c084fc;
+  --jwt-sig-color: #38bdf8;
+  --jwt-dot-color: #94a3b8;
+  --jwt-bg-page: #070b14;
+  --jwt-bg-card: #0b1120;
+  --jwt-bg-panel: #0d1527;
+  --jwt-bg-subtle: #111b33;
+  --jwt-bg-code: #070d1a;
+  --jwt-border: #1e293b;
+  --jwt-border-focus: #0284c7;
+  --jwt-text-main: #f1f5f9;
+  --jwt-text-muted: #94a3b8;
+  --jwt-text-dim: #64748b;
+  --jwt-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --jwt-code-border: #1e293b;
+}
 
-        /* JWT Tri-Color scheme */
-        .jwt-color-header { color: #fb7185; }
-        .jwt-color-payload { color: #c084fc; }
-        .jwt-color-sig { color: #22d3ee; }
-        .jwt-color-dot { color: #64748b; font-weight: bold; }
+/* Main Container Wrapper */
+.jwt-app-container {
+  width: 100%;
+  max-width: 100%;
+  color: var(--jwt-text-main);
+  box-sizing: border-box;
+}
 
-        .jwt-encoded-box {
-            position: relative;
-            background: #090f1d;
-            padding: 14px;
-            min-height: 220px;
-            font-family: "JetBrains Mono", Consolas, "Liberation Mono", monospace;
-            font-size: 13.5px;
-            line-height: 1.6;
-            word-break: break-all;
-            white-space: pre-wrap;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
-        }
-        .jwt-textarea {
-            width: 100%;
-            height: 180px;
-            background: #090f1d;
-            color: #e2e8f0;
-            border: 1px solid rgba(51, 65, 85, 0.6);
-            border-radius: 6px;
-            outline: none;
-            padding: 12px;
-            font-family: "JetBrains Mono", Consolas, monospace;
-            font-size: 13px;
-            line-height: 1.5;
-            resize: vertical;
-            word-break: break-all;
-        }
-        .jwt-textarea:focus {
-            border-color: #22d3ee;
-            box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.4);
-        }
+/* Dashboard Toolbar */
+.jwt-toolbar-card {
+  border-radius: var(--panel-radius);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+}
+html:not(.dark) .jwt-toolbar-card {
+  background: #ffffff;
+  border: 1px solid var(--jwt-border);
+  box-shadow: var(--jwt-shadow);
+}
+html.dark .jwt-toolbar-card {
+  background: var(--jwt-bg-panel);
+  border: 1px solid var(--jwt-border);
+  box-shadow: var(--jwt-shadow);
+}
 
-        /* Colored preview banner */
-        .jwt-breakdown-card {
-            background: #090f1d;
-            border-radius: 6px;
-            padding: 12px 14px;
-            font-family: "JetBrains Mono", Consolas, monospace;
-            font-size: 13px;
-            line-height: 1.6;
-            word-break: break-all;
-            border: 1px solid rgba(51, 65, 85, 0.5);
-            margin-top: 10px;
-        }
+.jwt-toolbar-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 
-        .jwt-part-tag {
-            display: inline-block;
-            font-size: 10px;
-            font-family: ui-monospace, monospace;
-            padding: 1px 6px;
-            border-radius: 3px;
-            margin-right: 6px;
-            font-weight: 600;
-        }
-        .tag-header { background: rgba(251, 113, 133, 0.15); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.3); }
-        .tag-payload { background: rgba(192, 132, 252, 0.15); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.3); }
-        .tag-sig { background: rgba(34, 211, 238, 0.15); color: #22d3ee; border: 1px solid rgba(34, 211, 238, 0.3); }
+/* Toolbar button styling for crisp contrast */
+html:not(.dark) .jwt-toolbar-actions .el-button--primary {
+  background-color: #0284c7;
+  border-color: #0284c7;
+  color: #ffffff;
+  font-weight: 600;
+}
+html:not(.dark) .jwt-toolbar-actions .el-button--success.is-plain {
+  background-color: #ecfdf5;
+  border-color: #86efac;
+  color: #047857;
+  font-weight: 600;
+}
+html:not(.dark) .jwt-toolbar-actions .el-button--info.is-plain {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #1e293b;
+  font-weight: 600;
+}
+html:not(.dark) .jwt-toolbar-actions .el-button--danger.is-plain {
+  background-color: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+  font-weight: 600;
+}
 
-        /* Decoded cards */
-        .decoded-section {
-            background: #090f1d;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
-            padding: 12px 14px;
-        }
-        .decoded-section:last-child {
-            border-bottom: none;
-        }
-        .decoded-title {
-            font-family: ui-monospace, SFMono-Regular, monospace;
-            font-size: 0.78rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .json-display {
-            background: rgba(11, 19, 38, 0.75);
-            border: 1px solid rgba(51, 65, 85, 0.5);
-            border-radius: 6px;
-            padding: 10px 12px;
-            font-family: "JetBrains Mono", Consolas, monospace;
-            font-size: 12.5px;
-            line-height: 1.6;
-            color: #cbd5e1;
-            overflow: auto;
-            max-height: 260px;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
+html.dark .jwt-toolbar-actions .el-button--primary {
+  background-color: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+  font-weight: 600;
+}
+html.dark .jwt-toolbar-actions .el-button--success.is-plain {
+  background-color: #064e3b;
+  border-color: #059669;
+  color: #a7f3d0;
+  font-weight: 600;
+}
+html.dark .jwt-toolbar-actions .el-button--info.is-plain {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+  font-weight: 600;
+}
+html.dark .jwt-toolbar-actions .el-button--danger.is-plain {
+  background-color: #450a0a;
+  border-color: #dc2626;
+  color: #fecaca;
+  font-weight: 600;
+}
 
-        /* Claims Table & Inspector */
-        .claims-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .claim-card {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(51, 65, 85, 0.5);
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 0.8rem;
-        }
-        .claim-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 4px;
-        }
-        .claim-key {
-            font-family: ui-monospace, monospace;
-            color: #38bdf8;
-            font-weight: 600;
-        }
-        .claim-meaning {
-            font-size: 0.72rem;
-            color: #94a3b8;
-        }
-        .claim-val {
-            font-family: "JetBrains Mono", Consolas, monospace;
-            color: #e2e8f0;
-            word-break: break-all;
-        }
-        .claim-human-date {
-            margin-top: 4px;
-            font-size: 0.74rem;
-            color: #cbd5e1;
-        }
+/* Custom Segmented Mode Control */
+.jwt-mode-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 10px;
+  gap: 4px;
+  user-select: none;
+}
+html:not(.dark) .jwt-mode-switch {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+}
+html.dark .jwt-mode-switch {
+  background: #090f1f;
+  border: 1px solid #1e293b;
+}
 
-        /* Status Badge */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            font-family: ui-monospace, monospace;
-        }
-        .badge-valid { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
-        .badge-expired { background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
-        .badge-warning { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+.jwt-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  transition: all 0.18s ease;
+  min-height: 34px;
+}
+html:not(.dark) .jwt-mode-btn {
+  color: #475569;
+}
+html:not(.dark) .jwt-mode-btn:hover {
+  color: #0f172a;
+}
+html:not(.dark) .jwt-mode-btn.active {
+  background: #ffffff;
+  color: #0369a1;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+html.dark .jwt-mode-btn {
+  color: #94a3b8;
+}
+html.dark .jwt-mode-btn:hover {
+  color: #f8fafc;
+}
+html.dark .jwt-mode-btn.active {
+  background: #1e293b;
+  color: #38bdf8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
 
-        /* Signature Verification Box */
-        .sig-verify-panel {
-            background: #090f1d;
-            padding: 14px;
-            border-top: 1px solid rgba(51, 65, 85, 0.6);
-        }
-        .sig-status-card {
-            margin-top: 12px;
-            padding: 10px 14px;
-            border-radius: 6px;
-            font-family: ui-monospace, monospace;
-            font-size: 0.82rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .sig-ok { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; }
-        .sig-fail { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; }
-        .sig-none { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; }
-        .sig-asym { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; }
+/* 2-Column Workspaces */
+.jwt-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: 18px;
+  align-items: start;
+  width: 100%;
+}
 
-        /* Toolbar */
-        .jwt-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-            margin-bottom: 12px;
-            padding: 10px 14px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(51, 65, 85, 0.6);
-            border-radius: 8px;
-        }
-    </style>
+/* Panels */
+.jwt-panel {
+  border-radius: var(--panel-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 0;
+}
+html:not(.dark) .jwt-panel {
+  background: #ffffff;
+  border: 1px solid var(--jwt-border);
+  box-shadow: var(--jwt-shadow);
+}
+html.dark .jwt-panel {
+  background: var(--jwt-bg-panel);
+  border: 1px solid var(--jwt-border);
+  box-shadow: var(--jwt-shadow);
+}
 
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="在线工具集" />
-    <meta property="og:title" content="JWT 解码与调试器 - 在线工具" />
-    <meta property="og:description" content="在线 JWT 解码与调试工具，支持粘贴 JWT 自动解构 Header、Payload，格式化呈现 Claims (iss, sub, exp, iat, nbf) 与过期状态诊断，HMAC-SHA256 签名校验与在线生成。" />
-    <meta property="og:url" content="https://tool.6767.chat/jwt-debugger" />
-    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="JWT 解码与调试器 - 在线工具" />
-    <meta name="twitter:description" content="在线 JWT 解码与调试工具，支持粘贴 JWT 自动解构 Header、Payload，格式化呈现 Claims (iss, sub, exp, iat, nbf) 与过期状态诊断，HMAC-SHA256 签名校验与在线生成。" />
-    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
-    <link rel="canonical" href="https://tool.6767.chat/jwt-debugger" />
+/* Panel Header */
+.jwt-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--jwt-border);
+  min-height: 48px;
+  box-sizing: border-box;
+}
+html:not(.dark) .jwt-panel-header {
+  background: #f8fafc;
+}
+html.dark .jwt-panel-header {
+  background: #090f1e;
+}
+
+.jwt-panel-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.jwt-terminal-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.jwt-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-red { background: #ef4444; }
+.dot-yellow { background: #f59e0b; }
+.dot-green { background: #10b981; }
+
+.jwt-panel-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html:not(.dark) .jwt-panel-title { color: #0f172a; }
+html.dark .jwt-panel-title { color: #f1f5f9; }
+
+.jwt-panel-meta {
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+html:not(.dark) .jwt-panel-meta { color: #334155; }
+html.dark .jwt-panel-meta { color: #94a3b8; }
+
+/* Badges with High Contrast (Solid Backgrounds) */
+.jwt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+html:not(.dark) .jwt-badge-neutral {
+  background: #e2e8f0;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+}
+html.dark .jwt-badge-neutral {
+  background: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #334155;
+}
+
+/* Panel Body */
+.jwt-panel-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Token Input Textarea */
+.jwt-textarea-wrapper {
+  position: relative;
+  width: 100%;
+}
+.jwt-textarea {
+  display: block;
+  width: 100%;
+  min-height: 195px;
+  box-sizing: border-box;
+  resize: vertical;
+  border-radius: 10px;
+  padding: 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  word-break: break-all;
+  white-space: pre-wrap;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+html:not(.dark) .jwt-textarea {
+  background: #f8fafc;
+  color: #0f172a;
+  border: 1px solid var(--jwt-border);
+}
+html:not(.dark) .jwt-textarea:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+  background: #ffffff;
+}
+html.dark .jwt-textarea {
+  background: var(--jwt-bg-code);
+  color: #f1f5f9;
+  border: 1px solid var(--jwt-border);
+}
+html.dark .jwt-textarea:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+  background: #090f1e;
+}
+
+/* Visual Breakdown Bar */
+.jwt-breakdown-box {
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.65;
+  word-break: break-all;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+html:not(.dark) .jwt-breakdown-box {
+  background: #f8fafc;
+  border: 1px solid var(--jwt-border);
+}
+html.dark .jwt-breakdown-box {
+  background: #090f1d;
+  border: 1px solid var(--jwt-border);
+}
+
+.jwt-breakdown-legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+}
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+}
+html:not(.dark) .legend-item { color: #334155; }
+html.dark .legend-item { color: #cbd5e1; }
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.jwt-color-header {
+  color: var(--jwt-header-color);
+  font-weight: 700;
+}
+.jwt-color-payload {
+  color: var(--jwt-payload-color);
+  font-weight: 700;
+}
+.jwt-color-sig {
+  color: var(--jwt-sig-color);
+  font-weight: 700;
+}
+.jwt-color-dot {
+  color: var(--jwt-dot-color);
+  font-weight: 900;
+  padding: 0 1px;
+}
+
+/* Signature Verification Section */
+.jwt-sig-panel {
+  padding: 16px;
+  border-top: 1px solid var(--jwt-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+html:not(.dark) .jwt-sig-panel {
+  background: #f8fafc;
+}
+html.dark .jwt-sig-panel {
+  background: #080d1a;
+}
+
+.jwt-sig-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.jwt-sig-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+html:not(.dark) .jwt-sig-title { color: #1e293b; }
+html.dark .jwt-sig-title { color: #e2e8f0; }
+
+/* Signature Status Result Card - Solid, High-Contrast Dual Mode */
+.jwt-sig-result-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  transition: all 0.2s ease;
+}
+.sig-status-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 13px;
+}
+.sig-status-desc {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Status variants with solid WCAG-compliant colors */
+html:not(.dark) .sig-ok {
+  background: #ecfdf5;
+  border: 1px solid #86efac;
+  color: #065f46;
+}
+html.dark .sig-ok {
+  background: #064e3b;
+  border: 1px solid #059669;
+  color: #a7f3d0;
+}
+
+html:not(.dark) .sig-fail {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+html.dark .sig-fail {
+  background: #450a0a;
+  border: 1px solid #dc2626;
+  color: #fecaca;
+}
+
+html:not(.dark) .sig-none {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+html.dark .sig-none {
+  background: #451a03;
+  border: 1px solid #d97706;
+  color: #fde68a;
+}
+
+html:not(.dark) .sig-asym {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+}
+html.dark .sig-asym {
+  background: #082f49;
+  border: 1px solid #0284c7;
+  color: #bae6fd;
+}
+
+/* Decoded Section */
+.jwt-decoded-block {
+  padding: 16px;
+  border-bottom: 1px solid var(--jwt-border);
+}
+.jwt-decoded-block:last-child {
+  border-bottom: none;
+}
+
+.jwt-decoded-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.jwt-decoded-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+html:not(.dark) .jwt-decoded-title { color: #0f172a; }
+html.dark .jwt-decoded-title { color: #e2e8f0; }
+
+/* JSON Code Viewer */
+.jwt-json-box {
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid var(--jwt-code-border);
+}
+html:not(.dark) .jwt-json-box {
+  background: #f8fafc;
+  color: #0f172a;
+}
+html.dark .jwt-json-box {
+  background: var(--jwt-bg-code);
+  color: #f1f5f9;
+}
+
+/* High Contrast JSON Syntax Colors */
+html:not(.dark) .json-key { color: #0369a1; font-weight: 700; }
+html:not(.dark) .json-string { color: #047857; font-weight: 500; }
+html:not(.dark) .json-number { color: #b45309; font-weight: 600; }
+html:not(.dark) .json-boolean { color: #6b21a8; font-weight: 700; }
+html:not(.dark) .json-null { color: #475569; font-style: italic; font-weight: 600; }
+
+html.dark .json-key { color: #38bdf8; font-weight: 700; }
+html.dark .json-string { color: #34d399; font-weight: 500; }
+html.dark .json-number { color: #fbbf24; font-weight: 600; }
+html.dark .json-boolean { color: #c084fc; font-weight: 700; }
+html.dark .json-null { color: #94a3b8; font-style: italic; font-weight: 600; }
+
+/* Claims Diagnostic Section */
+.jwt-claims-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.jwt-claim-card {
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--jwt-border);
+  transition: border-color 0.15s, transform 0.15s;
+}
+html:not(.dark) .jwt-claim-card {
+  background: #f8fafc;
+}
+html:not(.dark) .jwt-claim-card:hover {
+  border-color: #94a3b8;
+}
+html.dark .jwt-claim-card {
+  background: #090f1f;
+}
+html.dark .jwt-claim-card:hover {
+  border-color: #334155;
+}
+
+.claim-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.claim-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 800;
+  font-size: 13px;
+}
+html:not(.dark) .claim-tag { color: #0284c7; }
+html.dark .claim-tag { color: #38bdf8; }
+
+.claim-label {
+  font-size: 11px;
+  font-weight: 600;
+}
+html:not(.dark) .claim-label { color: #475569; }
+html.dark .claim-label { color: #94a3b8; }
+
+.claim-content {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  word-break: break-all;
+}
+html:not(.dark) .claim-content { color: #0f172a; }
+html.dark .claim-content { color: #f8fafc; }
+
+.claim-meta {
+  font-size: 11.5px;
+  line-height: 1.5;
+  border-top: 1px dashed var(--jwt-border);
+  padding-top: 6px;
+  margin-top: 2px;
+}
+html:not(.dark) .claim-meta { color: #334155; }
+html.dark .claim-meta { color: #94a3b8; }
+
+html:not(.dark) .claim-expired-text { color: #991b1b; font-weight: 700; }
+html.dark .claim-expired-text { color: #f87171; font-weight: 700; }
+html:not(.dark) .claim-active-text { color: #047857; font-weight: 700; }
+html.dark .claim-active-text { color: #34d399; font-weight: 700; }
+html:not(.dark) .claim-warning-text { color: #92400e; font-weight: 700; }
+html.dark .claim-warning-text { color: #fbbf24; font-weight: 700; }
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+html:not(.dark) .badge-valid {
+  background: #dcfce7;
+  color: #14532d;
+  border: 1px solid #86efac;
+}
+html.dark .badge-valid {
+  background: #064e3b;
+  color: #a7f3d0;
+  border: 1px solid #059669;
+}
+
+html:not(.dark) .badge-expired {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+html.dark .badge-expired {
+  background: #450a0a;
+  color: #fecaca;
+  border: 1px solid #dc2626;
+}
+
+html:not(.dark) .badge-warning {
+  background: #fef3c7;
+  color: #78350f;
+  border: 1px solid #fde68a;
+}
+html.dark .badge-warning {
+  background: #451a03;
+  color: #fde68a;
+  border: 1px solid #d97706;
+}
+
+/* Crafter Form Adjustments */
+.jwt-crafter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .jwt-crafter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Info & Security Guide Card */
+.jwt-info-card {
+  border-radius: var(--panel-radius);
+  padding: 18px 22px;
+  margin-top: 22px;
+  line-height: 1.75;
+  font-size: 13px;
+}
+html:not(.dark) .jwt-info-card {
+  background: #ffffff;
+  border: 1px solid var(--jwt-border);
+  box-shadow: var(--jwt-shadow);
+  color: #334155;
+}
+html.dark .jwt-info-card {
+  background: var(--jwt-bg-panel);
+  border: 1px solid var(--jwt-border);
+  box-shadow: var(--jwt-shadow);
+  color: #94a3b8;
+}
+
+.jwt-info-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+html:not(.dark) .jwt-info-card h3 { color: #0f172a; }
+html.dark .jwt-info-card h3 { color: #f8fafc; }
+
+.jwt-info-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+html:not(.dark) .jwt-info-card h4 { color: #0f172a; }
+html.dark .jwt-info-card h4 { color: #e2e8f0; }
+
+.jwt-info-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+@media (max-width: 768px) {
+  .jwt-info-columns {
+    grid-template-columns: 1fr;
+  }
+}
+.jwt-info-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.jwt-info-card li {
+  margin-bottom: 5px;
+}
+.jwt-info-card code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+html:not(.dark) .jwt-info-card code {
+  background: #f1f5f9;
+  color: #0369a1;
+}
+html.dark .jwt-info-card code {
+  background: #111b33;
+  color: #38bdf8;
+}
+
+/* Button & Control Sizing (Accessibility >= 36px) */
+.full-btn {
+  width: 100%;
+  min-height: 40px;
+}
+
+/* Overriding Element Plus form components for Dual Mode */
+.el-input__wrapper, .el-select__wrapper, .el-textarea__inner {
+  min-height: 38px !important;
+  border-radius: 8px !important;
+  font-family: inherit;
+}
+html.dark .el-input__wrapper, html.dark .el-select__wrapper {
+  background-color: #090f1d !important;
+  box-shadow: 0 0 0 1px #1e293b inset !important;
+}
+html.dark .el-input__inner, html.dark .el-textarea__inner {
+  color: #e2e8f0 !important;
+}
+html.dark .el-input-group__prepend {
+  background-color: #111b33 !important;
+  color: #94a3b8 !important;
+  border-color: #1e293b !important;
+}
+html.dark .el-textarea__inner {
+  background-color: #090f1d !important;
+  box-shadow: 0 0 0 1px #1e293b inset !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 860px) {
+  .jwt-grid {
+    grid-template-columns: 1fr;
+  }
+  .jwt-toolbar-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
+  }
+  .jwt-toolbar-actions {
+    width: 100%;
+  }
+  .jwt-mode-switch {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .jwt-mode-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .jwt-toolbar-actions > * {
+    flex: 1 1 100%;
+  }
+  .jwt-panel-header {
+    padding: 10px 12px;
+  }
+  .jwt-panel-body, .jwt-sig-panel, .jwt-decoded-block {
+    padding: 12px;
+  }
+  .jwt-sig-result-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+</style>
 </head>
 <body>
 <div class="grid-bg"></div>
-
-<!-- 标准顶部导航 -->
 <header class="tool-topbar">
-  <a href="./" class="tool-topbar-logo" aria-label="首页">
-    <span>在线工具集</span>
-  </a>
+  <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
   <span class="tool-topbar-sep">/</span>
   <span class="tool-topbar-title">JWT 解码与调试器</span>
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-<main class="main-body tool-page-body">
-    <div class="tool-body">
-        <div class="card-model">
-            <div class="card-body">
-                <div class="tool-head">
-                    <h1 class="title">JWT 解码与调试器 (JWT Debugger)</h1>
-                </div>
-                <div class="description">
-                    专业的 JSON Web Token 编码/解码与安全诊断工具：粘贴 JWT 字符串自动按三段式解构 Header、Payload 与 Signature，智能格式化并高亮诊断 Claims（过期时间 exp 倒计时、签发时间 iat、生效时间 nbf 等），支持本地 HMAC-SHA256 签名实时校验与 JWT 生成构建。
-                </div>
-
-                <!-- 顶层操作工具栏 -->
-                <div class="jwt-toolbar">
-                    <el-dropdown @command="loadPresetToken" trigger="click">
-                        <el-button size="small" type="primary">
-                            加载示例 Token <i class="el-icon--right">▼</i>
-                        </el-button>
-                        <template #dropdown>
-                            <el-dropdown-menu>
-                                <el-dropdown-item command="valid">标准有效 Token (HS256)</el-dropdown-item>
-                                <el-dropdown-item command="expired">已过期 Token (Expired HS256)</el-dropdown-item>
-                                <el-dropdown-item command="richClaims">丰富权限 Claims (多角色/租户)</el-dropdown-item>
-                                <el-dropdown-item command="algNone">无签名不安全 Token (alg: none)</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </template>
-                    </el-dropdown>
-
-                    <el-button size="small" type="success" plain @click="copyToken">复制 JWT Token</el-button>
-                    <el-button size="small" type="info" plain @click="copyPayloadJson">复制 Payload JSON</el-button>
-                    <el-button size="small" type="danger" plain @click="clearAll">清空</el-button>
-
-                    <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 0.75rem; color: #94a3b8;">工作模式:</span>
-                        <el-radio-group v-model="workMode" size="small">
-                            <el-radio-button label="decode">解码与调试</el-radio-button>
-                            <el-radio-button label="craft">快速构建与签发</el-radio-button>
-                        </el-radio-group>
-                    </div>
-                </div>
-
-                <!-- 模式一：解码与调试模式 -->
-                <div v-show="workMode === 'decode'" class="jwt-workspace">
-                    <!-- 左侧：Encoded 原始 JWT 与签名校验 -->
-                    <div class="terminal-panel">
-                        <div class="terminal-header">
-                            <div class="terminal-dots">
-                                <span class="terminal-dot dot-red"></span>
-                                <span class="terminal-dot dot-yellow"></span>
-                                <span class="terminal-dot dot-green"></span>
-                                <span style="margin-left: 6px; font-weight: 600; color: #cbd5e1;">ENCODED (原始 Token)</span>
-                            </div>
-                            <div style="font-size: 0.72rem;">
-                                算法: <span style="color: #22d3ee; font-weight: 600;">{{ headerObj.alg || '未知' }}</span> | 长度: {{ rawToken.length }}
-                            </div>
-                        </div>
-
-                        <div style="padding: 14px; background: #090f1d;">
-                            <textarea
-                                class="jwt-textarea"
-                                v-model="rawToken"
-                                @input="handleTokenInput"
-                                placeholder="在此粘贴你的 JWT 字符串 (形如 xxxxx.yyyyy.zzzzz)..."
-                                spellcheck="false"
-                            ></textarea>
-
-                            <!-- 三段色彩拆解预览 -->
-                            <div class="jwt-breakdown-card" v-if="tokenParts.header">
-                                <div style="margin-bottom: 6px; font-size: 0.75rem; color: #94a3b8; font-weight: 600;">结构拆解预览:</div>
-                                <span class="jwt-color-header" title="Header (标头)">{{ tokenParts.header }}</span>
-                                <span class="jwt-color-dot">.</span>
-                                <span class="jwt-color-payload" title="Payload (负载)">{{ tokenParts.payload }}</span>
-                                <span class="jwt-color-dot">.</span>
-                                <span class="jwt-color-sig" title="Signature (签名)">{{ tokenParts.signature }}</span>
-                            </div>
-                            <div v-else style="font-size: 0.75rem; color: #64748b; margin-top: 6px;">
-                                提示：标准的 JWT 由两点符号划分为标头 (Header)、负载 (Payload)、签名 (Signature) 三部分。
-                            </div>
-                        </div>
-
-                        <!-- 签名验证面板 -->
-                        <div class="sig-verify-panel">
-                            <div class="decoded-title" style="color: #22d3ee;">
-                                <span>VERIFY SIGNATURE (HMAC 密钥校验)</span>
-                                <el-checkbox v-model="secretIsBase64" size="small" style="color: #94a3b8;">
-                                    Secret 是 Base64 编码
-                                </el-checkbox>
-                            </div>
-                            <el-input
-                                v-model="secretKey"
-                                size="small"
-                                placeholder="输入 Secret 密钥进行签名验证..."
-                                @input="verifySignature"
-                                show-password
-                            >
-                                <template #prepend>Secret Key</template>
-                            </el-input>
-
-                            <!-- 校验状态卡片 -->
-                            <div class="sig-status-card" :class="sigStatusClass">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <span style="font-size: 1.1rem;">{{ sigStatusIcon }}</span>
-                                    <span>{{ sigStatusText }}</span>
-                                </div>
-                                <span style="font-size: 0.75rem; opacity: 0.85;">{{ sigStatusDetail }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 右侧：Decoded 解析与 Claims 诊断 -->
-                    <div class="terminal-panel">
-                        <div class="terminal-header">
-                            <div class="terminal-dots">
-                                <span class="terminal-dot dot-red"></span>
-                                <span class="terminal-dot dot-yellow"></span>
-                                <span class="terminal-dot dot-green"></span>
-                                <span style="margin-left: 6px; font-weight: 600; color: #cbd5e1;">DECODED (解构与 Claims 诊断)</span>
-                            </div>
-                            <div>
-                                <el-button size="small" type="primary" link @click="copyAllDecoded">复制全部 JSON</el-button>
-                            </div>
-                        </div>
-
-                        <!-- 1. Header 部分 -->
-                        <div class="decoded-section">
-                            <div class="decoded-title">
-                                <div>
-                                    <span class="jwt-part-tag tag-header">HEADER</span>
-                                    <span class="jwt-color-header">ALGORITHM & TOKEN TYPE</span>
-                                </div>
-                                <el-button size="small" link @click="copyCode(headerFormatted)">复制 Header</el-button>
-                            </div>
-                            <div class="json-display" v-html="headerHighlighted || '// 等待输入有效 Token'"></div>
-                        </div>
-
-                        <!-- 2. Payload 部分 -->
-                        <div class="decoded-section">
-                            <div class="decoded-title">
-                                <div>
-                                    <span class="jwt-part-tag tag-payload">PAYLOAD</span>
-                                    <span class="jwt-color-payload">DATA / CLAIMS</span>
-                                </div>
-                                <el-button size="small" link @click="copyCode(payloadFormatted)">复制 Payload</el-button>
-                            </div>
-                            <div class="json-display" v-html="payloadHighlighted || '// 等待输入有效 Token'"></div>
-                        </div>
-
-                        <!-- 3. Claims 智能深度诊断 -->
-                        <div class="decoded-section" v-if="hasClaims">
-                            <div class="decoded-title" style="color: #38bdf8;">
-                                <span>CLAIMS 智能诊断与时间戳分析</span>
-                                <span :class="['status-badge', expStatusClass]">{{ expStatusBadgeText }}</span>
-                            </div>
-
-                            <div class="claims-grid">
-                                <!-- exp -->
-                                <div class="claim-card" v-if="payloadObj.exp !== undefined">
-                                    <div class="claim-header">
-                                        <span class="claim-key">exp</span>
-                                        <span class="claim-meaning">过期时间 (Expiration Time)</span>
-                                    </div>
-                                    <div class="claim-val">{{ payloadObj.exp }}</div>
-                                    <div class="claim-human-date">
-                                        <div>本地时间: <span style="color: #22d3ee;">{{ formatTimestamp(payloadObj.exp) }}</span></div>
-                                        <div :style="{ color: expInfo.isExpired ? '#f87171' : '#34d399', marginTop: '2px', fontWeight: 'bold' }">
-                                            {{ expInfo.text }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- iat -->
-                                <div class="claim-card" v-if="payloadObj.iat !== undefined">
-                                    <div class="claim-header">
-                                        <span class="claim-key">iat</span>
-                                        <span class="claim-meaning">签发时间 (Issued At)</span>
-                                    </div>
-                                    <div class="claim-val">{{ payloadObj.iat }}</div>
-                                    <div class="claim-human-date">
-                                        <div>本地时间: <span style="color: #22d3ee;">{{ formatTimestamp(payloadObj.iat) }}</span></div>
-                                        <div style="color: #94a3b8; margin-top: '2px';">{{ iatInfoText }}</div>
-                                    </div>
-                                </div>
-
-                                <!-- nbf -->
-                                <div class="claim-card" v-if="payloadObj.nbf !== undefined">
-                                    <div class="claim-header">
-                                        <span class="claim-key">nbf</span>
-                                        <span class="claim-meaning">生效时间 (Not Before)</span>
-                                    </div>
-                                    <div class="claim-val">{{ payloadObj.nbf }}</div>
-                                    <div class="claim-human-date">
-                                        <div>本地时间: <span style="color: #22d3ee;">{{ formatTimestamp(payloadObj.nbf) }}</span></div>
-                                        <div :style="{ color: nbfInfo.isActive ? '#34d399' : '#fbbf24', marginTop: '2px' }">
-                                            {{ nbfInfo.text }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- sub -->
-                                <div class="claim-card" v-if="payloadObj.sub !== undefined">
-                                    <div class="claim-header">
-                                        <span class="claim-key">sub</span>
-                                        <span class="claim-meaning">主题/用户标识 (Subject)</span>
-                                    </div>
-                                    <div class="claim-val">{{ payloadObj.sub }}</div>
-                                </div>
-
-                                <!-- iss -->
-                                <div class="claim-card" v-if="payloadObj.iss !== undefined">
-                                    <div class="claim-header">
-                                        <span class="claim-key">iss</span>
-                                        <span class="claim-meaning">签发机构 (Issuer)</span>
-                                    </div>
-                                    <div class="claim-val">{{ payloadObj.iss }}</div>
-                                </div>
-
-                                <!-- aud -->
-                                <div class="claim-card" v-if="payloadObj.aud !== undefined">
-                                    <div class="claim-header">
-                                        <span class="claim-key">aud</span>
-                                        <span class="claim-meaning">目标受众 (Audience)</span>
-                                    </div>
-                                    <div class="claim-val">{{ Array.isArray(payloadObj.aud) ? payloadObj.aud.join(', ') : payloadObj.aud }}</div>
-                                </div>
-
-                                <!-- jti -->
-                                <div class="claim-card" v-if="payloadObj.jti !== undefined">
-                                    <div class="claim-header">
-                                        <span class="claim-key">jti</span>
-                                        <span class="claim-meaning">JWT 唯一编号 (JWT ID)</span>
-                                    </div>
-                                    <div class="claim-val">{{ payloadObj.jti }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 模式二：快速构建与签发模式 -->
-                <div v-show="workMode === 'craft'" class="jwt-workspace">
-                    <div class="terminal-panel">
-                        <div class="terminal-header">
-                            <div class="terminal-dots">
-                                <span class="terminal-dot dot-red"></span>
-                                <span class="terminal-dot dot-yellow"></span>
-                                <span class="terminal-dot dot-green"></span>
-                                <span style="margin-left: 6px; font-weight: 600; color: #cbd5e1;">CRAFTER (构建配置)</span>
-                            </div>
-                            <span style="font-size: 0.72rem; color: #94a3b8;">自定义 Payload 与加密密钥</span>
-                        </div>
-
-                        <div style="padding: 16px; background: #090f1d;">
-                            <el-form label-position="top" size="small">
-                                <el-form-item label="签名算法 (Algorithm)">
-                                    <el-select v-model="craftConfig.alg" style="width: 100%;">
-                                        <el-option label="HS256 (HMAC-SHA256) - 推荐" value="HS256"></el-option>
-                                        <el-option label="HS384 (HMAC-SHA384)" value="HS384"></el-option>
-                                        <el-option label="HS512 (HMAC-SHA512)" value="HS512"></el-option>
-                                        <el-option label="none (不加密/无签名)" value="none"></el-option>
-                                    </el-select>
-                                </el-form-item>
-
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                    <el-form-item label="主题 / 用户ID (sub)">
-                                        <el-input v-model="craftConfig.sub" placeholder="例如: user_10086" />
-                                    </el-form-item>
-                                    <el-form-item label="签发者 (iss)">
-                                        <el-input v-model="craftConfig.iss" placeholder="例如: https://auth.6767.chat" />
-                                    </el-form-item>
-                                </div>
-
-                                <el-form-item label="有效期设置 (自动填充 iat 与 exp)">
-                                    <el-select v-model="craftConfig.expireDuration" style="width: 100%;" @change="updateCraftExp">
-                                        <el-option label="15 分钟" value="900"></el-option>
-                                        <el-option label="1 小时" value="3600"></el-option>
-                                        <el-option label="24 小时 (1天)" value="86400"></el-option>
-                                        <el-option label="7 天" value="604800"></el-option>
-                                        <el-option label="30 天" value="2592000"></el-option>
-                                        <el-option label="不设置过期 (永不过期)" value="none"></el-option>
-                                    </el-select>
-                                </el-form-item>
-
-                                <el-form-item label="自定义 Payload JSON (附加业务字段)">
-                                    <el-input
-                                        v-model="craftConfig.customPayloadText"
-                                        type="textarea"
-                                        :rows="5"
-                                        placeholder="{\n  &quot;role&quot;: &quot;admin&quot;,\n  &quot;email&quot;: &quot;dev@6767.chat&quot;\n}"
-                                    />
-                                </el-form-item>
-
-                                <el-form-item label="签名密钥 (Secret Key)">
-                                    <el-input v-model="craftConfig.secret" placeholder="输入用于签名的密钥..." show-password />
-                                </el-form-item>
-
-                                <el-button type="primary" style="width: 100%;" @click="generateNewJwt">
-                                    立即生成并签发 JWT
-                                </el-button>
-                            </el-form>
-                        </div>
-                    </div>
-
-                    <!-- 签发结果展示 -->
-                    <div class="terminal-panel">
-                        <div class="terminal-header">
-                            <div class="terminal-dots">
-                                <span class="terminal-dot dot-red"></span>
-                                <span class="terminal-dot dot-yellow"></span>
-                                <span class="terminal-dot dot-green"></span>
-                                <span style="margin-left: 6px; font-weight: 600; color: #cbd5e1;">GENERATED TOKEN (签发结果)</span>
-                            </div>
-                            <el-button size="small" type="success" plain @click="copyCode(generatedToken)">复制生成的 JWT</el-button>
-                        </div>
-
-                        <div style="padding: 16px; background: #090f1d; flex: 1;">
-                            <div style="margin-bottom: 8px; font-size: 0.78rem; color: #94a3b8;">生成的完整 JWT:</div>
-                            <div class="json-display" style="max-height: 180px; color: #4ade80;">
-                                {{ generatedToken || '// 点击左侧“立即生成并签发 JWT”获取结果' }}
-                            </div>
-
-                            <div style="margin-top: 16px; margin-bottom: 8px; font-size: 0.78rem; color: #94a3b8;">实际编码的 Payload 内容:</div>
-                            <div class="json-display" style="max-height: 220px;">
-                                <pre style="margin: 0;">{{ craftComputedPayloadText }}</pre>
-                            </div>
-
-                            <div style="margin-top: 16px;">
-                                <el-button size="small" type="primary" plain @click="loadGeneratedIntoDebugger">
-                                    载入到调试器进行深入测试 →
-                                </el-button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <!-- 知识与安全说明 -->
-                <div class="content">
-                    <h3>JWT 架构与安全防护规范</h3>
-                    <p><strong>JSON Web Token (RFC 7519)</strong> 是一种紧凑且自包含的安全传输声明标准。它由 Header、Payload 和 Signature 通过圆点 <code>.</code> 拼接组成。</p>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0;">
-                        <div style="background: rgba(30, 41, 59, 0.5); padding: 12px; border-radius: 6px; border: 1px solid rgba(51, 65, 85, 0.4);">
-                            <h4 style="margin-top: 0; color: #fb7185;">JWT 核心结构与防篡改原理</h4>
-                            <ul style="padding-left: 18px; margin: 0; font-size: 0.84rem; line-height: 1.7;">
-                                <li><strong style="color:#fb7185;">Header:</strong> 包含算法类型（如 <code>HS256</code>, <code>RS256</code>）和令牌类型（<code>JWT</code>）。</li>
-                                <li><strong style="color:#c084fc;">Payload:</strong> 承载用户信息与有效时间 Claims，采用 Base64URL 编码（<strong>注意：未加密，任何人都可解码查看</strong>）。</li>
-                                <li><strong style="color:#22d3ee;">Signature:</strong> 结合密钥与前两段内容计算出的防篡改数字签名。若内容被修改，服务端验证签名将直接拒绝。</li>
-                            </ul>
-                        </div>
-                        <div style="background: rgba(30, 41, 59, 0.5); padding: 12px; border-radius: 6px; border: 1px solid rgba(51, 65, 85, 0.4);">
-                            <h4 style="margin-top: 0; color: #fbbf24;">高频安全防护要点</h4>
-                            <ul style="padding-left: 18px; margin: 0; font-size: 0.84rem; line-height: 1.7;">
-                                <li><strong>切勿在 Payload 存放敏感信息：</strong>密码、银行卡号、手机号等机密数据绝不能存入 JWT Payload。</li>
-                                <li><strong>防范 <code>alg: none</code> 注入攻击：</strong>服务端鉴权时必须强制校验算法类型，禁止接受无签名的 None 算法。</li>
-                                <li><strong>务必设置合理的 <code>exp</code>：</strong>Access Token 有效期宜短（如 15~60 分钟），配合 Refresh Token 机制实现无感续期。</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="margin-top: 20px; font-size: 0.75rem; color: #64748b; text-align: right; font-family: ui-monospace, monospace;">
-                    拓展时间: 2026-08-31
-                </div>
-            </div>
+<main class="main-body tool-page-body" id="app">
+  <div class="tool-body">
+    <div class="card-model">
+      <div class="card-body">
+        <div class="tool-head">
+          <h1 class="title">JWT 解码与调试器</h1>
         </div>
+        <div class="description">
+          实时解构 Header、Payload 与 Signature，诊断 Claims 声明与时间戳状态，支持本地 HMAC 签名比对与自定义 Token 快速生成。
+        </div>
+
+        <!-- MODERNIZED JWT SUITE UI -->
+        <div class="jwt-app-container">
+          
+          <!-- Top Controls & Action Dashboard -->
+          <div class="jwt-toolbar-card">
+            <div class="jwt-toolbar-actions">
+              <!-- Preset Token Dropdown -->
+              <el-dropdown @command="loadPresetToken" trigger="click">
+                <el-button type="primary" size="default">
+                  <svg style="width:14px;height:14px;margin-right:5px;vertical-align:-2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+                  加载示例 Token
+                  <span style="font-size:10px;margin-left:4px">▼</span>
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item command="richClaims">✨ 丰富权限 Claims (HS256)</el-dropdown-item>
+                    <el-dropdown-item command="valid">🟢 标准有效 Token (HS256)</el-dropdown-item>
+                    <el-dropdown-item command="expired">🔴 已过期 Token (EXPIRED)</el-dropdown-item>
+                    <el-dropdown-item command="algNone">⚠️ 无签名 Token (alg: none)</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+
+              <el-button type="success" plain @click="copyToken">
+                <svg style="width:14px;height:14px;margin-right:5px;vertical-align:-2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                复制 JWT
+              </el-button>
+              
+              <el-button type="info" plain @click="copyPayloadJson">
+                <svg style="width:14px;height:14px;margin-right:5px;vertical-align:-2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                复制 Payload JSON
+              </el-button>
+
+              <el-button type="danger" plain @click="clearAll">
+                <svg style="width:14px;height:14px;margin-right:5px;vertical-align:-2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                清空
+              </el-button>
+            </div>
+
+            <!-- Mode Switcher -->
+            <div class="jwt-mode-switch" role="tablist">
+              <button 
+                type="button" 
+                class="jwt-mode-btn" 
+                :class="{ active: workMode === 'decode' }" 
+                @click="workMode = 'decode'"
+                role="tab"
+                :aria-selected="workMode === 'decode'"
+              >
+                <span>🔍 解码与调试</span>
+              </button>
+              <button 
+                type="button" 
+                class="jwt-mode-btn" 
+                :class="{ active: workMode === 'craft' }" 
+                @click="workMode = 'craft'"
+                role="tab"
+                :aria-selected="workMode === 'craft'"
+              >
+                <span>⚡ 快速构建</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- MODE 1: DECODE & DEBUG -->
+          <div v-show="workMode === 'decode'" class="jwt-grid">
+            
+            <!-- Left: Encoded Token & Signature Input -->
+            <div class="jwt-panel">
+              <div class="jwt-panel-header">
+                <div class="jwt-panel-title-wrap">
+                  <div class="jwt-terminal-dots">
+                    <span class="jwt-dot dot-red"></span>
+                    <span class="jwt-dot dot-yellow"></span>
+                    <span class="jwt-dot dot-green"></span>
+                  </div>
+                  <span class="jwt-panel-title">ENCODED · 原始令牌</span>
+                </div>
+                <div class="jwt-panel-meta">
+                  <span class="jwt-badge jwt-badge-neutral">ALG: {{ headerObj.alg || 'UNKNOWN' }}</span>
+                  <span>{{ rawToken.length }} 字符</span>
+                </div>
+              </div>
+
+              <div class="jwt-panel-body">
+                <div class="jwt-textarea-wrapper">
+                  <textarea 
+                    class="jwt-textarea" 
+                    v-model="rawToken" 
+                    @input="handleTokenInput" 
+                    placeholder="在此粘贴待调试的 JWT 字符串 (例如 header.payload.signature)…" 
+                    spellcheck="false"
+                  ></textarea>
+                </div>
+
+                <!-- Color-Coded Token Segment Preview -->
+                <div v-if="tokenParts.header" class="jwt-breakdown-box">
+                  <div class="jwt-breakdown-legend">
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--jwt-header-color)"></span> Header 头部</span>
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--jwt-payload-color)"></span> Payload 载荷</span>
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--jwt-sig-color)"></span> Signature 签名</span>
+                  </div>
+                  <span class="jwt-color-header">{{ tokenParts.header }}</span>
+                  <span class="jwt-color-dot">.</span>
+                  <span class="jwt-color-payload">{{ tokenParts.payload }}</span>
+                  <span class="jwt-color-dot">.</span>
+                  <span class="jwt-color-sig">{{ tokenParts.signature }}</span>
+                </div>
+                <div v-else style="font-size:12px;color:var(--jwt-text-muted);">
+                  提示：JWT 格式由 Base64URL 编码的 Header、Payload、Signature 三部分以英文句点 <code>.</code> 拼接组成。
+                </div>
+              </div>
+
+              <!-- HMAC Signature Verification Block -->
+              <div class="jwt-sig-panel">
+                <div class="jwt-sig-header">
+                  <span class="jwt-sig-title">
+                    <svg style="width:14px;height:14px;vertical-align:-2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    VERIFY SIGNATURE · 本地签名校验
+                  </span>
+                  <el-checkbox v-model="secretIsBase64" @change="verifySignature">Secret 是 Base64 编码</el-checkbox>
+                </div>
+
+                <el-input 
+                  v-model="secretKey" 
+                  placeholder="输入 HMAC 密钥验证签名 (例如 your-256-bit-secret)…" 
+                  @input="verifySignature" 
+                  show-password
+                >
+                  <template #prepend>Secret Key</template>
+                </el-input>
+
+                <!-- Status Feedback Indicator -->
+                <div class="jwt-sig-result-card" :class="sigStatusClass">
+                  <div class="sig-status-label">
+                    <span>{{ sigStatusIcon }}</span>
+                    <span>{{ sigStatusText }}</span>
+                  </div>
+                  <div class="sig-status-desc">{{ sigStatusDetail }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Decoded JSON & Claims Diagnosis -->
+            <div class="jwt-panel">
+              <div class="jwt-panel-header">
+                <div class="jwt-panel-title-wrap">
+                  <div class="jwt-terminal-dots">
+                    <span class="jwt-dot dot-red"></span>
+                    <span class="jwt-dot dot-yellow"></span>
+                    <span class="jwt-dot dot-green"></span>
+                  </div>
+                  <span class="jwt-panel-title">DECODED · 结构与诊断</span>
+                </div>
+                <el-button type="primary" link @click="copyAllDecoded">
+                  复制全部 JSON
+                </el-button>
+              </div>
+
+              <!-- Decoded Header -->
+              <div class="jwt-decoded-block">
+                <div class="jwt-decoded-head">
+                  <span class="jwt-decoded-title">
+                    <span class="legend-dot" style="background:var(--jwt-header-color)"></span>
+                    <b class="jwt-color-header">HEADER</b>
+                    <span style="color:var(--jwt-text-muted);font-weight:600">ALGORITHM & TOKEN TYPE</span>
+                  </span>
+                  <el-button link type="primary" size="small" @click="copyCode(headerFormatted)">复制</el-button>
+                </div>
+                <div class="jwt-json-box" v-html="headerHighlighted || '// 等待输入有效 Token'"></div>
+              </div>
+
+              <!-- Decoded Payload -->
+              <div class="jwt-decoded-block">
+                <div class="jwt-decoded-head">
+                  <span class="jwt-decoded-title">
+                    <span class="legend-dot" style="background:var(--jwt-payload-color)"></span>
+                    <b class="jwt-color-payload">PAYLOAD</b>
+                    <span style="color:var(--jwt-text-muted);font-weight:600">DATA & CLAIMS</span>
+                  </span>
+                  <el-button link type="primary" size="small" @click="copyCode(payloadFormatted)">复制</el-button>
+                </div>
+                <div class="jwt-json-box" v-html="payloadHighlighted || '// 等待输入有效 Token'"></div>
+              </div>
+
+              <!-- Standard Claims Timestamp Diagnosis -->
+              <div class="jwt-decoded-block" v-if="hasClaims">
+                <div class="jwt-decoded-head">
+                  <span class="jwt-decoded-title">
+                    <svg style="width:14px;height:14px;color:#0284c7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span>CLAIMS · 标准声明智能诊断</span>
+                  </span>
+                  <span :class="['status-badge', expStatusClass]">{{ expStatusBadgeText }}</span>
+                </div>
+
+                <div class="jwt-claims-grid">
+                  <!-- exp Claim -->
+                  <div class="jwt-claim-card" v-if="payloadObj.exp !== undefined">
+                    <div class="claim-top">
+                      <span class="claim-tag">exp</span>
+                      <span class="claim-label">过期时间</span>
+                    </div>
+                    <div class="claim-content">{{ payloadObj.exp }}</div>
+                    <div class="claim-meta">
+                      {{ formatTimestamp(payloadObj.exp) }}<br>
+                      <strong :class="expInfo.isExpired ? 'claim-expired-text' : 'claim-active-text'">{{ expInfo.text }}</strong>
+                    </div>
+                  </div>
+
+                  <!-- iat Claim -->
+                  <div class="jwt-claim-card" v-if="payloadObj.iat !== undefined">
+                    <div class="claim-top">
+                      <span class="claim-tag">iat</span>
+                      <span class="claim-label">签发时间</span>
+                    </div>
+                    <div class="claim-content">{{ payloadObj.iat }}</div>
+                    <div class="claim-meta">
+                      {{ formatTimestamp(payloadObj.iat) }}<br>
+                      <span>{{ iatInfoText }}</span>
+                    </div>
+                  </div>
+
+                  <!-- nbf Claim -->
+                  <div class="jwt-claim-card" v-if="payloadObj.nbf !== undefined">
+                    <div class="claim-top">
+                      <span class="claim-tag">nbf</span>
+                      <span class="claim-label">生效时间</span>
+                    </div>
+                    <div class="claim-content">{{ payloadObj.nbf }}</div>
+                    <div class="claim-meta">
+                      {{ formatTimestamp(payloadObj.nbf) }}<br>
+                      <span :class="nbfInfo.isActive ? 'claim-active-text' : 'claim-warning-text'">{{ nbfInfo.text }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Other standard claims: sub, iss, aud, jti -->
+                  <template v-for="key in ['sub', 'iss', 'aud', 'jti']" :key="key">
+                    <div class="jwt-claim-card" v-if="payloadObj[key] !== undefined">
+                      <div class="claim-top">
+                        <span class="claim-tag">{{ key }}</span>
+                        <span class="claim-label">{{ key === 'sub' ? '主题/用户ID' : key === 'iss' ? '签发机构' : key === 'aud' ? '受众范围' : '唯一ID' }}</span>
+                      </div>
+                      <div class="claim-content">
+                        {{ Array.isArray(payloadObj[key]) ? payloadObj[key].join(', ') : payloadObj[key] }}
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- MODE 2: CRAFT / GENERATE JWT -->
+          <div v-show="workMode === 'craft'" class="jwt-grid">
+            
+            <!-- Left: Config Form -->
+            <div class="jwt-panel">
+              <div class="jwt-panel-header">
+                <div class="jwt-panel-title-wrap">
+                  <span class="jwt-dot dot-yellow"></span>
+                  <span class="jwt-panel-title">CRAFTER · 构建配置</span>
+                </div>
+                <span class="jwt-badge jwt-badge-neutral">本地离线签发</span>
+              </div>
+
+              <div class="jwt-panel-body">
+                <el-form label-position="top">
+                  <el-form-item label="签名算法 (Alg)">
+                    <el-select v-model="craftConfig.alg" style="width:100%">
+                      <el-option label="HS256 (HMAC-SHA256 推荐)" value="HS256"></el-option>
+                      <el-option label="HS384 (HMAC-SHA384)" value="HS384"></el-option>
+                      <el-option label="HS512 (HMAC-SHA512)" value="HS512"></el-option>
+                      <el-option label="none (不签名)" value="none"></el-option>
+                    </el-select>
+                  </el-form-item>
+
+                  <div class="jwt-crafter-grid">
+                    <el-form-item label="用户主题标识 (sub)">
+                      <el-input v-model="craftConfig.sub" placeholder="例如 user_6767_admin"></el-input>
+                    </el-form-item>
+                    <el-form-item label="签发机构 (iss)">
+                      <el-input v-model="craftConfig.iss" placeholder="例如 https://auth.6767.chat"></el-input>
+                    </el-form-item>
+                  </div>
+
+                  <el-form-item label="有效期长度 (自动计算 exp)">
+                    <el-select v-model="craftConfig.expireDuration" style="width:100%" @change="updateCraftExp">
+                      <el-option label="15 分钟 (900秒)" value="900"></el-option>
+                      <el-option label="1 小时 (3600秒)" value="3600"></el-option>
+                      <el-option label="24 小时 (1天)" value="86400"></el-option>
+                      <el-option label="7 天 (604800秒)" value="604800"></el-option>
+                      <el-option label="30 天 (2592000秒)" value="2592000"></el-option>
+                      <el-option label="永不过期 (不添加 exp)" value="none"></el-option>
+                    </el-select>
+                  </el-form-item>
+
+                  <el-form-item label="自定义 Payload JSON (可自由扩展属性)">
+                    <el-input 
+                      v-model="craftConfig.customPayloadText" 
+                      type="textarea" 
+                      :rows="6" 
+                      placeholder="{\n  &quot;role&quot;: &quot;superadmin&quot;,\n  &quot;permissions&quot;: [&quot;read&quot;, &quot;write&quot;]\n}"
+                    ></el-input>
+                  </el-form-item>
+
+                  <el-form-item label="HMAC 签名密钥 (Secret)">
+                    <el-input v-model="craftConfig.secret" show-password placeholder="输入用于签名的秘密密钥"></el-input>
+                  </el-form-item>
+
+                  <el-button type="primary" class="full-btn" @click="generateNewJwt">
+                    立即签发并生成 JWT 令牌
+                  </el-button>
+                </el-form>
+              </div>
+            </div>
+
+            <!-- Right: Generated Output & Preview -->
+            <div class="jwt-panel">
+              <div class="jwt-panel-header">
+                <div class="jwt-panel-title-wrap">
+                  <span class="jwt-dot dot-green"></span>
+                  <span class="jwt-panel-title">GENERATED · 签发结果</span>
+                </div>
+                <el-button type="success" link @click="copyCode(generatedToken)">
+                  复制 Token
+                </el-button>
+              </div>
+
+              <div class="jwt-panel-body">
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:12px;font-weight:700;color:var(--jwt-text-muted)">生成的完整 JWT 字符串</span>
+                  </div>
+                  <div class="jwt-json-box" style="color:var(--jwt-text-main);min-height:90px">{{ generatedToken || '// 点击左侧“立即签发”按钮以生成' }}</div>
+                </div>
+
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-size:12px;font-weight:700;color:var(--jwt-text-muted)">实际编码后的 Payload 内容</span>
+                  </div>
+                  <div class="jwt-json-box" style="min-height:140px">{{ craftComputedPayloadText }}</div>
+                </div>
+
+                <div style="margin-top:10px">
+                  <el-button type="primary" plain class="full-btn" @click="loadGeneratedIntoDebugger">
+                    将此 Token 载入至调试器 →
+                  </el-button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Educational Knowledge & Security Best Practices -->
+          <div class="jwt-info-card">
+            <h3>
+              <svg style="width:16px;height:16px;color:#0284c7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              JWT 架构与企业级安全防线 (RFC 7519 / RFC 8725)
+            </h3>
+            <p>
+              <strong>JSON Web Token (JWT)</strong> 是一种紧凑且自包含的安全传输格式。Token 由以 <code>.</code> 分隔的三个部分组成：<code>Base64URL(Header) . Base64URL(Payload) . Signature</code>。需要明确的是，<strong>Payload 默认仅做了 Base64 编码，并未加密</strong>，任何截获者均可解码读取明文。
+            </p>
+
+            <div class="jwt-info-columns">
+              <div>
+                <h4>🛠️ 三大核心组件</h4>
+                <ul>
+                  <li><code>Header</code>：声明令牌类型（<code>typ: "JWT"</code>）及签名算法（如 <code>HS256</code>、<code>RS256</code>）。</li>
+                  <li><code>Payload</code>：承载标准 Claims（如 <code>sub</code> 用户ID、<code>exp</code> 过期时间戳）与业务 Claims。</li>
+                  <li><code>Signature</code>：通过私钥或共享 Secret 对头部和载荷计算的数字签名，确保数据不被篡改。</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4>🛡️ 安全开发清单</h4>
+                <ul>
+                  <li><strong>严禁存储机密信息</strong>：切勿在 Payload 存放用户明文密码、银行卡或内部敏感凭据。</li>
+                  <li><strong>防御 <code>alg: none</code> 攻击</strong>：后端鉴权时必须强制校验预期算法，杜绝无签名伪造漏洞。</li>
+                  <li><strong>必须限制有效期</strong>：生产 Access Token 建议设为 15~60 分钟短效期，配合 Refresh Token 轮换。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- END MODERNIZED JWT SUITE UI -->
+
+      </div>
     </div>
-    <comment :relate-id="302" :comment-class="2"></comment>
+  </div>
+  <comment :relate-id="302" :comment-class="2"></comment>
 </main>
 
 <script src="./lib/vue/vue.global.prod.js"></script>
 <script src="./lib/element-plus/index.js"></script>
-    <script src="./lib/element-plus/locale/en.js"></script>
-    <script src="./lib/element-plus/locale/zh-tw.js"></script>
 <script src="./lib/cryp/crypto-js.min.js"></script>
 <script src="./js/common.js"></script>
 
 <script>
-    const { createApp, ref, reactive, computed, watch, onMounted } = Vue;
+const { createApp, ref, reactive, computed, onMounted } = Vue;
 
-    const app = createApp({
-        setup() {
-            const workMode = ref('decode');
-            const rawToken = ref('');
-            const secretKey = ref('your-256-bit-secret');
-            const secretIsBase64 = ref(false);
+createApp({
+  setup() {
+    const workMode = ref('decode');
+    const rawToken = ref('');
+    const secretKey = ref('your-256-bit-secret');
+    const secretIsBase64 = ref(false);
+    const headerObj = ref({});
+    const payloadObj = ref({});
+    const sigValid = ref(null);
+    const tokenParts = reactive({ header: '', payload: '', signature: '' });
+    const craftConfig = reactive({
+      alg: 'HS256',
+      sub: 'user_6767_admin',
+      iss: 'https://auth.6767.chat',
+      expireDuration: '86400',
+      customPayloadText: '{\n  "role": "superadmin",\n  "email": "alex@6767.chat",\n  "permissions": ["user:read", "user:write", "admin:all"]\n}',
+      secret: 'your-256-bit-secret'
+    });
+    const generatedToken = ref('');
 
-            // 解码数据对象
-            const headerObj = ref({});
-            const payloadObj = ref({});
-            const sigValid = ref(null); // null = 未校验, true = 成功, false = 失败
+    // Base64URL Decoders & Encoders
+    const base64UrlDecode = str => {
+      try {
+        let b = str.replace(/-/g, '+').replace(/_/g, '/');
+        while (b.length % 4) b += '=';
+        const bin = atob(b);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return new TextDecoder().decode(bytes);
+      } catch (e) {
+        throw Error('Base64URL 解码失败: ' + (e && e.message ? e.message : '无效格式'));
+      }
+    };
 
-            const tokenParts = reactive({
-                header: '',
-                payload: '',
-                signature: ''
-            });
+    const base64UrlEncode = str => {
+      const bytes = new TextEncoder().encode(str);
+      let b = '';
+      for (const x of bytes) b += String.fromCharCode(x);
+      return btoa(b).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    };
 
-            // 快速构建配置
-            const craftConfig = reactive({
-                alg: 'HS256',
-                sub: 'user_6767_admin',
-                iss: 'https://auth.6767.chat',
-                expireDuration: '86400',
-                customPayloadText: '{\n  "role": "superadmin",\n  "email": "alex@6767.chat",\n  "permissions": ["user:read", "user:write", "admin:all"]\n}',
-                secret: 'your-256-bit-secret'
-            });
-            const generatedToken = ref('');
+    const base64UrlEncodeWord = w => {
+      return CryptoJS.enc.Base64.stringify(w).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    };
 
-            // Base64URL 解码算法 (支持 UTF-8 多字节中文)
-            const base64UrlDecode = (str) => {
-                try {
-                    let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-                    while (base64.length % 4) {
-                        base64 += '=';
-                    }
-                    const binaryStr = atob(base64);
-                    const bytes = new Uint8Array(binaryStr.length);
-                    for (let i = 0; i < binaryStr.length; i++) {
-                        bytes[i] = binaryStr.charCodeAt(i);
-                    }
-                    const decoder = new TextDecoder('utf-8');
-                    return decoder.decode(bytes);
-                } catch (e) {
-                    throw new Error('Base64URL 解码失败');
-                }
-            };
-
-            // Base64URL 编码算法
-            const base64UrlEncode = (str) => {
-                const encoder = new TextEncoder();
-                const bytes = encoder.encode(str);
-                let binary = '';
-                for (let i = 0; i < bytes.byteLength; i++) {
-                    binary += String.fromCharCode(bytes[i]);
-                }
-                return btoa(binary)
-                    .replace(/\+/g, '-')
-                    .replace(/\//g, '_')
-                    .replace(/=+$/, '');
-            };
-
-            const base64UrlEncodeWord = (wordArray) => {
-                const base64 = CryptoJS.enc.Base64.stringify(wordArray);
-                return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-            };
-
-            // 处理原始 Token 变化
-            const handleTokenInput = () => {
-                const token = rawToken.value.trim();
-                if (!token) {
-                    tokenParts.header = '';
-                    tokenParts.payload = '';
-                    tokenParts.signature = '';
-                    headerObj.value = {};
-                    payloadObj.value = {};
-                    sigValid.value = null;
-                    return;
-                }
-
-                const parts = token.split('.');
-                tokenParts.header = parts[0] || '';
-                tokenParts.payload = parts[1] || '';
-                tokenParts.signature = parts[2] || '';
-
-                try {
-                    if (parts[0]) {
-                        const hJson = base64UrlDecode(parts[0]);
-                        headerObj.value = JSON.parse(hJson);
-                    }
-                } catch (e) {
-                    headerObj.value = { error: 'Header 解码错误: ' + e.message };
-                }
-
-                try {
-                    if (parts[1]) {
-                        const pJson = base64UrlDecode(parts[1]);
-                        payloadObj.value = JSON.parse(pJson);
-                    }
-                } catch (e) {
-                    payloadObj.value = { error: 'Payload 解码错误: ' + e.message };
-                }
-
-                verifySignature();
-            };
-
-            // HMAC 签名校验
-            const verifySignature = () => {
-                if (!tokenParts.header || !tokenParts.payload) {
-                    sigValid.value = null;
-                    return;
-                }
-
-                const alg = (headerObj.value.alg || '').toUpperCase();
-                if (alg === 'NONE') {
-                    sigValid.value = 'none';
-                    return;
-                }
-
-                if (!['HS256', 'HS384', 'HS512'].includes(alg)) {
-                    sigValid.value = 'asym';
-                    return;
-                }
-
-                if (!secretKey.value) {
-                    sigValid.value = null;
-                    return;
-                }
-
-                try {
-                    const dataToSign = tokenParts.header + '.' + tokenParts.payload;
-                    let secret = secretKey.value;
-                    if (secretIsBase64.value) {
-                        try {
-                            secret = CryptoJS.enc.Base64.parse(secret);
-                        } catch (e) {
-                            sigValid.value = false;
-                            return;
-                        }
-                    }
-
-                    let hash;
-                    if (alg === 'HS256') {
-                        hash = CryptoJS.HmacSHA256(dataToSign, secret);
-                    } else if (alg === 'HS384') {
-                        hash = CryptoJS.HmacSHA384(dataToSign, secret);
-                    } else if (alg === 'HS512') {
-                        hash = CryptoJS.HmacSHA512(dataToSign, secret);
-                    }
-
-                    const computedSig = base64UrlEncodeWord(hash);
-                    sigValid.value = (computedSig === tokenParts.signature);
-                } catch (e) {
-                    sigValid.value = false;
-                }
-            };
-
-            // 格式化输出
-            const headerFormatted = computed(() => JSON.stringify(headerObj.value, null, 2));
-            const payloadFormatted = computed(() => JSON.stringify(payloadObj.value, null, 2));
-
-            const syntaxHighlight = (json) => {
-                if (!json) return '';
-                json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-                    let cls = 'color: #f472b6;'; // number
-                    if (/^"/.test(match)) {
-                        if (/:$/.test(match)) {
-                            cls = 'color: #38bdf8; font-weight: bold;'; // key
-                        } else {
-                            cls = 'color: #4ade80;'; // string
-                        }
-                    } else if (/true|false/.test(match)) {
-                        cls = 'color: #fbbf24;'; // bool
-                    } else if (/null/.test(match)) {
-                        cls = 'color: #94a3b8; font-style: italic;'; // null
-                    }
-                    return '<span style="' + cls + '">' + match + '</span>';
-                });
-            };
-
-            const headerHighlighted = computed(() => syntaxHighlight(headerFormatted.value));
-            const payloadHighlighted = computed(() => syntaxHighlight(payloadFormatted.value));
-
-            // Claims 分析计算
-            const hasClaims = computed(() => {
-                return Object.keys(payloadObj.value).length > 0 && !payloadObj.value.error;
-            });
-
-            const formatTimestamp = (ts) => {
-                if (!ts || isNaN(ts)) return '-';
-                const d = new Date(Number(ts) * 1000);
-                return d.toLocaleString('zh-CN', { hour12: false });
-            };
-
-            const expInfo = computed(() => {
-                const exp = payloadObj.value.exp;
-                if (!exp || isNaN(exp)) return { isExpired: false, text: '' };
-                const nowSec = Math.floor(Date.now() / 1000);
-                const diff = exp - nowSec;
-
-                if (diff < 0) {
-                    const ago = formatDuration(Math.abs(diff));
-                    return { isExpired: true, text: `已于 ${ago} 前过期` };
-                } else {
-                    const remain = formatDuration(diff);
-                    return { isExpired: false, text: `Token 有效，还剩 ${remain} 到期` };
-                }
-            });
-
-            const iatInfoText = computed(() => {
-                const iat = payloadObj.value.iat;
-                if (!iat || isNaN(iat)) return '';
-                const nowSec = Math.floor(Date.now() / 1000);
-                const diff = nowSec - iat;
-                if (diff > 0) return `签发于 ${formatDuration(diff)} 前`;
-                return '刚刚签发';
-            });
-
-            const nbfInfo = computed(() => {
-                const nbf = payloadObj.value.nbf;
-                if (!nbf || isNaN(nbf)) return { isActive: true, text: '' };
-                const nowSec = Math.floor(Date.now() / 1000);
-                if (nowSec >= nbf) {
-                    return { isActive: true, text: '已达到生效时间 (正常可用)' };
-                } else {
-                    return { isActive: false, text: `尚未生效，将在 ${formatDuration(nbf - nowSec)} 后生效` };
-                }
-            });
-
-            const formatDuration = (seconds) => {
-                if (seconds < 60) return `${seconds} 秒`;
-                const mins = Math.floor(seconds / 60);
-                if (mins < 60) return `${mins} 分钟`;
-                const hours = Math.floor(mins / 60);
-                const remMins = mins % 60;
-                if (hours < 24) return `${hours} 小时 ${remMins} 分钟`;
-                const days = Math.floor(hours / 24);
-                const remHours = hours % 24;
-                return `${days} 天 ${remHours} 小时`;
-            };
-
-            const expStatusClass = computed(() => {
-                if (payloadObj.value.exp === undefined) return 'badge-warning';
-                return expInfo.value.isExpired ? 'badge-expired' : 'badge-valid';
-            });
-
-            const expStatusBadgeText = computed(() => {
-                if (payloadObj.value.exp === undefined) return '未设置过期时间 (永不过期)';
-                return expInfo.value.isExpired ? '已过期 EXPIRED' : '有效 ACTIVE';
-            });
-
-            // 签名状态卡片
-            const sigStatusClass = computed(() => {
-                if (sigValid.value === true) return 'sig-ok';
-                if (sigValid.value === false) return 'sig-fail';
-                if (sigValid.value === 'none') return 'sig-none';
-                if (sigValid.value === 'asym') return 'sig-asym';
-                return 'sig-none';
-            });
-
-            const sigStatusIcon = computed(() => {
-                if (sigValid.value === true) return '✔';
-                if (sigValid.value === false) return '✖';
-                if (sigValid.value === 'none') return '⚠';
-                if (sigValid.value === 'asym') return 'ℹ';
-                return '●';
-            });
-
-            const sigStatusText = computed(() => {
-                if (sigValid.value === true) return 'Signature Verified (签名有效)';
-                if (sigValid.value === false) return 'Invalid Signature (签名不匹配)';
-                if (sigValid.value === 'none') return 'Unsigned Token (未签名 alg: none)';
-                if (sigValid.value === 'asym') return 'Asymmetric Token (非对称算法)';
-                return '等待密钥输入验证';
-            });
-
-            const sigStatusDetail = computed(() => {
-                if (sigValid.value === true) return 'HMAC 签名与当前 Secret 完全一致';
-                if (sigValid.value === false) return '签名与 Secret 计算结果不符';
-                if (sigValid.value === 'none') return '存在严重安全隐患，请勿在生产环境使用';
-                if (sigValid.value === 'asym') return 'RS256/ES256 需使用公钥校验';
-                return '输入 Secret Key 进行实时比对';
-            });
-
-            // 复制方法
-            const copyCode = (text) => {
-                if (!text) {
-                    ElementPlus.ElMessage.warning('内容为空');
-                    return;
-                }
-                c.copy(text);
-                ElementPlus.ElMessage.success('已复制到剪贴板');
-            };
-
-            const copyToken = () => copyCode(rawToken.value);
-            const copyPayloadJson = () => copyCode(payloadFormatted.value);
-            const copyAllDecoded = () => {
-                const all = JSON.stringify({
-                    header: headerObj.value,
-                    payload: payloadObj.value,
-                    signature: tokenParts.signature
-                }, null, 2);
-                copyCode(all);
-            };
-
-            const clearAll = () => {
-                rawToken.value = '';
-                handleTokenInput();
-                ElementPlus.ElMessage.info('已清空');
-            };
-
-            // 预置示例
-            const loadPresetToken = (type) => {
-                const nowSec = Math.floor(Date.now() / 1000);
-                secretKey.value = 'your-256-bit-secret';
-
-                if (type === 'valid') {
-                    const h = { alg: 'HS256', typ: 'JWT' };
-                    const p = {
-                        sub: 'user_10086',
-                        name: '张三',
-                        role: 'admin',
-                        iat: nowSec - 300,
-                        exp: nowSec + 86400 * 7,
-                        iss: 'https://auth.6767.chat'
-                    };
-                    buildAndLoadToken(h, p, secretKey.value);
-                } else if (type === 'expired') {
-                    const h = { alg: 'HS256', typ: 'JWT' };
-                    const p = {
-                        sub: 'user_old_999',
-                        name: '李四',
-                        iat: nowSec - 86400 * 30,
-                        exp: nowSec - 3600 * 2, // 2小时前过期
-                        iss: 'https://auth.6767.chat'
-                    };
-                    buildAndLoadToken(h, p, secretKey.value);
-                } else if (type === 'richClaims') {
-                    const h = { alg: 'HS256', typ: 'JWT', kid: 'key-2026-v1' };
-                    const p = {
-                        sub: 'usr_f89c41a0b',
-                        iss: 'https://gateway.6767.chat',
-                        aud: ['https://api.6767.chat', 'https://billing.6767.chat'],
-                        iat: nowSec - 1800,
-                        nbf: nowSec - 1800,
-                        exp: nowSec + 86400 * 3,
-                        jti: 'jti_9f81a7b03c8',
-                        user: {
-                            username: 'developer_pro',
-                            email: 'dev@6767.chat',
-                            tenantId: 'tenant_asia_east'
-                        },
-                        roles: ['developer', 'ops_engineer'],
-                        scopes: ['repo:read', 'repo:write', 'server:deploy']
-                    };
-                    buildAndLoadToken(h, p, secretKey.value);
-                } else if (type === 'algNone') {
-                    const h = { alg: 'none', typ: 'JWT' };
-                    const p = {
-                        sub: 'insecure_guest',
-                        role: 'guest',
-                        iat: nowSec
-                    };
-                    const hB64 = base64UrlEncode(JSON.stringify(h));
-                    const pB64 = base64UrlEncode(JSON.stringify(p));
-                    rawToken.value = `${hB64}.${pB64}.`;
-                    handleTokenInput();
-                }
-                ElementPlus.ElMessage.success('示例 Token 已载入');
-            };
-
-            const buildAndLoadToken = (header, payload, secret) => {
-                const hB64 = base64UrlEncode(JSON.stringify(header));
-                const pB64 = base64UrlEncode(JSON.stringify(payload));
-                const dataToSign = hB64 + '.' + pB64;
-                const hash = CryptoJS.HmacSHA256(dataToSign, secret);
-                const sigB64 = base64UrlEncodeWord(hash);
-                rawToken.value = `${hB64}.${pB64}.${sigB64}`;
-                handleTokenInput();
-            };
-
-            // 快速构建功能
-            const craftComputedPayloadText = computed(() => {
-                const nowSec = Math.floor(Date.now() / 1000);
-                let custom = {};
-                try {
-                    custom = JSON.parse(craftConfig.customPayloadText);
-                } catch (e) {}
-
-                const payload = {
-                    sub: craftConfig.sub,
-                    iss: craftConfig.iss,
-                    iat: nowSec,
-                    ...custom
-                };
-                if (craftConfig.expireDuration !== 'none') {
-                    payload.exp = nowSec + parseInt(craftConfig.expireDuration, 10);
-                }
-                return JSON.stringify(payload, null, 2);
-            });
-
-            const generateNewJwt = () => {
-                try {
-                    const header = {
-                        alg: craftConfig.alg,
-                        typ: 'JWT'
-                    };
-                    const payload = JSON.parse(craftComputedPayloadText.value);
-
-                    const hB64 = base64UrlEncode(JSON.stringify(header));
-                    const pB64 = base64UrlEncode(JSON.stringify(payload));
-
-                    let sigB64 = '';
-                    if (craftConfig.alg !== 'none') {
-                        const dataToSign = hB64 + '.' + pB64;
-                        let hash;
-                        if (craftConfig.alg === 'HS256') hash = CryptoJS.HmacSHA256(dataToSign, craftConfig.secret);
-                        else if (craftConfig.alg === 'HS384') hash = CryptoJS.HmacSHA384(dataToSign, craftConfig.secret);
-                        else if (craftConfig.alg === 'HS512') hash = CryptoJS.HmacSHA512(dataToSign, craftConfig.secret);
-                        sigB64 = base64UrlEncodeWord(hash);
-                    }
-
-                    generatedToken.value = `${hB64}.${pB64}.${sigB64}`;
-                    ElementPlus.ElMessage.success('JWT 生成成功！');
-                } catch (e) {
-                    ElementPlus.ElMessage.error('生成失败: ' + e.message);
-                }
-            };
-
-            const loadGeneratedIntoDebugger = () => {
-                if (!generatedToken.value) {
-                    generateNewJwt();
-                }
-                rawToken.value = generatedToken.value;
-                secretKey.value = craftConfig.secret;
-                workMode.value = 'decode';
-                handleTokenInput();
-                ElementPlus.ElMessage.success('已载入至调试器');
-            };
-
-            // 页面加载默认载入有效示例
-            onMounted(() => {
-                loadPresetToken('richClaims');
-            });
-
-            return {
-                workMode,
-                rawToken,
-                secretKey,
-                secretIsBase64,
-                tokenParts,
-                headerObj,
-                payloadObj,
-                sigValid,
-                headerFormatted,
-                payloadFormatted,
-                headerHighlighted,
-                payloadHighlighted,
-                hasClaims,
-                formatTimestamp,
-                expInfo,
-                iatInfoText,
-                nbfInfo,
-                expStatusClass,
-                expStatusBadgeText,
-                sigStatusClass,
-                sigStatusIcon,
-                sigStatusText,
-                sigStatusDetail,
-                handleTokenInput,
-                verifySignature,
-                copyCode,
-                copyToken,
-                copyPayloadJson,
-                copyAllDecoded,
-                clearAll,
-                loadPresetToken,
-                // Crafter
-                craftConfig,
-                generatedToken,
-                craftComputedPayloadText,
-                generateNewJwt,
-                loadGeneratedIntoDebugger
-            };
+    // Signature Verification
+    const verifySignature = () => {
+      if (!tokenParts.header || !tokenParts.payload) {
+        sigValid.value = null;
+        return;
+      }
+      const alg = (headerObj.value.alg || '').toUpperCase();
+      if (alg === 'NONE') {
+        sigValid.value = 'none';
+        return;
+      }
+      if (!['HS256', 'HS384', 'HS512'].includes(alg)) {
+        sigValid.value = 'asym';
+        return;
+      }
+      if (!secretKey.value) {
+        sigValid.value = null;
+        return;
+      }
+      try {
+        const data = tokenParts.header + '.' + tokenParts.payload;
+        let secret = secretKey.value;
+        if (secretIsBase64.value) {
+          secret = CryptoJS.enc.Base64.parse(secret);
         }
+        let hash = alg === 'HS256' ? CryptoJS.HmacSHA256(data, secret) :
+                   alg === 'HS384' ? CryptoJS.HmacSHA384(data, secret) :
+                   CryptoJS.HmacSHA512(data, secret);
+        sigValid.value = base64UrlEncodeWord(hash) === tokenParts.signature;
+      } catch (e) {
+        sigValid.value = false;
+      }
+    };
+
+    // Parse Token Input
+    const handleTokenInput = () => {
+      const t = (rawToken.value || '').trim();
+      if (!t) {
+        Object.assign(tokenParts, { header: '', payload: '', signature: '' });
+        headerObj.value = {};
+        payloadObj.value = {};
+        sigValid.value = null;
+        return;
+      }
+      const p = t.split('.');
+      Object.assign(tokenParts, { header: p[0] || '', payload: p[1] || '', signature: p[2] || '' });
+
+      try {
+        headerObj.value = JSON.parse(base64UrlDecode(p[0] || ''));
+      } catch (e) {
+        headerObj.value = { error: 'Header 解码错误: ' + e.message };
+      }
+
+      try {
+        payloadObj.value = JSON.parse(base64UrlDecode(p[1] || ''));
+      } catch (e) {
+        payloadObj.value = { error: 'Payload 解码错误: ' + e.message };
+      }
+
+      verifySignature();
+    };
+
+    const headerFormatted = computed(() => JSON.stringify(headerObj.value, null, 2));
+    const payloadFormatted = computed(() => JSON.stringify(payloadObj.value, null, 2));
+
+    // High-Contrast Dual Mode Syntax Highlighter
+    const syntaxHighlight = j => {
+      if (!j) return '';
+      j = j.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return j.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, m => {
+        let cls = 'json-number';
+        if (/^"/.test(m)) {
+          if (/:$/.test(m)) {
+            cls = 'json-key';
+          } else {
+            cls = 'json-string';
+          }
+        } else if (/true|false/.test(m)) {
+          cls = 'json-boolean';
+        } else if (/null/.test(m)) {
+          cls = 'json-null';
+        }
+        return '<span class="' + cls + '">' + m + '</span>';
+      });
+    };
+
+    const headerHighlighted = computed(() => syntaxHighlight(headerFormatted.value));
+    const payloadHighlighted = computed(() => syntaxHighlight(payloadFormatted.value));
+
+    const hasClaims = computed(() => Object.keys(payloadObj.value).length > 0 && !payloadObj.value.error);
+
+    const formatTimestamp = ts => {
+      if (!ts || isNaN(ts)) return '-';
+      return new Date(Number(ts) * 1000).toLocaleString('zh-CN', { hour12: false });
+    };
+
+    const formatDuration = s => {
+      if (s < 60) return `${s} 秒`;
+      if (s < 3600) return `${Math.floor(s / 60)} 分钟`;
+      if (s < 86400) return `${(s / 3600).toFixed(1)} 小时`;
+      return `${(s / 86400).toFixed(1)} 天`;
+    };
+
+    const expInfo = computed(() => {
+      const e = payloadObj.value.exp;
+      if (!e || isNaN(e)) return { isExpired: false, text: '' };
+      const d = e - Math.floor(Date.now() / 1000);
+      return d < 0 ? { isExpired: true, text: '已过期 ' + formatDuration(-d) } :
+                     { isExpired: false, text: '有效中，还剩 ' + formatDuration(d) };
     });
 
-    app.use(ElementPlus);
-    app.mount('.main-body');
+    const iatInfoText = computed(() => {
+      if (!payloadObj.value.iat || isNaN(payloadObj.value.iat)) return '';
+      const elapsed = Math.max(0, Math.floor(Date.now() / 1000) - payloadObj.value.iat);
+      return '签发于 ' + formatDuration(elapsed) + ' 前';
+    });
+
+    const nbfInfo = computed(() => {
+      const n = payloadObj.value.nbf;
+      if (!n || isNaN(n)) return { isActive: true, text: '' };
+      return Date.now() / 1000 >= n ? { isActive: true, text: '已达到生效时间 (已激活)' } :
+                                      { isActive: false, text: '尚未达到生效时间 (未生效)' };
+    });
+
+    const expStatusClass = computed(() => {
+      if (payloadObj.value.exp === undefined) return 'badge-warning';
+      return expInfo.value.isExpired ? 'badge-expired' : 'badge-valid';
+    });
+
+    const expStatusBadgeText = computed(() => {
+      if (payloadObj.value.exp === undefined) return '未设置过期时间';
+      return expInfo.value.isExpired ? '已过期 EXPIRED' : '有效 ACTIVE';
+    });
+
+    const sigStatusClass = computed(() => {
+      if (sigValid.value === true) return 'sig-ok';
+      if (sigValid.value === false) return 'sig-fail';
+      if (sigValid.value === 'asym') return 'sig-asym';
+      return 'sig-none';
+    });
+
+    const sigStatusIcon = computed(() => {
+      if (sigValid.value === true) return '✔';
+      if (sigValid.value === false) return '✖';
+      if (sigValid.value === 'asym') return 'ℹ';
+      return '⚠';
+    });
+
+    const sigStatusText = computed(() => {
+      if (sigValid.value === true) return 'Signature Verified';
+      if (sigValid.value === false) return 'Invalid Signature';
+      if (sigValid.value === 'none') return 'Unsigned Token (alg: none)';
+      if (sigValid.value === 'asym') return 'Asymmetric Algorithm';
+      return '等待输入密钥比对';
+    });
+
+    const sigStatusDetail = computed(() => {
+      if (sigValid.value === true) return 'HMAC 签名与 Secret 完全一致';
+      if (sigValid.value === false) return '计算出的 HMAC 与令牌签名不符，请核对密钥';
+      if (sigValid.value === 'none') return '此令牌无签名，请勿在生产环境使用';
+      if (sigValid.value === 'asym') return '非对称算法 (如 RSA/ECDSA) 需使用公钥校验';
+      return '在上方输入 Secret 密钥进行本地校验';
+    });
+
+    // Clipboard Helpers
+    const copyCode = t => {
+      if (!t) {
+        if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) ElementPlus.ElMessage.warning('内容为空');
+        return;
+      }
+      if (typeof c !== 'undefined' && c.copy) {
+        c.copy(t);
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(t);
+      }
+      if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+        ElementPlus.ElMessage.success('已复制到剪贴板');
+      }
+    };
+
+    const copyToken = () => copyCode(rawToken.value);
+    const copyPayloadJson = () => copyCode(payloadFormatted.value);
+    const copyAllDecoded = () => copyCode(JSON.stringify({
+      header: headerObj.value,
+      payload: payloadObj.value,
+      signature: tokenParts.signature
+    }, null, 2));
+
+    const clearAll = () => {
+      rawToken.value = '';
+      handleTokenInput();
+      if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+        ElementPlus.ElMessage.info('已清空');
+      }
+    };
+
+    const buildAndLoadToken = (h, p, s) => {
+      const a = base64UrlEncode(JSON.stringify(h));
+      const b = base64UrlEncode(JSON.stringify(p));
+      const sig = base64UrlEncodeWord(CryptoJS.HmacSHA256(a + '.' + b, s));
+      rawToken.value = `${a}.${b}.${sig}`;
+      handleTokenInput();
+    };
+
+    const loadPresetToken = type => {
+      const n = Math.floor(Date.now() / 1000);
+      const h = { alg: 'HS256', typ: 'JWT' };
+      const p = {
+        sub: type === 'expired' ? 'user_old_999' : 'usr_f89c41a0b',
+        iss: 'https://auth.6767.chat',
+        iat: n - 300,
+        exp: type === 'expired' ? n - 7200 : n + 604800,
+        role: type === 'richClaims' ? 'admin' : 'user'
+      };
+
+      if (type === 'algNone') {
+        const a = base64UrlEncode(JSON.stringify({ alg: 'none', typ: 'JWT' }));
+        const b = base64UrlEncode(JSON.stringify(p));
+        rawToken.value = `${a}.${b}.`;
+        handleTokenInput();
+      } else {
+        buildAndLoadToken(h, p, secretKey.value);
+      }
+      if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+        ElementPlus.ElMessage.success('示例 Token 已载入');
+      }
+    };
+
+    // Crafter Computed & Actions
+    const craftComputedPayloadText = computed(() => {
+      let x = {};
+      try {
+        x = JSON.parse(craftConfig.customPayloadText);
+      } catch (e) {}
+      const p = {
+        sub: craftConfig.sub,
+        iss: craftConfig.iss,
+        iat: Math.floor(Date.now() / 1000),
+        ...x
+      };
+      if (craftConfig.expireDuration !== 'none') {
+        p.exp = p.iat + parseInt(craftConfig.expireDuration, 10);
+      }
+      return JSON.stringify(p, null, 2);
+    });
+
+    const generateNewJwt = () => {
+      try {
+        const h = { alg: craftConfig.alg, typ: 'JWT' };
+        const p = JSON.parse(craftComputedPayloadText.value);
+        const a = base64UrlEncode(JSON.stringify(h));
+        const b = base64UrlEncode(JSON.stringify(p));
+        let s = '';
+        if (craftConfig.alg !== 'none') {
+          const d = a + '.' + b;
+          const w = craftConfig.alg === 'HS256' ? CryptoJS.HmacSHA256(d, craftConfig.secret) :
+                    craftConfig.alg === 'HS384' ? CryptoJS.HmacSHA384(d, craftConfig.secret) :
+                    CryptoJS.HmacSHA512(d, craftConfig.secret);
+          s = base64UrlEncodeWord(w);
+        }
+        generatedToken.value = `${a}.${b}.${s}`;
+        if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+          ElementPlus.ElMessage.success('JWT 令牌生成成功！');
+        }
+      } catch (e) {
+        if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+          ElementPlus.ElMessage.error('生成失败: ' + e.message);
+        }
+      }
+    };
+
+    const loadGeneratedIntoDebugger = () => {
+      if (!generatedToken.value) generateNewJwt();
+      rawToken.value = generatedToken.value;
+      secretKey.value = craftConfig.secret;
+      workMode.value = 'decode';
+      handleTokenInput();
+      if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+        ElementPlus.ElMessage.success('已载入至调试器');
+      }
+    };
+
+    onMounted(() => {
+      loadPresetToken('richClaims');
+    });
+
+    return {
+      workMode,
+      rawToken,
+      secretKey,
+      secretIsBase64,
+      headerObj,
+      payloadObj,
+      tokenParts,
+      headerFormatted,
+      payloadFormatted,
+      headerHighlighted,
+      payloadHighlighted,
+      hasClaims,
+      formatTimestamp,
+      expInfo,
+      iatInfoText,
+      nbfInfo,
+      expStatusClass,
+      expStatusBadgeText,
+      sigStatusClass,
+      sigStatusIcon,
+      sigStatusText,
+      sigStatusDetail,
+      handleTokenInput,
+      verifySignature,
+      copyCode,
+      copyToken,
+      copyPayloadJson,
+      copyAllDecoded,
+      clearAll,
+      loadPresetToken,
+      craftConfig,
+      generatedToken,
+      craftComputedPayloadText,
+      generateNewJwt,
+      loadGeneratedIntoDebugger,
+      updateCraftExp: () => {}
+    };
+  }
+}).use(ElementPlus).mount('#app');
 </script>
 </body>
 </html>
