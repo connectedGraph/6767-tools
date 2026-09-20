@@ -2,41 +2,546 @@
 <html lang="zh" class="dark">
 <head>
     <script src="./js/theme.js"></script>
-    <script src="./js/i18n.js"></script><script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
     <title>顺序记忆训练，科学提升记忆力的在线脑力训练工具 - 在线工具</title>
-        <meta name="description" content="这是一个训练记忆力的在线工具。记住亮起的按钮顺序，然后按顺序点击它们。通过训练可以有效提高我们的记忆力，特别是短期记忆力。" />
-        <meta name="keywords" content="记忆力训练， 短期记忆游戏， 脑力锻炼， 在线记忆测试， 工作记忆提升， 序列记忆， 认知训练， 大脑训练， 记忆力提高， 免费脑力游戏， 注意力训练， 视觉记忆" />
+    <meta name="description" content="这是一个训练记忆力的在线工具。记住亮起的按钮顺序，然后按顺序点击它们。通过训练可以有效提高我们的记忆力，特别是短期记忆力。" />
+    <meta name="keywords" content="记忆力训练，短期记忆游戏，脑力锻炼，在线记忆测试，工作记忆提升，序列记忆，认知训练，大脑训练，记忆力提高，免费脑力游戏，注意力训练，视觉记忆" />
 
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="dns-prefetch" href="" />
-        <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
     <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet" />
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .game-area { width: 100%; max-width: unset !important; min-height: 550px; height: auto; padding: 10px; border-radius: 4px; background: #2b87d1; color: #fff; display: flex; justify-content: center; align-items: center; flex-direction: column; position: relative; transition: background 0.15s; }
-        .game-area .tip1 { font-size: 32px; padding: 30px 0 10px 0; }
-        .game-area .tip2 { font-size: 20px; margin-top: 5px; }
-        .game-area .tip3 { font-size: 26px; }
-        .game-area .tip4 { font-size: 70px; margin: 5px 0 20px 0 }
-        .game-area .button { margin-top: 30px; }
-        .game-area .button .el-button { font-weight: 600; font-size: 16px; }
-        .game-area .level{font-size:28px;margin-bottom:30px;}
-        .game-area .block-list { display: flex; justify-content: center; flex-wrap: wrap; max-width: 100%; width: 408px; }
-        .game-area .block-list .block { width: 120px; height: 120px; margin: 8px; border-radius: 10px; font-size: 50px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgb(0 0 102 / 15%); cursor: pointer; transition: background 0.15s; }
-        .game-area .block-list .block-blank { background: #fff; }
-        .game-bottom { width: 100%; display: flex; align-items: center; justify-content: center; }
-
-        @media (max-width:1300px) {
-            .tool-body .relate-tool-box { display: block; }
-            .tool-body .right { display: none; }
+        /* Sequence Memory: Modern dual-mode architecture */
+        .sm-shell {
+            width: 100%;
+            max-width: 820px;
+            margin: 0 auto;
         }
 
-        @media (max-width:480px) {
-            .game-area .block-list .block { width: calc((100vw - 40px - 60px - 20px) / 3); height: calc((100vw - 40px - 60px - 20px) / 3); }
+        /* 1. Dashboard / Status HUD */
+        .sm-dashboard {
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 18px;
+            transition: all 0.2s ease;
+        }
+        html.dark .sm-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+            color: #e2e8f0;
+        }
+        html:not(.dark) .sm-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+            color: #1e293b;
+        }
+        .sm-dashboard-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .sm-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        html.dark .sm-eyebrow { color: #38bdf8; }
+        html:not(.dark) .sm-eyebrow { color: #0284c7; }
+
+        .sm-badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+            display: inline-block;
+        }
+        .sm-dashboard-title {
+            margin: 0;
+            font-size: 18px;
+            line-height: 1.3;
+            font-weight: 800;
+        }
+        html.dark .sm-dashboard-title { color: #f8fafc; }
+        html:not(.dark) .sm-dashboard-title { color: #0f172a; }
+
+        .sm-dashboard-desc {
+            margin: 0;
+            font-size: 13px;
+        }
+        html.dark .sm-dashboard-desc { color: #94a3b8; }
+        html:not(.dark) .sm-dashboard-desc { color: #64748b; }
+
+        .sm-dashboard-stats {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .sm-stat-box {
+            min-width: 82px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+        }
+        html.dark .sm-stat-box {
+            background: #111b31;
+            border: 1px solid #263752;
+            color: #f1f5f9;
+        }
+        html:not(.dark) .sm-stat-box {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+        .sm-stat-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+        }
+        html.dark .sm-stat-label { color: #94a3b8; }
+        .sm-stat-value {
+            display: block;
+            margin-top: 2px;
+            font-size: 17px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+        .sm-stat-norm {
+            opacity: 0.9;
+        }
+
+        /* 2. Interactive Game Area (Preserving .game-area class & background-color hook) */
+        .game-area {
+            width: 100%;
+            max-width: 640px !important;
+            min-height: 480px;
+            margin: 0 auto;
+            padding: 32px clamp(16px, 4vw, 36px);
+            border-radius: 18px;
+            background-color: #2b87d1;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+            user-select: none;
+        }
+        html.dark .game-area {
+            box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(56, 189, 248, 0.25);
+        }
+        html:not(.dark) .game-area {
+            box-shadow: 0 16px 36px -8px rgba(14, 116, 144, 0.28), 0 0 0 1px rgba(14, 116, 144, 0.18);
+        }
+        .game-area::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.18), transparent 65%);
+            pointer-events: none;
+        }
+        .game-area > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* State 0: Intro Screen */
+        .sm-intro-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            max-width: 480px;
+        }
+        .sm-icon-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        .sm-hero-icon {
+            width: clamp(74px, 14vw, 96px);
+            height: auto;
+            border-radius: 22px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+            display: block;
+            transition: transform 0.25s ease;
+        }
+        .sm-hero-icon:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+        .game-area .tip1 {
+            font-size: clamp(24px, 5vw, 32px);
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+            margin: 0 0 8px 0;
+            padding: 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+        }
+        .game-area .tip2 {
+            font-size: clamp(14px, 2.4vw, 16px);
+            color: rgba(255, 255, 255, 0.92);
+            line-height: 1.55;
+            margin-top: 4px;
+        }
+        .game-area .tip2-sub {
+            color: rgba(255, 255, 255, 0.78);
+        }
+        .game-area .button {
+            margin-top: 28px;
+        }
+        .sm-btn-start {
+            min-height: 46px;
+            padding: 10px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            color: #172033 !important;
+            background: #ffd154 !important;
+            border: none !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+        .sm-btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 9px 24px rgba(0, 0, 0, 0.32);
+            background: #fec83c !important;
+        }
+        .sm-btn-start:active {
+            transform: translateY(0) scale(0.97);
+        }
+        .sm-btn-arrow {
+            display: inline-block;
+            transition: transform 0.15s ease;
+        }
+        .sm-btn-start:hover .sm-btn-arrow {
+            transform: translateX(3px);
+        }
+
+        /* State 1: Active Play View */
+        .sm-play-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 22px;
+            text-align: center;
+        }
+        .game-area .level {
+            font-size: clamp(26px, 5vw, 34px);
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.03em;
+            margin-bottom: 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+        }
+        .sm-live-hint {
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sm-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .sm-pill-memorize {
+            background: rgba(0, 0, 0, 0.26);
+            color: #bae6fd;
+            border: 1px solid rgba(186, 230, 253, 0.32);
+            backdrop-filter: blur(4px);
+        }
+        .sm-pill-reproduce {
+            background: rgba(16, 185, 129, 0.26);
+            color: #a7f3d0;
+            border: 1px solid rgba(167, 243, 208, 0.36);
+            backdrop-filter: blur(4px);
+        }
+        .sm-pulse-core {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #38bdf8;
+            box-shadow: 0 0 8px #38bdf8;
+            animation: sm-pulse 1.2s ease-in-out infinite;
+        }
+        .sm-check-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 8px #34d399;
+        }
+        @keyframes sm-pulse {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        /* Block Grid (3x3) */
+        .game-area .block-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            width: 100%;
+            max-width: 370px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        .game-area .block-list .block {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            margin: 0;
+            border-radius: 14px;
+            background: rgba(0, 32, 77, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.16);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+            transition: transform 0.12s ease, background 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+        }
+        .game-area .block-list .block:hover {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.48);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22), 0 0 14px rgba(255, 255, 255, 0.25);
+        }
+        .game-area .block-list .block:active {
+            transform: scale(0.94);
+        }
+        /* Flashing / Active Illuminated State */
+        .game-area .block-list .block.block-blank {
+            background: #ffffff !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 32px rgba(255, 255, 255, 0.95), 0 0 14px rgba(56, 189, 248, 0.8), inset 0 0 8px rgba(255, 255, 255, 0.8) !important;
+            transform: scale(0.97);
+        }
+
+        /* State 2: Result Screen */
+        .sm-result-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            max-width: 440px;
+        }
+        .sm-result-icon {
+            font-size: 46px;
+            line-height: 1;
+            margin-bottom: 6px;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+        }
+        .game-area .tip3 {
+            font-size: clamp(17px, 3.2vw, 22px);
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.92);
+            letter-spacing: 0.04em;
+        }
+        .game-area .tip4 {
+            font-size: clamp(56px, 11vw, 84px);
+            line-height: 1;
+            font-weight: 900;
+            color: #ffd154;
+            font-variant-numeric: tabular-nums;
+            margin: 6px 0 14px 0;
+            text-shadow: 0 4px 18px rgba(0, 0, 0, 0.32);
+        }
+        .sm-eval-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.26);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(6px);
+            margin-bottom: 8px;
+        }
+        .sm-eval-tag.master { color: #fef08a; border-color: rgba(254, 240, 138, 0.4); }
+        .sm-eval-tag.excellent { color: #bae6fd; border-color: rgba(186, 230, 253, 0.4); }
+        .sm-eval-tag.normal { color: #a7f3d0; border-color: rgba(167, 243, 208, 0.4); }
+        .sm-eval-tag.rookie { color: #fed7aa; border-color: rgba(254, 215, 170, 0.4); }
+
+        /* 3. Bottom Actions: 排行榜 & 历史记录 */
+        .game-bottom {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 18px 0 4px;
+        }
+        .sm-extra-btn {
+            min-height: 38px;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        html.dark .sm-extra-btn {
+            background: #111b31 !important;
+            border: 1px solid #263752 !important;
+            color: #e2e8f0 !important;
+        }
+        html.dark .sm-extra-btn:hover {
+            background: #1e293b !important;
+            border-color: #38bdf8 !important;
+            color: #38bdf8 !important;
+        }
+        html:not(.dark) .sm-extra-btn {
+            background: #ffffff !important;
+            border: 1px solid #dbe4ef !important;
+            color: #1e293b !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+        html:not(.dark) .sm-extra-btn:hover {
+            background: #f1f5f9 !important;
+            border-color: #0284c7 !important;
+            color: #0284c7 !important;
+        }
+
+        /* 4. Article & Content Typography */
+        .content {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .content h3 {
+            margin: 28px 0 12px;
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        html.dark .content h3 {
+            color: #f1f5f9;
+        }
+        html:not(.dark) .content h3 {
+            color: #0f172a;
+        }
+        .content h3::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            border-radius: 2px;
+        }
+        html.dark .content h3::before { background: #38bdf8; }
+        html:not(.dark) .content h3::before { background: #0284c7; }
+
+        .content p {
+            line-height: 1.8;
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+        html.dark .content p { color: #94a3b8; }
+        html:not(.dark) .content p { color: #475569; }
+
+        .content ul {
+            padding-left: 20px;
+            margin: 0 0 18px;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+        html.dark .content ul { color: #94a3b8; }
+        html:not(.dark) .content ul { color: #475569; }
+
+        .content ul strong {
+            font-weight: 700;
+        }
+        html.dark .content ul strong { color: #e2e8f0; }
+        html:not(.dark) .content ul strong { color: #0f172a; }
+
+        .content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 16px auto;
+            display: block;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 5. Responsive Breakpoints */
+        @media (max-width: 768px) {
+            .sm-dashboard {
+                padding: 14px 16px;
+                gap: 12px;
+            }
+            .sm-dashboard-stats {
+                width: 100%;
+                display: flex;
+            }
+            .sm-stat-box {
+                flex: 1;
+                min-width: 0;
+                padding: 6px 10px;
+            }
+            .game-area {
+                min-height: 440px;
+                padding: 24px 14px;
+            }
+            .game-area .block-list {
+                max-width: 320px;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-area {
+                min-height: 410px;
+                padding: 20px 10px;
+            }
+            .game-area .block-list {
+                max-width: 290px;
+                gap: 10px;
+            }
+            .game-area .block-list .block {
+                border-radius: 10px;
+            }
+            .game-area .tip2 {
+                font-size: 14px;
+            }
         }
     </style>
 
@@ -63,64 +568,165 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
-        
+    <main class="main-body tool-page-body" id="app">
+        <div class="tool-body">
+            <div class="card-model">
+                <div class="card-body">
+                    <div class="tool-head">
+                        <h1 class="title">顺序记忆训练</h1>
+                    </div>
+                    <div class="description">这是一个训练记忆力的在线工具。记住亮起的按钮顺序，然后按顺序点击它们。通过训练可以有效提高我们的记忆力，特别是短期记忆力。</div>
 
-<div class="tool-body flex">
-    <div class="left">
-        <div class="card-model">
-            <div class="card-body">
-                <div class="tool-head">
-                    <h1 class="title">顺序记忆训练</h1>
-                </div>
-                <div class="description">这是一个训练记忆力的在线工具。记住亮起的按钮顺序，然后按顺序点击它们。通过训练可以有效提高我们的记忆力，特别是短期记忆力。</div>
-                <div class="tool-form game-area" v-cloak>
-                    <template v-if="gameState==0">
-                        <img src="./img/brain/sequence-memory.png" />
-                        <div class="tip1">顺序记忆测试</div>
-                        <div class="tip2">按顺序点击方块。</div>
-                        <div class="tip2">测试将变得越来越难。</div>
-                        <div class="button">
-                            <el-button size="large" color="#ffd154" type="primary" v-on:click="startGame">开始测试</el-button>
+                    <div class="sm-shell">
+                        <!-- Dashboard HUD -->
+                        <div class="sm-dashboard" aria-label="训练状态仪表盘">
+                            <div class="sm-dashboard-main">
+                                <div class="sm-eyebrow">
+                                    <span class="sm-badge-dot"></span>
+                                    <span>Cognitive Lab · 脑力训练</span>
+                                </div>
+                                <h2 class="sm-dashboard-title">视觉序列工作记忆</h2>
+                                <p class="sm-dashboard-desc">观察方块闪烁序列，并在熄灭后按相同次序精准复现</p>
+                            </div>
+                            <div class="sm-dashboard-stats">
+                                <div class="sm-stat-box">
+                                    <span class="sm-stat-label">当前关卡</span>
+                                    <span class="sm-stat-value">
+                                        <span v-if="gameState==0">-</span>
+                                        <span v-else-if="gameState==1">{{ blockIndexArr.length }}</span>
+                                        <span v-else>{{ Math.max(0, blockIndexArr.length - 1) }}</span>
+                                    </span>
+                                </div>
+                                <div class="sm-stat-box">
+                                    <span class="sm-stat-label">序列长度</span>
+                                    <span class="sm-stat-value">
+                                        <span v-if="gameState==0">-</span>
+                                        <span v-else-if="gameState==1">{{ blockIndexArr.length }} 步</span>
+                                        <span v-else>{{ Math.max(0, blockIndexArr.length - 1) }} 步</span>
+                                    </span>
+                                </div>
+                                <div class="sm-stat-box sm-stat-norm">
+                                    <span class="sm-stat-label">常模水平</span>
+                                    <span class="sm-stat-value">9 关</span>
+                                </div>
+                            </div>
                         </div>
-                    </template>
 
-                    <template v-if="gameState==1">
-                        <div class="level">{{`第 1 关`.replace('1',blockIndexArr.length)}}</div>
-                        <div class="block-list">
-                            <div v-for="(item,index) in [0,1,2,3,4,5,6,7,8]" class="block" v-bind:class="{'block-blank':highlightBlockIndex==index}" v-on:click="blockClick(index)"></div>
-                        </div>
-                    </template>
+                        <!-- Main Interactive Game Area (v-cloak) -->
+                        <div class="tool-form game-area" v-cloak>
+                            <!-- State 0: Welcome / Preparation -->
+                            <template v-if="gameState==0">
+                                <div class="sm-intro-view">
+                                    <div class="sm-icon-wrapper">
+                                        <img src="./img/brain/sequence-memory.png" alt="顺序记忆测试图标" class="sm-hero-icon" />
+                                    </div>
+                                    <div class="tip1">顺序记忆测试</div>
+                                    <div class="tip2">按顺序点击高亮方块。</div>
+                                    <div class="tip2 tip2-sub">随着关卡提升，序列步数将越来越长！</div>
+                                    <div class="button">
+                                        <el-button size="large" color="#ffd154" type="primary" v-on:click="startGame" class="sm-btn-start">
+                                            <span>开始测试</span>
+                                            <svg class="sm-btn-arrow" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </el-button>
+                                    </div>
+                                </div>
+                            </template>
 
-                    <template v-if="gameState==2">
-                        <div class="tip3">通关数量</div>
-                        <div class="tip4">{{blockIndexArr.length-1}}</div>
-                        <div class="button">
-                            <el-button size="large" color="#ffd154" type="primary" v-on:click="againGame">再试一次</el-button>
+                            <!-- State 1: In Progress -->
+                            <template v-if="gameState==1">
+                                <div class="sm-play-header">
+                                    <div class="level">{{`第 1 关`.replace('1',blockIndexArr.length)}}</div>
+                                    <div class="sm-live-hint">
+                                        <span v-if="!createGameLevelsOver" class="sm-pill sm-pill-memorize">
+                                            <span class="sm-pulse-core"></span>
+                                            正在演示序列 · 请仔细记忆
+                                        </span>
+                                        <span v-else class="sm-pill sm-pill-reproduce">
+                                            <span class="sm-check-dot"></span>
+                                            轮到你了 · 请按序点击 (已完成 {{blockClickIndex}} / {{blockIndexArr.length}})
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="block-list" role="grid" aria-label="3x3 记忆方块阵列">
+                                    <div v-for="(item,index) in [0,1,2,3,4,5,6,7,8]"
+                                         :key="index"
+                                         class="block"
+                                         v-bind:class="{'block-blank':highlightBlockIndex==index}"
+                                         v-on:click="blockClick(index)"
+                                         role="button"
+                                         :aria-label="'方块 ' + (index + 1)"
+                                         tabindex="0">
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- State 2: Game Over / Score Display -->
+                            <template v-if="gameState==2">
+                                <div class="sm-result-view">
+                                    <div class="sm-result-icon" aria-hidden="true">
+                                        <span v-if="blockIndexArr.length - 1 >= 10">🎉</span>
+                                        <span v-else-if="blockIndexArr.length - 1 >= 7">👏</span>
+                                        <span v-else>💡</span>
+                                    </div>
+                                    <div class="tip3">通关数量</div>
+                                    <div class="tip4">{{blockIndexArr.length-1}}</div>
+                                    <div class="sm-eval-tag" v-bind:class="blockIndexArr.length - 1 >= 14 ? 'master' : (blockIndexArr.length - 1 >= 10 ? 'excellent' : (blockIndexArr.length - 1 >= 7 ? 'normal' : 'rookie'))">
+                                        <span v-if="blockIndexArr.length - 1 >= 14">🏆 记忆大师 · 顶尖瞬时记忆</span>
+                                        <span v-else-if="blockIndexArr.length - 1 >= 10">🌟 卓越水平 · 远超平均成绩</span>
+                                        <span v-else-if="blockIndexArr.length - 1 >= 7">👍 良好水平 · 接近人类常模 (9关)</span>
+                                        <span v-else>🌱 进阶潜力 · 坚持训练提升明显</span>
+                                    </div>
+                                    <div class="button">
+                                        <el-button size="large" color="#ffd154" type="primary" v-on:click="againGame" class="sm-btn-start">
+                                            <span>再试一次</span>
+                                            <svg class="sm-btn-arrow" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </el-button>
+                                    </div>
+                                </div>
+                            </template>
                         </div>
-                    </template>
-                </div>
-                <div class="game-bottom">
-                    <el-button round v-on:click="$refs.phbDialog.showPhb()"><i class="my-icon my-icon-phb"></i><span>排行榜</span></el-button>
-                    <el-button round v-on:click="$refs.historyDialog.showHistory()"><i class="my-icon my-icon-history"></i><span>历史记录</span></el-button>
-                </div>
-                <div class="divider"></div>
-                <div class="content">
-					<h3>介绍</h3><p>这是一款专为提升记忆力与脑力而设计的在线训练工具。游戏规则简单却富有挑战：屏幕上会依次亮起若干按钮，你需要准确记住它们的亮起顺序，然后在灯光熄灭后按相同顺序按下这些按钮。每当你成功完成一次序列，图案长度就会增加，难度随之提升；一旦按错顺序，本轮测试即告结束。</p><p>根据目前收集的数据，平均得分是9（即能记住并正确输入9步序列）。如果你的得分尚未达到平均水平，也无需担心——通过持续训练，记忆力提升效果非常明显，脑力的敏捷度与专注力也会同步增强。这款工具不仅适合日常脑力锻炼，也能作为认知训练的辅助方法，帮助你在轻松的游戏中稳步提升记忆实力。</p><p style="text-align: center;"><img src='./up/2024/0326/112423939.png' /></p><h3><span style="color: rgb(51, 51, 51); background-color: rgb(255, 255, 255);">益处</span></h3><ul><li><strong>增强短期记忆容量：</strong>通过渐进式增加序列长度，直接锻炼大脑的短期信息存储与保持能力。</li><li><strong>提升工作记忆效率：</strong>强化信息在脑中的暂时加工与操作能力，这是学习、推理和理解的基础。</li><li><strong>锻炼视觉空间记忆：</strong>专注于图形序列的记忆，有效提升对视觉模式和空间位置的记忆力。</li><li><strong>提高注意力与专注度：</strong>训练要求高度集中，有助于培养长时间维持注意的能力。</li><li><strong>促进大脑神经可塑性：</strong>规律的挑战能刺激海马体及相关脑区，优化神经连接。</li><li><strong>可量化的进步轨迹：</strong>清晰的得分系统让您直观看到记忆力提升的每一步。</li></ul><p>每天几分钟，轻松养成“记忆肌肉”！无论是预防认知衰退，还是追求高效学习，这都是你的随身脑力健身房。挑战自我，从记住第一个方块开始！</p>
+
+                        <!-- External Dialog Triggers -->
+                        <div class="game-bottom">
+                            <el-button round v-on:click="$refs.phbDialog.showPhb()" class="sm-extra-btn">
+                                <i class="my-icon my-icon-phb"></i><span>排行榜</span>
+                            </el-button>
+                            <el-button round v-on:click="$refs.historyDialog.showHistory()" class="sm-extra-btn">
+                                <i class="my-icon my-icon-history"></i><span>历史记录</span>
+                            </el-button>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+                    <div class="content">
+                        <h3>介绍</h3>
+                        <p>这是一款专为提升记忆力与脑力而设计的在线训练工具。游戏规则简单却富有挑战：屏幕上会依次亮起若干按钮，你需要准确记住它们的亮起顺序，然后在灯光熄灭后按相同顺序按下这些按钮。每当你成功完成一次序列，图案长度就会增加，难度随之提升；一旦按错顺序，本轮测试即告结束。</p>
+                        <p>根据目前收集的数据，平均得分是9（即能记住并正确输入9步序列）。如果你的得分尚未达到平均水平，也无需担心——通过持续训练，记忆力提升效果非常明显，脑力的敏捷度与专注力也会同步增强。这款工具不仅适合日常脑力锻炼，也能作为认知训练的辅助方法，帮助你在轻松的游戏中稳步提升记忆实力。</p>
+                        <p style="text-align: center;"><img src="./up/2024/0326/112423939.png" alt="顺序记忆示意图" /></p>
+                        <h3>益处</h3>
+                        <ul>
+                            <li><strong>增强短期记忆容量：</strong>通过渐进式增加序列长度，直接锻炼大脑的短期信息存储与保持能力。</li>
+                            <li><strong>提升工作记忆效率：</strong>强化信息在脑中的暂时加工与操作能力，这是学习、推理和理解的基础。</li>
+                            <li><strong>锻炼视觉空间记忆：</strong>专注于图形序列的记忆，有效提升对视觉模式和空间位置的记忆力。</li>
+                            <li><strong>提高注意力与专注度：</strong>训练要求高度集中，有助于培养长时间维持注意的能力。</li>
+                            <li><strong>促进大脑神经可塑性：</strong>规律的挑战能刺激海马体及相关脑区，优化神经连接。</li>
+                            <li><strong>可量化的进步轨迹：</strong>清晰的得分系统让您直观看到记忆力提升的每一步。</li>
+                        </ul>
+                        <p>每天几分钟，轻松养成“记忆肌肉”！无论是预防认知衰退，还是追求高效学习，这都是你的随身脑力健身房。挑战自我，从记住第一个方块开始！</p>
+                    </div>
                 </div>
             </div>
+            <div class="relate-tool-box"></div>
+            <comment :relate-id="150" :comment-class="2"></comment>
         </div>
-        <div class="relate-tool-box"></div>
-        <comment :relate-id="150" :comment-class="2"></comment>
-    </div>
-</div>
 
-<phb-dialog ref="phbDialog" :program-name="programName" score-text="关卡"></phb-dialog>
-<history-dialog ref="historyDialog" :program-name="programName" score-text="关卡" tooltip-template="第 {0} 关\n用时: {1} 秒\n{2}"></history-dialog>
-
-
+        <phb-dialog ref="phbDialog" :program-name="programName" score-text="关卡"></phb-dialog>
+        <history-dialog ref="historyDialog" :program-name="programName" score-text="关卡" tooltip-template="第 {0} 关\n用时: {1} 秒\n{2}"></history-dialog>
     </main>
-</div>
 
     <script>
         var languageCode = 'zh';
@@ -134,8 +740,8 @@
         var wp='zp';
         var ap='qx';
     </script>
-        <script src="./lib/vue/vue.global.prod.js"></script>
-        <script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/vue/vue.global.prod.js"></script>
+    <script src="./lib/element-plus/index.js"></script>
     <script src="./lib/element-plus/locale/en.js"></script>
     <script src="./lib/element-plus/locale/zh-tw.js"></script>
     <script src="./js/components/SlideCaptcha.js?v=260728100716"></script>
@@ -145,9 +751,12 @@
     <script src="./js/components/PhbDialog.js?260728100716"></script>
     <script src="./js/components/HistoryDialog.js?260728100716"></script>
     <script src="./js/components/Comment.js?260728100716"></script>
+    <script>
+        // Guard against missing mainNavVueObj to prevent reference crashes during playAudio
+        if (typeof window.mainNavVueObj === 'undefined') {
+            window.mainNavVueObj = { soundOpen: true };
+        }
+    </script>
     <script src="./js/tools/brain/sequence-memory.js?260728100716"></script>
-
-
-        
 </body>
 </html>
