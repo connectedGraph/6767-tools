@@ -1,116 +1,19 @@
 <!DOCTYPE html>
-
 <html lang="zh" class="dark">
-
 <head>
     <script src="./js/theme.js"></script>
-    <script src="./js/i18n.js"></script><script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
-
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
     <meta charset="utf-8" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
     <title>熄灯游戏 - 经典益智关灯解谜游戏，锻炼逻辑推理 - 在线工具</title>
-
-        <meta name="description" content="熄灯游戏是一款经典高趣味的逻辑益智小游戏。点击任意灯切换自身及上下左右状态，目标熄灭所有灯光。有效锻炼逻辑思维与专注力，适合日常休闲解压、脑力训练。" />
-
-        <meta name="keywords" content="关灯游戏, 益智解谜, 熄灯挑战, 逻辑思维训练, 记忆力游戏, Lights Out, 休闲益智, 脑力锻炼, 关卡解谜, 免费游戏" />
-
-
-
+    <meta name="description" content="熄灯游戏是一款经典高趣味的逻辑益智小游戏。点击任意灯切换自身及上下左右状态，目标熄灭所有灯光。有效锻炼逻辑思维与专注力，适合日常休闲解压、脑力训练。" />
+    <meta name="keywords" content="关灯游戏, 益智解谜, 熄灯挑战, 逻辑思维训练, 记忆力游戏, Lights Out, 休闲益智, 脑力锻炼, 关卡解谜, 免费游戏" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-
-    <link rel="dns-prefetch" href="" />
-
-
-
-                <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
     <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet" />
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
-
-    
-
-    <style>
-
-        .tool-body { overflow: hidden; }
-
-
-
-        .game-box .game-top .game-top-left, .game-box .game-top .game-top-right { width: 50%; }
-
-
-
-        .game-box .game-area .game-area-mode { background: rgba(0,0,0,0.76); color: #fff; left: unset; right: 0; }
-
-
-
-        .game-play { background: none !important; }
-
-        .game-play .result-tip { position: absolute; top: 0; left: 0; width: 100%; height: 100%; font-size: 160px; display: flex; justify-content: center; align-items: center; text-shadow: 2px 0 black, -2px 0 black, 0 2px black, 0 -2px black, 2px 2px black, -2px -2px black, 2px -2px black, -2px 2px black; }
-
-
-
-        .lights-grid { position: absolute; top: 0; right: 0; width: 100%; height: 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; aspect-ratio: 1 / 1; width: 100%; padding: 8px; background: rgba(0, 0, 0, 0.25); border-radius: 6px; opacity: 0; }
-
-        .lights-grid .cell { aspect-ratio: 1/1; border-radius: 50%; cursor: pointer; transition: transform 0.15s, opacity 0.15s; background: #2a2a3e; box-shadow: inset 0 -4px 8px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.02); position: relative; }
-
-        .lights-grid .cell::after { content: ''; position: absolute; inset: 12%; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.2), transparent 60%); pointer-events: none; opacity: 0; transition: opacity 0.3s ease; }
-
-        .lights-grid .cell.on { background: radial-gradient(circle at 40% 35%, #ffdd77, #f5a623 60%, #c47d10); box-shadow: 0 0 30px rgba(245,198,66), 0 0 60px rgba(245,198,66,0.2), inset 0 -6px 12px rgba(0,0,0,0.2), 0 0 0 2px rgba(255,215,100,0.12); }
-
-        .lights-grid .cell.on::after { opacity: 1; }
-
-        .lights-grid .cell.off { background: #2a2a3e; box-shadow: inset 0 -4px 8px rgba(0,0,0,0.5), 0 0 0 2px rgba(255,255,255,0.03); }
-
-        .lights-grid .cell.off::after { opacity: 0; }
-
-        .lights-grid .cell.ripple { animation: rippleAnim 0.4s ease-out; }
-
-        @keyframes rippleAnim {
-
-            0% { box-shadow: 0 0 0 0 rgba(255,215,100,0.6); }
-
-            100% { box-shadow: 0 0 0 24px rgba(255,215,100,0); }
-
-        }
-
-        .lights-grid .cell.hint { animation: hintGlow 0.8s ease-in-out infinite alternate; box-shadow: 0 0 40px rgba(0,200,255,0.9), 0 0 80px rgba(0,200,255,0.4); }
-
-        @keyframes hintGlow {
-
-            0% { box-shadow: 0 0 20px rgba(0,200,255,0.6); }
-
-            100% { box-shadow: 0 0 60px rgba(0,200,255,1), 0 0 100px rgba(0,200,255,0.5); }
-
-        }
-
-
-
-        .game-btn-box { padding: 20px 0 5px 0; }
-
-
-
-        .game-box .game-bottom{margin-top:5px;}
-
-
-
-        @media (max-width:1300px) {
-
-            .tool-body .relate-tool-box { display: block; }
-
-            .tool-body .right { display: none; }
-
-        }
-
-        @media (max-width: 480px) {
-
-            .lights-grid { gap: 6px; padding: 6px;}
-
-        }
-
-    </style>
-
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="在线工具集" />
     <meta property="og:title" content="熄灯游戏 - 经典益智关灯解谜游戏，锻炼逻辑推理 - 在线工具" />
@@ -122,18 +25,787 @@
     <meta name="twitter:description" content="熄灯游戏是一款经典高趣味的逻辑益智小游戏。点击任意灯切换自身及上下左右状态，目标熄灭所有灯光。有效锻炼逻辑思维与专注力，适合日常休闲解压、脑力训练。" />
     <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
     <link rel="canonical" href="https://tool.6767.chat/lights-out" />
+
     <style>
-        /* legacy common.css vars → dark theme (kept for old inline styles) */
-        html.dark {
-            --bg-color: #0f172a;
-            --text-color: #e2e8f0;
-            --border-color-dark: rgba(71,85,105,0.9);
+        /* ═══════════════════════════════════════════════════════════════
+           熄灯游戏 (Lights Out) 现代化 UI/UX 主题系统
+           兼容日间与夜间双模式，高对比度，防白底白字
+           ═══════════════════════════════════════════════════════════════ */
+
+        .tool-body { overflow: hidden; }
+
+        .lo-shell {
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        /* ── 游戏主卡片容器 ── */
+        .game-box {
+            width: 100%;
+            padding: clamp(14px, 3vw, 24px);
+            border-radius: 16px;
+            transition: all 0.25s ease;
+        }
+        html.dark .game-box {
+            background: #0b1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.03);
+            color: #e2e8f0;
+        }
+        html:not(.dark) .game-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.02);
+            color: #0f172a;
+        }
+
+        /* ── 1. 顶部数码仪表盘 ── */
+        .lo-dashboard {
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+            transition: all 0.2s ease;
+        }
+        html.dark .lo-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.5);
+        }
+        html:not(.dark) .lo-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .lo-dash-stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .lo-dash-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+        .lo-dash-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .lo-dash-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+        html.dark .lo-dash-label { color: #94a3b8; }
+        html:not(.dark) .lo-dash-label { color: #64748b; }
+
+        .lo-dash-value {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 17px;
+            font-weight: 800;
+        }
+        html.dark .lo-dash-value { color: #f8fafc; }
+        html:not(.dark) .lo-dash-value { color: #0f172a; }
+
+        /* 倒计时醒目状态 */
+        .lo-time-urgent .lo-dash-value {
+            color: #ef4444 !important;
+            animation: loPulseTime 0.8s ease-in-out infinite alternate;
+        }
+        @keyframes loPulseTime {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.08); opacity: 0.8; }
+        }
+
+        /* 难度选择器触发胶囊 */
+        .lo-level-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            min-height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.15s ease;
+            user-select: none;
+            outline: none;
+        }
+        html.dark .lo-level-trigger {
+            background: #111a2e;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+        }
+        html.dark .lo-level-trigger:hover {
+            background: #17223b;
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+        html:not(.dark) .lo-level-trigger {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        html:not(.dark) .lo-level-trigger:hover {
+            background: #f0f9ff;
+            border-color: #0284c7;
+            color: #0284c7;
+        }
+
+        .lo-level-bullet {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .lo-level-bullet.diff-0 { background: #22c55e; box-shadow: 0 0 6px rgba(34, 197, 94, 0.6); }
+        .lo-level-bullet.diff-1 { background: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.6); }
+        .lo-level-bullet.diff-2 { background: #ef4444; box-shadow: 0 0 6px rgba(239, 68, 68, 0.6); }
+
+        /* ── 2. 核心游戏舞台区域 ── */
+        .game-area {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+            border-radius: 18px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        html.dark .game-area {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: 
+                inset 0 3px 12px rgba(0, 0, 0, 0.7),
+                0 12px 36px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(56, 189, 248, 0.08);
+        }
+        html:not(.dark) .game-area {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            box-shadow: 
+                inset 0 2px 8px rgba(0, 0, 0, 0.04),
+                0 10px 28px rgba(15, 23, 42, 0.08),
+                0 0 0 1px rgba(2, 132, 199, 0.06);
+        }
+
+        .game-area-mode {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-play {
+            background: none !important;
+            overflow: hidden;
+        }
+
+        /* ── 3. 熄灯阵列 (5x5 Grid) ── */
+        .lights-grid {
+            position: absolute;
+            inset: 16px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            opacity: 0; /* anime 会动态执行入场平移和透明度补间 */
+            align-content: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        @media (max-width: 480px) {
+            .lights-grid {
+                inset: 10px;
+                gap: 8px;
+            }
+        }
+        @media (max-width: 360px) {
+            .lights-grid {
+                inset: 6px;
+                gap: 6px;
+            }
+        }
+
+        /* 灯泡按键单元 (高触感圆形拟物开关) */
+        .lights-grid .cell {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, background 0.25s ease;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .lights-grid .cell:hover {
+            transform: scale(1.05);
+        }
+        .lights-grid .cell:active {
+            transform: scale(0.93);
+        }
+
+        /* 状态一：熄灭状态 (暗色金属/凹陷磨砂开关质感) */
+        html.dark .lights-grid .cell.off {
+            background: radial-gradient(circle at 40% 35%, #1e293b 0%, #0f172a 70%, #090e17 100%);
+            box-shadow: 
+                inset 0 3px 6px rgba(0, 0, 0, 0.7),
+                inset 0 -2px 4px rgba(255, 255, 255, 0.05),
+                0 2px 6px rgba(0, 0, 0, 0.45),
+                0 0 0 1px #1e293b;
+        }
+        html.dark .lights-grid .cell.off::before {
+            content: '';
+            position: absolute;
+            inset: 14%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.08), transparent 60%);
+            pointer-events: none;
+        }
+
+        html:not(.dark) .lights-grid .cell.off {
+            background: radial-gradient(circle at 40% 35%, #ffffff 0%, #f1f5f9 65%, #e2e8f0 100%);
+            box-shadow: 
+                inset 0 2px 5px rgba(0, 0, 0, 0.12),
+                inset 0 -2px 3px rgba(255, 255, 255, 0.9),
+                0 2px 5px rgba(15, 23, 42, 0.08),
+                0 0 0 1px #cbd5e1;
+        }
+        html:not(.dark) .lights-grid .cell.off::before {
+            content: '';
+            position: absolute;
+            inset: 14%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.4), transparent 60%);
+            pointer-events: none;
+        }
+
+        /* 状态二：点亮状态 (温润琥珀金炽热灯丝绽放光芒) */
+        html.dark .lights-grid .cell.on {
+            background: radial-gradient(circle at 38% 34%, #fffbeb 0%, #fef08a 25%, #f59e0b 60%, #d97706 85%, #92400e 100%);
+            box-shadow: 
+                0 0 18px rgba(245, 158, 11, 0.8),
+                0 0 36px rgba(245, 158, 11, 0.45),
+                0 0 54px rgba(217, 119, 6, 0.25),
+                inset 0 2px 5px rgba(255, 255, 255, 0.9),
+                inset 0 -4px 8px rgba(180, 83, 9, 0.7),
+                0 0 0 2px rgba(253, 230, 138, 0.6);
+        }
+        html.dark .lights-grid .cell.on::before {
+            content: '';
+            position: absolute;
+            inset: 10%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.65), transparent 55%);
+            pointer-events: none;
+        }
+
+        html:not(.dark) .lights-grid .cell.on {
+            background: radial-gradient(circle at 38% 34%, #ffffff 0%, #fef08a 28%, #f59e0b 65%, #d97706 88%, #b45309 100%);
+            box-shadow: 
+                0 0 16px rgba(245, 158, 11, 0.7),
+                0 0 32px rgba(245, 158, 11, 0.35),
+                inset 0 2px 4px rgba(255, 255, 255, 0.95),
+                inset 0 -3px 6px rgba(180, 83, 9, 0.5),
+                0 0 0 2px rgba(245, 158, 11, 0.5);
+        }
+        html:not(.dark) .lights-grid .cell.on::before {
+            content: '';
+            position: absolute;
+            inset: 10%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.75), transparent 55%);
+            pointer-events: none;
+        }
+
+        /* 状态三：提示光晕脉冲 (科技蓝光脉冲聚焦) */
+        .lights-grid .cell.hint {
+            animation: loHintPulse 0.9s ease-in-out infinite alternate !important;
+        }
+        @keyframes loHintPulse {
+            0% {
+                box-shadow: 0 0 0 2px #38bdf8, 0 0 16px rgba(56, 189, 248, 0.7), 0 0 32px rgba(14, 165, 233, 0.3);
+                transform: scale(1.02);
+            }
+            100% {
+                box-shadow: 0 0 0 4px #0ea5e9, 0 0 32px rgba(56, 189, 248, 1), 0 0 64px rgba(14, 165, 233, 0.6);
+                transform: scale(1.08);
+            }
+        }
+
+        /* 扩散波纹动画 */
+        .lights-grid .cell.ripple {
+            animation: loRippleAnim 0.4s ease-out;
+        }
+        @keyframes loRippleAnim {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 100, 0.7); }
+            100% { box-shadow: 0 0 0 28px rgba(255, 215, 100, 0); }
+        }
+
+        /* ── 4. 过关成功提示图标 ── */
+        .game-play .result-tip {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 130px;
+            font-weight: 900;
+            pointer-events: none;
+            text-shadow: 
+                0 0 20px rgba(42, 173, 103, 0.6),
+                0 4px 16px rgba(0, 0, 0, 0.4);
+            animation: loTipPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes loTipPop {
+            0% { transform: scale(0.3) rotate(-12deg); opacity: 0; }
+            60% { transform: scale(1.12) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ── 5. 欢迎页与结算页浮层卡片 ── */
+        .game-area-mode.game-desc {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        html.dark .game-area-mode.game-desc {
+            background: rgba(11, 17, 32, 0.88);
+        }
+        html:not(.dark) .game-area-mode.game-desc {
+            background: rgba(248, 250, 252, 0.94);
+        }
+
+        .lo-overlay-card {
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 16px;
+        }
+        .lo-overlay-icon-wrap {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+        html.dark .lo-overlay-icon-wrap {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+        html:not(.dark) .lo-overlay-icon-wrap {
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+        }
+
+        .lo-overlay-title {
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+        html.dark .lo-overlay-title { color: #f8fafc; }
+        html:not(.dark) .lo-overlay-title { color: #0f172a; }
+
+        .lo-overlay-desc {
+            font-size: 14px;
+            line-height: 1.65;
+        }
+        html.dark .lo-overlay-desc { color: #cbd5e1; }
+        html:not(.dark) .lo-overlay-desc { color: #475569; }
+
+        .lo-overlay-tags {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 4px 0 8px 0;
+        }
+        .lo-tag-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        html.dark .lo-tag-chip {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #334155;
+            color: #94a3b8;
+        }
+        html:not(.dark) .lo-tag-chip {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        .lo-overlay-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 24px;
+            min-height: 42px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            outline: none;
+            user-select: none;
+        }
+        html.dark .lo-overlay-btn {
+            background: #0284c7;
+            border: 1px solid #38bdf8;
+            color: #ffffff;
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+        }
+        html.dark .lo-overlay-btn:hover {
+            background: #0369a1;
+            transform: translateY(-1px);
+            box-shadow: 0 0 22px rgba(56, 189, 248, 0.6);
+        }
+        html:not(.dark) .lo-overlay-btn {
+            background: #0284c7;
+            border: 1px solid #0284c7;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+        }
+        html:not(.dark) .lo-overlay-btn:hover {
+            background: #0369a1;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+        }
+
+        /* 结算页面专有元素 */
+        .lo-overlay-emoji {
+            font-size: 48px;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+        .lo-settle-stats {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 6px 0;
+        }
+        .lo-settle-stat {
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        html.dark .lo-settle-stat {
+            background: #111a2e;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .lo-settle-stat {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+        .lo-settle-label {
+            font-size: 11px;
+            font-weight: 600;
+        }
+        html.dark .lo-settle-label { color: #94a3b8; }
+        html:not(.dark) .lo-settle-label { color: #64748b; }
+        .lo-settle-val {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 15px;
+            font-weight: 700;
+        }
+        html.dark .lo-settle-val { color: #f8fafc; }
+        html:not(.dark) .lo-settle-val { color: #0f172a; }
+
+        /* ── 6. 控制操作按钮组 ── */
+        .game-btn-box {
+            padding: 20px 0 8px 0;
+        }
+        .lo-action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .lo-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 20px;
+            min-height: 42px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            outline: none;
+        }
+        .lo-action-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+        .lo-action-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+        .lo-action-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* 主开始/重新开始按键 */
+        .lo-btn-main {
+            background: #0284c7;
+            border: 1px solid #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+        }
+        .lo-btn-main:hover:not(:disabled) {
+            background: #0369a1;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+        }
+        html.dark .lo-btn-main {
+            background: #0284c7;
+            border: 1px solid #38bdf8;
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+        }
+        html.dark .lo-btn-main:hover:not(:disabled) {
+            background: #0369a1;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+        }
+
+        /* 重置本关按键 */
+        .lo-btn-reset {
+            background: #f59e0b;
+            border: 1px solid #f59e0b;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+        }
+        .lo-btn-reset:hover:not(:disabled) {
+            background: #d97706;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+        }
+        html.dark .lo-btn-reset {
+            background: rgba(217, 119, 6, 0.3);
+            border: 1px solid #fbbf24;
+            color: #fef3c7;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+        }
+        html.dark .lo-btn-reset:hover:not(:disabled) {
+            background: #d97706;
+            color: #ffffff;
+            box-shadow: 0 0 16px rgba(245, 158, 11, 0.45);
+        }
+
+        /* 提示按键 */
+        .lo-btn-hint {
+            background: #8b5cf6;
+            border: 1px solid #8b5cf6;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+        }
+        .lo-btn-hint:hover:not(:disabled) {
+            background: #7c3aed;
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+        }
+        html.dark .lo-btn-hint {
+            background: rgba(124, 58, 237, 0.3);
+            border: 1px solid #a78bfa;
+            color: #ede9fe;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.25);
+        }
+        html.dark .lo-btn-hint:hover:not(:disabled) {
+            background: #7c3aed;
+            color: #ffffff;
+            box-shadow: 0 0 16px rgba(139, 92, 246, 0.45);
+        }
+
+        /* ── 7. 底部辅助按键 (排行榜与历史) ── */
+        .game-bottom {
+            margin-top: 10px;
+        }
+        .lo-sub-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .lo-aux-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 18px;
+            min-height: 38px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            outline: none;
+        }
+        html.dark .lo-aux-btn {
+            background: #111a2e;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+        }
+        html.dark .lo-aux-btn:hover {
+            background: #17223b;
+            border-color: #38bdf8;
+            color: #38bdf8;
+            transform: translateY(-1px);
+        }
+        html:not(.dark) .lo-aux-btn {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        html:not(.dark) .lo-aux-btn:hover {
+            background: #f8fafc;
+            border-color: #0284c7;
+            color: #0284c7;
+            transform: translateY(-1px);
+        }
+
+        /* ── 8. 介绍内容排版 ── */
+        .lo-content {
+            margin-top: 18px;
+            line-height: 1.75;
+        }
+        html.dark .lo-content { color: #cbd5e1; }
+        html:not(.dark) .lo-content { color: #334155; }
+
+        .lo-content h2 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 22px 0 10px 0;
+        }
+        .lo-content h2::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            border-radius: 4px;
+            background: #0284c7;
+            display: inline-block;
+        }
+        html.dark .lo-content h2 { color: #f8fafc; }
+        html:not(.dark) .lo-content h2 { color: #0f172a; }
+
+        .lo-content p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .lo-content ol, .lo-content ul {
+            padding-left: 20px;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .lo-content li {
+            margin: 6px 0;
+        }
+        .lo-content strong {
+            font-weight: 700;
+        }
+        html.dark .lo-content strong { color: #f1f5f9; }
+        html:not(.dark) .lo-content strong { color: #0f172a; }
+
+        .lo-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 14px 0;
+        }
+        .lo-info-card {
+            padding: 14px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+        html.dark .lo-info-card {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .lo-info-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        .lo-info-card-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        html.dark .lo-info-card-title { color: #38bdf8; }
+        html:not(.dark) .lo-info-card-title { color: #0284c7; }
+
+        @media (max-width: 520px) {
+            .lo-dashboard {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+            .lo-dash-difficulty {
+                grid-column: span 2;
+                display: flex;
+                justify-content: stretch;
+            }
+            .lo-dash-difficulty .el-dropdown {
+                width: 100%;
+            }
+            .lo-level-trigger {
+                width: 100%;
+                justify-content: center;
+            }
+            .lo-action-bar {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+            .lo-action-btn {
+                width: 100%;
+            }
+            .lo-sub-bar {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+            .lo-aux-btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 
 <body>
-
 <div class="grid-bg"></div>
 <header class="tool-topbar">
   <a href="./" class="tool-topbar-logo" aria-label="首页">
@@ -144,221 +816,236 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-
-
-    <main class="main-body tool-page-body">
-
-        
-
-
-
-<div class="tool-body flex">
-
-    <div class="left">
-
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
         <div class="card-model">
-
             <div class="card-body">
-
                 <div class="tool-head">
-
                     <h1 class="title">熄灯游戏</h1>
-
                 </div>
-
                 <div class="description">熄灯游戏是一款经典高趣味的逻辑益智小游戏。点击任意灯切换自身及上下左右状态，目标熄灭所有灯光。有效锻炼逻辑思维与专注力，适合日常休闲解压、脑力训练。</div>
 
-                <div class="game-box" v-cloak>
-
-                    <div class="game-top">
-
-                        <div class="game-top-left"><i class="my-icon my-icon-time"></i><span>{{countdown}}秒</span></div>
-
-                        <div class="game-top-middle"><i class="my-icon my-icon-xin"></i><span>{{score}}</span></div>
-
-                        <div class="game-top-right">
-
-                            <el-dropdown trigger="click" v-on:command="changeLevelGroup">
-
-                                <div class="level-group"><span>{{levelGroupDescArr[levelGroupIndex]}}</span><i class="my-icon my-icon-jiantou-down"></i></div>
-
-                                <template #dropdown>
-
-                                    <el-dropdown-menu>
-
-                                        <el-dropdown-item v-for="(item,index) in levelGroupDescArr" :command="index">{{item}}</el-dropdown-item>
-
-                                    </el-dropdown-menu>
-
-                                </template>
-
-                            </el-dropdown>
-
-                        </div>
-
-                    </div>
-
-                    <div class="game-area">
-
-                        <div v-if="gameState==1" class="game-area-mode game-desc">
-
-                            <div class="desc">游戏初始会随机亮起多盏灯，点击任意一盏灯进行操作，让所有的灯全部熄灭。点击任意一盏灯后，该灯以及其上下左右相邻的灯会进行状态切换。</div>
-
-                        </div>
-
-                        <div v-if="gameState==2" class="game-area-mode game-play">
-
-                            <div class="lights-grid">
-
-                                <div v-for="(row, r) in grid" :key="r" style="display:contents;">
-
-                                    <div v-for="(cell, c) in row" :key="r * 5 + c"
-
-                                         class="cell"
-
-                                         v-bind:class="{
-
-                                        on: cell === 1,
-
-                                        off: cell === 0,
-
-                                        hint: hintIndex === r * 5 + c
-
-                                        }"
-
-                                         v-on:click="handleCellClick(r, c)">
-
-                                    </div>
-
+                <div class="lo-shell" v-cloak>
+                    <div class="game-box">
+                        <!-- 1. 顶部数码仪表盘 -->
+                        <div class="game-top lo-dashboard" role="region" aria-label="游戏仪表盘">
+                            <div class="game-top-left lo-dash-stat" :class="{'lo-time-urgent': countdown <= 30 && gameState === 2}">
+                                <span class="lo-dash-icon">⏱️</span>
+                                <div class="lo-dash-text">
+                                    <span class="lo-dash-label">倒计时</span>
+                                    <span class="lo-dash-value">{{countdown}}秒</span>
                                 </div>
-
                             </div>
 
-                            <div class="result-tip" v-if="resultTipShow" v-bind:style="{color:resultTipColor}">{{resultTipIcon}}</div>
+                            <div class="game-top-middle lo-dash-stat">
+                                <span class="lo-dash-icon">⭐</span>
+                                <div class="lo-dash-text">
+                                    <span class="lo-dash-label">当前得分</span>
+                                    <span class="lo-dash-value">{{score}}</span>
+                                </div>
+                            </div>
 
+                            <div class="lo-dash-stat" v-if="gameState === 2">
+                                <span class="lo-dash-icon">🎯</span>
+                                <div class="lo-dash-text">
+                                    <span class="lo-dash-label">进度 / 步数</span>
+                                    <span class="lo-dash-value">第{{level}}关 · {{levelMoves}}步</span>
+                                </div>
+                            </div>
+
+                            <div class="game-top-right lo-dash-difficulty">
+                                <el-dropdown trigger="click" v-on:command="changeLevelGroup">
+                                    <div class="level-group lo-level-trigger" role="button" tabindex="0" :title="'难度: ' + levelGroupDescArr[levelGroupIndex]">
+                                        <span class="lo-level-bullet" :class="'diff-' + levelGroupIndex"></span>
+                                        <span>{{levelGroupDescArr[levelGroupIndex]}}</span>
+                                        <i class="my-icon my-icon-jiantou-down"></i>
+                                    </div>
+                                    <template #dropdown>
+                                        <el-dropdown-menu>
+                                            <el-dropdown-item v-for="(item,index) in levelGroupDescArr" :key="index" :command="index">
+                                                <span class="lo-level-bullet mr-1.5" :class="'diff-' + index"></span>{{item}}
+                                            </el-dropdown-item>
+                                        </el-dropdown-menu>
+                                    </template>
+                                </el-dropdown>
+                            </div>
                         </div>
 
-                        <div v-if="gameState==3" class="game-area-mode game-desc">
+                        <!-- 2. 核心游戏舞台区域 -->
+                        <div class="game-area" role="application" aria-label="熄灯游戏棋盘">
+                            <!-- 阶段 1: 准备/欢迎界面 -->
+                            <div v-if="gameState==1" class="game-area-mode game-desc">
+                                <div class="lo-overlay-card">
+                                    <div class="lo-overlay-icon-wrap">
+                                        <span>💡</span>
+                                    </div>
+                                    <h2 class="lo-overlay-title">熄灯解谜挑战</h2>
+                                    <div class="desc lo-overlay-desc">游戏初始会随机亮起多盏灯，点击任意一盏灯进行操作，让所有的灯全部熄灭。点击任意一盏灯后，该灯以及其上下左右相邻的灯会进行状态切换。</div>
+                                    <div class="lo-overlay-tags">
+                                        <span class="lo-tag-chip">🧩 5×5矩阵</span>
+                                        <span class="lo-tag-chip">⏱️ 3分钟限时</span>
+                                        <span class="lo-tag-chip">⚡ 步数奖励</span>
+                                    </div>
+                                    <button class="lo-overlay-btn" type="button" v-on:click="startGame">
+                                        <span>开始挑战</span>
+                                        <span>➔</span>
+                                    </button>
+                                </div>
+                            </div>
 
-                            <div class="emoji">{{emoji}}</div>
+                            <!-- 阶段 2: 游戏游玩中 (5x5 矩阵) -->
+                            <div v-if="gameState==2" class="game-area-mode game-play">
+                                <div class="lights-grid">
+                                    <div v-for="(row, r) in grid" :key="r" style="display:contents;">
+                                        <div v-for="(cell, c) in row" :key="r * 5 + c"
+                                             class="cell"
+                                             v-bind:class="{
+                                                on: cell === 1,
+                                                off: cell === 0,
+                                                hint: hintIndex === r * 5 + c
+                                             }"
+                                             v-on:click="handleCellClick(r, c)"
+                                             role="button"
+                                             tabindex="0"
+                                             :aria-label="'第' + (r+1) + '行第' + (c+1) + '列灯泡 ' + (cell === 1 ? '亮' : '灭')">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="result-tip" v-if="resultTipShow" v-bind:style="{color:resultTipColor}">{{resultTipIcon}}</div>
+                            </div>
 
-                            <div class="desc" v-html="scoreDesc"></div>
-
+                            <!-- 阶段 3: 游戏结算 -->
+                            <div v-if="gameState==3" class="game-area-mode game-desc">
+                                <div class="lo-overlay-card">
+                                    <div class="emoji lo-overlay-emoji">{{emoji}}</div>
+                                    <h3 class="lo-overlay-title">挑战结束</h3>
+                                    <div class="desc lo-overlay-desc" v-html="scoreDesc"></div>
+                                    <div class="lo-settle-stats">
+                                        <div class="lo-settle-stat">
+                                            <span class="lo-settle-label">已挑战关卡</span>
+                                            <span class="lo-settle-val">第 {{level}} 关</span>
+                                        </div>
+                                        <div class="lo-settle-stat">
+                                            <span class="lo-settle-label">当前难度</span>
+                                            <span class="lo-settle-val">{{levelGroupDescArr[levelGroupIndex]}}</span>
+                                        </div>
+                                    </div>
+                                    <button class="lo-overlay-btn" type="button" v-on:click="startGame">
+                                        <span>再玩一次</span>
+                                        <span>↺</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                    </div>
+                        <!-- 3. 主控制操作按钮 -->
+                        <div class="game-btn-box lo-action-bar">
+                            <button v-if="gameState==2" class="lo-action-btn lo-btn-reset" type="button" v-on:click="resetLevel" title="重置本关为初始灯光布局">
+                                <span>↺ 重置本关</span>
+                            </button>
+                            <button class="lo-action-btn lo-btn-main" type="button" v-on:click="startGame">
+                                <span>{{gameState==1?'▶ 开始游戏':gameState==2?'🔄 重新开始':'⚡ 再玩一次'}}</span>
+                            </button>
+                            <button v-if="gameState==2" class="lo-action-btn lo-btn-hint" type="button" v-on:click="showHint" :disabled="hintIndex !== -1" title="获取下一步推荐点击位置 (-15分)">
+                                <span>💡 提示 (-15分)</span>
+                            </button>
+                        </div>
 
-                    <div class="game-btn-box">
+                        <div class="divider"></div>
 
-                        <el-button v-if="gameState==2" type="primary" round v-on:click="resetLevel">重置本关</el-button>
-
-                        <el-button type="primary" round v-on:click="startGame">{{gameState==1?`开始游戏`:gameState==2?`重新开始`:"再玩一次"}}</el-button>
-
-                        <el-button v-if="gameState==2" type="primary" round v-on:click="showHint">💡提示</el-button>
-
+                        <!-- 4. 底部榜单与记录按钮 -->
+                        <div class="game-bottom lo-sub-bar">
+                            <button class="lo-aux-btn" type="button" v-on:click="$refs.phbDialog.showPhb(levelGroupIndex)">
+                                <i class="my-icon my-icon-phb"></i>
+                                <span>排行榜</span>
+                            </button>
+                            <button class="lo-aux-btn" type="button" v-on:click="$refs.historyDialog.showHistory(levelGroupIndex)">
+                                <i class="my-icon my-icon-history"></i>
+                                <span>历史记录</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="divider"></div>
 
-                    <div class="game-bottom">
+                    <!-- 5. 游戏详解与教学内容 -->
+                    <div class="content lo-content">
+                        <h2>游戏简介</h2>
+                        <p>光明与黑暗的较量，一触即发！《熄灯游戏》（Lights Out）是一款风靡全球的经典益智解谜小游戏。屏幕上会呈现一个 5×5 的灯光方阵，初始时若干灯光处于点亮状态。你的任务是通过精准的逻辑推演，按下正确的开关，使矩阵中所有灯光全部熄灭！看似简单的十字翻转规则背后，隐藏着千变万化的线性代数与逻辑奥秘。</p>
 
-                        <el-button round v-on:click="$refs.phbDialog.showPhb(levelGroupIndex)"><i class="my-icon my-icon-phb"></i><span>排行榜</span></el-button>
+                        <h2>游戏规则与机制</h2>
+                        <ol>
+                            <li><strong>状态翻转法则</strong>：点击任意一盏灯，该灯自身以及与其紧邻的上下左右相邻灯（呈十字形）都会同步翻转状态（亮灯变为熄灯、熄灯变为亮灯）。角上的灯影响3盏，边缘的灯影响4盏，中间的灯影响5盏。</li>
+                            <li><strong>不可逆性与交换律</strong>：点击顺序不影响最终局面，多次点击同一盏灯等同于不点（两次点击相互抵消）。</li>
+                            <li><strong>通关晋级</strong>：盘面上所有灯全部熄灭即可通关进入下一关，并获得丰厚的关卡奖励分与步数加成。</li>
+                            <li><strong>辅助工具</strong>：遇到瓶颈时可点击“重置本关”重新布局，或使用“💡提示”由后台高斯消元算法为你指出最优点击位置（每次提示扣除 15 分）。</li>
+                            <li><strong>限时挑战</strong>：游戏限时 3 分钟（180秒），时间归零游戏结束，系统根据通关数、有效步数与剩余时间计算综合积分，记录进排行榜。</li>
+                        </ol>
 
-                        <el-button round v-on:click="$refs.historyDialog.showHistory(levelGroupIndex)"><i class="my-icon my-icon-history"></i><span>历史记录</span></el-button>
+                        <h2>难度阶梯</h2>
+                        <div class="lo-card-grid">
+                            <div class="lo-info-card">
+                                <div class="lo-info-card-title"><span class="lo-level-bullet diff-0"></span> 容易难度</div>
+                                <p>最少仅需 <strong>3 ~ 5 步</strong> 即可解开，布局简单清晰，适合新手热身与掌握规则联动。</p>
+                            </div>
+                            <div class="lo-info-card">
+                                <div class="lo-info-card-title"><span class="lo-level-bullet diff-1"></span> 普通难度</div>
+                                <p>最少需 <strong>6 ~ 8 步</strong> 方可解开，要求玩家具备基本的步序规划与全局观察意识。</p>
+                            </div>
+                            <div class="lo-info-card">
+                                <div class="lo-info-card-title"><span class="lo-level-bullet diff-2"></span> 困难难度</div>
+                                <p>最少需 <strong>9 ~ 15 步</strong> 方能通关，状态交错复杂，考验高难度多步预判与推演。</p>
+                            </div>
+                        </div>
 
+                        <h2>高手进阶秘籍：追灯法 (Chase the Lights)</h2>
+                        <p>解开 5×5 熄灯游戏有一套著名且高效的手工算法——<strong>追灯法</strong>：</p>
+                        <ol>
+                            <li><strong>自上而下逐行消灭</strong>：从第一行开始观察，若第一行某位置有亮灯，就在它正下方的第二行点击对应灯，将第一行的灯熄灭。</li>
+                            <li><strong>逐层推进</strong>：以此类推，用第三行消除第二行的亮灯，用第四行消除第三行，用第五行消除第四行。</li>
+                            <li><strong>底层判定与反解</strong>：此时前四行必然全灭，仅剩第五行。根据第五行剩余亮灯的位置特征，对照经典的顶层映射表，点击第一行对应的几个关键灯，再自上而下“追灯”一次，即可保证全盘彻底熄灭！</li>
+                        </ol>
+
+                        <h2>脑力锻炼益处</h2>
+                        <ol>
+                            <li><strong>强化逻辑推理能力</strong>：每一次点击都会引发连锁状态翻转，促使大脑建立因果网络，持续训练多步前瞻与逆向思维。</li>
+                            <li><strong>培养全局统筹意识</strong>：避免局部“打地鼠”式的盲目操作，学会从整体矩阵拓扑寻找最优解。</li>
+                            <li><strong>提升专注与沉浸感</strong>：高强度的逻辑决策能促使大脑快速进入心流状态，在解密成功的瞬间收获强烈的成就感与放松感。</li>
+                        </ol>
                     </div>
-
                 </div>
-
-
-
-                <div class="divider"></div>
-
-                <div class="content">
-
-                    <h2>游戏简介</h2><p>光明与黑暗的较量，一触即发！《熄灯游戏》是一款风靡全球的经典益智解谜游戏。屏幕上会随机亮起一片“灯光矩阵”，你的任务只有一个：点击正确的顺序，让所有的灯光全部熄灭，进入下一关！ 看似简单的规则背后，隐藏着千变万化的逻辑挑战。</p><h2>游戏规则</h2><ol><li>游戏初始会随机亮起多盏灯，玩家可点击屏幕中任意一盏灯进行操作。</li><li>点击任意一盏灯后，该灯自身以及其上下左右相邻的灯会进行状态切换，亮灯变为熄灯、熄灯变为亮灯。</li><li>通过合理的点击顺序与步数，让屏幕中所有灯全部熄灭，即可成功通关，进入下一关卡。</li><li>中途可一键重置当前关卡，重新挑战；也可使用提示功能来辅助操作，使用提示会消耗得分。</li><li>游戏限时3分钟，倒计时结束则游戏结束；系统会根据玩家的通关关卡数、操作步数、剩余时间综合计算分数，区分玩家的推理能力与操作水平。</li></ol><h2>难度分级</h2><p>游戏提供3种难度，满足不同阶段的挑战需求：</p><ul><li>容易：最少 3-5步 即可解开，适合新手热身；</li><li>普通：最少 6-8步 可解，考验基础逻辑与规划；</li><li>困难：最少 9-15步 方能通关，具有挑战性。</li></ul><h2>游戏益处</h2><p>《熄灯游戏》不仅仅是消磨时间的工具，更是一场大脑的思维体操：</p><ol><li><strong>锻炼逻辑推理能力</strong>：每次点击都会引发连锁变化，需要提前预判后续影响，进行多步推演，构建清晰的逻辑思路。</li><li><strong>培养全局统筹意识</strong>：不能只着眼局部灯光，需要从整体布局规划操作策略，寻找全局最优解法。</li><li><strong>提升专注力与耐心</strong>：游玩需要静下心深度思考，持续锻炼专注能力，闯关成功带来的成就感也能持续正向激励。</li></ol>
-
-                </div>
-
             </div>
-
         </div>
 
         <div class="relate-tool-box"></div>
-
         <comment :relate-id="286" :comment-class="2"></comment>
-
     </div>
 
+    <phb-dialog ref="phbDialog" :program-name="programName" :level-group-desc-arr="levelGroupDescArr" :level-group-code-arr="levelGroupCodeArr" :time-show="false"></phb-dialog>
+    <history-dialog ref="historyDialog" :program-name="programName" :level-group-desc-arr="levelGroupDescArr" :level-group-code-arr="levelGroupCodeArr" :time-show="false" tooltip-template="得分: {0}\n{1}"></history-dialog>
+</main>
 
-</div>
-
-
-
-<phb-dialog ref="phbDialog" :program-name="programName" :level-group-desc-arr="levelGroupDescArr" :level-group-code-arr="levelGroupCodeArr" :time-show="false"></phb-dialog>
-
-<history-dialog ref="historyDialog" :program-name="programName" :level-group-desc-arr="levelGroupDescArr" :level-group-code-arr="levelGroupCodeArr" :time-show="false" tooltip-template="得分: {0}\n{1}"></history-dialog>
-
-
-
-
-
-    </main>
-</div>
-
-
-
-    <script>
-
-        var languageCode = 'zh';
-
-        var websiteRoot = "";
-
-        var mainWebSiteHost = "";
-
-        var webApiSiteHost = "/api";
-
-        var staticSiteHost = "";
-
-        var staticFileVersion="2608083";
-
-        var toolData = [{"key":"brain","desc":"脑力训练","children":[{"key":"记忆力","desc":"记忆力","toolList":[{"toolName":"数字顺序记忆训练","toolCode":"number-sequence-memory","icon":"./img/brain/game-logo/szsxjy.png"},{"toolName":"顺序记忆训练","toolCode":"sequence-memory","icon":"./img/brain/game-logo/sxjy.png"},{"toolName":"N-Back 记忆力训练游戏","toolCode":"n-back","icon":"./img/brain/game-logo/nback.png"},{"toolName":"色块印记","toolCode":"color-block-imprint","icon":"./img/brain/game-logo/skyj.png"}]},{"key":"注意力","desc":"注意力","toolList":[{"toolName":"舒尔特方格训练","toolCode":"shult-grid","icon":"./img/brain/game-logo/setfg.png"},{"toolName":"找不同的字","toolCode":"find-different-word","icon":"./img/brain/game-logo/zbtdz.png"},{"toolName":"斯特鲁普效应","toolCode":"stroop-effect","icon":"./img/brain/game-logo/stlpxy.png"},{"toolName":"坐标迷航","toolCode":"coordinate-drift","icon":"./img/brain/game-logo/zbmh.png"},{"toolName":"视觉追踪训练","toolCode":"visual-tracking-training","icon":"./img/brain/game-logo/sjzzxl.png"}]},{"key":"推演","desc":"推演","toolList":[{"toolName":"复古推箱子 50 关益智挑战","toolCode":"sokoban","icon":"./img/icons/sokoban.svg"},{"toolName":"经典扫雷游戏","toolCode":"minesweeper","icon":"./img/icons/minesweeper.svg"},{"toolName":"在线数独游戏","toolCode":"sudoku","icon":"./img/icons/sudoku.svg"},{"toolName":"熄灯解谜游戏","toolCode":"lights-out","icon":"./img/icons/lights-out.svg"},{"toolName":"数字华容道","toolCode":"digital-huarong-road","icon":"./img/brain/game-logo/szhrd.png"},{"toolName":"上下瓶色匹配","toolCode":"bottle-color-matching","icon":"./img/brain/game-logo/sxpspp.png"},{"toolName":"2048","toolCode":"2048","icon":"./img/brain/game-logo/elsb.png"}]},{"key":"反应","desc":"反应","toolList":[{"toolName":"反应速度测试","toolCode":"react-speed-test","icon":"./img/brain/game-logo/fysdcs.png"},{"toolName":"点击速度测试","toolCode":"click-speed-test","icon":"./img/brain/game-logo/sscs.png"},{"toolName":"右键点击速度测试","toolCode":"right-click-test","icon":"./img/brain/game-logo/yjdjsdcs.png"},{"toolName":"空格键计数器","toolCode":"spacebar-counter","icon":"./img/brain/game-logo/kgjjsq.png"},{"toolName":"动态视力测试","toolCode":"dynamic-visual-acuity-test","icon":"./img/brain/game-logo/dtslcs.png"}]},{"key":"感知","desc":"感知","toolList":[{"toolName":"静态色差感知","toolCode":"jing-tai-se-cha","icon":"./img/brain/game-logo/jtsc.png"},{"toolName":"动态色差感知","toolCode":"dong-tai-se-cha","icon":"./img/brain/game-logo/dtsc.png"},{"toolName":"时间感知训练","toolCode":"time-perception-training","icon":"./img/brain/game-logo/sjgzxl.png"}]},{"key":"空间","desc":"空间","toolList":[{"toolName":"对称方块","toolCode":"symmetry-blocks","icon":"./img/brain/game-logo/dcfk.png"}]}]},{"key":"office","desc":"办公助手","toolList":[{"toolName":"文本去重与多维排序器","toolCode":"text-dedup-sort","icon":"./img/icons/text-dedup-sort.svg"},{"toolName":"中英文排版规范美化器","toolCode":"text-autospace","icon":"./img/icons/text-autospace.svg"},{"toolName":"在线表格转换器","toolCode":"table-converter","icon":"./img/icons/table-converter.svg"},{"toolName":"人民币大写金额转换器","toolCode":"rmb-capital-converter","icon":"./img/icons/rmb-capital-converter.svg"},{"toolName":"综合字数与阅读时长统计","toolCode":"word-counter","icon":"./img/icons/word-counter.svg"},{"toolName":"现代简历制作与排版器","toolCode":"resume-maker","icon":"./img/icons/resume-maker.svg"},{"toolName":"简历模板中心","toolCode":"resume-template","icon":"./img/icons/resume-template.svg"},{"toolName":"A4纸张尺寸，各种纸张尺寸查询","toolCode":"paper-size","icon":"./img/icons/paper-size.svg"},{"toolName":"转换大小写","toolCode":"convert-case","icon":"./img/icons/convert-case.svg"},{"toolName":"标题大小写转换器","toolCode":"title-case-converter","icon":"./img/icons/title-case-converter.svg"},{"toolName":"句子大小写转换器","toolCode":"sentence-case-converter","icon":"./img/icons/sentence-case-converter.svg"},{"toolName":"粗体文本生成器","toolCode":"bold-text-generator","icon":"./img/icons/bold-text-generator.svg"},{"toolName":"斜体文本生成器","toolCode":"italic-text-generator","icon":"./img/icons/italic-text-generator.svg"},{"toolName":"删除线文本生成器","toolCode":"strikethrough-text-generator","icon":"./img/icons/strikethrough-text-generator.svg"},{"toolName":"下划线文本生成器","toolCode":"underline-text","icon":"./img/icons/underline-text.svg"},{"toolName":"颠倒文本生成器","toolCode":"upside-down-text-generator","icon":"./img/icons/upside-down-text-generator.svg"},{"toolName":"镜像文本生成器","toolCode":"mirror-text-generator","icon":"./img/icons/mirror-text-generator.svg"},{"toolName":"反向文本生成器","toolCode":"reverse-text-generator","icon":"./img/icons/reverse-text-generator.svg"},{"toolName":"文本替换工具","toolCode":"replace-text","icon":"./img/icons/replace-text.svg"},{"toolName":"符号大全","toolCode":"symbols","icon":"./img/icons/symbols.svg"},{"toolName":"emoji表情大全","toolCode":"emoji","icon":"./img/icons/emoji.svg"},{"toolName":"颜文字表情大全","toolCode":"emoticon","icon":"./img/icons/emoticon.svg"}]},{"key":"image","desc":"图像","toolList":[{"toolName":"图片调色板提取器","toolCode":"color-palette-extractor","icon":"./img/icons/color-palette-extractor.svg"},{"toolName":"多图无损拼接与长图生成器","toolCode":"image-stitcher","icon":"./img/icons/image-stitcher.svg"},{"toolName":"图片马赛克与局部隐私遮挡","toolCode":"image-mosaic-blur","icon":"./img/icons/image-mosaic-blur.svg"},{"toolName":"图像格式转换器","toolCode":"convert-image","icon":"./img/icons/convert-image.svg"},{"toolName":"压缩图像","toolCode":"compress-image","icon":"./img/icons/compress-image.svg"},{"toolName":"调整图像大小","toolCode":"resize-image","icon":"./img/icons/resize-image.svg"},{"toolName":"调整图像宽高比例","toolCode":"adjust-image-aspect-ratio","icon":"./img/icons/adjust-image-aspect-ratio.svg"},{"toolName":"批量给图片加水印","toolCode":"watermark-image","icon":"./img/icons/watermark-image.svg"},{"toolName":"批量旋转图像","toolCode":"rotate-image","icon":"./img/icons/rotate-image.svg"},{"toolName":"在线生成透明ICO图标","toolCode":"ico-generator","icon":"./img/icons/ico-generator.svg"},{"toolName":"在线生成透明圆角图片","toolCode":"round-image","icon":"./img/icons/round-image.svg"},{"toolName":"制作gif图片，编辑gif图片","toolCode":"create-gif","icon":"./img/icons/create-gif.svg"},{"toolName":"视频转gif图片，视频转动图","toolCode":"video-to-gif","icon":"./img/icons/video-to-gif.svg"},{"toolName":"分解gif图片","toolCode":"decompose-gif","icon":"./img/icons/decompose-gif.svg"},{"toolName":"裁剪、编辑图像","toolCode":"crop-image","icon":"./img/icons/crop-image.svg"},{"toolName":"生成宫格图像，分割图片","toolCode":"generate-grid-image","icon":"./img/icons/generate-grid-image.svg"},{"toolName":"图像处理助手桌面应用程序","toolCode":"image-processing-assistant-app","icon":"./up/2023/1028/image-processing-assistant-icon.png"},{"toolName":"图像压缩器桌面应用程序","toolCode":"image-compressor-app","icon":"./up/2023/1028/image-compress-logo.png"}]},{"key":"audio-and-video","desc":"音视频","toolList":[{"toolName":"白噪音与专注助眠多轨混音器","toolCode":"white-noise-player","icon":"./img/icons/white-noise-player.svg"},{"toolName":"免插件屏幕与窗口录制工具","toolCode":"screen-recorder","icon":"./img/icons/screen-recorder.svg"},{"toolName":"在线波形录音机与音频剪辑","toolCode":"voice-recorder","icon":"./img/icons/voice-recorder.svg"},{"toolName":"极简电子节拍器与乐器调音器","toolCode":"metronome-tuner","icon":"./img/icons/metronome-tuner.svg"},{"toolName":"视频处理助手桌面应用程序","toolCode":"video-processing-assistant-app","icon":"./up/2023/1028/video-processing-assistant-icon.png"},{"toolName":"视频剪切合并桌面应用程序","toolCode":"video-cut-merge-app","icon":"./up/2023/1028/video-cut-merge-icon.png"},{"toolName":"视频压缩器桌面应用程序","toolCode":"video-compressor-app","icon":"./up/2023/1028/video-compress-icon.png"},{"toolName":"视频格式转换器桌面应用程序","toolCode":"video-format-converter-app","icon":"./up/2023/1028/video-format-conversion-icon.png"},{"toolName":"音频处理助手桌面应用程序","toolCode":"audio-processing-assistant-app","icon":"./up/2023/1028/audio-processing-assistant-icon.png"},{"toolName":"音频剪切合并桌面应用程序","toolCode":"audio-cut-merge-app","icon":"./up/2023/1028/audio-cut-merge-icon.png"},{"toolName":"音频压缩器桌面应用程序","toolCode":"audio-compressor-app","icon":"./up/2023/1028/audio-compress-icon.png"},{"toolName":"音频格式转换器桌面应用程序","toolCode":"audio-format-convertor-app","icon":"./up/2023/1028/audio-format-conversion-icon.png"}]},{"key":"generate","desc":"生成","toolList":[{"toolName":"测试模拟数据 (Mock Data) 批量生成器","toolCode":"mock-data-generator","icon":"./img/icons/mock-data-generator.svg"},{"toolName":"WiFi 扫码直连二维码生成器","toolCode":"wifi-qrcode","icon":"./img/icons/wifi-qrcode.svg"},{"toolName":"无障碍色彩对比度检测器 (WCAG)","toolCode":"contrast-checker","icon":"./img/icons/contrast-checker.svg"},{"toolName":"CSS 玻璃拟态与毛玻璃生成器","toolCode":"css-glassmorphism","icon":"./img/icons/css-glassmorphism.svg"},{"toolName":"ASCII 艺术字与字符 Logo 生成器","toolCode":"ascii-art-generator","icon":"./img/icons/ascii-art-generator.svg"},{"toolName":"UUID / ULID / NanoID 批量生成器","toolCode":"uuid-generator","icon":"./img/icons/uuid-generator.svg"},{"toolName":"CSS 渐变色生成器","toolCode":"css-gradient-generator","icon":"./img/icons/css-gradient-generator.svg"},{"toolName":"CSS 盒子阴影生成器","toolCode":"css-shadow-generator","icon":"./img/icons/css-shadow-generator.svg"},{"toolName":"条形码生成器","toolCode":"bar-code","icon":"./img/icons/bar-code.svg"},{"toolName":"二维码生成器","toolCode":"qrcode","icon":"./img/icons/qrcode.svg"},{"toolName":"序列号生成器","toolCode":"serial-number","icon":"./img/icons/serial-number.svg"},{"toolName":"随机数生成器","toolCode":"random-number","icon":"./img/icons/random-number.svg"},{"toolName":"在线随机密码生成器","toolCode":"random-password","icon":"./img/icons/random-password.svg"}]},{"key":"code","desc":"程序员","toolList":[{"toolName":"IP 子网掩码与 CIDR 计算器","toolCode":"subnet-calculator","icon":"./img/icons/subnet-calculator.svg"},{"toolName":"多格式配置文件双向转换器","toolCode":"data-format-converter","icon":"./img/icons/data-format-converter.svg"},{"toolName":"HTTP 状态码速查与排错全书","toolCode":"http-status-codes","icon":"./img/icons/http-status-codes.svg"},{"toolName":"WebSocket / SSE 在线调试客户端","toolCode":"websocket-tester","icon":"./img/icons/websocket-tester.svg"},{"toolName":"cURL 转换多语言代码工具","toolCode":"curl-converter","icon":"./img/icons/curl-converter.svg"},{"toolName":"SQL 格式化与美化器","toolCode":"sql-formatter","icon":"./img/icons/sql-formatter.svg"},{"toolName":"JSON 格式化与高能工具箱","toolCode":"json-formatter","icon":"./img/icons/json-formatter.svg"},{"toolName":"JWT 解码与调试器","toolCode":"jwt-debugger","icon":"./img/icons/jwt-debugger.svg"},{"toolName":"正则表达式测试器","toolCode":"regex-tester","icon":"./img/icons/regex-tester.svg"},{"toolName":"Cron 表达式生成与预测器","toolCode":"cron-generator","icon":"./img/icons/cron-generator.svg"},{"toolName":"端口扫描","toolCode":"port-scan","icon":"./img/icons/port-scan.svg"},{"toolName":"JavaScript混淆加密","toolCode":"js-obfuscator","icon":"./img/icons/js-obfuscator.svg"},{"toolName":"Markdown在线编辑器，Markdown转Word/Html/Pdf","toolCode":"markdown","icon":"./img/icons/markdown.svg"},{"toolName":"时间戳转换","toolCode":"timestamp","icon":"./img/icons/timestamp.svg"},{"toolName":"进制转换","toolCode":"base-converter","icon":"./img/icons/base-converter.svg"},{"toolName":"MD5加密","toolCode":"md5-encrypt","icon":"./img/icons/md5-encrypt.svg"},{"toolName":"AES加密/解密","toolCode":"aes-encrypt","icon":"./img/icons/aes-encrypt.svg"},{"toolName":"DES加密/解密","toolCode":"des-encrypt","icon":"./img/icons/des-encrypt.svg"},{"toolName":"SHA加密","toolCode":"sha-encrypt","icon":"./img/icons/sha-encrypt.svg"},{"toolName":"RIPEMD160哈希加密","toolCode":"ripemd160-encrypt","icon":"./img/icons/ripemd160-encrypt.svg"},{"toolName":"HMAC哈希加密","toolCode":"hmac-encrypt","icon":"./img/icons/hmac-encrypt.svg"},{"toolName":"Rabbit加密/解密","toolCode":"rabbit-encrypt","icon":"./img/icons/rabbit-encrypt.svg"},{"toolName":"RC4加密/解密","toolCode":"rc4-encrypt","icon":"./img/icons/rc4-encrypt.svg"},{"toolName":"图片转base64","toolCode":"image-to-base64","icon":"./img/icons/image-to-base64.svg"},{"toolName":"base64编码解码","toolCode":"base64-encoder-decoder","icon":"./img/icons/base64-encoder-decoder.svg"},{"toolName":"URL编码解码","toolCode":"url-encoder-decoder","icon":"./img/icons/url-encoder-decoder.svg"},{"toolName":"文本与ASCLL转换器","toolCode":"text-to-ascll-converter","icon":"./img/icons/text-to-ascll-converter.svg"},{"toolName":"Unicode编码器/解码器","toolCode":"unicode-encoder-decoder","icon":"./img/icons/unicode-encoder-decoder.svg"},{"toolName":"文本（代码）对比工具","toolCode":"compare-text","icon":"./img/icons/compare-text.svg"},{"toolName":"html格式化、压缩","toolCode":"format-html","icon":"./img/icons/format-html.svg"},{"toolName":"css格式化、压缩","toolCode":"format-css","icon":"./img/icons/format-css.svg"},{"toolName":"js格式化、压缩","toolCode":"format-js","icon":"./img/icons/format-js.svg"}]},{"key":"study","desc":"学习","toolList":[{"toolName":"2D 数学函数图像绘制器","toolCode":"function-grapher","icon":"./img/icons/function-grapher.svg"},{"toolName":"计算机位运算与逻辑门实验室","toolCode":"bitwise-visualizer","icon":"./img/icons/bitwise-visualizer.svg"},{"toolName":"汉字转标准拼音与多音字排版","toolCode":"pinyin-converter","icon":"./img/icons/pinyin-converter.svg"},{"toolName":"化学元素周期表交互系统","toolCode":"periodic-table","icon":"./img/icons/periodic-table.svg"},{"toolName":"数据存储单位与进阶换算器","toolCode":"data-unit-converter","icon":"./img/icons/data-unit-converter.svg"},{"toolName":"科学高级计算器","toolCode":"scientific-calculator","icon":"./img/icons/scientific-calculator.svg"},{"toolName":"长度单位转换器","toolCode":"length-converter","icon":"./img/icons/length-converter.svg"},{"toolName":"面积单位转换器","toolCode":"area-converter","icon":"./img/icons/area-converter.svg"},{"toolName":"体积单位转换器","toolCode":"volume-converter","icon":"./img/icons/volume-converter.svg"},{"toolName":"重量转换器","toolCode":"weight-converter","icon":"./img/icons/weight-converter.svg"},{"toolName":"温度转换器","toolCode":"temperature-converter","icon":"./img/icons/temperature-converter.svg"},{"toolName":"比例计算器","toolCode":"proportion-calculator","icon":"./img/icons/proportion-calculator.svg"},{"toolName":"周长计算器","toolCode":"perimeter-calculator","icon":"./img/icons/perimeter-calculator.svg"},{"toolName":"面积计算器","toolCode":"area-calculator","icon":"./img/icons/area-calculator.svg"},{"toolName":"表面积计算器","toolCode":"surface-area-calculator","icon":"./img/icons/surface-area-calculator.svg"},{"toolName":"体积计算器","toolCode":"volume-calculator","icon":"./img/icons/volume-calculator.svg"},{"toolName":"圆周率查询","toolCode":"pi-query","icon":"./img/icons/pi-query.svg"}]},{"key":"life","desc":"生活","toolList":[{"toolName":"复利定投与理财收益计算器","toolCode":"compound-interest-calculator","icon":"./img/icons/compound-interest-calculator.svg"},{"toolName":"全款与车贷落地费用精算器","toolCode":"car-loan-calculator","icon":"./img/icons/car-loan-calculator.svg"},{"toolName":"世界时钟与跨时区会议规划器","toolCode":"world-clock-planner","icon":"./img/icons/world-clock-planner.svg"},{"toolName":"生活垃圾分类离线速查字典","toolCode":"garbage-classification","icon":"./img/icons/garbage-classification.svg"},{"toolName":"中国亲戚关系称谓换算器","toolCode":"kinship-calculator","icon":"./img/icons/kinship-calculator.svg"},{"toolName":"2026最新个税与五险一金计算器","toolCode":"salary-tax-calculator","icon":"./img/icons/salary-tax-calculator.svg"},{"toolName":"房贷提前还款与省息对比器","toolCode":"mortgage-advanced-calculator","icon":"./img/icons/mortgage-advanced-calculator.svg"},{"toolName":"日期间隔与重要日子倒计时","toolCode":"date-calculator","icon":"./img/icons/date-calculator.svg"},{"toolName":"年龄计算器","toolCode":"age","icon":"./img/icons/age.svg"},{"toolName":"退休年龄查询","toolCode":"retirement-time-query","icon":"./img/icons/retirement-time-query.svg"},{"toolName":"世界各国首都","toolCode":"capital","icon":"./img/icons/capital.svg"},{"toolName":"世界各国国旗和区旗图案","toolCode":"flag","icon":"./img/icons/flag.svg"},{"toolName":"贷款计算器","toolCode":"loan-calculator","icon":"./img/icons/loan-calculator.svg"},{"toolName":"文胸尺码查询","toolCode":"bra-size","icon":"./img/icons/bra-size.svg"},{"toolName":"内裤尺码查询","toolCode":"underwear-size","icon":"./img/icons/underwear-size.svg"},{"toolName":"女装尺码查询","toolCode":"woman-clothing-size","icon":"./img/icons/woman-clothing-size.svg"},{"toolName":"女士衬衫尺码查询","toolCode":"woman-shirt-size","icon":"./img/icons/woman-shirt-size.svg"},{"toolName":"连衣裙尺码查询","toolCode":"dress-size","icon":"./img/icons/dress-size.svg"},{"toolName":"小孩服装尺码查询","toolCode":"child-clothe-size","icon":"./img/icons/child-clothe-size.svg"},{"toolName":"男士服装尺码查询","toolCode":"man-clothing-size","icon":"./img/icons/man-clothing-size.svg"},{"toolName":"男士裤子尺码查询","toolCode":"man-pant-size","icon":"./img/icons/man-pant-size.svg"}]},{"key":"ent","desc":"娱乐","toolList":[{"toolName":"像素画 / 8-bit 图标在线编辑器","toolCode":"pixel-art-maker","icon":"./img/icons/pixel-art-maker.svg"},{"toolName":"今天吃什么 / 帮我做决定","toolCode":"decision-maker","icon":"./img/icons/decision-maker.svg"},{"toolName":"手持全屏弹幕 / LED 滚动屏幕","toolCode":"led-banner","icon":"./img/icons/led-banner.svg"},{"toolName":"摩斯密码翻译器，摩斯密码音频播放器","toolCode":"morse-code-translator","icon":"./img/icons/morse-code-translator.svg"},{"toolName":"幸运大转盘抽奖","toolCode":"lucky-wheel","icon":"./img/icons/lucky-wheel.svg"},{"toolName":"在线抽奖工具","toolCode":"lottery","icon":"./img/icons/lottery.svg"},{"toolName":"身价计算器","toolCode":"worth","icon":"./img/icons/worth.svg"},{"toolName":"死亡时间计算器","toolCode":"death-time","icon":"./img/icons/death-time.svg"},{"toolName":"幸运数字计算器","toolCode":"lucky-number","icon":"./img/icons/lucky-number.svg"},{"toolName":"星座幸运色","toolCode":"lucky-color","icon":"./img/icons/lucky-color.svg"},{"toolName":"哈希头像生成器","toolCode":"hash-avatar","icon":"./img/icons/hash-avatar.svg"}]},{"key":"health","desc":"健康","toolList":[{"toolName":"科学每日饮水量计算器","toolCode":"water-intake-calculator","icon":"./img/icons/water-intake-calculator.svg"},{"toolName":"90分钟睡眠周期与起床时间计算器","toolCode":"sleep-cycle-calculator","icon":"./img/icons/sleep-cycle-calculator.svg"},{"toolName":"常用食物热量与营养成分速查表","toolCode":"food-calories-lookup","icon":"./img/icons/food-calories-lookup.svg"},{"toolName":"BMI指数计算","toolCode":"bmi","icon":"./img/icons/bmi.svg"},{"toolName":"基础代谢率(BMR)计算器","toolCode":"bmr","icon":"./img/icons/bmr.svg"},{"toolName":"体脂率（BFR）计算器","toolCode":"bfr","icon":"./img/icons/bfr.svg"},{"toolName":"标准体重计算器","toolCode":"weight","icon":"./img/icons/weight.svg"},{"toolName":"燃脂心率计算器","toolCode":"burn-fat-heart-rate","icon":"./img/icons/burn-fat-heart-rate.svg"},{"toolName":"体质综合测试","toolCode":"physical-fitness-test","icon":"./img/icons/physical-fitness-test.svg"},{"toolName":"蛋白质摄入量计算器","toolCode":"protein-intake","icon":"./img/icons/protein-intake.svg"},{"toolName":"焦耳卡路里换算器","toolCode":"energy-convert","icon":"./img/icons/energy-convert.svg"},{"toolName":"跑步卡路里消耗计算器","toolCode":"running-calorie","icon":"./img/icons/running-calorie.svg"},{"toolName":"女性最佳身材计算器","toolCode":"best-figure","icon":"./img/icons/best-figure.svg"},{"toolName":"女性安全期计算器","toolCode":"female-safe-period","icon":"./img/icons/female-safe-period.svg"},{"toolName":"孩子身高预测","toolCode":"child-height","icon":"./img/icons/child-height.svg"},{"toolName":"血型遗传规律和血型性格","toolCode":"bood-type","icon":"./img/icons/bood-type.svg"},{"toolName":"色盲色弱检测","toolCode":"color-blindness-test","icon":"./img/icons/color-blindness-test.svg"},{"toolName":"植物油脂肪含量查询","toolCode":"vegetable-oil","icon":"./img/icons/vegetable-oil.svg"}]}];
-        var phoneSmsEnable = 0;
-
-        var wp='zp';
-
-        var ap='qx';
-
-    </script>
-
-        <script src="/lib/vue/vue.global.prod.js"></script>
-
-        <script src="/lib/element-plus/index.js"></script>
-
-    <script src="/js/components/SlideCaptcha.js?v=2608083"></script>
-
-    <script src="/js/common.js?2608083"></script>
-    <script src="/js/search.js?2608083"></script>
-
-    
-
-    <script src="/lib/anime/anime.min.js"></script>
-
-    <script src="/js/components/PhbDialog.js?2608083"></script>
-
-    <script src="/js/components/HistoryDialog.js?2608083"></script>
-
-    <script src="/js/components/Comment.js?2608083"></script>
-
-    <script src="/js/tools/brain/lights-out.js?2608083"></script>
-
-
-
-
-
-        
-
+<script>
+    var languageCode = 'zh';
+    var websiteRoot = "";
+    var mainWebSiteHost = "";
+    var webApiSiteHost = "/api";
+    var staticSiteHost = "";
+    var staticFileVersion="2608083";
+    var toolData = [{"key":"brain","desc":"脑力训练","children":[{"key":"推演","desc":"推演","toolList":[{"toolName":"熄灯解谜游戏","toolCode":"lights-out","icon":"./img/icons/lights-out.svg"}]}]}];
+    var phoneSmsEnable = 0;
+    var wp='zp';
+    var ap='qx';
+</script>
+<script src="/lib/vue/vue.global.prod.js"></script>
+<script src="/lib/element-plus/index.js"></script>
+<script src="/js/components/SlideCaptcha.js?v=2608083"></script>
+<script src="/js/common.js?2608083"></script>
+<script src="/js/search.js?2608083"></script>
+<script src="/lib/anime/anime.min.js"></script>
+<script src="/js/components/PhbDialog.js?2608083"></script>
+<script src="/js/components/HistoryDialog.js?2608083"></script>
+<script src="/js/components/Comment.js?2608083"></script>
+<script src="/js/tools/brain/lights-out.js?2608083"></script>
 </body>
-
 </html>
-
