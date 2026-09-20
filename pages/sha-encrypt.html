@@ -6,33 +6,1446 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no" />
     <title>SHA加密 - 在线工具</title>
-        <meta name="description" content="SHA 在线加密工具，提供了对 SHA1、SHA3、SHA 224、SHA 256、SHA 384、SHA 512 以及 RIPEMD160 等各种哈希算法的支持。输入一次，将获取所有加密结果。" />
-        <meta name="keywords" content="在线 SHA 加密工具，支持 SHA 1、SHA 3、SHA 256、SHA 512 及 RIPEMD160 加密算法" />
+    <meta name="description" content="SHA 在线加密工具，提供了对 SHA1、SHA3、SHA 224、SHA 256、SHA 384、SHA 512 以及 RIPEMD160 等各种哈希算法的支持。输入一次，将获取所有加密结果。" />
+    <meta name="keywords" content="在线 SHA 加密工具，支持 SHA 1、SHA 3、SHA 256、SHA 512 及 RIPEMD160 加密算法" />
 
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="dns-prefetch" href="" />
-        <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
     <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet" />
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .tool-body .tool-form { max-width: 600px; }
+        /* ========================================================
+           SHA Encrypt Modern UI/UX Architecture
+           Dual-theme high-contrast ergonomics & responsive system
+           ======================================================== */
+        
+        .tool-page-body .card-body > .tool-head {
+            margin-bottom: 8px;
+            text-align: center;
+        }
 
-        .ckeckbox-char .el-form-item__content { line-height: unset; }
-        .ckeckbox-char .el-checkbox.el-checkbox--large { line-height: 30px; }
-        .ckeckbox-char .el-checkbox.el-checkbox--large { height: 30px; }
-        .ckeckbox-char .item { margin-right: 15px; text-align: start; }
-        [dir=rtl] .ckeckbox-char .item{margin:0 0 0 15px;}
+        .tool-page-body .card-body > .tool-head .title {
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
 
-        .tool-body .compute-result { max-width: 600px; margin: 15px auto 0 auto; text-align: start; background: #f5f5f5; }
-        .tool-body .compute-result .label { font-weight: 600; margin: 15px 0 5px 0; }
-        .tool-body .compute-result .label:first-child { margin-top: 0; }
-        .tool-body .compute-result .item { display: flex; align-items: center; margin-bottom: 10px; }
-        .tool-body .compute-result .item:last-child { margin-bottom: 0; }
-        .tool-body .compute-result .item .passworld { flex: 1; background: #fff; text-align: start; padding: 5px; border-radius: 4px; word-break: break-all; line-height: 20px; border: 1px solid #DCDFE6; }
-        .tool-body .compute-result .item a { margin-left: 10px; color: var(--el-color-primary); }
-        [dir=rtl] .tool-body .compute-result .item a { margin: 0 10px 0 0; }
+        .tool-page-body .card-body > .description {
+            max-width: 780px;
+            margin: 0 auto 24px;
+            line-height: 1.7;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        html.dark .tool-page-body .card-body > .tool-head .title {
+            color: #f8fafc;
+        }
+        html:not(.dark) .tool-page-body .card-body > .tool-head .title {
+            color: #0f172a;
+        }
+
+        html.dark .tool-page-body .card-body > .description {
+            color: #94a3b8;
+        }
+        html:not(.dark) .tool-page-body .card-body > .description {
+            color: #334155;
+        }
+
+        /* Container Constraint */
+        .sha-container {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        /* 1. Dashboard / Telemetry Bar */
+        .tool-dashboard {
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 22px;
+            transition: all 0.2s ease;
+        }
+
+        html.dark .tool-dashboard {
+            background: linear-gradient(135deg, #090e1f 0%, #0d1b31 100%);
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        html:not(.dark) .tool-dashboard {
+            background: linear-gradient(135deg, #f8fafc 0%, #f0f7ff 100%);
+            border: 1px solid #cbd5e1;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03), 0 8px 20px rgba(15, 23, 42, 0.04);
+        }
+
+        .dashboard-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dashboard-kicker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        html.dark .dashboard-kicker {
+            color: #38bdf8;
+        }
+        html:not(.dark) .dashboard-kicker {
+            color: #0369a1;
+        }
+
+        .dashboard-kicker__dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        html.dark .dashboard-kicker__dot {
+            background: #38bdf8;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+        }
+        html:not(.dark) .dashboard-kicker__dot {
+            background: #0284c7;
+            box-shadow: 0 0 6px rgba(2, 132, 199, 0.6);
+        }
+
+        .dashboard-title {
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        html.dark .dashboard-title {
+            color: #f1f5f9;
+        }
+        html:not(.dark) .dashboard-title {
+            color: #0f172a;
+        }
+
+        .algo-badge {
+            font-size: 11px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        html.dark .algo-badge {
+            background: #082f49;
+            color: #38bdf8;
+            border: 1px solid #0369a1;
+        }
+        html:not(.dark) .algo-badge {
+            background: #e0f2fe;
+            color: #075985;
+            border: 1px solid #bae6fd;
+        }
+
+        .dashboard-stats {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stat-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        html.dark .stat-chip {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            color: #94a3b8;
+        }
+        html:not(.dark) .stat-chip {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+
+        .stat-chip strong {
+            font-family: ui-monospace, Menlo, Consolas, monospace;
+            font-weight: 700;
+        }
+
+        html.dark .stat-chip strong {
+            color: #f8fafc;
+        }
+        html:not(.dark) .stat-chip strong {
+            color: #0f172a;
+        }
+
+        /* 2. Interactive Form Panel */
+        .sha-panel {
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 22px;
+            transition: all 0.2s ease;
+        }
+
+        html.dark .sha-panel {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+        html:not(.dark) .sha-panel {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        }
+
+        .panel-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .panel-header-title {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        html.dark .panel-header-title {
+            color: #f8fafc;
+        }
+        html:not(.dark) .panel-header-title {
+            color: #0f172a;
+        }
+
+        .quick-presets-group {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .preset-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            box-sizing: border-box;
+        }
+
+        html.dark .preset-pill {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+        }
+        html.dark .preset-pill:hover {
+            background: #0369a1;
+            color: #ffffff;
+            border-color: #38bdf8;
+        }
+
+        html:not(.dark) .preset-pill {
+            background: #f1f5f9;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+        }
+        html:not(.dark) .preset-pill:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+        }
+
+        /* Textarea customization */
+        .sha-tool-form {
+            width: 100%;
+            max-width: 100% !important;
+        }
+
+        .sha-tool-form .el-form-item {
+            margin-bottom: 16px;
+        }
+
+        .sha-tool-form .el-form-item__label {
+            display: none !important;
+        }
+
+        html:not(.dark) .el-form-item__error {
+            color: #dc2626 !important;
+            font-weight: 500;
+        }
+
+        html.dark .sha-tool-form .el-textarea__inner {
+            background-color: #090e1f !important;
+            border-color: #1e293b !important;
+            color: #f8fafc !important;
+            border-radius: 10px !important;
+            font-size: 14px !important;
+            line-height: 1.6 !important;
+            padding: 12px 14px !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+            font-family: "JetBrains Mono", Consolas, "SF Pro Text", monospace, sans-serif !important;
+        }
+
+        html.dark .sha-tool-form .el-textarea__inner:focus {
+            border-color: #38bdf8 !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(56, 189, 248, 0.25) !important;
+        }
+
+        html:not(.dark) .sha-tool-form .el-textarea__inner {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+            border-radius: 10px !important;
+            font-size: 14px !important;
+            line-height: 1.6 !important;
+            padding: 12px 14px !important;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+            font-family: "JetBrains Mono", Consolas, "SF Pro Text", monospace, sans-serif !important;
+        }
+
+        html:not(.dark) .sha-tool-form .el-textarea__inner:focus {
+            border-color: #0284c7 !important;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 2px rgba(2, 132, 199, 0.2) !important;
+        }
+
+        /* Algorithm Selector Section */
+        .algo-selector-panel {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+
+        html.dark .algo-selector-panel {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .algo-selector-panel {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+        }
+
+        .algo-filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .algo-filter-title {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        html.dark .algo-filter-title {
+            color: #f1f5f9;
+        }
+        html:not(.dark) .algo-filter-title {
+            color: #0f172a;
+        }
+
+        .algo-filter-btns {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .filter-pill-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 30px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            border: 1px solid transparent;
+        }
+
+        html.dark .filter-pill-btn {
+            background: #1e293b;
+            color: #cbd5e1;
+            border-color: #334155;
+        }
+        html.dark .filter-pill-btn:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #38bdf8;
+        }
+
+        html:not(.dark) .filter-pill-btn {
+            background: #ffffff;
+            color: #334155;
+            border-color: #cbd5e1;
+        }
+        html:not(.dark) .filter-pill-btn:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+        }
+
+        .filter-pill-clear {
+            font-weight: 500;
+        }
+        html.dark .filter-pill-clear:hover {
+            background: #450a0a;
+            color: #fca5a5;
+            border-color: #991b1b;
+        }
+        html:not(.dark) .filter-pill-clear:hover {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #f87171;
+        }
+
+        /* Checkbox grid */
+        .ckeckbox-char {
+            margin-bottom: 0 !important;
+        }
+
+        .ckeckbox-char .el-form-item__content {
+            line-height: normal !important;
+            display: grid !important;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 10px;
+            width: 100%;
+        }
+
+        .algo-card {
+            border-radius: 10px;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: stretch;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        html.dark .algo-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+        }
+        html.dark .algo-card:hover {
+            border-color: #38bdf8;
+            background: #0d1b31;
+        }
+        html.dark .algo-card.is-active {
+            border-color: #0284c7;
+            background: rgba(2, 132, 199, 0.15);
+            box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.2);
+        }
+
+        html:not(.dark) .algo-card {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+        }
+        html:not(.dark) .algo-card:hover {
+            border-color: #0284c7;
+            background: #f0f7ff;
+        }
+        html:not(.dark) .algo-card.is-active {
+            border-color: #0284c7;
+            background: #f0f9ff;
+            box-shadow: inset 0 0 0 1px rgba(2, 132, 199, 0.2);
+        }
+
+        .algo-card .el-checkbox {
+            width: 100%;
+            height: auto !important;
+            min-height: 58px;
+            padding: 10px 12px !important;
+            margin-right: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            white-space: normal !important;
+            box-sizing: border-box;
+        }
+
+        .algo-card .el-checkbox__input {
+            margin-top: 0 !important;
+            flex-shrink: 0;
+        }
+
+        .algo-card .el-checkbox__label {
+            flex: 1 !important;
+            padding-left: 10px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 3px !important;
+            white-space: normal !important;
+            text-align: left;
+        }
+
+        .algo-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .algo-name {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        html.dark .algo-name {
+            color: #f8fafc;
+        }
+        html:not(.dark) .algo-name {
+            color: #0f172a;
+        }
+
+        .algo-sec-pill {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .pill-rec {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        html:not(.dark) .pill-rec {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .pill-keccak {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        html:not(.dark) .pill-keccak {
+            background: #f3e8ff;
+            color: #6b21a8;
+            border: 1px solid #d8b4fe;
+        }
+
+        .pill-warn {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        html:not(.dark) .pill-warn {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .pill-std {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        html:not(.dark) .pill-std {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .algo-card-desc {
+            font-size: 11px;
+            font-family: ui-monospace, Menlo, Consolas, monospace;
+            line-height: 1.3;
+        }
+
+        html.dark .algo-card-desc {
+            color: #94a3b8;
+        }
+        html:not(.dark) .algo-card-desc {
+            color: #64748b;
+        }
+
+        /* Casing Options row */
+        .sha-options-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            transition: all 0.2s ease;
+        }
+
+        html.dark .sha-options-row {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .sha-options-row {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+        }
+
+        .option-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .option-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        html.dark .option-title {
+            color: #f8fafc;
+        }
+        html:not(.dark) .option-title {
+            color: #0f172a;
+        }
+
+        .option-desc {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        html.dark .option-desc {
+            color: #94a3b8;
+        }
+        html:not(.dark) .option-desc {
+            color: #334155;
+        }
+
+        /* Accessible Segmented Button Control */
+        .case-segment-control {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px;
+            border-radius: 8px;
+            gap: 2px;
+        }
+
+        html.dark .case-segment-control {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .case-segment-control {
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .case-segment-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+            user-select: none;
+            outline: none;
+        }
+
+        html.dark .case-segment-btn {
+            background: transparent;
+            color: #94a3b8;
+        }
+        html.dark .case-segment-btn:hover {
+            color: #f8fafc;
+        }
+        html.dark .case-segment-btn.is-active {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #38bdf8;
+            box-shadow: 0 2px 8px rgba(56, 189, 248, 0.35);
+        }
+
+        html:not(.dark) .case-segment-btn {
+            background: transparent;
+            color: #334155;
+        }
+        html:not(.dark) .case-segment-btn:hover {
+            color: #0f172a;
+        }
+        html:not(.dark) .case-segment-btn.is-active {
+            background: #0369a1;
+            color: #ffffff;
+            border-color: #0369a1;
+            box-shadow: 0 2px 6px rgba(3, 105, 161, 0.25);
+        }
+
+        /* Actions bar */
+        .sha-actions-bar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 9px 20px;
+            min-height: 40px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            line-height: 1.4;
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+
+        .action-btn-primary {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border-color: #0284c7;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+        }
+        .action-btn-primary:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+            transform: translateY(-1px);
+        }
+
+        html.dark .action-btn-primary {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border-color: #38bdf8;
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
+        }
+        html.dark .action-btn-primary:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+            border-color: #7dd3fc;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35);
+        }
+
+        .action-btn-secondary {
+            background: transparent;
+        }
+        html:not(.dark) .action-btn-secondary {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        html:not(.dark) .action-btn-secondary:hover {
+            background: #cbd5e1;
+            color: #0f172a;
+        }
+
+        html.dark .action-btn-secondary {
+            background: #1e293b;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+        html.dark .action-btn-secondary:hover {
+            background: #334155;
+            color: #ffffff;
+        }
+
+        .shortcut-hint {
+            font-size: 12px;
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        html.dark .shortcut-hint {
+            color: #94a3b8;
+        }
+        html:not(.dark) .shortcut-hint {
+            color: #334155;
+        }
+
+        .shortcut-hint kbd {
+            font-family: ui-monospace, Menlo, Monaco, Consolas, monospace;
+            font-size: 11px;
+            padding: 3px 6px;
+            border-radius: 5px;
+            font-weight: 700;
+        }
+
+        html.dark .shortcut-hint kbd {
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #334155;
+        }
+        html:not(.dark) .shortcut-hint kbd {
+            background: #e2e8f0;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* 3. Results Section Overhaul */
+        .compute-result.sha-results-layout {
+            max-width: 100% !important;
+            margin: 0 0 24px 0 !important;
+            background: transparent !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .sha-results-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sha-result-card {
+            border-radius: 14px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+
+        html.dark .sha-result-card {
+            background: linear-gradient(145deg, #090e1f 0%, #0d172a 100%);
+            border: 1px solid #1e293b;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+        html:not(.dark) .sha-result-card {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        }
+
+        .result-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .result-card-title-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .result-family-badge {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            padding: 3px 9px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        }
+
+        .badge-sha1 {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+        html:not(.dark) .badge-sha1 {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .badge-sha3 {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.35);
+        }
+        html:not(.dark) .badge-sha3 {
+            background: #f3e8ff;
+            color: #6b21a8;
+            border: 1px solid #d8b4fe;
+        }
+
+        .badge-sha224, .badge-sha384 {
+            background: rgba(14, 165, 233, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(14, 165, 233, 0.35);
+        }
+        html:not(.dark) .badge-sha224, html:not(.dark) .badge-sha384 {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .badge-sha256 {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+        html:not(.dark) .badge-sha256 {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .badge-sha512 {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.35);
+        }
+        html:not(.dark) .badge-sha512 {
+            background: #e0e7ff;
+            color: #3730a3;
+            border: 1px solid #c7d2fe;
+        }
+
+        .badge-ripemd {
+            background: rgba(20, 184, 166, 0.15);
+            color: #2dd4bf;
+            border: 1px solid rgba(20, 184, 166, 0.35);
+        }
+        html:not(.dark) .badge-ripemd {
+            background: #ccfbf1;
+            color: #115e59;
+            border: 1px solid #99f6e4;
+        }
+
+        .result-subtitle {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        html.dark .result-subtitle {
+            color: #f1f5f9;
+        }
+        html:not(.dark) .result-subtitle {
+            color: #0f172a;
+        }
+
+        .algo-status-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 5px;
+        }
+
+        .status-rec {
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+        html:not(.dark) .status-rec {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-std {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+        html:not(.dark) .status-std {
+            background: #f0f9ff;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+        }
+
+        .status-warn {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+        html:not(.dark) .status-warn {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        .result-spec-tag {
+            font-size: 11px;
+            font-family: ui-monospace, Menlo, Monaco, Consolas, monospace;
+            font-weight: 600;
+        }
+
+        html.dark .result-spec-tag {
+            color: #94a3b8;
+        }
+        html:not(.dark) .result-spec-tag {
+            color: #475569;
+        }
+
+        /* Hash display box */
+        .hash-output-box {
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+            transition: all 0.2s ease;
+        }
+
+        html.dark .hash-output-box {
+            background: #030712;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .hash-output-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+        }
+
+        .passworld.hash-string {
+            display: block;
+            font-family: "JetBrains Mono", Consolas, "SF Mono", Monaco, monospace;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.6;
+            letter-spacing: 0.03em;
+            user-select: all;
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        html.dark .passworld.hash-string {
+            color: #38bdf8;
+        }
+        html:not(.dark) .passworld.hash-string {
+            color: #0369a1;
+        }
+
+        /* Result card actions */
+        .result-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .result-copy-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 16px;
+            min-height: 38px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            border: 1px solid transparent;
+        }
+
+        html.dark .result-copy-btn {
+            background: #0f2744;
+            color: #38bdf8;
+            border-color: #0284c7;
+        }
+        html.dark .result-copy-btn:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #38bdf8;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
+
+        html:not(.dark) .result-copy-btn {
+            background: #e0f2fe;
+            color: #075985;
+            border-color: #0284c7;
+        }
+        html:not(.dark) .result-copy-btn:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+        }
+
+        .result-meta-hint {
+            font-size: 12px;
+        }
+
+        html.dark .result-meta-hint {
+            color: #94a3b8;
+        }
+        html:not(.dark) .result-meta-hint {
+            color: #475569;
+        }
+
+        /* 4. Empty State Card */
+        .sha-empty-state {
+            border-radius: 14px;
+            padding: 36px 20px;
+            text-align: center;
+            margin-bottom: 22px;
+            transition: all 0.2s ease;
+        }
+
+        html.dark .sha-empty-state {
+            background: #090e1f;
+            border: 1px dashed #1e293b;
+        }
+        html:not(.dark) .sha-empty-state {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .empty-state-icon {
+            margin: 0 auto 12px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        html.dark .empty-state-icon {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+        }
+        html:not(.dark) .empty-state-icon {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .empty-state-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        html.dark .empty-state-title {
+            color: #f8fafc;
+        }
+        html:not(.dark) .empty-state-title {
+            color: #0f172a;
+        }
+
+        .empty-state-desc {
+            font-size: 13px;
+            max-width: 520px;
+            margin: 0 auto 16px;
+            line-height: 1.6;
+        }
+
+        html.dark .empty-state-desc {
+            color: #94a3b8;
+        }
+        html:not(.dark) .empty-state-desc {
+            color: #334155;
+        }
+
+        /* 5. Educational Field Guide & Knowledge Section */
+        .sha-divider {
+            height: 1px;
+            margin: 32px 0 28px;
+            width: 100%;
+        }
+
+        html.dark .sha-divider {
+            background: linear-gradient(90deg, transparent, #1e293b, transparent);
+        }
+        html:not(.dark) .sha-divider {
+            background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
+        }
+
+        .guide-section {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .guide-section-head {
+            margin-bottom: 20px;
+        }
+
+        .guide-kicker {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        html.dark .guide-kicker {
+            color: #38bdf8;
+        }
+        html:not(.dark) .guide-kicker {
+            color: #0369a1;
+        }
+
+        .guide-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+        }
+
+        html.dark .guide-title {
+            color: #f1f5f9;
+        }
+        html:not(.dark) .guide-title {
+            color: #0f172a;
+        }
+
+        .guide-lead {
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        html.dark .guide-lead {
+            color: #94a3b8;
+        }
+        html:not(.dark) .guide-lead {
+            color: #334155;
+        }
+
+        .guide-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .guide-card {
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        html.dark .guide-card {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .guide-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+        }
+
+        .guide-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        html.dark .guide-card-title {
+            color: #f8fafc;
+        }
+        html:not(.dark) .guide-card-title {
+            color: #0f172a;
+        }
+
+        .guide-card-text {
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        html.dark .guide-card-text {
+            color: #94a3b8;
+        }
+        html:not(.dark) .guide-card-text {
+            color: #334155;
+        }
+
+        /* Algorithm Reference Table */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        html.dark .table-container {
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .table-container {
+            border: 1px solid #cbd5e1;
+        }
+
+        .ref-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+            min-width: 620px;
+        }
+
+        .ref-table th {
+            padding: 12px 16px;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.04em;
+        }
+
+        html.dark .ref-table th {
+            background: #0d1527;
+            color: #94a3b8;
+            border-bottom: 1px solid #1e293b;
+        }
+        html:not(.dark) .ref-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        .ref-table td {
+            padding: 12px 16px;
+            line-height: 1.5;
+        }
+
+        html.dark .ref-table td {
+            border-bottom: 1px solid #1e293b;
+            color: #e2e8f0;
+        }
+        html:not(.dark) .ref-table td {
+            border-bottom: 1px solid #cbd5e1;
+            color: #0f172a;
+        }
+
+        html.dark .ref-table tr:last-child td {
+            border-bottom: none;
+        }
+        html:not(.dark) .ref-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        html.dark .ref-table tr:hover td {
+            background: rgba(56, 189, 248, 0.05);
+        }
+        html:not(.dark) .ref-table tr:hover td {
+            background: #f1f5f9;
+        }
+
+        .table-mono {
+            font-family: ui-monospace, Menlo, Monaco, Consolas, monospace;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        html.dark .table-mono {
+            color: #38bdf8;
+        }
+        html:not(.dark) .table-mono {
+            color: #0369a1;
+        }
+
+        .sec-pill-ok {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        html.dark .sec-pill-ok {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        html:not(.dark) .sec-pill-ok {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .sec-pill-warn {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        html.dark .sec-pill-warn {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        html:not(.dark) .sec-pill-warn {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        /* SVG Icons */
+        .icon-svg {
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .ckeckbox-char .el-form-item__content {
+                grid-template-columns: 1fr;
+            }
+            .algo-filter-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .dashboard-stats {
+                width: 100%;
+            }
+            .stat-chip {
+                flex: 1;
+            }
+            .shortcut-hint {
+                display: none;
+            }
+        }
     </style>
 
     <meta property="og:type" content="website" />
@@ -58,130 +1471,591 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
-        
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">SHA加密</h1>
+                </div>
+                <div class="description">SHA 在线加密工具，提供了对 SHA1、SHA3、SHA 224、SHA 256、SHA 384、SHA 512 以及 RIPEMD160 等各种哈希算法的支持。输入一次，将获取所有加密结果。</div>
 
+                <div class="sha-container">
+                    <!-- 1. Dashboard / Telemetry Banner -->
+                    <div class="tool-dashboard">
+                        <div class="dashboard-meta">
+                            <div class="dashboard-kicker">
+                                <span class="dashboard-kicker__dot"></span>
+                                <span>SECURE HASH ALGORITHM SUITE</span>
+                            </div>
+                            <div class="dashboard-title">
+                                <span>SHA 密码学散列计算引擎</span>
+                                <span class="algo-badge">FIPS PUB 180-4 / FIPS 202</span>
+                            </div>
+                        </div>
 
-<div class="tool-body">
-    <div class="card-model">
-        <div class="card-body">
-            <div class="tool-head">
-                <h1 class="title">SHA加密</h1>
-            </div>
-            <div class="description">SHA 在线加密工具，提供了对 SHA1、SHA3、SHA 224、SHA 256、SHA 384、SHA 512 以及 RIPEMD160 等各种哈希算法的支持。输入一次，将获取所有加密结果。</div>
-            <el-form :model="formData" ref="computeForm" label-position="top" class="tool-form" v-on:submit.native.prevent>
-                <el-form-item label="要加密的文本" prop="text" :rules="{required: true, message: `请输入`, trigger: 'blur'}">
-                    <el-input v-model="formData.text" :rows="4" type="textarea" class="w100"></el-input>
-                </el-form-item>
-                <el-form-item class="ckeckbox-char">
-                    <div class="item"><el-checkbox v-model="formData.algorithmSHA1" label="SHA 1" /></div>
-                    <div class="item"><el-checkbox v-model="formData.algorithmSHA3" label="SHA 3" /></div>
-                    <div class="item"><el-checkbox v-model="formData.algorithmSHA224" label="SHA 224" /></div>
-                    <div class="item"><el-checkbox v-model="formData.algorithmSHA256" label="SHA 256" /></div>
-                    <div class="item"><el-checkbox v-model="formData.algorithmSHA384" label="SHA 384" /></div>
-                    <div class="item"><el-checkbox v-model="formData.algorithmSHA512" label="SHA 512" /></div>
-                    <div class="item"><el-checkbox v-model="formData.algorithmRIPEMD160" label="RIPEMD 160" /></div>
-                </el-form-item>
-                <el-form-item>
-                    <el-switch v-model="formData.uppercase" size="large" style="--el-switch-off-color: var(--el-color-primary);" inline-prompt active-text="加密后的字符串大写字母显示" inactive-text="加密后的字符串小写字母显示" />
-                </el-form-item>
-                <el-button type="primary" v-on:click="compute">加密</el-button>
-            </el-form>
-            <div v-cloak class="compute-result" v-if="computeResult!=null && (formData.algorithmSHA1 || formData.algorithmSHA3 || formData.algorithmSHA224 || formData.algorithmSHA256 || formData.algorithmSHA384 || formData.algorithmSHA512 || formData.algorithmRIPEMD160)">
-                <template v-if="formData.algorithmSHA1">
-                    <div class="label">SHA1</div>
-                    <div class="item">
-                        <div class="passworld">{{computeResult[0]}}</div>
-                        <a href="javascript:;" v-on:click="copy(0)">复制</a>
+                        <div class="dashboard-stats">
+                            <div class="stat-chip" title="待加密明文字符数">
+                                <span>明文字符数:</span>
+                                <strong>{{ formData.text ? formData.text.length : 0 }}</strong>
+                            </div>
+                            <div class="stat-chip" title="当前已启用的算法数量">
+                                <span>激活算法:</span>
+                                <strong>{{ ((formData.algorithmSHA1?1:0)+(formData.algorithmSHA3?1:0)+(formData.algorithmSHA224?1:0)+(formData.algorithmSHA256?1:0)+(formData.algorithmSHA384?1:0)+(formData.algorithmSHA512?1:0)+(formData.algorithmRIPEMD160?1:0)) }}/7</strong>
+                            </div>
+                            <div class="stat-chip" title="当前输出大小写模式">
+                                <span>字母格式:</span>
+                                <strong>{{ formData.uppercase ? 'HEX 大写' : 'hex 小写' }}</strong>
+                            </div>
+                        </div>
                     </div>
-                </template>
-                <template v-if="formData.algorithmSHA3">
-                    <div class="label">SHA3</div>
-                    <div class="item">
-                        <div class="passworld">{{computeResult[1]}}</div>
-                        <a href="javascript:;" v-on:click="copy(1)">复制</a>
+
+                    <!-- 2. Form Panel -->
+                    <div class="sha-panel">
+                        <div class="panel-header-row">
+                            <span class="panel-header-title">
+                                <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                                <span>待加密文本内容 (Plaintext)</span>
+                            </span>
+
+                            <div class="quick-presets-group">
+                                <button type="button" class="preset-pill" v-on:click="formData.text = '123456'; compute()" title="填充并计算 123456">示例: 123456</button>
+                                <button type="button" class="preset-pill" v-on:click="formData.text = 'Hello World'; compute()" title="填充并计算 Hello World">示例: Hello World</button>
+                                <button type="button" class="preset-pill" v-on:click="formData.text = 'The quick brown fox jumps over the lazy dog'; compute()" title="标准密码学基准测试短语">标准基准测试向量</button>
+                            </div>
+                        </div>
+
+                        <el-form :model="formData" ref="computeForm" label-position="top" class="tool-form sha-tool-form" v-on:submit.native.prevent>
+                            <el-form-item label="要加密的文本" prop="text" :rules="{required: true, message: `请输入要加密的文本`, trigger: 'blur'}">
+                                <el-input 
+                                    v-model="formData.text" 
+                                    :rows="4" 
+                                    type="textarea" 
+                                    class="w100" 
+                                    placeholder="在此输入需要计算哈希摘要的文本内容，如密码、鉴权字符串、令牌或任意格式数据..."
+                                    spellcheck="false"
+                                    v-on:keydown.ctrl.enter="compute"
+                                ></el-input>
+                            </el-form-item>
+
+                            <!-- Algorithm Selector Card -->
+                            <div class="algo-selector-panel">
+                                <div class="algo-filter-bar">
+                                    <span class="algo-filter-title">
+                                        目标哈希算法选择 (已勾选 {{ ((formData.algorithmSHA1?1:0)+(formData.algorithmSHA3?1:0)+(formData.algorithmSHA224?1:0)+(formData.algorithmSHA256?1:0)+(formData.algorithmSHA384?1:0)+(formData.algorithmSHA512?1:0)+(formData.algorithmRIPEMD160?1:0)) }} 项)
+                                    </span>
+                                    <div class="algo-filter-btns">
+                                        <button type="button" class="filter-pill-btn" v-on:click="formData.algorithmSHA1 = formData.algorithmSHA3 = formData.algorithmSHA224 = formData.algorithmSHA256 = formData.algorithmSHA384 = formData.algorithmSHA512 = formData.algorithmRIPEMD160 = true">全选</button>
+                                        <button type="button" class="filter-pill-btn" v-on:click="formData.algorithmSHA1 = formData.algorithmSHA3 = formData.algorithmSHA224 = formData.algorithmSHA384 = formData.algorithmRIPEMD160 = false; formData.algorithmSHA256 = formData.algorithmSHA512 = true">常用 (256/512)</button>
+                                        <button type="button" class="filter-pill-btn" v-on:click="formData.algorithmSHA1 = formData.algorithmSHA3 = formData.algorithmRIPEMD160 = false; formData.algorithmSHA224 = formData.algorithmSHA256 = formData.algorithmSHA384 = formData.algorithmSHA512 = true">仅 SHA-2 家族</button>
+                                        <button type="button" class="filter-pill-btn" v-on:click="formData.algorithmSHA1 = formData.algorithmSHA224 = formData.algorithmSHA256 = formData.algorithmSHA384 = formData.algorithmSHA512 = formData.algorithmRIPEMD160 = false; formData.algorithmSHA3 = true">仅 SHA-3</button>
+                                        <button type="button" class="filter-pill-btn filter-pill-clear" v-on:click="formData.algorithmSHA1 = formData.algorithmSHA3 = formData.algorithmSHA224 = formData.algorithmSHA256 = formData.algorithmSHA384 = formData.algorithmSHA512 = formData.algorithmRIPEMD160 = false">清空</button>
+                                    </div>
+                                </div>
+
+                                <el-form-item class="ckeckbox-char">
+                                    <div class="algo-card item" :class="{'is-active': formData.algorithmSHA1}">
+                                        <el-checkbox v-model="formData.algorithmSHA1">
+                                            <div class="algo-card-top">
+                                                <span class="algo-name">SHA-1</span>
+                                                <span class="algo-sec-pill pill-warn">兼容/已弃用</span>
+                                            </div>
+                                            <div class="algo-card-desc">160 位散列 · 40 字符 (RFC 3174)</div>
+                                        </el-checkbox>
+                                    </div>
+
+                                    <div class="algo-card item" :class="{'is-active': formData.algorithmSHA256}">
+                                        <el-checkbox v-model="formData.algorithmSHA256">
+                                            <div class="algo-card-top">
+                                                <span class="algo-name">SHA-256</span>
+                                                <span class="algo-sec-pill pill-rec">行业标准 / 推荐</span>
+                                            </div>
+                                            <div class="algo-card-desc">256 位散列 · 64 字符 (FIPS 180-4)</div>
+                                        </el-checkbox>
+                                    </div>
+
+                                    <div class="algo-card item" :class="{'is-active': formData.algorithmSHA512}">
+                                        <el-checkbox v-model="formData.algorithmSHA512">
+                                            <div class="algo-card-top">
+                                                <span class="algo-name">SHA-512</span>
+                                                <span class="algo-sec-pill pill-rec">超高强度 / 64位</span>
+                                            </div>
+                                            <div class="algo-card-desc">512 位散列 · 128 字符 (FIPS 180-4)</div>
+                                        </el-checkbox>
+                                    </div>
+
+                                    <div class="algo-card item" :class="{'is-active': formData.algorithmSHA3}">
+                                        <el-checkbox v-model="formData.algorithmSHA3">
+                                            <div class="algo-card-top">
+                                                <span class="algo-name">SHA-3</span>
+                                                <span class="algo-sec-pill pill-keccak">全新 Keccak 架构</span>
+                                            </div>
+                                            <div class="algo-card-desc">512 位散列 · 128 字符 (FIPS 202)</div>
+                                        </el-checkbox>
+                                    </div>
+
+                                    <div class="algo-card item" :class="{'is-active': formData.algorithmSHA224}">
+                                        <el-checkbox v-model="formData.algorithmSHA224">
+                                            <div class="algo-card-top">
+                                                <span class="algo-name">SHA-224</span>
+                                                <span class="algo-sec-pill pill-std">SHA-2 截断版</span>
+                                            </div>
+                                            <div class="algo-card-desc">224 位散列 · 56 字符 (RFC 3874)</div>
+                                        </el-checkbox>
+                                    </div>
+
+                                    <div class="algo-card item" :class="{'is-active': formData.algorithmSHA384}">
+                                        <el-checkbox v-model="formData.algorithmSHA384">
+                                            <div class="algo-card-top">
+                                                <span class="algo-name">SHA-384</span>
+                                                <span class="algo-sec-pill pill-std">高安全 / NSA B级</span>
+                                            </div>
+                                            <div class="algo-card-desc">384 位散列 · 96 字符 (FIPS 180-4)</div>
+                                        </el-checkbox>
+                                    </div>
+
+                                    <div class="algo-card item" :class="{'is-active': formData.algorithmRIPEMD160}">
+                                        <el-checkbox v-model="formData.algorithmRIPEMD160">
+                                            <div class="algo-card-top">
+                                                <span class="algo-name">RIPEMD-160</span>
+                                                <span class="algo-sec-pill pill-std">欧洲标准 / 区块链</span>
+                                            </div>
+                                            <div class="algo-card-desc">160 位散列 · 40 字符 (ISO 10118-3)</div>
+                                        </el-checkbox>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="sha-options-row">
+                                <div class="option-meta">
+                                    <span class="option-title">散列字母大小写输出</span>
+                                    <span class="option-desc">动态控制所有哈希摘要字符的大写 (A-F) 或小写 (a-f) 展现格式</span>
+                                </div>
+                                <div class="option-control">
+                                    <div class="case-segment-control" role="radiogroup" aria-label="散列字母大小写">
+                                        <button type="button" 
+                                                class="case-segment-btn" 
+                                                :class="{ 'is-active': !formData.uppercase }" 
+                                                v-on:click="formData.uppercase = false">
+                                            小写字母 (hex)
+                                        </button>
+                                        <button type="button" 
+                                                class="case-segment-btn" 
+                                                :class="{ 'is-active': formData.uppercase }" 
+                                                v-on:click="formData.uppercase = true">
+                                            大写字母 (HEX)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sha-actions-bar">
+                                <button type="button" class="action-btn action-btn-primary" v-on:click="compute">
+                                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                    <span>立即计算 SHA 散列</span>
+                                </button>
+
+                                <button type="button" class="action-btn action-btn-secondary" v-on:click="formData.text = ''; computeResult = null">
+                                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                    <span>清空输入</span>
+                                </button>
+
+                                <div class="shortcut-hint">
+                                    <span>快捷生成:</span>
+                                    <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                                </div>
+                            </div>
+                        </el-form>
                     </div>
-                </template>
-                <template v-if="formData.algorithmSHA224">
-                    <div class="label">SHA224</div>
-                    <div class="item">
-                        <div class="passworld">{{computeResult[2]}}</div>
-                        <a href="javascript:;" v-on:click="copy(2)">复制</a>
+
+                    <!-- 3. Results Section -->
+                    <div v-cloak class="compute-result sha-results-layout" v-if="computeResult!=null && (formData.algorithmSHA1 || formData.algorithmSHA3 || formData.algorithmSHA224 || formData.algorithmSHA256 || formData.algorithmSHA384 || formData.algorithmSHA512 || formData.algorithmRIPEMD160)">
+                        <div class="sha-results-grid">
+                            <!-- SHA-256 Card (Prominently first when active) -->
+                            <div class="sha-result-card" v-if="formData.algorithmSHA256">
+                                <div class="result-card-header">
+                                    <div class="result-card-title-group">
+                                        <span class="result-family-badge badge-sha256">SHA-256</span>
+                                        <span class="result-subtitle">安全散列算法 256 位</span>
+                                        <span class="algo-status-badge status-rec">工业推荐标准</span>
+                                    </div>
+                                    <span class="result-spec-tag">256-BIT · 64 HEX CHARS</span>
+                                </div>
+
+                                <div class="hash-output-box">
+                                    <div class="passworld hash-string">{{computeResult[3]}}</div>
+                                </div>
+
+                                <div class="result-actions">
+                                    <button type="button" class="result-copy-btn" v-on:click="copy(3)">
+                                        <svg class="icon-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        <span>复制 SHA-256</span>
+                                    </button>
+                                    <span class="result-meta-hint">FIPS 180-4 · TLS/SSL 证书、比特币挖矿与电子签名黄金标准</span>
+                                </div>
+                            </div>
+
+                            <!-- SHA-512 Card -->
+                            <div class="sha-result-card" v-if="formData.algorithmSHA512">
+                                <div class="result-card-header">
+                                    <div class="result-card-title-group">
+                                        <span class="result-family-badge badge-sha512">SHA-512</span>
+                                        <span class="result-subtitle">安全散列算法 512 位</span>
+                                        <span class="algo-status-badge status-rec">超高安全强度</span>
+                                    </div>
+                                    <span class="result-spec-tag">512-BIT · 128 HEX CHARS</span>
+                                </div>
+
+                                <div class="hash-output-box">
+                                    <div class="passworld hash-string">{{computeResult[5]}}</div>
+                                </div>
+
+                                <div class="result-actions">
+                                    <button type="button" class="result-copy-btn" v-on:click="copy(5)">
+                                        <svg class="icon-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        <span>复制 SHA-512</span>
+                                    </button>
+                                    <span class="result-meta-hint">FIPS 180-4 · 64 位原生 CPU 计算优化，极高抗碰撞性</span>
+                                </div>
+                            </div>
+
+                            <!-- SHA-3 Card -->
+                            <div class="sha-result-card" v-if="formData.algorithmSHA3">
+                                <div class="result-card-header">
+                                    <div class="result-card-title-group">
+                                        <span class="result-family-badge badge-sha3">SHA-3</span>
+                                        <span class="result-subtitle">Keccak 海绵结构算法 512 位</span>
+                                        <span class="algo-status-badge status-std">新一代架构</span>
+                                    </div>
+                                    <span class="result-spec-tag">512-BIT · 128 HEX CHARS</span>
+                                </div>
+
+                                <div class="hash-output-box">
+                                    <div class="passworld hash-string">{{computeResult[1]}}</div>
+                                </div>
+
+                                <div class="result-actions">
+                                    <button type="button" class="result-copy-btn" v-on:click="copy(1)">
+                                        <svg class="icon-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        <span>复制 SHA-3</span>
+                                    </button>
+                                    <span class="result-meta-hint">FIPS 202 · 全新置换海绵结构，天生免疫长度扩展攻击</span>
+                                </div>
+                            </div>
+
+                            <!-- SHA-384 Card -->
+                            <div class="sha-result-card" v-if="formData.algorithmSHA384">
+                                <div class="result-card-header">
+                                    <div class="result-card-title-group">
+                                        <span class="result-family-badge badge-sha384">SHA-384</span>
+                                        <span class="result-subtitle">安全散列算法 384 位</span>
+                                        <span class="algo-status-badge status-std">军工级强度</span>
+                                    </div>
+                                    <span class="result-spec-tag">384-BIT · 96 HEX CHARS</span>
+                                </div>
+
+                                <div class="hash-output-box">
+                                    <div class="passworld hash-string">{{computeResult[4]}}</div>
+                                </div>
+
+                                <div class="result-actions">
+                                    <button type="button" class="result-copy-btn" v-on:click="copy(4)">
+                                        <svg class="icon-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        <span>复制 SHA-384</span>
+                                    </button>
+                                    <span class="result-meta-hint">FIPS 180-4 · NSA Suite B 密码学套件指定算法</span>
+                                </div>
+                            </div>
+
+                            <!-- SHA-224 Card -->
+                            <div class="sha-result-card" v-if="formData.algorithmSHA224">
+                                <div class="result-card-header">
+                                    <div class="result-card-title-group">
+                                        <span class="result-family-badge badge-sha224">SHA-224</span>
+                                        <span class="result-subtitle">安全散列算法 224 位</span>
+                                        <span class="algo-status-badge status-std">SHA-2 截断版</span>
+                                    </div>
+                                    <span class="result-spec-tag">224-BIT · 56 HEX CHARS</span>
+                                </div>
+
+                                <div class="hash-output-box">
+                                    <div class="passworld hash-string">{{computeResult[2]}}</div>
+                                </div>
+
+                                <div class="result-actions">
+                                    <button type="button" class="result-copy-btn" v-on:click="copy(2)">
+                                        <svg class="icon-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        <span>复制 SHA-224</span>
+                                    </button>
+                                    <span class="result-meta-hint">RFC 3874 · 匹配 2-Key 3DES 密码学强度的两级哈希</span>
+                                </div>
+                            </div>
+
+                            <!-- SHA-1 Card -->
+                            <div class="sha-result-card" v-if="formData.algorithmSHA1">
+                                <div class="result-card-header">
+                                    <div class="result-card-title-group">
+                                        <span class="result-family-badge badge-sha1">SHA-1</span>
+                                        <span class="result-subtitle">安全散列算法 160 位</span>
+                                        <span class="algo-status-badge status-warn">已淘汰 / 历史兼容</span>
+                                    </div>
+                                    <span class="result-spec-tag">160-BIT · 40 HEX CHARS</span>
+                                </div>
+
+                                <div class="hash-output-box">
+                                    <div class="passworld hash-string">{{computeResult[0]}}</div>
+                                </div>
+
+                                <div class="result-actions">
+                                    <button type="button" class="result-copy-btn" v-on:click="copy(0)">
+                                        <svg class="icon-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        <span>复制 SHA-1</span>
+                                    </button>
+                                    <span class="result-meta-hint">RFC 3174 · 存在理论及实践碰撞漏洞 (SHAttered)，切勿用于新系统签名</span>
+                                </div>
+                            </div>
+
+                            <!-- RIPEMD-160 Card -->
+                            <div class="sha-result-card" v-if="formData.algorithmRIPEMD160">
+                                <div class="result-card-header">
+                                    <div class="result-card-title-group">
+                                        <span class="result-family-badge badge-ripemd">RIPEMD-160</span>
+                                        <span class="result-subtitle">欧洲哈希算法 160 位</span>
+                                        <span class="algo-status-badge status-std">区块链/比特币标准</span>
+                                    </div>
+                                    <span class="result-spec-tag">160-BIT · 40 HEX CHARS</span>
+                                </div>
+
+                                <div class="hash-output-box">
+                                    <div class="passworld hash-string">{{computeResult[6]}}</div>
+                                </div>
+
+                                <div class="result-actions">
+                                    <button type="button" class="result-copy-btn" v-on:click="copy(6)">
+                                        <svg class="icon-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        <span>复制 RIPEMD-160</span>
+                                    </button>
+                                    <span class="result-meta-hint">ISO/IEC 10118-3 · 比特币地址生成核心哈希函数</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </template>
-                <template v-if="formData.algorithmSHA256">
-                    <div class="label">SHA256</div>
-                    <div class="item">
-                        <div class="passworld">{{computeResult[3]}}</div>
-                        <a href="javascript:;" v-on:click="copy(3)">复制</a>
+
+                    <!-- 4. Empty State Placeholder -->
+                    <div v-cloak class="sha-empty-state" v-if="computeResult==null">
+                        <div class="empty-state-icon">
+                            <svg class="icon-svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <div class="empty-state-title">等待输入与计算</div>
+                        <p class="empty-state-desc">在上方输入文本内容，勾选需要计算的目标哈希算法，点击「立即计算 SHA 散列」即刻批量生成高精度加密摘要。</p>
+                        <div class="quick-presets-group" style="justify-content: center;">
+                            <button type="button" class="preset-pill" v-on:click="formData.text = '123456'; compute()">快速体验: 123456</button>
+                            <button type="button" class="preset-pill" v-on:click="formData.text = 'Hello World'; compute()">快速体验: Hello World</button>
+                            <button type="button" class="preset-pill" v-on:click="formData.text = 'admin'; compute()">快速体验: admin</button>
+                        </div>
                     </div>
-                </template>
-                <template v-if="formData.algorithmSHA384">
-                    <div class="label">SHA384</div>
-                    <div class="item">
-                        <div class="passworld">{{computeResult[4]}}</div>
-                        <a href="javascript:;" v-on:click="copy(4)">复制</a>
-                    </div>
-                </template>
-                <template v-if="formData.algorithmSHA512">
-                    <div class="label">SHA512</div>
-                    <div class="item">
-                        <div class="passworld">{{computeResult[5]}}</div>
-                        <a href="javascript:;" v-on:click="copy(5)">复制</a>
-                    </div>
-                </template>
-                <template v-if="formData.algorithmRIPEMD160">
-                    <div class="label">RIPEMD160</div>
-                    <div class="item">
-                        <div class="passworld">{{computeResult[6]}}</div>
-                        <a href="javascript:;" v-on:click="copy(6)">复制</a>
-                    </div>
-                </template>
-            </div>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>说明</h3><p>Secure Hash Algorithm，安全哈希算法主要适用于数字签名标准里面定义的数字签名算法。</p><p>SHA1 生成的结果为：40位</p><p>SHA3 生成的结果为：128位</p><p>SHA224 生成的结果为：56位</p><p>SHA256 生成的结果为：64位</p><p>SHA384 生成的结果为：96位</p><p>SHA512 生成的结果为：128位</p><p> REPEMD 160 生成的结果为：40位</p>
+
+                    <!-- 5. Educational Guide & Technical Reference -->
+                    <div class="divider sha-divider"></div>
+
+                    <section class="content guide-section" aria-labelledby="sha-guide-title">
+                        <div class="guide-section-head">
+                            <span class="guide-kicker">CRYPTOGRAPHIC REFERENCE & AUDITING GUIDE</span>
+                            <h3 id="sha-guide-title" class="guide-title">SHA 安全散列算法家族技术参考全书</h3>
+                            <p class="guide-lead">安全散列算法（Secure Hash Algorithm，缩写为 SHA）是由美国国家安全局（NSA）设计、美国国家标准与技术研究院（NIST）发布的一系列密码散列函数标准。它们能够将任意长度的输入数据映射为固定长度的雪崩式伪随机输出值（Message Digest）。SHA 算法家族广泛应用于数字签名标准（DSS/ECDSA）、TLS/SSL 通信会话建立、区块链工作量证明与完整性验证校验和。</p>
+                        </div>
+
+                        <div class="guide-cards-grid">
+                            <div class="guide-card">
+                                <div class="guide-card-title">
+                                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                                    <span>SHA-1 历史与淘汰说明</span>
+                                </div>
+                                <p class="guide-card-text">SHA-1 输出 160 位摘要（40 字符），于 1995 年发布。2017 年 Google 与荷兰 CWI 团队联合发布了针对 SHA-1 的实践碰撞攻击（SHAttered 项目）。各大现代浏览器与 CA 机构已全面弃用 SHA-1 证书，仅在 Git 历史版本识别与陈旧系统兼容时使用。</p>
+                            </div>
+
+                            <div class="guide-card">
+                                <div class="guide-card-title">
+                                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                    <span>SHA-2 黄金标杆体系</span>
+                                </div>
+                                <p class="guide-card-text">SHA-2 包含 SHA-224、SHA-256、SHA-384 及 SHA-512 四种核心变体，采用经过深度强化的 Merkle-Damgård 迭代压缩架构。截至目前全球密码学界尚未发现其实际抗碰撞性缺陷。其中 SHA-256 为行业黄金标准，SHA-512 在 64 位机器上运行速度甚至超越 SHA-256。</p>
+                            </div>
+
+                            <div class="guide-card">
+                                <div class="guide-card-title">
+                                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <span>SHA-3 (Keccak) 海绵架构革新</span>
+                                </div>
+                                <p class="guide-card-text">NIST 于 2015 年正式标准化的 SHA-3 并不基于 SHA-2 的压缩函数，而是基于革命性的海绵置换结构（Sponge Construction）。这使得 SHA-3 在结构上免疫困扰传统哈希函数的「长度扩展攻击（Length Extension Attack）」，具备长远前瞻抗量子安全裕度。</p>
+                            </div>
+
+                            <div class="guide-card">
+                                <div class="guide-card-title">
+                                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                                    <span>RIPEMD-160 在区块链的应用</span>
+                                </div>
+                                <p class="guide-card-text">RIPEMD-160 是欧洲 RIPE 项目开发的 160 位密码散列算法。中本聪在设计比特币协议时，结合使用了 SHA-256 与 RIPEMD-160（先对公钥做一次 SHA-256，再对结果做一次 RIPEMD-160），生成更为紧凑且双重防撞的 160 位比特币钱包公钥哈希。</p>
+                            </div>
+                        </div>
+
+                        <div class="panel-header-title" style="margin-top: 24px;">
+                            <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            <span>主流密码散列算法技术指标横向对比</span>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="ref-table">
+                                <thead>
+                                    <tr>
+                                        <th>算法名称</th>
+                                        <th>所属家族</th>
+                                        <th>输出位宽</th>
+                                        <th>十六进制长度</th>
+                                        <th>内部块大小</th>
+                                        <th>安全性评级</th>
+                                        <th>典型场景</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>SHA-1</strong></td>
+                                        <td>SHA-1</td>
+                                        <td>160 bits</td>
+                                        <td class="table-mono">40 字符</td>
+                                        <td>512 bits</td>
+                                        <td><span class="sec-pill-warn">存在碰撞 / 禁用新系统</span></td>
+                                        <td>Git Commit ID, 历史系统兼容</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SHA-224</strong></td>
+                                        <td>SHA-2</td>
+                                        <td>224 bits</td>
+                                        <td class="table-mono">56 字符</td>
+                                        <td>512 bits</td>
+                                        <td><span class="sec-pill-ok">安全</span></td>
+                                        <td>与 2-key 3DES 强度对齐</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SHA-256</strong></td>
+                                        <td>SHA-2</td>
+                                        <td>256 bits</td>
+                                        <td class="table-mono">64 字符</td>
+                                        <td>512 bits</td>
+                                        <td><span class="sec-pill-ok">黄金标准 / 极力推荐</span></td>
+                                        <td>TLS 证书, 区块链挖矿, HMAC</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SHA-384</strong></td>
+                                        <td>SHA-2</td>
+                                        <td>384 bits</td>
+                                        <td class="table-mono">96 字符</td>
+                                        <td>1024 bits</td>
+                                        <td><span class="sec-pill-ok">军工级安全</span></td>
+                                        <td>NSA Suite B, 高级电子政务</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SHA-512</strong></td>
+                                        <td>SHA-2</td>
+                                        <td>512 bits</td>
+                                        <td class="table-mono">128 字符</td>
+                                        <td>1024 bits</td>
+                                        <td><span class="sec-pill-ok">顶级安全强度</span></td>
+                                        <td>64位服务器, 密码凭证加盐哈希</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SHA-3</strong></td>
+                                        <td>Keccak</td>
+                                        <td>512 bits</td>
+                                        <td class="table-mono">128 字符</td>
+                                        <td>576 bits</td>
+                                        <td><span class="sec-pill-ok">新一代海绵置换</span></td>
+                                        <td>免疫长度扩展攻击, 现代密码学</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>RIPEMD-160</strong></td>
+                                        <td>RIPEMD</td>
+                                        <td>160 bits</td>
+                                        <td class="table-mono">40 字符</td>
+                                        <td>512 bits</td>
+                                        <td><span class="sec-pill-ok">稳固实用</span></td>
+                                        <td>比特币地址 Base58Check 编码</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<comment :relate-id="71" :comment-class="2"></comment>
+    <comment :relate-id="71" :comment-class="2"></comment>
+</main>
 
+<script>
+    var languageCode = 'zh';
+    var websiteRoot = "";
+    var mainWebSiteHost = "";
+    var webApiSiteHost = "/api";
+    var staticSiteHost = "";
+    var staticFileVersion="260728100716";
+    var toolData = [{"key":"brain","desc":"脑力训练","children":[{"key":"记忆力","desc":"记忆力","toolList":[{"toolName":"数字顺序记忆训练","toolCode":"number-sequence-memory","icon":"./img/brain/game-logo/szsxjy.png"},{"toolName":"顺序记忆训练","toolCode":"sequence-memory","icon":"./img/brain/game-logo/sxjy.png"},{"toolName":"N-Back 记忆力训练游戏","toolCode":"n-back","icon":"./img/brain/game-logo/nback.png"},{"toolName":"色块印记","toolCode":"color-block-imprint","icon":"./img/brain/game-logo/skyj.png"}]},{"key":"注意力","desc":"注意力","toolList":[{"toolName":"舒尔特方格训练","toolCode":"shult-grid","icon":"./img/brain/game-logo/setfg.png"},{"toolName":"找不同的字","toolCode":"find-different-word","icon":"./img/brain/game-logo/zbtdz.png"},{"toolName":"斯特鲁普效应","toolCode":"stroop-effect","icon":"./img/brain/game-logo/stlpxy.png"},{"toolName":"坐标迷航","toolCode":"coordinate-drift","icon":"./img/brain/game-logo/zbmh.png"},{"toolName":"视觉追踪训练","toolCode":"visual-tracking-training","icon":"./img/brain/game-logo/sjzzxl.png"}]},{"key":"推演","desc":"推演","toolList":[{"toolName":"复古推箱子 50 关益智挑战","toolCode":"sokoban","icon":"./img/icons/sokoban.svg"},{"toolName":"经典扫雷游戏","toolCode":"minesweeper","icon":"./img/icons/minesweeper.svg"},{"toolName":"在线数独游戏","toolCode":"sudoku","icon":"./img/icons/sudoku.svg"},{"toolName":"熄灯解谜游戏","toolCode":"lights-out","icon":"./img/icons/lights-out.svg"},{"toolName":"数字华容道","toolCode":"digital-huarong-road","icon":"./img/brain/game-logo/szhrd.png"},{"toolName":"上下瓶色匹配","toolCode":"bottle-color-matching","icon":"./img/brain/game-logo/sxpspp.png"},{"toolName":"2048","toolCode":"2048","icon":"./img/brain/game-logo/elsb.png"}]},{"key":"反应","desc":"反应","toolList":[{"toolName":"反应速度测试","toolCode":"react-speed-test","icon":"./img/brain/game-logo/fysdcs.png"},{"toolName":"点击速度测试","toolCode":"click-speed-test","icon":"./img/brain/game-logo/sscs.png"},{"toolName":"右键点击速度测试","toolCode":"right-click-test","icon":"./img/brain/game-logo/yjdjsdcs.png"},{"toolName":"空格键计数器","toolCode":"spacebar-counter","icon":"./img/brain/game-logo/kgjjsq.png"},{"toolName":"动态视力测试","toolCode":"dynamic-visual-acuity-test","icon":"./img/brain/game-logo/dtslcs.png"}]},{"key":"感知","desc":"感知","toolList":[{"toolName":"静态色差感知","toolCode":"jing-tai-se-cha","icon":"./img/brain/game-logo/jtsc.png"},{"toolName":"动态色差感知","toolCode":"dong-tai-se-cha","icon":"./img/brain/game-logo/dtsc.png"},{"toolName":"时间感知训练","toolCode":"time-perception-training","icon":"./img/brain/game-logo/sjgzxl.png"}]},{"key":"空间","desc":"空间","toolList":[{"toolName":"对称方块","toolCode":"symmetry-blocks","icon":"./img/brain/game-logo/dcfk.png"}]}]},{"key":"office","desc":"办公助手","toolList":[{"toolName":"文本去重与多维排序器","toolCode":"text-dedup-sort","icon":"./img/icons/text-dedup-sort.svg"},{"toolName":"中英文排版规范美化器","toolCode":"text-autospace","icon":"./img/icons/text-autospace.svg"},{"toolName":"在线表格转换器","toolCode":"table-converter","icon":"./img/icons/table-converter.svg"},{"toolName":"人民币大写金额转换器","toolCode":"rmb-capital-converter","icon":"./img/icons/rmb-capital-converter.svg"},{"toolName":"综合字数与阅读时长统计","toolCode":"word-counter","icon":"./img/icons/word-counter.svg"},{"toolName":"现代简历制作与排版器","toolCode":"resume-maker","icon":"./img/icons/resume-maker.svg"},{"toolName":"简历模板中心","toolCode":"resume-template","icon":"./img/icons/resume-template.svg"},{"toolName":"A4纸张尺寸，各种纸张尺寸查询","toolCode":"paper-size","icon":"./img/icons/paper-size.svg"},{"toolName":"转换大小写","toolCode":"convert-case","icon":"./img/icons/convert-case.svg"},{"toolName":"标题大小写转换器","toolCode":"title-case-converter","icon":"./img/icons/title-case-converter.svg"},{"toolName":"句子大小写转换器","toolCode":"sentence-case-converter","icon":"./img/icons/sentence-case-converter.svg"},{"toolName":"粗体文本生成器","toolCode":"bold-text-generator","icon":"./img/icons/bold-text-generator.svg"},{"toolName":"斜体文本生成器","toolCode":"italic-text-generator","icon":"./img/icons/italic-text-generator.svg"},{"toolName":"删除线文本生成器","toolCode":"strikethrough-text-generator","icon":"./img/icons/strikethrough-text-generator.svg"},{"toolName":"下划线文本生成器","toolCode":"underline-text","icon":"./img/icons/underline-text.svg"},{"toolName":"颠倒文本生成器","toolCode":"upside-down-text-generator","icon":"./img/icons/upside-down-text-generator.svg"},{"toolName":"镜像文本生成器","toolCode":"mirror-text-generator","icon":"./img/icons/mirror-text-generator.svg"},{"toolName":"反向文本生成器","toolCode":"reverse-text-generator","icon":"./img/icons/reverse-text-generator.svg"},{"toolName":"文本替换工具","toolCode":"replace-text","icon":"./img/icons/replace-text.svg"},{"toolName":"符号大全","toolCode":"symbols","icon":"./img/icons/symbols.svg"},{"toolName":"emoji表情大全","toolCode":"emoji","icon":"./img/icons/emoji.svg"},{"toolName":"颜文字表情大全","toolCode":"emoticon","icon":"./img/icons/emoticon.svg"}]},{"key":"image","desc":"图像","toolList":[{"toolName":"图片调色板提取器","toolCode":"color-palette-extractor","icon":"./img/icons/color-palette-extractor.svg"},{"toolName":"多图无损拼接与长图生成器","toolCode":"image-stitcher","icon":"./img/icons/image-stitcher.svg"},{"toolName":"图片马赛克与局部隐私遮挡","toolCode":"image-mosaic-blur","icon":"./img/icons/image-mosaic-blur.svg"},{"toolName":"图像格式转换器","toolCode":"convert-image","icon":"./img/icons/convert-image.svg"},{"toolName":"压缩图像","toolCode":"compress-image","icon":"./img/icons/compress-image.svg"},{"toolName":"调整图像大小","toolCode":"resize-image","icon":"./img/icons/resize-image.svg"},{"toolName":"调整图像宽高比例","toolCode":"adjust-image-aspect-ratio","icon":"./img/icons/adjust-image-aspect-ratio.svg"},{"toolName":"批量给图片加水印","toolCode":"watermark-image","icon":"./img/icons/watermark-image.svg"},{"toolName":"批量旋转图像","toolCode":"rotate-image","icon":"./img/icons/rotate-image.svg"},{"toolName":"在线生成透明ICO图标","toolCode":"ico-generator","icon":"./img/icons/ico-generator.svg"},{"toolName":"在线生成透明圆角图片","toolCode":"round-image","icon":"./img/icons/round-image.svg"},{"toolName":"制作gif图片，编辑gif图片","toolCode":"create-gif","icon":"./img/icons/create-gif.svg"},{"toolName":"视频转gif图片，视频转动图","toolCode":"video-to-gif","icon":"./img/icons/video-to-gif.svg"},{"toolName":"分解gif图片","toolCode":"decompose-gif","icon":"./img/icons/decompose-gif.svg"},{"toolName":"裁剪、编辑图像","toolCode":"crop-image","icon":"./img/icons/crop-image.svg"},{"toolName":"生成宫格图像，分割图片","toolCode":"generate-grid-image","icon":"./img/icons/generate-grid-image.svg"},{"toolName":"图像处理助手桌面应用程序","toolCode":"image-processing-assistant-app","icon":"./up/2023/1028/image-processing-assistant-icon.png"},{"toolName":"图像压缩器桌面应用程序","toolCode":"image-compressor-app","icon":"./up/2023/1028/image-compress-logo.png"}]},{"key":"audio-and-video","desc":"音视频","toolList":[{"toolName":"白噪音与专注助眠多轨混音器","toolCode":"white-noise-player","icon":"./img/icons/white-noise-player.svg"},{"toolName":"免插件屏幕与窗口录制工具","toolCode":"screen-recorder","icon":"./img/icons/screen-recorder.svg"},{"toolName":"在线波形录音机与音频剪辑","toolCode":"voice-recorder","icon":"./img/icons/voice-recorder.svg"},{"toolName":"极简电子节拍器与乐器调音器","toolCode":"metronome-tuner","icon":"./img/icons/metronome-tuner.svg"},{"toolName":"视频处理助手桌面应用程序","toolCode":"video-processing-assistant-app","icon":"./up/2023/1028/video-processing-assistant-icon.png"},{"toolName":"视频剪切合并桌面应用程序","toolCode":"video-cut-merge-app","icon":"./up/2023/1028/video-cut-merge-icon.png"},{"toolName":"视频压缩器桌面应用程序","toolCode":"video-compressor-app","icon":"./up/2023/1028/video-compress-icon.png"},{"toolName":"视频格式转换器桌面应用程序","toolCode":"video-format-converter-app","icon":"./up/2023/1028/video-format-conversion-icon.png"},{"toolName":"音频处理助手桌面应用程序","toolCode":"audio-processing-assistant-app","icon":"./up/2023/1028/audio-processing-assistant-icon.png"},{"toolName":"音频剪切合并桌面应用程序","toolCode":"audio-cut-merge-app","icon":"./up/2023/1028/audio-cut-merge-icon.png"},{"toolName":"音频压缩器桌面应用程序","toolCode":"audio-compressor-app","icon":"./up/2023/1028/audio-compress-icon.png"},{"toolName":"音频格式转换器桌面应用程序","toolCode":"audio-format-convertor-app","icon":"./up/2023/1028/audio-format-conversion-icon.png"}]},{"key":"generate","desc":"生成","toolList":[{"toolName":"测试模拟数据 (Mock Data) 批量生成器","toolCode":"mock-data-generator","icon":"./img/icons/mock-data-generator.svg"},{"toolName":"WiFi 扫码直连二维码生成器","toolCode":"wifi-qrcode","icon":"./img/icons/wifi-qrcode.svg"},{"toolName":"无障碍色彩对比度检测器 (WCAG)","toolCode":"contrast-checker","icon":"./img/icons/contrast-checker.svg"},{"toolName":"CSS 玻璃拟态与毛玻璃生成器","toolCode":"css-glassmorphism","icon":"./img/icons/css-glassmorphism.svg"},{"toolName":"ASCII 艺术字与字符 Logo 生成器","toolCode":"ascii-art-generator","icon":"./img/icons/ascii-art-generator.svg"},{"toolName":"UUID / ULID / NanoID 批量生成器","toolCode":"uuid-generator","icon":"./img/icons/uuid-generator.svg"},{"toolName":"CSS 渐变色生成器","toolCode":"css-gradient-generator","icon":"./img/icons/css-gradient-generator.svg"},{"toolName":"CSS 盒子阴影生成器","toolCode":"css-shadow-generator","icon":"./img/icons/css-shadow-generator.svg"},{"toolName":"条形码生成器","toolCode":"bar-code","icon":"./img/icons/bar-code.svg"},{"toolName":"二维码生成器","toolCode":"qrcode","icon":"./img/icons/qrcode.svg"},{"toolName":"序列号生成器","toolCode":"serial-number","icon":"./img/icons/serial-number.svg"},{"toolName":"随机数生成器","toolCode":"random-number","icon":"./img/icons/random-number.svg"},{"toolName":"在线随机密码生成器","toolCode":"random-password","icon":"./img/icons/random-password.svg"}]},{"key":"code","desc":"程序员","toolList":[{"toolName":"IP 子网掩码与 CIDR 计算器","toolCode":"subnet-calculator","icon":"./img/icons/subnet-calculator.svg"},{"toolName":"多格式配置文件双向转换器","toolCode":"data-format-converter","icon":"./img/icons/data-format-converter.svg"},{"toolName":"HTTP 状态码速查与排错全书","toolCode":"http-status-codes","icon":"./img/icons/http-status-codes.svg"},{"toolName":"WebSocket / SSE 在线调试客户端","toolCode":"websocket-tester","icon":"./img/icons/websocket-tester.svg"},{"toolName":"cURL 转换多语言代码工具","toolCode":"curl-converter","icon":"./img/icons/curl-converter.svg"},{"toolName":"SQL 格式化与美化器","toolCode":"sql-formatter","icon":"./img/icons/sql-formatter.svg"},{"toolName":"JSON 格式化与高能工具箱","toolCode":"json-formatter","icon":"./img/icons/json-formatter.svg"},{"toolName":"JWT 解码与调试器","toolCode":"jwt-debugger","icon":"./img/icons/jwt-debugger.svg"},{"toolName":"正则表达式测试器","toolCode":"regex-tester","icon":"./img/icons/regex-tester.svg"},{"toolName":"Cron 表达式生成与预测器","toolCode":"cron-generator","icon":"./img/icons/cron-generator.svg"},{"toolName":"端口扫描","toolCode":"port-scan","icon":"./img/icons/port-scan.svg"},{"toolName":"JavaScript混淆加密","toolCode":"js-obfuscator","icon":"./img/icons/js-obfuscator.svg"},{"toolName":"Markdown在线编辑器，Markdown转Word/Html/Pdf","toolCode":"markdown","icon":"./img/icons/markdown.svg"},{"toolName":"时间戳转换","toolCode":"timestamp","icon":"./img/icons/timestamp.svg"},{"toolName":"进制转换","toolCode":"base-converter","icon":"./img/icons/base-converter.svg"},{"toolName":"MD5加密","toolCode":"md5-encrypt","icon":"./img/icons/md5-encrypt.svg"},{"toolName":"AES加密/解密","toolCode":"aes-encrypt","icon":"./img/icons/aes-encrypt.svg"},{"toolName":"DES加密/解密","toolCode":"des-encrypt","icon":"./img/icons/des-encrypt.svg"},{"toolName":"SHA加密","toolCode":"sha-encrypt","icon":"./img/icons/sha-encrypt.svg"},{"toolName":"RIPEMD160哈希加密","toolCode":"ripemd160-encrypt","icon":"./img/icons/ripemd160-encrypt.svg"},{"toolName":"HMAC哈希加密","toolCode":"hmac-encrypt","icon":"./img/icons/hmac-encrypt.svg"},{"toolName":"Rabbit加密/解密","toolCode":"rabbit-encrypt","icon":"./img/icons/rabbit-encrypt.svg"},{"toolName":"RC4加密/解密","toolCode":"rc4-encrypt","icon":"./img/icons/rc4-encrypt.svg"},{"toolName":"图片转base64","toolCode":"image-to-base64","icon":"./img/icons/image-to-base64.svg"},{"toolName":"base64编码解码","toolCode":"base64-encoder-decoder","icon":"./img/icons/base64-encoder-decoder.svg"},{"toolName":"URL编码解码","toolCode":"url-encoder-decoder","icon":"./img/icons/url-encoder-decoder.svg"},{"toolName":"文本与ASCLL转换器","toolCode":"text-to-ascll-converter","icon":"./img/icons/text-to-ascll-converter.svg"},{"toolName":"Unicode编码器/解码器","toolCode":"unicode-encoder-decoder","icon":"./img/icons/unicode-encoder-decoder.svg"},{"toolName":"文本（代码）对比工具","toolCode":"compare-text","icon":"./img/icons/compare-text.svg"},{"toolName":"html格式化、压缩","toolCode":"format-html","icon":"./img/icons/format-html.svg"},{"toolName":"css格式化、压缩","toolCode":"format-css","icon":"./img/icons/format-css.svg"},{"toolName":"js格式化、压缩","toolCode":"format-js","icon":"./img/icons/format-js.svg"}]},{"key":"study","desc":"学习","toolList":[{"toolName":"2D 数学函数图像绘制器","toolCode":"function-grapher","icon":"./img/icons/function-grapher.svg"},{"toolName":"计算机位运算与逻辑门实验室","toolCode":"bitwise-visualizer","icon":"./img/icons/bitwise-visualizer.svg"},{"toolName":"汉字转标准拼音与多音字排版","toolCode":"pinyin-converter","icon":"./img/icons/pinyin-converter.svg"},{"toolName":"化学元素周期表交互系统","toolCode":"periodic-table","icon":"./img/icons/periodic-table.svg"},{"toolName":"数据存储单位与进阶换算器","toolCode":"data-unit-converter","icon":"./img/icons/data-unit-converter.svg"},{"toolName":"科学高级计算器","toolCode":"scientific-calculator","icon":"./img/icons/scientific-calculator.svg"},{"toolName":"长度单位转换器","toolCode":"length-converter","icon":"./img/icons/length-converter.svg"},{"toolName":"面积单位转换器","toolCode":"area-converter","icon":"./img/icons/area-converter.svg"},{"toolName":"体积单位转换器","toolCode":"volume-converter","icon":"./img/icons/volume-converter.svg"},{"toolName":"重量转换器","toolCode":"weight-converter","icon":"./img/icons/weight-converter.svg"},{"toolName":"温度转换器","toolCode":"temperature-converter","icon":"./img/icons/temperature-converter.svg"},{"toolName":"比例计算器","toolCode":"proportion-calculator","icon":"./img/icons/proportion-calculator.svg"},{"toolName":"周长计算器","toolCode":"perimeter-calculator","icon":"./img/icons/perimeter-calculator.svg"},{"toolName":"面积计算器","toolCode":"area-calculator","icon":"./img/icons/area-calculator.svg"},{"toolName":"表面积计算器","toolCode":"surface-area-calculator","icon":"./img/icons/surface-area-calculator.svg"},{"toolName":"体积计算器","toolCode":"volume-calculator","icon":"./img/icons/volume-calculator.svg"},{"toolName":"圆周率查询","toolCode":"pi-query","icon":"./img/icons/pi-query.svg"}]},{"key":"life","desc":"生活","toolList":[{"toolName":"复利定投与理财收益计算器","toolCode":"compound-interest-calculator","icon":"./img/icons/compound-interest-calculator.svg"},{"toolName":"全款与车贷落地费用精算器","toolCode":"car-loan-calculator","icon":"./img/icons/car-loan-calculator.svg"},{"toolName":"世界时钟与跨时区会议规划器","toolCode":"world-clock-planner","icon":"./img/icons/world-clock-planner.svg"},{"toolName":"生活垃圾分类离线速查字典","toolCode":"garbage-classification","icon":"./img/icons/garbage-classification.svg"},{"toolName":"中国亲戚关系称谓换算器","toolCode":"kinship-calculator","icon":"./img/icons/kinship-calculator.svg"},{"toolName":"2026最新个税与五险一金计算器","toolCode":"salary-tax-calculator","icon":"./img/icons/salary-tax-calculator.svg"},{"toolName":"房贷提前还款与省息对比器","toolCode":"mortgage-advanced-calculator","icon":"./img/icons/mortgage-advanced-calculator.svg"},{"toolName":"日期间隔与重要日子倒计时","toolCode":"date-calculator","icon":"./img/icons/date-calculator.svg"},{"toolName":"年龄计算器","toolCode":"age","icon":"./img/icons/age.svg"},{"toolName":"退休年龄查询","toolCode":"retirement-time-query","icon":"./img/icons/retirement-time-query.svg"},{"toolName":"世界各国首都","toolCode":"capital","icon":"./img/icons/capital.svg"},{"toolName":"世界各国国旗和区旗图案","toolCode":"flag","icon":"./img/icons/flag.svg"},{"toolName":"贷款计算器","toolCode":"loan-calculator","icon":"./img/icons/loan-calculator.svg"},{"toolName":"文胸尺码查询","toolCode":"bra-size","icon":"./img/icons/bra-size.svg"},{"toolName":"内裤尺码查询","toolCode":"underwear-size","icon":"./img/icons/underwear-size.svg"},{"toolName":"女装尺码查询","toolCode":"woman-clothing-size","icon":"./img/icons/woman-clothing-size.svg"},{"toolName":"女士衬衫尺码查询","toolCode":"woman-shirt-size","icon":"./img/icons/woman-shirt-size.svg"},{"toolName":"连衣裙尺码查询","toolCode":"dress-size","icon":"./img/icons/dress-size.svg"},{"toolName":"小孩服装尺码查询","toolCode":"child-clothe-size","icon":"./img/icons/child-clothe-size.svg"},{"toolName":"男士服装尺码查询","toolCode":"man-clothing-size","icon":"./img/icons/man-clothing-size.svg"},{"toolName":"男士裤子尺码查询","toolCode":"man-pant-size","icon":"./img/icons/man-pant-size.svg"}]},{"key":"ent","desc":"娱乐","toolList":[{"toolName":"像素画 / 8-bit 图标在线编辑器","toolCode":"pixel-art-maker","icon":"./img/icons/pixel-art-maker.svg"},{"toolName":"今天吃什么 / 帮我做决定","toolCode":"decision-maker","icon":"./img/icons/decision-maker.svg"},{"toolName":"手持全屏弹幕 / LED 滚动屏幕","toolCode":"led-banner","icon":"./img/icons/led-banner.svg"},{"toolName":"摩斯密码翻译器，摩斯密码音频播放器","toolCode":"morse-code-translator","icon":"./img/icons/morse-code-translator.svg"},{"toolName":"幸运大转盘抽奖","toolCode":"lucky-wheel","icon":"./img/icons/lucky-wheel.svg"},{"toolName":"在线抽奖工具","toolCode":"lottery","icon":"./img/icons/lottery.svg"},{"toolName":"身价计算器","toolCode":"worth","icon":"./img/icons/worth.svg"},{"toolName":"死亡时间计算器","toolCode":"death-time","icon":"./img/icons/death-time.svg"},{"toolName":"幸运数字计算器","toolCode":"lucky-number","icon":"./img/icons/lucky-number.svg"},{"toolName":"星座幸运色","toolCode":"lucky-color","icon":"./img/icons/lucky-color.svg"},{"toolName":"哈希头像生成器","toolCode":"hash-avatar","icon":"./img/icons/hash-avatar.svg"}]},{"key":"health","desc":"健康","toolList":[{"toolName":"科学每日饮水量计算器","toolCode":"water-intake-calculator","icon":"./img/icons/water-intake-calculator.svg"},{"toolName":"90分钟睡眠周期与起床时间计算器","toolCode":"sleep-cycle-calculator","icon":"./img/icons/sleep-cycle-calculator.svg"},{"toolName":"常用食物热量与营养成分速查表","toolCode":"food-calories-lookup","icon":"./img/icons/food-calories-lookup.svg"},{"toolName":"BMI指数计算","toolCode":"bmi","icon":"./img/icons/bmi.svg"},{"toolName":"基础代谢率(BMR)计算器","toolCode":"bmr","icon":"./img/icons/bmr.svg"},{"toolName":"体脂率（BFR）计算器","toolCode":"bfr","icon":"./img/icons/bfr.svg"},{"toolName":"标准体重计算器","toolCode":"weight","icon":"./img/icons/weight.svg"},{"toolName":"燃脂心率计算器","toolCode":"burn-fat-heart-rate","icon":"./img/icons/burn-fat-heart-rate.svg"},{"toolName":"体质综合测试","toolCode":"physical-fitness-test","icon":"./img/icons/physical-fitness-test.svg"},{"toolName":"蛋白质摄入量计算器","toolCode":"protein-intake","icon":"./img/icons/protein-intake.svg"},{"toolName":"焦耳卡路里换算器","toolCode":"energy-convert","icon":"./img/icons/energy-convert.svg"},{"toolName":"跑步卡路里消耗计算器","toolCode":"running-calorie","icon":"./img/icons/running-calorie.svg"},{"toolName":"女性最佳身材计算器","toolCode":"best-figure","icon":"./img/icons/best-figure.svg"},{"toolName":"女性安全期计算器","toolCode":"female-safe-period","icon":"./img/icons/female-safe-period.svg"},{"toolName":"孩子身高预测","toolCode":"child-height","icon":"./img/icons/child-height.svg"},{"toolName":"血型遗传规律和血型性格","toolCode":"bood-type","icon":"./img/icons/bood-type.svg"},{"toolName":"色盲色弱检测","toolCode":"color-blindness-test","icon":"./img/icons/color-blindness-test.svg"},{"toolName":"植物油脂肪含量查询","toolCode":"vegetable-oil","icon":"./img/icons/vegetable-oil.svg"}]}];
+    var phoneSmsEnable = 0;
+    var wp='zp';
+    var ap='qx';
+</script>
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+<script src="./lib/element-plus/locale/en.js"></script>
+<script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/components/SlideCaptcha.js?v=260728100716"></script>
+<script src="./js/common.js?260728100716"></script>
+<script src="./js/search.js?260728100716"></script>
 
-    </main>
-</div>
+<script>
+    var locales = {
+        selectEncryptAlgorithmTip: "请选择加密算法",
+        copySuccess: "复制成功"
+    };
+</script>
+<script src="./js/components/Comment.js?260728100716"></script>
+<script src="./lib/cryp/crypto-js.min.js"></script>
+<script src="./js/tools/code/sha-encrypt.js?260728100716"></script>
 
-    <script>
-        var languageCode = 'zh';
-        var websiteRoot = "";
-        var mainWebSiteHost = "";
-        var webApiSiteHost = "/api";
-        var staticSiteHost = "";
-        var staticFileVersion="260728100716";
-        var toolData = [{"key":"brain","desc":"脑力训练","children":[{"key":"记忆力","desc":"记忆力","toolList":[{"toolName":"数字顺序记忆训练","toolCode":"number-sequence-memory","icon":"./img/brain/game-logo/szsxjy.png"},{"toolName":"顺序记忆训练","toolCode":"sequence-memory","icon":"./img/brain/game-logo/sxjy.png"},{"toolName":"N-Back 记忆力训练游戏","toolCode":"n-back","icon":"./img/brain/game-logo/nback.png"},{"toolName":"色块印记","toolCode":"color-block-imprint","icon":"./img/brain/game-logo/skyj.png"}]},{"key":"注意力","desc":"注意力","toolList":[{"toolName":"舒尔特方格训练","toolCode":"shult-grid","icon":"./img/brain/game-logo/setfg.png"},{"toolName":"找不同的字","toolCode":"find-different-word","icon":"./img/brain/game-logo/zbtdz.png"},{"toolName":"斯特鲁普效应","toolCode":"stroop-effect","icon":"./img/brain/game-logo/stlpxy.png"},{"toolName":"坐标迷航","toolCode":"coordinate-drift","icon":"./img/brain/game-logo/zbmh.png"},{"toolName":"视觉追踪训练","toolCode":"visual-tracking-training","icon":"./img/brain/game-logo/sjzzxl.png"}]},{"key":"推演","desc":"推演","toolList":[{"toolName":"复古推箱子 50 关益智挑战","toolCode":"sokoban","icon":"./img/icons/sokoban.svg"},{"toolName":"经典扫雷游戏","toolCode":"minesweeper","icon":"./img/icons/minesweeper.svg"},{"toolName":"在线数独游戏","toolCode":"sudoku","icon":"./img/icons/sudoku.svg"},{"toolName":"熄灯解谜游戏","toolCode":"lights-out","icon":"./img/icons/lights-out.svg"},{"toolName":"数字华容道","toolCode":"digital-huarong-road","icon":"./img/brain/game-logo/szhrd.png"},{"toolName":"上下瓶色匹配","toolCode":"bottle-color-matching","icon":"./img/brain/game-logo/sxpspp.png"},{"toolName":"2048","toolCode":"2048","icon":"./img/brain/game-logo/elsb.png"}]},{"key":"反应","desc":"反应","toolList":[{"toolName":"反应速度测试","toolCode":"react-speed-test","icon":"./img/brain/game-logo/fysdcs.png"},{"toolName":"点击速度测试","toolCode":"click-speed-test","icon":"./img/brain/game-logo/sscs.png"},{"toolName":"右键点击速度测试","toolCode":"right-click-test","icon":"./img/brain/game-logo/yjdjsdcs.png"},{"toolName":"空格键计数器","toolCode":"spacebar-counter","icon":"./img/brain/game-logo/kgjjsq.png"},{"toolName":"动态视力测试","toolCode":"dynamic-visual-acuity-test","icon":"./img/brain/game-logo/dtslcs.png"}]},{"key":"感知","desc":"感知","toolList":[{"toolName":"静态色差感知","toolCode":"jing-tai-se-cha","icon":"./img/brain/game-logo/jtsc.png"},{"toolName":"动态色差感知","toolCode":"dong-tai-se-cha","icon":"./img/brain/game-logo/dtsc.png"},{"toolName":"时间感知训练","toolCode":"time-perception-training","icon":"./img/brain/game-logo/sjgzxl.png"}]},{"key":"空间","desc":"空间","toolList":[{"toolName":"对称方块","toolCode":"symmetry-blocks","icon":"./img/brain/game-logo/dcfk.png"}]}]},{"key":"office","desc":"办公助手","toolList":[{"toolName":"文本去重与多维排序器","toolCode":"text-dedup-sort","icon":"./img/icons/text-dedup-sort.svg"},{"toolName":"中英文排版规范美化器","toolCode":"text-autospace","icon":"./img/icons/text-autospace.svg"},{"toolName":"在线表格转换器","toolCode":"table-converter","icon":"./img/icons/table-converter.svg"},{"toolName":"人民币大写金额转换器","toolCode":"rmb-capital-converter","icon":"./img/icons/rmb-capital-converter.svg"},{"toolName":"综合字数与阅读时长统计","toolCode":"word-counter","icon":"./img/icons/word-counter.svg"},{"toolName":"现代简历制作与排版器","toolCode":"resume-maker","icon":"./img/icons/resume-maker.svg"},{"toolName":"简历模板中心","toolCode":"resume-template","icon":"./img/icons/resume-template.svg"},{"toolName":"A4纸张尺寸，各种纸张尺寸查询","toolCode":"paper-size","icon":"./img/icons/paper-size.svg"},{"toolName":"转换大小写","toolCode":"convert-case","icon":"./img/icons/convert-case.svg"},{"toolName":"标题大小写转换器","toolCode":"title-case-converter","icon":"./img/icons/title-case-converter.svg"},{"toolName":"句子大小写转换器","toolCode":"sentence-case-converter","icon":"./img/icons/sentence-case-converter.svg"},{"toolName":"粗体文本生成器","toolCode":"bold-text-generator","icon":"./img/icons/bold-text-generator.svg"},{"toolName":"斜体文本生成器","toolCode":"italic-text-generator","icon":"./img/icons/italic-text-generator.svg"},{"toolName":"删除线文本生成器","toolCode":"strikethrough-text-generator","icon":"./img/icons/strikethrough-text-generator.svg"},{"toolName":"下划线文本生成器","toolCode":"underline-text","icon":"./img/icons/underline-text.svg"},{"toolName":"颠倒文本生成器","toolCode":"upside-down-text-generator","icon":"./img/icons/upside-down-text-generator.svg"},{"toolName":"镜像文本生成器","toolCode":"mirror-text-generator","icon":"./img/icons/mirror-text-generator.svg"},{"toolName":"反向文本生成器","toolCode":"reverse-text-generator","icon":"./img/icons/reverse-text-generator.svg"},{"toolName":"文本替换工具","toolCode":"replace-text","icon":"./img/icons/replace-text.svg"},{"toolName":"符号大全","toolCode":"symbols","icon":"./img/icons/symbols.svg"},{"toolName":"emoji表情大全","toolCode":"emoji","icon":"./img/icons/emoji.svg"},{"toolName":"颜文字表情大全","toolCode":"emoticon","icon":"./img/icons/emoticon.svg"}]},{"key":"image","desc":"图像","toolList":[{"toolName":"图片调色板提取器","toolCode":"color-palette-extractor","icon":"./img/icons/color-palette-extractor.svg"},{"toolName":"多图无损拼接与长图生成器","toolCode":"image-stitcher","icon":"./img/icons/image-stitcher.svg"},{"toolName":"图片马赛克与局部隐私遮挡","toolCode":"image-mosaic-blur","icon":"./img/icons/image-mosaic-blur.svg"},{"toolName":"图像格式转换器","toolCode":"convert-image","icon":"./img/icons/convert-image.svg"},{"toolName":"压缩图像","toolCode":"compress-image","icon":"./img/icons/compress-image.svg"},{"toolName":"调整图像大小","toolCode":"resize-image","icon":"./img/icons/resize-image.svg"},{"toolName":"调整图像宽高比例","toolCode":"adjust-image-aspect-ratio","icon":"./img/icons/adjust-image-aspect-ratio.svg"},{"toolName":"批量给图片加水印","toolCode":"watermark-image","icon":"./img/icons/watermark-image.svg"},{"toolName":"批量旋转图像","toolCode":"rotate-image","icon":"./img/icons/rotate-image.svg"},{"toolName":"在线生成透明ICO图标","toolCode":"ico-generator","icon":"./img/icons/ico-generator.svg"},{"toolName":"在线生成透明圆角图片","toolCode":"round-image","icon":"./img/icons/round-image.svg"},{"toolName":"制作gif图片，编辑gif图片","toolCode":"create-gif","icon":"./img/icons/create-gif.svg"},{"toolName":"视频转gif图片，视频转动图","toolCode":"video-to-gif","icon":"./img/icons/video-to-gif.svg"},{"toolName":"分解gif图片","toolCode":"decompose-gif","icon":"./img/icons/decompose-gif.svg"},{"toolName":"裁剪、编辑图像","toolCode":"crop-image","icon":"./img/icons/crop-image.svg"},{"toolName":"生成宫格图像，分割图片","toolCode":"generate-grid-image","icon":"./img/icons/generate-grid-image.svg"},{"toolName":"图像处理助手桌面应用程序","toolCode":"image-processing-assistant-app","icon":"./up/2023/1028/image-processing-assistant-icon.png"},{"toolName":"图像压缩器桌面应用程序","toolCode":"image-compressor-app","icon":"./up/2023/1028/image-compress-logo.png"}]},{"key":"audio-and-video","desc":"音视频","toolList":[{"toolName":"白噪音与专注助眠多轨混音器","toolCode":"white-noise-player","icon":"./img/icons/white-noise-player.svg"},{"toolName":"免插件屏幕与窗口录制工具","toolCode":"screen-recorder","icon":"./img/icons/screen-recorder.svg"},{"toolName":"在线波形录音机与音频剪辑","toolCode":"voice-recorder","icon":"./img/icons/voice-recorder.svg"},{"toolName":"极简电子节拍器与乐器调音器","toolCode":"metronome-tuner","icon":"./img/icons/metronome-tuner.svg"},{"toolName":"视频处理助手桌面应用程序","toolCode":"video-processing-assistant-app","icon":"./up/2023/1028/video-processing-assistant-icon.png"},{"toolName":"视频剪切合并桌面应用程序","toolCode":"video-cut-merge-app","icon":"./up/2023/1028/video-cut-merge-icon.png"},{"toolName":"视频压缩器桌面应用程序","toolCode":"video-compressor-app","icon":"./up/2023/1028/video-compress-icon.png"},{"toolName":"视频格式转换器桌面应用程序","toolCode":"video-format-converter-app","icon":"./up/2023/1028/video-format-conversion-icon.png"},{"toolName":"音频处理助手桌面应用程序","toolCode":"audio-processing-assistant-app","icon":"./up/2023/1028/audio-processing-assistant-icon.png"},{"toolName":"音频剪切合并桌面应用程序","toolCode":"audio-cut-merge-app","icon":"./up/2023/1028/audio-cut-merge-icon.png"},{"toolName":"音频压缩器桌面应用程序","toolCode":"audio-compressor-app","icon":"./up/2023/1028/audio-compress-icon.png"},{"toolName":"音频格式转换器桌面应用程序","toolCode":"audio-format-convertor-app","icon":"./up/2023/1028/audio-format-conversion-icon.png"}]},{"key":"generate","desc":"生成","toolList":[{"toolName":"测试模拟数据 (Mock Data) 批量生成器","toolCode":"mock-data-generator","icon":"./img/icons/mock-data-generator.svg"},{"toolName":"WiFi 扫码直连二维码生成器","toolCode":"wifi-qrcode","icon":"./img/icons/wifi-qrcode.svg"},{"toolName":"无障碍色彩对比度检测器 (WCAG)","toolCode":"contrast-checker","icon":"./img/icons/contrast-checker.svg"},{"toolName":"CSS 玻璃拟态与毛玻璃生成器","toolCode":"css-glassmorphism","icon":"./img/icons/css-glassmorphism.svg"},{"toolName":"ASCII 艺术字与字符 Logo 生成器","toolCode":"ascii-art-generator","icon":"./img/icons/ascii-art-generator.svg"},{"toolName":"UUID / ULID / NanoID 批量生成器","toolCode":"uuid-generator","icon":"./img/icons/uuid-generator.svg"},{"toolName":"CSS 渐变色生成器","toolCode":"css-gradient-generator","icon":"./img/icons/css-gradient-generator.svg"},{"toolName":"CSS 盒子阴影生成器","toolCode":"css-shadow-generator","icon":"./img/icons/css-shadow-generator.svg"},{"toolName":"条形码生成器","toolCode":"bar-code","icon":"./img/icons/bar-code.svg"},{"toolName":"二维码生成器","toolCode":"qrcode","icon":"./img/icons/qrcode.svg"},{"toolName":"序列号生成器","toolCode":"serial-number","icon":"./img/icons/serial-number.svg"},{"toolName":"随机数生成器","toolCode":"random-number","icon":"./img/icons/random-number.svg"},{"toolName":"在线随机密码生成器","toolCode":"random-password","icon":"./img/icons/random-password.svg"}]},{"key":"code","desc":"程序员","toolList":[{"toolName":"IP 子网掩码与 CIDR 计算器","toolCode":"subnet-calculator","icon":"./img/icons/subnet-calculator.svg"},{"toolName":"多格式配置文件双向转换器","toolCode":"data-format-converter","icon":"./img/icons/data-format-converter.svg"},{"toolName":"HTTP 状态码速查与排错全书","toolCode":"http-status-codes","icon":"./img/icons/http-status-codes.svg"},{"toolName":"WebSocket / SSE 在线调试客户端","toolCode":"websocket-tester","icon":"./img/icons/websocket-tester.svg"},{"toolName":"cURL 转换多语言代码工具","toolCode":"curl-converter","icon":"./img/icons/curl-converter.svg"},{"toolName":"SQL 格式化与美化器","toolCode":"sql-formatter","icon":"./img/icons/sql-formatter.svg"},{"toolName":"JSON 格式化与高能工具箱","toolCode":"json-formatter","icon":"./img/icons/json-formatter.svg"},{"toolName":"JWT 解码与调试器","toolCode":"jwt-debugger","icon":"./img/icons/jwt-debugger.svg"},{"toolName":"正则表达式测试器","toolCode":"regex-tester","icon":"./img/icons/regex-tester.svg"},{"toolName":"Cron 表达式生成与预测器","toolCode":"cron-generator","icon":"./img/icons/cron-generator.svg"},{"toolName":"端口扫描","toolCode":"port-scan","icon":"./img/icons/port-scan.svg"},{"toolName":"JavaScript混淆加密","toolCode":"js-obfuscator","icon":"./img/icons/js-obfuscator.svg"},{"toolName":"Markdown在线编辑器，Markdown转Word/Html/Pdf","toolCode":"markdown","icon":"./img/icons/markdown.svg"},{"toolName":"时间戳转换","toolCode":"timestamp","icon":"./img/icons/timestamp.svg"},{"toolName":"进制转换","toolCode":"base-converter","icon":"./img/icons/base-converter.svg"},{"toolName":"MD5加密","toolCode":"md5-encrypt","icon":"./img/icons/md5-encrypt.svg"},{"toolName":"AES加密/解密","toolCode":"aes-encrypt","icon":"./img/icons/aes-encrypt.svg"},{"toolName":"DES加密/解密","toolCode":"des-encrypt","icon":"./img/icons/des-encrypt.svg"},{"toolName":"SHA加密","toolCode":"sha-encrypt","icon":"./img/icons/sha-encrypt.svg"},{"toolName":"RIPEMD160哈希加密","toolCode":"ripemd160-encrypt","icon":"./img/icons/ripemd160-encrypt.svg"},{"toolName":"HMAC哈希加密","toolCode":"hmac-encrypt","icon":"./img/icons/hmac-encrypt.svg"},{"toolName":"Rabbit加密/解密","toolCode":"rabbit-encrypt","icon":"./img/icons/rabbit-encrypt.svg"},{"toolName":"RC4加密/解密","toolCode":"rc4-encrypt","icon":"./img/icons/rc4-encrypt.svg"},{"toolName":"图片转base64","toolCode":"image-to-base64","icon":"./img/icons/image-to-base64.svg"},{"toolName":"base64编码解码","toolCode":"base64-encoder-decoder","icon":"./img/icons/base64-encoder-decoder.svg"},{"toolName":"URL编码解码","toolCode":"url-encoder-decoder","icon":"./img/icons/url-encoder-decoder.svg"},{"toolName":"文本与ASCLL转换器","toolCode":"text-to-ascll-converter","icon":"./img/icons/text-to-ascll-converter.svg"},{"toolName":"Unicode编码器/解码器","toolCode":"unicode-encoder-decoder","icon":"./img/icons/unicode-encoder-decoder.svg"},{"toolName":"文本（代码）对比工具","toolCode":"compare-text","icon":"./img/icons/compare-text.svg"},{"toolName":"html格式化、压缩","toolCode":"format-html","icon":"./img/icons/format-html.svg"},{"toolName":"css格式化、压缩","toolCode":"format-css","icon":"./img/icons/format-css.svg"},{"toolName":"js格式化、压缩","toolCode":"format-js","icon":"./img/icons/format-js.svg"}]},{"key":"study","desc":"学习","toolList":[{"toolName":"2D 数学函数图像绘制器","toolCode":"function-grapher","icon":"./img/icons/function-grapher.svg"},{"toolName":"计算机位运算与逻辑门实验室","toolCode":"bitwise-visualizer","icon":"./img/icons/bitwise-visualizer.svg"},{"toolName":"汉字转标准拼音与多音字排版","toolCode":"pinyin-converter","icon":"./img/icons/pinyin-converter.svg"},{"toolName":"化学元素周期表交互系统","toolCode":"periodic-table","icon":"./img/icons/periodic-table.svg"},{"toolName":"数据存储单位与进阶换算器","toolCode":"data-unit-converter","icon":"./img/icons/data-unit-converter.svg"},{"toolName":"科学高级计算器","toolCode":"scientific-calculator","icon":"./img/icons/scientific-calculator.svg"},{"toolName":"长度单位转换器","toolCode":"length-converter","icon":"./img/icons/length-converter.svg"},{"toolName":"面积单位转换器","toolCode":"area-converter","icon":"./img/icons/area-converter.svg"},{"toolName":"体积单位转换器","toolCode":"volume-converter","icon":"./img/icons/volume-converter.svg"},{"toolName":"重量转换器","toolCode":"weight-converter","icon":"./img/icons/weight-converter.svg"},{"toolName":"温度转换器","toolCode":"temperature-converter","icon":"./img/icons/temperature-converter.svg"},{"toolName":"比例计算器","toolCode":"proportion-calculator","icon":"./img/icons/proportion-calculator.svg"},{"toolName":"周长计算器","toolCode":"perimeter-calculator","icon":"./img/icons/perimeter-calculator.svg"},{"toolName":"面积计算器","toolCode":"area-calculator","icon":"./img/icons/area-calculator.svg"},{"toolName":"表面积计算器","toolCode":"surface-area-calculator","icon":"./img/icons/surface-area-calculator.svg"},{"toolName":"体积计算器","toolCode":"volume-calculator","icon":"./img/icons/volume-calculator.svg"},{"toolName":"圆周率查询","toolCode":"pi-query","icon":"./img/icons/pi-query.svg"}]},{"key":"life","desc":"生活","toolList":[{"toolName":"复利定投与理财收益计算器","toolCode":"compound-interest-calculator","icon":"./img/icons/compound-interest-calculator.svg"},{"toolName":"全款与车贷落地费用精算器","toolCode":"car-loan-calculator","icon":"./img/icons/car-loan-calculator.svg"},{"toolName":"世界时钟与跨时区会议规划器","toolCode":"world-clock-planner","icon":"./img/icons/world-clock-planner.svg"},{"toolName":"生活垃圾分类离线速查字典","toolCode":"garbage-classification","icon":"./img/icons/garbage-classification.svg"},{"toolName":"中国亲戚关系称谓换算器","toolCode":"kinship-calculator","icon":"./img/icons/kinship-calculator.svg"},{"toolName":"2026最新个税与五险一金计算器","toolCode":"salary-tax-calculator","icon":"./img/icons/salary-tax-calculator.svg"},{"toolName":"房贷提前还款与省息对比器","toolCode":"mortgage-advanced-calculator","icon":"./img/icons/mortgage-advanced-calculator.svg"},{"toolName":"日期间隔与重要日子倒计时","toolCode":"date-calculator","icon":"./img/icons/date-calculator.svg"},{"toolName":"年龄计算器","toolCode":"age","icon":"./img/icons/age.svg"},{"toolName":"退休年龄查询","toolCode":"retirement-time-query","icon":"./img/icons/retirement-time-query.svg"},{"toolName":"世界各国首都","toolCode":"capital","icon":"./img/icons/capital.svg"},{"toolName":"世界各国国旗和区旗图案","toolCode":"flag","icon":"./img/icons/flag.svg"},{"toolName":"贷款计算器","toolCode":"loan-calculator","icon":"./img/icons/loan-calculator.svg"},{"toolName":"文胸尺码查询","toolCode":"bra-size","icon":"./img/icons/bra-size.svg"},{"toolName":"内裤尺码查询","toolCode":"underwear-size","icon":"./img/icons/underwear-size.svg"},{"toolName":"女装尺码查询","toolCode":"woman-clothing-size","icon":"./img/icons/woman-clothing-size.svg"},{"toolName":"女士衬衫尺码查询","toolCode":"woman-shirt-size","icon":"./img/icons/woman-shirt-size.svg"},{"toolName":"连衣裙尺码查询","toolCode":"dress-size","icon":"./img/icons/dress-size.svg"},{"toolName":"小孩服装尺码查询","toolCode":"child-clothe-size","icon":"./img/icons/child-clothe-size.svg"},{"toolName":"男士服装尺码查询","toolCode":"man-clothing-size","icon":"./img/icons/man-clothing-size.svg"},{"toolName":"男士裤子尺码查询","toolCode":"man-pant-size","icon":"./img/icons/man-pant-size.svg"}]},{"key":"ent","desc":"娱乐","toolList":[{"toolName":"像素画 / 8-bit 图标在线编辑器","toolCode":"pixel-art-maker","icon":"./img/icons/pixel-art-maker.svg"},{"toolName":"今天吃什么 / 帮我做决定","toolCode":"decision-maker","icon":"./img/icons/decision-maker.svg"},{"toolName":"手持全屏弹幕 / LED 滚动屏幕","toolCode":"led-banner","icon":"./img/icons/led-banner.svg"},{"toolName":"摩斯密码翻译器，摩斯密码音频播放器","toolCode":"morse-code-translator","icon":"./img/icons/morse-code-translator.svg"},{"toolName":"幸运大转盘抽奖","toolCode":"lucky-wheel","icon":"./img/icons/lucky-wheel.svg"},{"toolName":"在线抽奖工具","toolCode":"lottery","icon":"./img/icons/lottery.svg"},{"toolName":"身价计算器","toolCode":"worth","icon":"./img/icons/worth.svg"},{"toolName":"死亡时间计算器","toolCode":"death-time","icon":"./img/icons/death-time.svg"},{"toolName":"幸运数字计算器","toolCode":"lucky-number","icon":"./img/icons/lucky-number.svg"},{"toolName":"星座幸运色","toolCode":"lucky-color","icon":"./img/icons/lucky-color.svg"},{"toolName":"哈希头像生成器","toolCode":"hash-avatar","icon":"./img/icons/hash-avatar.svg"}]},{"key":"health","desc":"健康","toolList":[{"toolName":"科学每日饮水量计算器","toolCode":"water-intake-calculator","icon":"./img/icons/water-intake-calculator.svg"},{"toolName":"90分钟睡眠周期与起床时间计算器","toolCode":"sleep-cycle-calculator","icon":"./img/icons/sleep-cycle-calculator.svg"},{"toolName":"常用食物热量与营养成分速查表","toolCode":"food-calories-lookup","icon":"./img/icons/food-calories-lookup.svg"},{"toolName":"BMI指数计算","toolCode":"bmi","icon":"./img/icons/bmi.svg"},{"toolName":"基础代谢率(BMR)计算器","toolCode":"bmr","icon":"./img/icons/bmr.svg"},{"toolName":"体脂率（BFR）计算器","toolCode":"bfr","icon":"./img/icons/bfr.svg"},{"toolName":"标准体重计算器","toolCode":"weight","icon":"./img/icons/weight.svg"},{"toolName":"燃脂心率计算器","toolCode":"burn-fat-heart-rate","icon":"./img/icons/burn-fat-heart-rate.svg"},{"toolName":"体质综合测试","toolCode":"physical-fitness-test","icon":"./img/icons/physical-fitness-test.svg"},{"toolName":"蛋白质摄入量计算器","toolCode":"protein-intake","icon":"./img/icons/protein-intake.svg"},{"toolName":"焦耳卡路里换算器","toolCode":"energy-convert","icon":"./img/icons/energy-convert.svg"},{"toolName":"跑步卡路里消耗计算器","toolCode":"running-calorie","icon":"./img/icons/running-calorie.svg"},{"toolName":"女性最佳身材计算器","toolCode":"best-figure","icon":"./img/icons/best-figure.svg"},{"toolName":"女性安全期计算器","toolCode":"female-safe-period","icon":"./img/icons/female-safe-period.svg"},{"toolName":"孩子身高预测","toolCode":"child-height","icon":"./img/icons/child-height.svg"},{"toolName":"血型遗传规律和血型性格","toolCode":"bood-type","icon":"./img/icons/bood-type.svg"},{"toolName":"色盲色弱检测","toolCode":"color-blindness-test","icon":"./img/icons/color-blindness-test.svg"},{"toolName":"植物油脂肪含量查询","toolCode":"vegetable-oil","icon":"./img/icons/vegetable-oil.svg"}]}];
-        var phoneSmsEnable = 0;
-        var wp='zp';
-        var ap='qx';
-    </script>
-        <script src="./lib/vue/vue.global.prod.js"></script>
-        <script src="./lib/element-plus/index.js"></script>
-    <script src="./lib/element-plus/locale/en.js"></script>
-    <script src="./lib/element-plus/locale/zh-tw.js"></script>
-    <script src="./js/components/SlideCaptcha.js?v=260728100716"></script>
-    <script src="./js/common.js?260728100716"></script>
-    <script src="./js/search.js?260728100716"></script>
-    
-    <script>
-        var locales = {
-            selectEncryptAlgorithmTip: "请选择加密算法",
-            copySuccess: "复制成功"
-        };
-    </script>
-    <script src="./js/components/Comment.js?260728100716"></script>
-    <script src="./lib/cryp/crypto-js.min.js"></script>
-    <script src="./js/tools/code/sha-encrypt.js?260728100716"></script>
-
-
-        
 </body>
 </html>
