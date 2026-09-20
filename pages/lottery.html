@@ -6,60 +6,1130 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no" />
     <title>免费在线抽奖工具 - 在线工具</title>
-        <meta name="description" content="免费在线抽奖程序，可以自定义奖品、奖品数量、抽奖参与人员等，自定义程度高，若您有抽奖需求，不用再重复开发一套抽奖程序，它完全可以满足您的需求。" />
-        <meta name="keywords" content="在线抽奖,名字抽奖,手机随机数字抽奖器,数字抽奖器,手机抽奖,随机摇号器,随机抽数字,数字抽奖,抽奖工具,数字摇号器在线" />
+    <meta name="description" content="免费在线抽奖程序，可以自定义奖品、奖品数量、抽奖参与人员等，自定义程度高，若您有抽奖需求，不用再重复开发一套抽奖程序，它完全可以满足您的需求。" />
+    <meta name="keywords" content="在线抽奖,名字抽奖,手机随机数字抽奖器,数字抽奖器,手机抽奖,随机摇号器,随机抽数字,数字抽奖,抽奖工具,数字摇号器在线" />
 
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="dns-prefetch" href="" />
-        <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
     <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet" />
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .lottery { width: 100%; padding: 10px; background: url('./img/lottery-bg.png') no-repeat; background-size: 100% 100%; }
-        .lottery .title { margin: 0 auto; padding: 20px 0; font-size: 32px; text-align: center; color: #FAF9F3; }
-        .lottery .body { width: 80%; height: calc(100vh - 400px); min-height: 380px; margin: 0 auto; border-radius: 10px; background-color: rgb(127 103 103 / 20%); box-shadow: 0 0 10px 0px rgb(197 178 178 / 50%); }
-        .lottery .body .prize-list { width: 100%; height: calc(100vh - 400px); min-height: 380px; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; overflow-y: auto; }
-        .lottery .body .prize-list .data-item { display: flex; flex-direction: column; align-items: center; margin: 30px;cursor:pointer; }
-        .lottery .body .prize-list .data-item img{margin-bottom:10px;height:200px;}
-        .lottery .body .prize-list .data-item span { color: #FFD572; font-size: 18px;display:flex;align-items:center; }
-        .lottery .body .prize-list .data-item span font { font-size: 14px; }
-        .lottery .body .draw { display: flex; flex-direction: column; align-items: center; height: calc(100vh - 400px); min-height: 380px; }
-        .lottery .body .draw .draw-content { flex: 1; height: 0; width: 100%; display: flex; flex-direction: column; }
-        .lottery .body .draw .draw-content .prize { display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        .lottery .body .draw .draw-content .prize img { margin: 10px 0; height: 80px; transition-duration: 0.25s; }
-        .lottery .body .draw .draw-content .prize span { color: #FFD967; font-size: 22px; font-weight: 600; }
-        .lottery .body .draw .draw-content .prize span font { font-size: 14px; }
-        .lottery .body .draw .draw-content.draw-before .prize { flex: 1; }
-        .lottery .body .draw .draw-content.draw-before .prize img { height: 200px; }
-        .lottery .body .draw .draw-content .winner { flex: 1; color: #F5C5B6; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; overflow-y: auto; margin: 20px 0; padding: 0 10px; }
-        .lottery .body .draw .draw-content .winner .list { display: flex; flex-wrap: wrap; }
-        .lottery .body .draw .draw-content .winner .list .item { padding: 10px 15px; font-size: 18px; width: 150px; text-align: center; }
-        .lottery .body .draw .btn-draw { background: linear-gradient(to bottom, #794071, #D95167); border: 1px solid rgb(203, 129, 152); line-height: 36px; border-radius: 4px; width: max-content; margin: 15px 0; padding: 0px 50px; display: block; color: rgb(255, 255, 255); font-size: 16px; font-weight: 600; cursor: pointer; }
-        .lottery .body .draw .draw-number { color: #999; margin-bottom: 15px; display: flex; align-items: center; }
-        .lottery .body .draw .draw-number input { width: 50px; background: #575757; border: none; color: #999; margin-left: 8px; padding: 0 5px; line-height: 20px; text-align: center; border-radius: 4px; outline: none; }
-        .lottery .bottom { display: flex; justify-content: center; flex-wrap: wrap; width: 100%; padding: 30px 0 20px 0; color: #999; font-size: 12px; }
-        .lottery .bottom span { margin: 0 10px; display: flex; align-items: center; cursor: pointer; }
-        .lottery .bottom span i { margin-right: 2px; }
-        .lottery.fullscreen { height: 100vh; position: absolute; left: 0; top: 0; z-index: 1001; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .lottery.fullscreen .body { height: calc(100vh - 300px); }
-        .lottery.fullscreen .body .prize-list { height: calc(100vh - 300px); }
-        .lottery.fullscreen .body .draw { height: calc(100vh - 300px); }
+        /* 基础与容器布局 */
+        .lottery-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
 
-        .dialog-data-list .no-winner { margin: 50px 0; width: 100%; text-align: center; font-size: 16px; }
-        .dialog-data-list .data-item { margin-top: 10px; }
-        .dialog-data-list .data-item:first-child { margin-top: 0; }
-        .dialog-data-list .data-item:last-child { border-bottom: 1px solid #DCDFE6; margin-bottom: 15px; }
-        .dialog-data-list .data-item .title { border-top: 1px solid #DCDFE6; line-height: 26px; margin-top: 10px; padding: 5px 0 15px 0; font-weight: 600; display: flex; justify-content: space-between; }
-        .dialog-data-list .data-item .title i { font-size: 14px; cursor: pointer; padding-left: 10px; font-weight: 500; }
-        .dialog-data-list .data-item .prize-img { max-height: 50px; margin-left: 10px; border: 1px solid var(--border-color); border-radius: 4px; }
-        .dialog-data-list .data-item .winner-list { display: flex; flex-wrap: wrap; margin:-10px -10px 10px -10px; }
-        .dialog-data-list .data-item .winner-list .item { padding: 10px; }
-        .remark { line-height: 22px; background-color: #f0f2f5; padding: 10px; border-radius: 5px; }
+        /* 顶部统计与操作仪表盘 */
+        .tool-dashboard {
+            border-radius: 14px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            transition: all 0.25s ease;
+        }
+        html.dark .tool-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        html:not(.dark) .tool-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
 
-        @media (max-width:800px) {
-            .lottery .body{width:95%;}
+        .dashboard-stats {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        html.dark .stat-badge {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid #334155;
+            color: #94a3b8;
+        }
+        html:not(.dark) .stat-badge {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        .stat-badge strong {
+            font-weight: 700;
+        }
+        html.dark .stat-badge strong {
+            color: #38bdf8;
+        }
+        html:not(.dark) .stat-badge strong {
+            color: #0284c7;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 7px 14px;
+            min-height: 38px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+        html.dark .action-btn-default {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+        }
+        html.dark .action-btn-default:hover {
+            background: #334155;
+            color: #ffffff;
+            border-color: #475569;
+        }
+        html:not(.dark) .action-btn-default {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        html:not(.dark) .action-btn-default:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+            border-color: #94a3b8;
+        }
+
+        html.dark .action-btn-primary {
+            background: linear-gradient(135deg, rgba(2, 132, 199, 0.8), rgba(14, 116, 144, 0.9));
+            border: 1px solid #38bdf8;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+        }
+        html.dark .action-btn-primary:hover {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.45);
+        }
+        html:not(.dark) .action-btn-primary {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            border: 1px solid #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+        }
+        html:not(.dark) .action-btn-primary:hover {
+            background: linear-gradient(135deg, #0369a1, #075985);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+        }
+
+        /* 核心抽奖舞台容器 */
+        .lottery {
+            width: 100%;
+            border-radius: 18px;
+            padding: 24px 20px;
+            position: relative;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        html.dark .lottery {
+            background: radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0.95) 70%),
+                        linear-gradient(180deg, #0d1326 0%, #060913 100%);
+            border: 1px solid #1e293b;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        html:not(.dark) .lottery {
+            background: radial-gradient(ellipse at 50% 0%, rgba(254, 243, 199, 0.65) 0%, rgba(255, 255, 255, 0.95) 65%),
+                        linear-gradient(180deg, #fffdfa 0%, #f8fafc 100%);
+            border: 1px solid #fde68a;
+            box-shadow: 0 10px 30px -10px rgba(217, 119, 6, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+        }
+
+        /* 舞台主标题 */
+        .lottery .stage-header {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .lottery .stage-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        html.dark .lottery .stage-badge {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        html:not(.dark) .lottery .stage-badge {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        .lottery .title {
+            margin: 0;
+            padding: 0;
+            font-size: clamp(22px, 4vw, 32px);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-align: center;
+            line-height: 1.25;
+        }
+        html.dark .lottery .title {
+            background: linear-gradient(135deg, #ffffff 0%, #fef08a 60%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 14px rgba(245, 158, 11, 0.25);
+        }
+        html:not(.dark) .lottery .title {
+            background: linear-gradient(135deg, #b45309 0%, #d97706 60%, #dc2626 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 舞台中央主内容区域 */
+        .lottery .body {
+            width: 100%;
+            max-width: 960px;
+            min-height: 380px;
+            margin: 0 auto;
+            border-radius: 16px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+        html.dark .lottery .body {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+        html:not(.dark) .lottery .body {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 奖品展示网格 (未选择奖品状态) */
+        .prize-grid-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed;
+        }
+        html.dark .prize-grid-header {
+            border-color: #334155;
+        }
+        html:not(.dark) .prize-grid-header {
+            border-color: #e2e8f0;
+        }
+        .prize-grid-title {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        html.dark .prize-grid-title {
+            color: #e2e8f0;
+        }
+        html:not(.dark) .prize-grid-title {
+            color: #1e293b;
+        }
+        .prize-grid-hint {
+            font-size: 12px;
+        }
+        html.dark .prize-grid-hint {
+            color: #94a3b8;
+        }
+        html:not(.dark) .prize-grid-hint {
+            color: #64748b;
+        }
+
+        .prize-list {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            align-items: stretch;
+        }
+        .data-item.prize-card {
+            border-radius: 14px;
+            padding: 18px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+            min-height: 220px;
+        }
+        .data-item.prize-card:hover {
+            transform: translateY(-4px);
+        }
+        html.dark .data-item.prize-card {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        html.dark .data-item.prize-card:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2), 0 0 0 1px rgba(245, 158, 11, 0.4);
+        }
+        html:not(.dark) .data-item.prize-card {
+            background: linear-gradient(180deg, #ffffff 0%, #fffbf2 100%);
+            border: 1px solid #fed7aa;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.08);
+        }
+        html:not(.dark) .data-item.prize-card:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 8px 24px rgba(217, 119, 6, 0.18), 0 0 0 1px rgba(245, 158, 11, 0.3);
+        }
+
+        .prize-card-img-wrap {
+            width: 100%;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .prize-card-img-wrap img {
+            max-width: 100%;
+            max-height: 110px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+            transition: transform 0.25s ease;
+        }
+        .data-item.prize-card:hover .prize-card-img-wrap img {
+            transform: scale(1.06);
+        }
+        .prize-card-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        html.dark .prize-card-badge {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        html:not(.dark) .prize-card-badge {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+        .prize-card-badge.out-of-stock {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .prize-card-info {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .prize-card-name {
+            font-size: 16px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        html.dark .prize-card-name {
+            color: #f8fafc;
+        }
+        html:not(.dark) .prize-card-name {
+            color: #0f172a;
+        }
+        .prize-card-count {
+            font-size: 13px;
+            font-weight: 600;
+        }
+        html.dark .prize-card-count {
+            color: #38bdf8;
+        }
+        html:not(.dark) .prize-card-count {
+            color: #0284c7;
+        }
+
+        .prize-card-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: all 0.15s ease;
+        }
+        html.dark .prize-card-btn {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        html.dark .data-item.prize-card:hover .prize-card-btn {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #38bdf8;
+        }
+        html:not(.dark) .prize-card-btn {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+        html:not(.dark) .data-item.prize-card:hover .prize-card-btn {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+        }
+
+        /* 抽取舞台视图 (已选择特定奖品) */
+        .draw {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .draw-stage-topbar {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed;
+        }
+        html.dark .draw-stage-topbar {
+            border-color: #334155;
+        }
+        html:not(.dark) .draw-stage-topbar {
+            border-color: #e2e8f0;
+        }
+
+        .back-prizes-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            user-select: none;
+        }
+        html.dark .back-prizes-btn {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #334155;
+            color: #94a3b8;
+        }
+        html.dark .back-prizes-btn:hover {
+            color: #ffffff;
+            border-color: #64748b;
+        }
+        html:not(.dark) .back-prizes-btn {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+        }
+        html:not(.dark) .back-prizes-btn:hover {
+            color: #0f172a;
+            border-color: #94a3b8;
+        }
+
+        .draw-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            min-height: 240px;
+        }
+
+        /* 奖品聚焦展示 */
+        .draw-content .prize {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .draw-content .prize img {
+            height: 90px;
+            max-width: 180px;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.25));
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .draw-content.draw-before .prize img {
+            height: 140px;
+            max-width: 240px;
+            animation: floatSlow 3s ease-in-out infinite alternate;
+        }
+        @keyframes floatSlow {
+            from { transform: translateY(0px) scale(1); }
+            to { transform: translateY(-8px) scale(1.02); }
+        }
+
+        .draw-content .prize span {
+            font-size: 20px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        html.dark .draw-content .prize span {
+            color: #fef08a;
+            text-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+        }
+        html:not(.dark) .draw-content .prize span {
+            color: #92400e;
+        }
+        .draw-content .prize span font {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        html.dark .draw-content .prize span font {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+        html:not(.dark) .draw-content .prize span font {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        /* 抽奖前准备状态提示 */
+        .ready-tip-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 6px;
+        }
+        html.dark .ready-tip-box {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            color: #94a3b8;
+        }
+        html:not(.dark) .ready-tip-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        .ready-tip-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 中奖人员展示舞台 */
+        .draw-content .winner {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 14px;
+            box-sizing: border-box;
+            max-height: 280px;
+            overflow-y: auto;
+            position: relative;
+        }
+        html.dark .draw-content .winner {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+        html:not(.dark) .draw-content .winner {
+            background: #fffdf5;
+            border: 1px solid #fed7aa;
+            box-shadow: inset 0 1px 4px rgba(217, 119, 6, 0.08);
+        }
+
+        .winner-banner {
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 12px;
+            border-radius: 20px;
+        }
+        html.dark .winner-banner {
+            background: rgba(234, 88, 12, 0.25);
+            color: #fdba74;
+            border: 1px solid rgba(249, 115, 22, 0.4);
+        }
+        html:not(.dark) .winner-banner {
+            background: #ffedd5;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .draw-content .winner .list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+            padding: 4px;
+        }
+        .draw-content .winner .list .item {
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            min-width: 110px;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+            transition: all 0.15s ease;
+        }
+        html.dark .draw-content .winner .list .item {
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.25) 0%, rgba(245, 158, 11, 0.35) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.6);
+            color: #fef08a;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        html:not(.dark) .draw-content .winner .list .item {
+            background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+            border: 1px solid #f59e0b;
+            color: #9a3412;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.15);
+        }
+
+        /* 正在抽奖状态动效 */
+        .is-drawing .list .item {
+            animation: drawPulse 0.12s infinite alternate;
+        }
+        @keyframes drawPulse {
+            from { transform: scale(0.98); opacity: 0.85; }
+            to { transform: scale(1.02); opacity: 1; }
+        }
+
+        /* 抽奖控制面板 */
+        .draw-control-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        /* 核心大抽奖按钮 */
+        .btn-draw-wrap {
+            position: relative;
+        }
+        .lottery .body .draw .btn-draw {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            line-height: 1;
+            padding: 15px 46px;
+            min-height: 48px;
+            border-radius: 9999px;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            box-sizing: border-box;
+        }
+        .lottery .body .draw .btn-draw:hover {
+            transform: translateY(-2px);
+        }
+        .lottery .body .draw .btn-draw:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        html.dark .lottery .body .draw .btn-draw {
+            background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #f59e0b 100%);
+            border: 2px solid rgba(254, 240, 138, 0.6);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        html.dark .lottery .body .draw .btn-draw:hover {
+            box-shadow: 0 8px 28px rgba(234, 88, 12, 0.55), 0 0 16px rgba(245, 158, 11, 0.4);
+        }
+
+        html:not(.dark) .lottery .body .draw .btn-draw {
+            background: linear-gradient(135deg, #dc2626 0%, #ea580c 60%, #f59e0b 100%);
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+        }
+        html:not(.dark) .lottery .body .draw .btn-draw:hover {
+            box-shadow: 0 8px 26px rgba(220, 38, 38, 0.45);
+        }
+
+        .btn-draw.is-running {
+            animation: drawButtonVibe 0.2s ease infinite;
+        }
+        @keyframes drawButtonVibe {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.98); }
+            100% { transform: scale(1); }
+        }
+
+        /* 抽取人数调节器 */
+        .lottery .body .draw .draw-number {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        html.dark .lottery .body .draw .draw-number {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid #334155;
+            color: #cbd5e1;
+        }
+        html:not(.dark) .lottery .body .draw .draw-number {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .lottery .body .draw .draw-number input {
+            width: 60px;
+            height: 32px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+            transition: all 0.18s ease;
+            box-sizing: border-box;
+        }
+        html.dark .lottery .body .draw .draw-number input {
+            background: #0f172a;
+            border: 1px solid #475569;
+            color: #f8fafc;
+        }
+        html.dark .lottery .body .draw .draw-number input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+        }
+        html:not(.dark) .lottery .body .draw .draw-number input {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+        }
+        html:not(.dark) .lottery .body .draw .draw-number input:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+        }
+
+        /* 快捷人数预设按钮 */
+        .preset-number-pills {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .preset-pill {
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+        html.dark .preset-pill {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #94a3b8;
+        }
+        html.dark .preset-pill:hover,
+        html.dark .preset-pill.active {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            border-color: #38bdf8;
+        }
+        html:not(.dark) .preset-pill {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        html:not(.dark) .preset-pill:hover,
+        html:not(.dark) .preset-pill.active {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #0284c7;
+        }
+
+        /* 底部操作工具栏 */
+        .lottery .bottom {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+            gap: 10px;
+            padding-top: 14px;
+            border-top: 1px dashed;
+        }
+        html.dark .lottery .bottom {
+            border-color: #334155;
+        }
+        html:not(.dark) .lottery .bottom {
+            border-color: #e2e8f0;
+        }
+
+        .bottom-action-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            min-height: 36px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            user-select: none;
+        }
+        html.dark .bottom-action-item {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid #334155;
+            color: #94a3b8;
+        }
+        html.dark .bottom-action-item:hover {
+            background: #334155;
+            color: #f8fafc;
+            border-color: #64748b;
+        }
+        html:not(.dark) .bottom-action-item {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+        }
+        html:not(.dark) .bottom-action-item:hover {
+            background: #f8fafc;
+            color: #0f172a;
+            border-color: #94a3b8;
+        }
+
+        /* 全屏演示模式 */
+        .lottery.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 99999;
+            border-radius: 0;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
+            padding: 30px 24px;
+            box-sizing: border-box;
+        }
+        html.dark .lottery.fullscreen {
+            background: radial-gradient(ellipse at 50% 0%, rgba(124, 58, 237, 0.25) 0%, rgba(15, 23, 42, 0.98) 75%),
+                        linear-gradient(180deg, #070a14 0%, #02040a 100%);
+        }
+        html:not(.dark) .lottery.fullscreen {
+            background: radial-gradient(ellipse at 50% 0%, rgba(254, 243, 199, 0.9) 0%, rgba(255, 255, 255, 0.98) 75%),
+                        linear-gradient(180deg, #fffbeb 0%, #f1f5f9 100%);
+        }
+        .lottery.fullscreen .body {
+            max-width: 1100px;
+            min-height: calc(100vh - 220px);
+            justify-content: center;
+        }
+
+        /* 对话框与设置数据表格美化 */
+        .dialog-data-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .dialog-data-list .no-winner {
+            margin: 40px 0;
+            width: 100%;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        html.dark .dialog-data-list .no-winner {
+            color: #94a3b8;
+        }
+        html:not(.dark) .dialog-data-list .no-winner {
+            color: #64748b;
+        }
+
+        .dialog-data-list .data-item {
+            border-radius: 12px;
+            padding: 14px 16px;
+            transition: all 0.18s ease;
+        }
+        html.dark .dialog-data-list .data-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid #334155;
+        }
+        html:not(.dark) .dialog-data-list .data-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dialog-data-list .data-item .title {
+            line-height: 24px;
+            margin: 0 0 12px 0;
+            padding-bottom: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed;
+        }
+        html.dark .dialog-data-list .data-item .title {
+            border-color: #334155;
+            color: #f8fafc;
+        }
+        html:not(.dark) .dialog-data-list .data-item .title {
+            border-color: #e2e8f0;
+            color: #0f172a;
+        }
+        .dialog-data-list .data-item .title i {
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+        }
+        .dialog-data-list .data-item .title i:hover {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .dialog-data-list .data-item .prize-img {
+            max-height: 52px;
+            margin-left: 10px;
+            border-radius: 6px;
+            object-fit: contain;
+            border: 1px solid;
+        }
+        html.dark .dialog-data-list .data-item .prize-img {
+            border-color: #475569;
+            background: #1e293b;
+        }
+        html:not(.dark) .dialog-data-list .data-item .prize-img {
+            border-color: #cbd5e1;
+            background: #ffffff;
+        }
+
+        .dialog-data-list .data-item .winner-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .dialog-data-list .data-item .winner-list .item {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        html.dark .dialog-data-list .data-item .winner-list .item {
+            background: #1e293b;
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        html:not(.dark) .dialog-data-list .data-item .winner-list .item {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .remark {
+            line-height: 22px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+        html.dark .remark {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            color: #94a3b8;
+        }
+        html:not(.dark) .remark {
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        /* 介绍信息卡片 */
+        .features-intro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
+        .feature-intro-card {
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        html.dark .feature-intro-card {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .feature-intro-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        .feature-intro-title {
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        html.dark .feature-intro-title {
+            color: #38bdf8;
+        }
+        html:not(.dark) .feature-intro-title {
+            color: #0284c7;
+        }
+        .feature-intro-desc {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        html.dark .feature-intro-desc {
+            color: #94a3b8;
+        }
+        html:not(.dark) .feature-intro-desc {
+            color: #64748b;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .lottery {
+                padding: 16px 12px;
+                border-radius: 14px;
+            }
+            .lottery .body {
+                padding: 14px 10px;
+                min-height: 320px;
+            }
+            .prize-list {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 10px;
+            }
+            .data-item.prize-card {
+                padding: 12px 10px;
+                min-height: 180px;
+            }
+            .prize-card-img-wrap {
+                height: 90px;
+            }
+            .prize-card-img-wrap img {
+                max-height: 80px;
+            }
+            .draw-content.draw-before .prize img {
+                height: 100px;
+            }
+            .draw-content .winner .list .item {
+                min-width: 90px;
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            .lottery .body .draw .btn-draw {
+                padding: 12px 32px;
+                font-size: 16px;
+                width: 100%;
+                max-width: 260px;
+            }
+            .preset-number-pills {
+                display: none;
+            }
         }
     </style>
 
@@ -86,134 +1156,313 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
-        
+    <main class="main-body tool-page-body" id="app">
+        <div class="tool-body">
+            <div class="card-model">
+                <div class="card-body">
+                    <div class="tool-head">
+                        <h1 class="title">在线抽奖工具</h1>
+                    </div>
+                    <div class="description">免费在线抽奖程序，可以自定义奖品、奖品数量、抽奖参与人员等，自定义程度高，若您有抽奖需求，不用再重复开发一套抽奖程序，它完全可以满足您的需求。</div>
 
+                    <div class="lottery-wrapper" v-cloak>
+                        <!-- 顶部状态与快速控制栏 -->
+                        <div class="tool-dashboard">
+                            <div class="dashboard-stats">
+                                <div class="stat-badge">
+                                    <span>名单池:</span>
+                                    <strong>{{nameList ? nameList.length : 0}} 人</strong>
+                                </div>
+                                <div class="stat-badge">
+                                    <span>奖品设置:</span>
+                                    <strong>{{lotteryData && lotteryData.prizeList ? lotteryData.prizeList.length : 0}} 类</strong>
+                                </div>
+                                <div class="stat-badge">
+                                    <span>已中奖:</span>
+                                    <strong>{{winnerData ? Object.keys(winnerData).reduce(function(t, k){ return t + (winnerData[k] ? winnerData[k].length : 0); }, 0) : 0}} 人</strong>
+                                </div>
+                            </div>
+                            <div class="dashboard-actions">
+                                <button type="button" class="action-btn action-btn-default" v-on:click="goSetData" aria-label="数据设置">
+                                    <i class="my-icon my-icon-xitong"></i>
+                                    <span>数据设置</span>
+                                </button>
+                                <button type="button" class="action-btn action-btn-default" v-on:click="wnnerDialogVisible = true" aria-label="中奖名单">
+                                    <i class="my-icon my-icon-article"></i>
+                                    <span>中奖名单</span>
+                                </button>
+                                <button type="button" class="action-btn action-btn-primary" v-on:click="setFullscreen" aria-label="全屏演示">
+                                    <i class="my-icon" v-bind:class="fullscreen ? 'my-icon-tuichuquanping' : 'my-icon-quanping'"></i>
+                                    <span>{{fullscreen ? '退出全屏' : '全屏演示'}}</span>
+                                </button>
+                            </div>
+                        </div>
 
-<div class="tool-body">
-    <div class="card-model">
-        <div class="card-body">
-            <div class="tool-head">
-                <h1 class="title">在线抽奖工具</h1>
-            </div>
-            <div class="description">免费在线抽奖程序，可以自定义奖品、奖品数量、抽奖参与人员等，自定义程度高，若您有抽奖需求，不用再重复开发一套抽奖程序，它完全可以满足您的需求。</div>
-            <div v-cloak class="lottery" v-bind:class="fullscreen?'fullscreen':''">
-                <div class="title">{{lotteryData.title}}</div>
-                <div class="body">
-                    <div v-if="currentDrawPrizeIndex==null" class="prize-list">
-                        <div class="data-item" v-for="(item,index) in lotteryData.prizeList" v-on:click="currentDrawPrizeIndex=index">
-                            <img :src="item.img" />
-                            <span>{{item.name}}<font>({{item.count}})</font></span>
+                        <!-- 抽奖大厅舞台 -->
+                        <div class="lottery" v-bind:class="fullscreen ? 'fullscreen' : ''">
+                            <div class="stage-header">
+                                <div class="stage-badge">
+                                    <span>★ 幸运摇号现场 ★</span>
+                                </div>
+                                <h2 class="title">{{lotteryData.title}}</h2>
+                            </div>
+
+                            <div class="body">
+                                <!-- 场景一：奖品选择大厅 (未选中具体奖品) -->
+                                <div v-if="currentDrawPrizeIndex == null" class="prize-list-wrapper" style="width:100%;">
+                                    <div class="prize-grid-header">
+                                        <div class="prize-grid-title">
+                                            <i class="my-icon my-icon-article"></i>
+                                            <span>选择奖品开启抽取</span>
+                                        </div>
+                                        <div class="prize-grid-hint">
+                                            点击下方卡片即可进入专属抽奖台
+                                        </div>
+                                    </div>
+
+                                    <div class="prize-list">
+                                        <div class="data-item prize-card" 
+                                             v-for="(item, index) in lotteryData.prizeList" 
+                                             :key="index"
+                                             v-on:click="currentDrawPrizeIndex = index"
+                                             role="button"
+                                             tabindex="0"
+                                             :aria-label="'抽取' + item.name">
+                                            <div class="prize-card-badge" :class="{'out-of-stock': item.count == 0}">
+                                                {{ item.count == 0 ? '已抽完' : '剩余 ' + item.count + ' 份' }}
+                                            </div>
+                                            <div class="prize-card-img-wrap">
+                                                <img :src="item.img || './img/prize.png'" :alt="item.name" loading="lazy" />
+                                            </div>
+                                            <div class="prize-card-info">
+                                                <span class="prize-card-name">{{item.name}}</span>
+                                                <span class="prize-card-count">奖品数量: {{item.count}}</span>
+                                            </div>
+                                            <div class="prize-card-btn">
+                                                <span>开始抽取</span>
+                                                <span>&rarr;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 场景二：单项抽奖工作台 (已选定某奖品) -->
+                                <div v-else class="draw" :class="{'is-drawing': lotterying}">
+                                    <div class="draw-stage-topbar">
+                                        <button type="button" class="back-prizes-btn" v-on:click="backHome" :disabled="lotterying">
+                                            <i class="my-icon my-icon-fanhui"></i>
+                                            <span>返回奖品列表</span>
+                                        </button>
+                                        <div class="stat-badge">
+                                            <span>当前奖池:</span>
+                                            <strong>{{lotteryData.prizeList[currentDrawPrizeIndex].name}}</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="draw-content" v-bind:class="{'draw-before': winnerList == null}">
+                                        <div class="prize">
+                                            <img :src="lotteryData.prizeList[currentDrawPrizeIndex].img || './img/prize.png'" :alt="lotteryData.prizeList[currentDrawPrizeIndex].name" />
+                                            <span>
+                                                {{lotteryData.prizeList[currentDrawPrizeIndex].name}}
+                                                <font>剩余 {{lotteryData.prizeList[currentDrawPrizeIndex].count}} 份</font>
+                                            </span>
+                                        </div>
+
+                                        <!-- 抽奖前待机提示 -->
+                                        <div v-if="winnerList == null && !lotterying" class="ready-tip-box">
+                                            <span class="ready-tip-text">万事俱备，点击下方大按钮开启本轮抽取！</span>
+                                        </div>
+
+                                        <!-- 中奖人员展示区 -->
+                                        <div v-if="winnerList != null" class="winner">
+                                            <div class="winner-banner">
+                                                <span>{{ lotterying ? '🎲 命运之轮高速旋转中...' : '🎉 恭喜本轮幸运中奖者！' }}</span>
+                                            </div>
+                                            <div class="list">
+                                                <div class="item" v-for="(item, idx) in winnerList" :key="idx">
+                                                    {{item}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 操作与抽奖按钮 -->
+                                    <div class="draw-control-panel">
+                                        <div class="btn-draw-wrap">
+                                            <span class="btn-draw" 
+                                                  :class="{'is-running': lotterying}"
+                                                  v-on:click="goDrawLottery">
+                                                <span v-if="lotterying">⚡ 抽奖中...</span>
+                                                <span v-else-if="winnerList != null">🎁 继续抽奖</span>
+                                                <span v-else>🚀 开始抽奖</span>
+                                            </span>
+                                        </div>
+
+                                        <div class="draw-number">
+                                            <span>抽取人数</span>
+                                            <input type="text" 
+                                                   v-model="drawPeopleNumber" 
+                                                   v-on:input="inputDrawPeopleNumber" 
+                                                   aria-label="单次抽取人数" />
+                                            <div class="preset-number-pills">
+                                                <span class="preset-pill" :class="{active: drawPeopleNumber == 1}" v-on:click="drawPeopleNumber = 1">1人</span>
+                                                <span class="preset-pill" :class="{active: drawPeopleNumber == 5}" v-on:click="drawPeopleNumber = 5">5人</span>
+                                                <span class="preset-pill" :class="{active: drawPeopleNumber == 10}" v-on:click="drawPeopleNumber = 10">10人</span>
+                                                <span class="preset-pill" v-on:click="drawPeopleNumber = lotteryData.prizeList[currentDrawPrizeIndex].count">全部</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 舞台底部全局功能栏 -->
+                            <div class="bottom">
+                                <span class="bottom-action-item" v-on:click="goSetData">
+                                    <i class="my-icon my-icon-xitong"></i>
+                                    <span>数据设置</span>
+                                </span>
+                                <span class="bottom-action-item" v-on:click="wnnerDialogVisible = true">
+                                    <i class="my-icon my-icon-article"></i>
+                                    <span>中奖名单</span>
+                                </span>
+                                <span class="bottom-action-item" v-on:click="setFullscreen">
+                                    <i class="my-icon" v-bind:class="fullscreen ? 'my-icon-tuichuquanping' : 'my-icon-quanping'"></i>
+                                    <span>{{fullscreen ? '退出全屏' : '全屏显示'}}</span>
+                                </span>
+                                <span v-if="currentDrawPrizeIndex != null" class="bottom-action-item" v-on:click="backHome">
+                                    <i class="my-icon my-icon-fanhui"></i>
+                                    <span>返回主页</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div v-else class="draw">
-                        <div class="draw-content" v-bind:class="{'draw-before':winnerList==null}">
-                            <div class="prize">
-                                <img :src="lotteryData.prizeList[currentDrawPrizeIndex].img" />
-                                <span>{{lotteryData.prizeList[currentDrawPrizeIndex].name}}<font>({{lotteryData.prizeList[currentDrawPrizeIndex].count}})</font></span>
+
+                    <div class="divider"></div>
+                    
+                    <!-- 简介与功能特性说明 -->
+                    <div class="content">
+                        <h3>抽奖程序简介</h3>
+                        <p>免费在线抽奖程序，可以自定义奖品、奖品数量、抽奖参与人员等，自定义程度高，若您有抽奖需求，不用再重复开发一套抽奖程序，它完全可以满足您的需求。</p>
+                        <p>本程序通过随机选择的方式，实现公平、公正、公开的抽奖。类似于现实生活中的摇奖机、抽奖机、摇号机、摇奖机器等，非常适合在年会、季末年末等聚会场合下的抽奖。</p>
+                        
+                        <div class="features-intro-grid">
+                            <div class="feature-intro-card">
+                                <div class="feature-intro-title">
+                                    <span>🎯 公平随机算法</span>
+                                </div>
+                                <div class="feature-intro-desc">
+                                    基于真伪随机混合去重打乱，绝无偏私作弊，保证每一位参与者均等的中奖概率。
+                                </div>
                             </div>
-                            <div v-if="winnerList!=null" class="winner">
-                                <div class="list">
-                                    <div class="item" v-for="item in winnerList">{{item}}</div>
+                            <div class="feature-intro-card">
+                                <div class="feature-intro-title">
+                                    <span>📝 灵活名单管理</span>
+                                </div>
+                                <div class="feature-intro-desc">
+                                    支持一键批量粘贴花名册或工号，系统自动查重过滤，每位人员自动限制单次中奖。
+                                </div>
+                            </div>
+                            <div class="feature-intro-card">
+                                <div class="feature-intro-title">
+                                    <span>🖥️ 大屏全屏投影</span>
+                                </div>
+                                <div class="feature-intro-desc">
+                                    专为公司年会、沙龙庆典优化的全屏沉浸演示模式，自适应投影与电视大屏幕。
+                                </div>
+                            </div>
+                            <div class="feature-intro-card">
+                                <div class="feature-intro-title">
+                                    <span>💾 本地安全保存</span>
+                                </div>
+                                <div class="feature-intro-desc">
+                                    数据完全存储于本地浏览器缓存，保护企业内网隐私，随时关停与续抽。
                                 </div>
                             </div>
                         </div>
-                        <span class="btn-draw" v-on:click="goDrawLottery">{{lotterying?`抽奖中`:winnerList!=null?`继续抽奖`:`开始抽奖`}}</span>
-                        <div class="draw-number">
-                            <span>抽取人数</span>
-                            <input type="text" v-model="drawPeopleNumber" v-on:input="inputDrawPeopleNumber" />
-                        </div>
                     </div>
                 </div>
-                <div class="bottom">
-                    <span v-on:click="goSetData"><i class="my-icon my-icon-xitong"></i>数据设置</span>
-                    <span v-on:click="wnnerDialogVisible=true"><i class="my-icon my-icon-article"></i>中奖名单</span>
-                    <span v-on:click="setFullscreen"><i class="my-icon " v-bind:class="fullscreen?'my-icon-tuichuquanping':'my-icon-quanping'"></i>{{fullscreen?`退出全屏`:`全屏显示`}}</span>
-                    <span v-if="currentDrawPrizeIndex!=null" v-on:click="backHome"><i class="my-icon my-icon-fanhui"></i>返回主页</span>
-                </div>
-            </div>
-            <div class="divider"></div>
-            <div class="content">
-                <h3>抽奖程序简介</h3><p>免费在线抽奖程序，可以自定义奖品、奖品数量、抽奖参与人员等，自定义程度高，若您有抽奖需求，不用再重复开发一套抽奖程序，它完全可以满足您的需求。</p><p>本程序通过随机选择的方式，实现公平、公正、公开的抽奖。类似于现实生活中的摇奖机,抽奖机,摇号机,摇奖机器等，非常适合在年会、季未年未等聚会场合下的抽奖。</p>
+
+                <!-- 抽奖数据设置弹窗 -->
+                <el-dialog v-model="setDataDialogVisible" title="抽奖数据设置" width="700px" v-cloak destroy-on-close>
+                    <el-form ref="formRef" :model="formData" v-if="formData">
+                        <el-tabs v-model="dataTabActive">
+                            <el-tab-pane label="奖品配置" name="prize">
+                                <div class="dialog-data-list">
+                                    <div class="data-item" v-for="(prize, index) in formData.prizeList" :key="index">
+                                        <div class="title">
+                                            <span>{{ '奖品 ' + (index + 1) }}</span>
+                                            <i class="my-icon my-icon-cuo" v-on:click="removePrize(prize)" title="删除此奖品"></i>
+                                        </div>
+                                        <el-form-item label="奖品图片">
+                                            <el-button size="small" v-on:click="selectPrizeImg(index)">选择奖品图片</el-button>
+                                            <img v-if="prize.img != null && prize.img != ''" v-bind:src="prize.img" class="prize-img" alt="奖品缩略图" />
+                                        </el-form-item>
+                                        <el-form-item :prop="'prizeList.' + index + '.name'" :rules="{required: true, message: '请输入奖品名称', trigger: 'blur'}">
+                                            <el-input-extend v-model="prize.name" label="奖品名称" class="w100"></el-input-extend>
+                                        </el-form-item>
+                                        <el-form-item :prop="'prizeList.' + index + '.count'" :rules="[{required: true, message: '请输入数量', trigger: 'blur'}, { pattern: /^[0-9]+$/, message: '必须是大于等于0的整数', trigger: 'blur' }]">
+                                            <el-input-extend type="number" v-model="prize.count" label="剩余奖品数量" class="w100"></el-input-extend>
+                                        </el-form-item>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 14px;">
+                                    <el-button type="primary" plain v-on:click="addPrize">+ 新增奖项</el-button>
+                                </div>
+                                <div class="remark">
+                                    <div>💡 提示：奖品图片是选填项，支持本地图片上传并自动轻量压缩存储。</div>
+                                </div>
+                            </el-tab-pane>
+
+                            <el-tab-pane label="参与人员名单" name="people">
+                                <el-form-item style="margin-top: 10px;" prop="names" :rules="{required: true, message: '请输入参与人员名单', trigger: 'blur'}">
+                                    <el-input v-model="formData.names" :rows="10" type="textarea" placeholder="请每行输入一个人员名称，如：&#10;张三&#10;李四&#10;王五" />
+                                </el-form-item>
+                                <div class="remark">
+                                    <div>💡 提示：每行一个人员名称或工号，抽奖时系统自动去重，每人最多中奖一次。</div>
+                                </div>
+                            </el-tab-pane>
+
+                            <el-tab-pane label="活动标题与全局" name="other">
+                                <el-form-item style="margin-top: 10px;" prop="title" :rules="{required: true, message: '请输入标题', trigger: 'blur'}">
+                                    <el-input-extend v-model="formData.title" label="主舞台大标题" class="w100"></el-input-extend>
+                                </el-form-item>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </el-form>
+                    <template #footer>
+                        <el-button v-on:click="setDataDialogVisible = false">取消</el-button>
+                        <el-button type="primary" v-on:click="setData">确认并保存</el-button>
+                    </template>
+                </el-dialog>
+
+                <!-- 隐藏的图片上传文件选择器 (严禁修改ID) -->
+                <input id="flFile" name="flFile" type="file" accept="image/jpg,image/jpeg,image/png,image/gif,image/bmp" style="display:none" />
+
+                <!-- 中奖名单查询与管理弹窗 -->
+                <el-dialog v-model="wnnerDialogVisible" title="中奖名单一览" width="700px" v-cloak>
+                    <div class="dialog-data-list">
+                        <div v-if="!winnerData || Object.keys(winnerData).length == 0" class="no-winner">
+                            暂无中奖者记录，快去开启抽奖吧！
+                        </div>
+                        <div v-else class="data-item" v-for="(item, key) in winnerData" :key="key">
+                            <div class="title">
+                                <span>🏆 {{key}} (共 {{item.length}} 人)</span>
+                                <i class="my-icon my-icon-cuo" v-on:click="removeWinnerData(key)" title="清除该奖项名单"></i>
+                            </div>
+                            <div class="winner-list">
+                                <div class="item" v-for="(winner, wIdx) in item" :key="wIdx">{{winner}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <template #footer>
+                        <el-button v-if="winnerData && Object.keys(winnerData).length > 0" type="danger" v-on:click="removeWinnerData()">清空全部中奖记录</el-button>
+                        <el-button type="primary" v-on:click="wnnerDialogVisible = false">关闭</el-button>
+                    </template>
+                </el-dialog>
             </div>
         </div>
-
-        <el-dialog v-model="setDataDialogVisible" title="数据设置" width="700" v-cloak>
-            <el-form ref="formRef" :model="formData">
-                <el-tabs v-model="dataTabActive">
-                    <el-tab-pane label="奖品" name="prize">
-                        <div class="dialog-data-list">
-                            <div class="data-item" v-for="(prize, index) in formData.prizeList">
-                                <div class="title">
-                                    <span>{{`奖品1`.replace('1',index+1)}}</span>
-                                    <i class="my-icon my-icon-cuo" v-on:click="removePrize(prize)"></i>
-                                </div>
-                                <el-form-item>
-                                    <el-button v-on:click="selectPrizeImg(index)">选择奖品图片</el-button>
-                                    <img v-if="prize.img!=null && prize.img!=''" v-bind:src="prize.img" class="prize-img" />
-                                </el-form-item>
-                                <el-form-item :prop="'prizeList.' + index + '.name'" :rules="{required: true, message: `请输入`, trigger: 'blur'}">
-                                    <el-input-extend v-model="prize.name" label="奖品名称" class="w100"></el-input-extend>
-                                </el-form-item>
-                                <el-form-item :prop="'prizeList.' + index + '.count'" :rules="[{required: true, message: `请输入`, trigger: 'blur'}, { pattern: /^[0-9]+$/, message: `必须是大于等于0的整数`, trigger: 'blur' }]">
-                                    <el-input-extend type="number" v-model="prize.count" label="剩余奖品数量" class="w100"></el-input-extend>
-                                </el-form-item>
-                            </div>
-                        </div>
-                        <el-form-item>
-                            <el-button v-on:click="addPrize">+ 新增奖品</el-button>
-                        </el-form-item>
-                        <div class="remark">
-                            <div>备注：奖品图片是选填项</div>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane label="抽奖参与人员" name="people">
-                        <el-form-item style="margin-top:10px" prop="names" :rules="{required: true, message: `请输入`, trigger: 'blur'}">
-                            <el-input v-model="formData.names" :rows="10" type="textarea" />
-                        </el-form-item>
-                        <div class="remark">
-                            <div>备注：每行一个人员名称，每个人最多中一次奖</div>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane label="其他" name="other">
-                        <el-form-item style="margin-top:10px" prop="title" :rules="{required: true, message: `请输入`, trigger: 'blur'}">
-                            <el-input-extend v-model="formData.title" label="头部标题" class="w100"></el-input-extend>
-                        </el-form-item>
-                    </el-tab-pane>
-                </el-tabs>
-            </el-form>
-            <template #footer>
-                <el-button v-on:click="setDataDialogVisible = false">取消</el-button>
-                <el-button type="primary" v-on:click="setData">确定</el-button>
-            </template>
-        </el-dialog>
-        <input id="flFile" name="flFile" type="file" accept="image/jpg,image/jpeg,image/png,image/gif,image/bmp" style="display:none" />
-
-        <el-dialog v-model="wnnerDialogVisible" title="中奖名单" width="700" v-cloak>
-            <div class="dialog-data-list">
-                <div v-if="Object.keys(winnerData).length==0" class="no-winner">暂无中奖者</div>
-                <div v-else class="data-item" v-for="(item, key) in winnerData">
-                    <div class="title" style="padding-top:15px;">
-                        <span>{{key}}({{item.length}})</span>
-                        <i class="my-icon my-icon-cuo" v-on:click="removeWinnerData(key)"></i>
-                    </div>
-                    <div class="winner-list">
-                        <div class="item" v-for="winner in item">{{winner}}</div>
-                    </div>
-                </div>
-            </div>
-            <template #footer>
-                <el-button v-if="Object.keys(winnerData).length>0" type="danger" v-on:click="removeWinnerData()">清空中奖名单</el-button>
-                <el-button type="primary" v-on:click="wnnerDialogVisible = false">关闭</el-button>
-            </template>
-        </el-dialog>
-    </div>
-</div>
-<comment :relate-id="32" :comment-class="2"></comment>
-
-
+        <comment :relate-id="32" :comment-class="2"></comment>
     </main>
-</div>
 
     <script>
         var languageCode = 'zh';
@@ -227,8 +1476,8 @@
         var wp='zp';
         var ap='qx';
     </script>
-        <script src="./lib/vue/vue.global.prod.js"></script>
-        <script src="./lib/element-plus/index.js"></script>
+    <script src="./lib/vue/vue.global.prod.js"></script>
+    <script src="./lib/element-plus/index.js"></script>
     <script src="./lib/element-plus/locale/en.js"></script>
     <script src="./lib/element-plus/locale/zh-tw.js"></script>
     <script src="./js/components/SlideCaptcha.js?v=260728100716"></script>
@@ -238,8 +1487,5 @@
     <script src="./js/components/Comment.js?260728100716"></script>
     <script src="./js/components/ElInputExtend.js?260728100716"></script>
     <script src="./js/tools/ent/lottery.js?260728100716"></script>
-
-
-        
 </body>
 </html>
