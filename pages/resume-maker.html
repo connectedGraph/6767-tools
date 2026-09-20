@@ -1,2428 +1,2249 @@
 <!DOCTYPE html>
 <html lang="zh-CN" class="dark">
 <head>
-    <script src="./js/theme.js"></script>
-    <script src="./js/i18n.js"></script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>现代简历制作与排版器 - 所见即所得 A4 简历在线编辑 - 在线工具</title>
-    <meta name="description" content="现代简历制作与排版器：所见即所得 A4 简历在线编辑器，多套精英风格主题排版，JSON 数据驱动，支持导出 HTML/PNG/PDF，全部本地运行零上传。" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="在线工具集" />
-    <meta property="og:title" content="现代简历制作与排版器 - 在线工具" />
-    <meta property="og:description" content="所见即所得 A4 简历在线编辑器，多套精英风格主题排版，导出 HTML/PNG/PDF，全部本地运行零上传。" />
-    <meta property="og:url" content="https://tool.6767.chat/resume-maker" />
-    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="现代简历制作与排版器 - 在线工具" />
-    <meta name="twitter:description" content="所见即所得 A4 简历在线编辑器，多套精英风格主题排版，导出 HTML/PNG/PDF，全部本地运行零上传。" />
-    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
-    <link rel="canonical" href="https://tool.6767.chat/resume-maker" />
-    <link href="./css/tool-dark.css?v=20260830" rel="stylesheet" />
-
-  <script src="/lib/html2canvas/html2canvas.min.js"></script>
-  <!-- Google Fonts for premium typography -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>现代简历制作与排版器 - 在线工具</title>
+<meta name="description" content="所见即所得 A4 简历在线编辑器，支持主题风格、模块管理、实时排版、JSON 数据与 PNG / PDF 导出。">
+<link rel="canonical" href="https://tool.6767.chat/resume-maker">
+<script src="./js/theme.js"></script>
+<script src="./js/i18n.js"></script>
+<script src="/lib/html2canvas/html2canvas.min.js"></script>
 <link href="/lib/fonts/resume/resume-fonts.css" rel="stylesheet">
-  
-  <style>
-    /* Global Reset & Base Variables */
-    :root {
-      /* Editor UI colors */
-      --ui-bg: #0f172a;
-      --ui-border: #1e293b;
-      --ui-text-muted: #94a3b8;
-      --ui-accent: #6366f1;
-      --ui-accent-hover: #4f46e5;
-      
-      /* Resume Document Default Variables (will change dynamically) */
-      --primary-color: #0f2c59; /* Wall Street Navy */
-      --font-family: 'Inter', sans-serif;
-      --title-font-family: 'Inter', sans-serif;
-      --font-size-base: 9.5pt;
-      --line-height: 1.2;
-      --page-margin-y: 1.0cm;
-      --page-margin-x: 1.0cm;
-      --section-spacing: 0.6rem;
-      --item-spacing: 0.4rem;
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background-color: #050a14;
-      color: #cbd5e1;
-      /* 站点顶栏(44px)与编辑器工具条(60px)均在文档流内，flex:1 的工作区自动占满剩余高度；
-         此前写 calc(100vh - 44px) 把顶栏高度扣了两次，导致页面底部缺 44px 露出白底 */
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    /* Top Bar UI */
-    .top-bar {
-      height: 60px;
-      background-color: var(--ui-bg);
-      border-bottom: 1px solid var(--ui-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 1.5rem;
-      color: white;
-      z-index: 40;
-    }
-    
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    
-    .logo-container svg {
-      width: 24px;
-      height: 24px;
-      fill: var(--ui-accent);
-    }
-    
-    .logo-title {
-      font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: -0.025em;
-      background: linear-gradient(135deg, #a5b4fc, #6366f1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    
-    /* Workspace Layout */
-    .workspace {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-    }
-    
-    /* Sidebar styling */
-    .sidebar {
-      width: 340px;
-      background-color: var(--ui-bg);
-      border-right: 1px solid var(--ui-border);
-      display: flex;
-      flex-direction: column;
-      color: white;
-      overflow-y: auto;
-      z-index: 30;
-      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Tabs */
-    .tab-header {
-      display: flex;
-      border-bottom: 1px solid var(--ui-border);
-    }
-    
-    .tab-btn {
-      flex: 1;
-      padding: 1rem 0.5rem;
-      background: none;
-      border: none;
-      color: var(--ui-text-muted);
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s;
-      text-align: center;
-    }
-    
-    .tab-btn.active {
-      color: white;
-      border-bottom-color: var(--ui-accent);
-      background-color: rgba(255, 255, 255, 0.02);
-    }
-    
-    .tab-content-container {
-      padding: 1.5rem;
-      flex: 1;
-    }
-    
-    .tab-content {
-      display: block;
-    }
-    
-    .tab-content.hidden {
-      display: none;
-    }
-    
-    /* Sidebar controls */
-    .control-group {
-      margin-bottom: 1.5rem;
-    }
-    
-    .control-label {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: var(--ui-text-muted);
-      margin-bottom: 0.5rem;
-      letter-spacing: 0.05em;
-    }
-    
-    /* Presets panel */
-    .presets-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-    }
-    
-    .preset-btn {
-      background-color: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      padding: 0.75rem;
-      color: white;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.2s;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-    
-    .preset-btn:hover {
-      border-color: var(--ui-accent);
-      background-color: #1e293b;
-    }
-    
-    .preset-btn.active {
-      border-color: var(--ui-accent);
-      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-    }
-    
-    .preset-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-    }
-    
-    .preset-desc {
-      font-size: 0.7rem;
-      color: var(--ui-text-muted);
-    }
-    
-    /* Form inputs */
-    select, input[type="text"], textarea {
-      width: 100%;
-      background-color: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      padding: 0.6rem 0.8rem;
-      color: white;
-      font-size: 0.85rem;
-      outline: none;
-      transition: all 0.2s;
-    }
-    
-    select:focus, input[type="text"]:focus, textarea:focus {
-      border-color: var(--ui-accent);
-    }
-    
-    /* Custom Slider */
-    .slider-container {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .slider-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-    }
-    
-    .slider-value {
-      color: var(--ui-accent);
-      font-weight: 600;
-    }
-    
-    input[type="range"] {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 6px;
-      background: #1e293b;
-      border-radius: 3px;
-      outline: none;
-    }
-    
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      background: var(--ui-accent);
-      border-radius: 50%;
-      cursor: pointer;
-      transition: transform 0.1s;
-    }
-    
-    input[type="range"]::-webkit-slider-thumb:hover {
-      transform: scale(1.2);
-    }
-    
-    /* Color Palette */
-    .color-palette {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-    
-    .color-circle {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-    }
-    
-    .color-circle:hover {
-      transform: scale(1.1);
-    }
-    
-    .color-circle.active {
-      border-color: white;
-      box-shadow: 0 0 0 2px var(--ui-accent);
-    }
-    
-    .custom-color-input {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .custom-color-input input[type="color"] {
-      border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      background: none;
-      cursor: pointer;
-    }
-    
-    /* Section list for manager */
-    .section-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .section-item-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #1e293b;
-      border: 1px solid #334155;
-      padding: 0.6rem 0.8rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-    }
-    
-    .section-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .section-actions {
-      display: flex;
-      gap: 0.25rem;
-    }
-    
-    /* Interactive A4 Desk Canvas */
-    .canvas-container {
-      flex: 1;
-      overflow: auto;
-      padding: 2rem;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      background-color: #0b1220;
-      position: relative;
-    }
-    
-    .page-wrapper {
-      position: relative;
-      transition: transform 0.2s;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* A4 Sheet styling */
-    .a4-page {
-      width: 21cm;
-      min-height: 29.7cm;
-      background-color: white;
-      padding: var(--page-margin-y) var(--page-margin-x);
-      box-sizing: border-box;
-      font-family: var(--font-family);
-      font-size: var(--font-size-base);
-      line-height: var(--line-height);
-      color: #1f2937;
-      transition: padding 0.15s ease;
-      position: relative;
-    }
-    
-    /* Editable elements focus outline styling */
-    [contenteditable="true"]:focus {
-      outline: 2px dashed var(--ui-accent);
-      outline-offset: 2px;
-      background-color: rgba(99, 102, 241, 0.03);
-    }
-    
-    /* Page break limits (only editor mode) */
-    .page-guide-1 {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 0;
-      border-top: 2px dashed #cbd5e1;
-      transition: border-color 0.2s;
-      pointer-events: none;
-      z-index: 10;
-    }
-    
-    .page-guide-1::after {
-      content: "单页限制线 (Page 1 Limit)";
-      position: absolute;
-      right: 16px;
-      top: -20px;
-      background: #e2e8f0;
-      color: #64748b;
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 500;
-    }
-    
-    .page-guide-1.overflowing {
-      border-top: 2px dashed #f43f5e;
-    }
-    
-    .page-guide-1.overflowing::after {
-      background: #f43f5e;
-      color: white;
-    }
-    
-    /* Floating Formatting Toolbar */
-    .floating-toolbar {
-      position: absolute;
-      display: none;
-      align-items: center;
-      background-color: #0f172a;
-      border: 1px solid #334155;
-      color: white;
-      border-radius: 8px;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-      padding: 0.25rem;
-      z-index: 100;
-      gap: 2px;
-    }
-    
-    .toolbar-btn {
-      background: none;
-      border: none;
-      color: white;
-      padding: 0.4rem 0.6rem;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.15s;
-    }
-    
-    .toolbar-btn:hover {
-      background-color: #1e293b;
-    }
-    
-    .toolbar-btn svg {
-      width: 14px;
-      height: 14px;
-      fill: currentColor;
-    }
-    
-    .toolbar-divider {
-      width: 1px;
-      height: 16px;
-      background-color: #334155;
-      margin: 0 0.25rem;
-    }
-    
-    /* Button Styles in UI */
-    .btn {
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      border: none;
-      transition: all 0.2s;
-    }
-    
-    .btn-primary {
-      background-color: var(--ui-accent);
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background-color: var(--ui-accent-hover);
-    }
-    
-    .btn-secondary {
-      background-color: #1e293b;
-      color: white;
-      border: 1px solid #334155;
-    }
-    
-    .btn-secondary:hover {
-      background-color: #334155;
-      border-color: #475569;
-    }
-    
-    .btn-icon {
-      padding: 0.4rem;
-      border-radius: 6px;
-      background: none;
-      border: none;
-      color: var(--ui-text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .btn-icon:hover {
-      color: white;
-      background-color: #1e293b;
-    }
-    
-    .btn-icon svg {
-      width: 16px;
-      height: 16px;
-      fill: currentColor;
-    }
-    
-    .btn-icon-xs {
-      padding: 2px;
-      background: none;
-      border: none;
-      color: #94a3b8;
-      cursor: pointer;
-      border-radius: 3px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
-    
-    .btn-icon-xs:hover {
-      background-color: #334155;
-      color: #f8fafc;
-    }
-    
-    .btn-icon-xs svg {
-      width: 12px;
-      height: 12px;
-      fill: currentColor;
-    }
-    
-    /* Zoom Slider */
-    .zoom-control {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background-color: #1e293b;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-    }
-    
-    /* Warning Banner */
-    .warning-banner {
-      position: absolute;
-      top: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #450a0a;
-      border: 1px solid #b91c1c;
-      color: #fecaca;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-      z-index: 20;
-    }
-    
-    /* Resume Content Styling */
-    .resume-header {
-      text-align: center;
-      margin-bottom: calc(var(--section-spacing) * 1.2);
-    }
+<link href="./css/tool-dark.css?v=20260830" rel="stylesheet">
+<style>
+:root {
+  --ui-bg: #070d19;
+  --ui-panel: #0d1728;
+  --ui-panel-2: #111f34;
+  --ui-border: #223249;
+  --ui-text: #e2e8f0;
+  --ui-muted: #94a3b8;
+  --ui-accent: #38bdf8;
+  --ui-accent-dark: #0284c7;
+  --primary-color: #0f2c59;
+  --font-family: 'Inter', system-ui, sans-serif;
+  --title-font-family: 'Inter', system-ui, sans-serif;
+  --font-size-base: 9.5pt;
+  --line-height: 1.2;
+  --page-margin-y: 1cm;
+  --page-margin-x: 1cm;
+  --section-spacing: .6rem;
+  --item-spacing: .4rem;
+}
 
-    .resume-header.compact-header {
-      text-align: left;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: calc(var(--section-spacing) * 0.8);
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .resume-header.compact-header h1 {
-      font-size: 1.6em;
-      margin-bottom: 0.1rem;
-    }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  overflow-x: hidden;
+}
 
-    .resume-header.compact-header .resume-header-title {
-      margin-bottom: 0;
-      font-size: 0.85em;
-    }
+body {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #070d19;
+  color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+}
 
-    .resume-header.compact-header .resume-header-contact {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.15rem 1rem;
-      justify-content: end;
-      text-align: right;
-      font-size: 0.8em;
-    }
-    
-    .resume-header h1 {
-      font-size: 2.2em;
-      font-weight: 800;
-      color: #111827;
-      letter-spacing: -0.025em;
-      margin-bottom: 0.25rem;
-    }
-    
-    .resume-header-title {
-      font-size: 0.95em;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--primary-color);
-      margin-bottom: 0.5rem;
-    }
-    
-    .resume-header-contact {
-      font-size: 0.85em;
-      color: #4b5563;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.5rem 1rem;
-    }
-    
-    .resume-header-contact span {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-    
-    .resume-header-contact a {
-      color: #4b5563;
-      text-decoration: none;
-    }
-    
-    .resume-header-contact a:hover {
-      text-decoration: underline;
-      color: var(--primary-color);
-    }
-    
-    .resume-section {
-      margin-bottom: var(--section-spacing);
-      position: relative;
-    }
-    
-    .section-title {
-      font-family: var(--title-font-family, var(--font-family));
-      font-size: 1.05em;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--primary-color);
-      border-bottom: 1.5px solid var(--primary-color);
-      padding-bottom: 3px;
-      margin-bottom: calc(var(--item-spacing) * 0.7);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .section-title span {
-      position: relative;
-    }
-    
-    .resume-item {
-      margin-bottom: var(--item-spacing);
-      position: relative;
-    }
-    
-    .resume-item:last-child {
-      margin-bottom: 0;
-    }
-    
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      font-weight: 700;
-      color: #111827;
-      margin-bottom: 2px;
-    }
-    
-    .item-sub-header {
-      display: flex;
-      justify-content: space-between;
-      font-style: italic;
-      color: #4b5563;
-      font-size: 0.95em;
-      margin-bottom: 6px;
-    }
-    
-    .resume-bullets {
-      list-style-type: disc;
-      padding-left: 1.25rem;
-      margin: 0;
-    }
-    
-    .resume-bullets li {
-      margin-bottom: 3px;
-      color: #374151;
-    }
-    
-    .resume-bullets li:last-child {
-      margin-bottom: 0;
-    }
-    
-    .resume-bullets strong {
-      font-weight: 600;
-      color: #111827;
-    }
-    
-    /* Skills row */
-    .skills-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    .skills-row {
-      border-bottom: 1px solid #f3f4f6;
-    }
-    
-    .skills-row:last-child {
-      border-bottom: none;
-    }
-    
-    .skills-cat {
-      font-weight: 700;
-      color: #111827;
-      padding: 0.4rem 0.5rem 0.4rem 0;
-      vertical-align: top;
-      width: 16%;
-      white-space: nowrap;
-    }
+.main-body {
+  width: 100%;
+}
 
-    .skills-items {
-      padding: 0.4rem 0;
-      color: #374151;
-      vertical-align: top;
-      width: 84%;
-    }
-    
-    /* Interactive item hover controls */
-    .item-controls {
-      position: absolute;
-      left: -42px;
-      top: 2px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      background-color: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 4px;
-      padding: 2px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-      z-index: 20;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    
-    .resume-item:hover .item-controls,
-    .skills-row:hover .item-controls {
-      opacity: 1;
-    }
-    
-    /* Tips text styling */
-    .tip-box {
-      background-color: #1e293b;
-      border-left: 3px solid var(--ui-accent);
-      padding: 0.75rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      line-height: 1.4;
-      color: var(--ui-text-muted);
-      margin-top: 1.5rem;
-    }
-    
-    @media (max-width: 768px) {
-      html, body { max-width: 100%; overflow-x: hidden; }
-      .top-bar { height: auto; min-height: 60px; width: 100%; max-width: 100%; padding: 0.65rem 0.75rem; flex-wrap: wrap; gap: 0.6rem; }
-      .logo-container { min-width: 0; max-width: 100%; flex: 1 1 100%; flex-wrap: wrap; gap: 0.45rem; }
-      .logo-container svg { flex: 0 0 24px; }
-      .logo-title { min-width: 0; overflow-wrap: anywhere; }
-      .top-actions { width: 100%; max-width: 100%; min-width: 0; flex-wrap: wrap; gap: 0.4rem; justify-content: stretch; overflow: hidden; }
-      .top-actions .zoom-control { flex: 1 1 100%; justify-content: center; min-width: 0; }
-      .top-actions .btn { flex: 1 1 0; min-width: 0; max-width: 100%; padding: 0.45rem 0.35rem; gap: 0.25rem; font-size: 0.72rem; white-space: normal; text-align: center; }
-      .top-actions .btn svg { flex: 0 0 14px; width: 14px !important; height: 14px !important; }
-      .workspace { min-width: 0; width: 100%; max-width: 100%; overflow: hidden; flex-direction: column; }
-      .workspace > .sidebar, .workspace > .canvas-container { flex: 0 0 auto; }
-      .workspace > .canvas-container { width: 100%; max-width: 100%; } 
-      .sidebar { width: 100%; max-width: 100%; min-width: 0; }
-      .canvas-container { width: 100%; min-width: 0; max-width: 100%; padding: 1rem 0.75rem; overflow-x: hidden; display: block; }
-      .page-wrapper { width: 100%; max-width: 100%; min-width: 0; margin: 0 auto; transform: none !important; }
-      .a4-page { width: 100%; max-width: 100%; min-width: 0; min-height: 0; padding: 0.7rem; overflow-wrap: anywhere; word-break: break-word; }
-      .page-guide-1 { left: 0; right: 0; width: 100%; max-width: 100%; }
-      .resume-header.compact-header { display: flex; flex-wrap: wrap; gap: 0.45rem 0.75rem; }
-      .resume-header.compact-header > * { min-width: 0; max-width: 100%; }
-      .resume-header.compact-header .resume-header-contact { width: 100%; max-width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); justify-content: start; text-align: left; overflow-wrap: anywhere; }
-      .resume-header-contact span, .resume-header-contact a { min-width: 0; max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }
-      .item-header, .item-sub-header { flex-wrap: wrap; gap: 0.15rem 0.5rem; }
-      .skills-table { table-layout: fixed; }
-      .skills-cat { width: 28%; white-space: normal; overflow-wrap: anywhere; }
-      .skills-items { width: 72%; overflow-wrap: anywhere; word-break: break-word; }
-      .section-title { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
-      .a4-page *, .a4-page *::before, .a4-page *::after { max-width: 100%; }
-      .a4-page strong, .a4-page span, .a4-page a { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
-      .a4-page { overflow: hidden; contain: layout paint; width: 100% !important; }
-      .page-wrapper { width: 100% !important; max-width: 100% !important; overflow: hidden; transform: none !important; }
-      .a4-page { transform: none !important; transform-origin: top left !important; }
-      .a4-page span, .a4-page strong { position: relative !important; left: 0 !important; right: auto !important; margin-left: 0 !important; margin-right: 0 !important; max-width: 100% !important; }
-      .item-header > span, .item-sub-header > span { flex: 1 1 100%; width: 100%; max-width: 100%; }
-      .item-header > span strong, .item-sub-header > span strong { display: inline-block; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
-      .item-controls { position: relative !important; left: 0 !important; top: 0 !important; width: max-content; max-width: 100%; }
-      #resume-page span, #resume-page strong {
-        position: static !important; inset: auto !important; transform: none !important;
-        float: none !important; clear: none !important; left: auto !important; right: auto !important;
-        max-width: 100% !important; overflow-wrap: anywhere !important; word-break: break-all !important;
-      }
-      #resume-page .resume-item, #resume-page .item-header, #resume-page .item-sub-header,
-      #resume-page .resume-bullets, #resume-page li { max-width: 100% !important; overflow-x: hidden !important; }
-      #resume-page .item-header, #resume-page .item-sub-header, #resume-page .section-title { display: flex; flex-wrap: wrap; justify-content: flex-start; }
-      #resume-page .item-header > *, #resume-page .item-sub-header > * { flex: 1 1 100%; width: 100%; }
-      #resume-page .section-title > button { flex: 0 1 auto; max-width: 100%; }
-      #resume-page .section-title > span { flex: 1 1 100%; width: 100%; }
-      #resume-page .resume-bullets strong { display: inline; position: static !important; }
-      #resume-page .no-print { max-width: 100% !important; }
-      .page-guide-1::after { display: none; }
-      .a4-page > span, .a4-page > strong, .a4-page > * > span, .a4-page > * > strong {
-        position: static !important; left: auto !important; right: auto !important;
-        transform: none !important; max-width: 100% !important;
-      }
-      .item-controls { left: 0; right: auto; max-width: 100%; flex-direction: row; flex-wrap: wrap; }
-      .item-controls .btn-icon-xs { flex: 0 0 auto; }
-      .a4-page [style*="position: absolute"] { max-width: 100%; }
-      .a4-page strong, .a4-page span[contenteditable="true"] { display: inline; white-space: normal; }
-      .a4-page [contenteditable="true"] { max-width: 100%; overflow-wrap: anywhere; word-break: break-all; }
-    }
+.tool-body {
+  width: 100%;
+  max-width: 1840px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-    /* Print media overrides */
-    @media print {
-      body {
-        background-color: white !important;
-        color: black !important;
-        height: auto !important;
-        overflow: visible !important;
-      }
-      .top-bar, .sidebar, .floating-toolbar, .warning-banner, .no-print, .page-guide-1 {
-        display: none !important;
-      }
-      .canvas-container {
-        padding: 0 !important;
-        background-color: white !important;
-        overflow: visible !important;
-        display: block !important;
-      }
-      .page-wrapper {
-        box-shadow: none !important;
-        transform: none !important;
-        margin: 0 !important;
-        width: 100% !important;
-        height: auto !important;
-      }
-      .a4-page {
-        box-shadow: none !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: var(--page-margin-y) var(--page-margin-x) !important;
-        border: none !important;
-      }
-      @page {
-        size: A4;
-        margin: 0;
-      }
-    }
-  </style>
+.card-model {
+  overflow: hidden;
+  border-radius: 16px;
+  transition: box-shadow 0.25s ease;
+}
+
+.card-body {
+  padding: 0;
+}
+
+.tool-head {
+  padding: 4px 6px 6px;
+}
+
+.tool-head .title {
+  margin: 0;
+  color: #f8fafc;
+  font-size: clamp(1.4rem, 2.2vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.description {
+  margin: 2px 6px 18px;
+  color: #94a3b8;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Theme Dual-Mode Container */
+html.dark body {
+  background: #070d19;
+  color: #e2e8f0;
+}
+
+html.dark .card-model {
+  background: #0a1120;
+  border: 1px solid #1e293b;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+
+html:not(.dark) body {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+html:not(.dark) .card-model {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 50px rgba(100, 116, 139, 0.12);
+}
+
+html:not(.dark) .tool-head .title {
+  color: #0f172a;
+}
+
+html:not(.dark) .description {
+  color: #475569;
+}
+
+/* Global Top Navigation Bar */
+.tool-topbar {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  border-bottom: 1px solid #1e293b;
+  background: #080e1b;
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.tool-topbar a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.tool-topbar a:hover {
+  color: #38bdf8;
+}
+
+.tool-topbar-logo {
+  font-weight: 800;
+  color: #f8fafc !important;
+  letter-spacing: -0.02em;
+}
+
+.tool-topbar-sep {
+  color: #64748b;
+  opacity: 0.7;
+}
+
+.tool-topbar-title {
+  flex: 1;
+  color: #94a3b8;
+}
+
+.tool-topbar-home {
+  color: #38bdf8 !important;
+  font-weight: 600;
+}
+
+html:not(.dark) .tool-topbar {
+  border-color: #e2e8f0;
+  background: #ffffff;
+  color: #334155;
+}
+
+html:not(.dark) .tool-topbar-logo {
+  color: #0f172a !important;
+}
+
+html:not(.dark) .tool-topbar-home {
+  color: #0284c7 !important;
+}
+
+/* Tool Dashboard / Action Bar */
+.tool-dashboard {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  border: 1px solid #223249;
+  border-radius: 14px 14px 0 0;
+  background: #0d1728;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+html.dark .tool-dashboard {
+  background: #0d1728;
+  border-color: #1e2e44;
+}
+
+html:not(.dark) .tool-dashboard {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.logo-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon-svg {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #38bdf8;
+}
+
+.logo-title {
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  letter-spacing: -0.02em;
+}
+
+html:not(.dark) .logo-title {
+  color: #0f172a;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border: 1px solid #334155;
+  border-radius: 999px;
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: rgba(15, 23, 42, 0.4);
+}
+
+html:not(.dark) .eyebrow {
+  border-color: #cbd5e1;
+  color: #475569;
+  background: rgba(241, 245, 249, 0.8);
+}
+
+.eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Zoom Control */
+.zoom-control {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 38px;
+  padding: 3px 6px;
+  border: 1px solid #283950;
+  border-radius: 10px;
+  background: #111d31;
+  color: #e2e8f0;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+html:not(.dark) .zoom-control {
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.zoom-label {
+  display: inline-block;
+  min-width: 44px;
+  text-align: center;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+}
+
+/* Buttons */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  user-select: none;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+.action-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.action-btn-primary {
+  background: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.35);
+}
+
+.action-btn-primary:hover {
+  background: #0369a1;
+  border-color: #7dd3fc;
+}
+
+html.dark .action-btn-primary {
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+html.dark .action-btn-primary:hover {
+  background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
+}
+
+.action-btn-secondary {
+  border: 1px solid #2a3d56;
+  background: #132238;
+  color: #e2e8f0;
+}
+
+.action-btn-secondary:hover {
+  border-color: #475f7e;
+  background: #1c304d;
+  color: #ffffff;
+}
+
+html:not(.dark) .action-btn-secondary {
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+html:not(.dark) .action-btn-secondary:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.btn-icon-xs {
+  min-width: 32px;
+  min-height: 32px;
+  padding: 4px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-icon-xs:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+}
+
+html:not(.dark) .btn-icon-xs {
+  color: #475569;
+}
+
+html:not(.dark) .btn-icon-xs:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Main Workspace */
+.workspace {
+  display: flex;
+  min-height: 700px;
+  height: calc(100vh - 180px);
+  max-height: 940px;
+  border: 1px solid #1e2e44;
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  background: #080e1a;
+  overflow: hidden;
+}
+
+html:not(.dark) .workspace {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 370px;
+  flex: 0 0 370px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #0d1728;
+  border-right: 1px solid #1e2e44;
+  display: flex;
+  flex-direction: column;
+}
+
+html:not(.dark) .sidebar {
+  border-color: #e2e8f0;
+  background: #ffffff;
+  color: #1e293b;
+}
+
+/* Tabs Header */
+.tab-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid #1e2e44;
+  background: #0d1728;
+}
+
+html:not(.dark) .tab-header {
+  border-color: #e2e8f0;
+  background: #ffffff;
+}
+
+.tab-btn {
+  min-height: 48px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #94a3b8;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.tab-btn:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tab-btn.active {
+  border-bottom-color: #38bdf8;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+html:not(.dark) .tab-btn {
+  color: #64748b;
+}
+
+html:not(.dark) .tab-btn:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+html:not(.dark) .tab-btn.active {
+  border-bottom-color: #0284c7;
+  color: #0284c7;
+  background: #eff6ff;
+}
+
+.tab-content-container {
+  padding: 18px;
+  flex: 1;
+}
+
+.tab-content.hidden, .hidden {
+  display: none !important;
+}
+
+/* Control Groups */
+.control-group {
+  margin-bottom: 20px;
+}
+
+.control-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: #cbd5e1;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 800;
+}
+
+html:not(.dark) .control-label {
+  color: #334155;
+}
+
+.control-subtext {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Presets Grid */
+.presets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 9px;
+}
+
+.preset-btn {
+  min-height: 72px;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.16s ease;
+  border: 1px solid #23344c;
+  background: #111e32;
+  color: #e2e8f0;
+  border-radius: 10px;
+}
+
+.preset-btn:hover {
+  border-color: #38bdf8;
+  background: #162843;
+  transform: translateY(-1px);
+}
+
+.preset-btn.active {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.14);
+  box-shadow: 0 0 0 1px #38bdf8;
+}
+
+html:not(.dark) .preset-btn {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+html:not(.dark) .preset-btn:hover {
+  border-color: #0284c7;
+  background: #f0fdf4;
+}
+
+html:not(.dark) .preset-btn.active {
+  border-color: #0284c7;
+  background: #eff6ff;
+  box-shadow: 0 0 0 1px #0284c7;
+}
+
+.preset-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.preset-desc {
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: #94a3b8;
+}
+
+html:not(.dark) .preset-desc {
+  color: #64748b;
+}
+
+/* Form Controls */
+select, input[type=text], textarea {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #273a52;
+  border-radius: 9px;
+  outline: none;
+  background: #101b30;
+  color: #e2e8f0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+select:focus, input[type=text]:focus, textarea:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+html:not(.dark) select,
+html:not(.dark) input[type=text],
+html:not(.dark) textarea {
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+html:not(.dark) select:focus,
+html:not(.dark) input[type=text]:focus,
+html:not(.dark) textarea:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
+}
+
+/* Sliders */
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #101b30;
+  border: 1px solid #1e2e44;
+  margin-bottom: 12px;
+}
+
+html:not(.dark) .slider-container {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+html:not(.dark) .slider-header {
+  color: #334155;
+}
+
+.slider-value {
+  color: #38bdf8;
+  font-weight: 800;
+  font-size: 0.78rem;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(56, 189, 248, 0.12);
+}
+
+html:not(.dark) .slider-value {
+  color: #0284c7;
+  background: #eff6ff;
+}
+
+input[type=range] {
+  width: 100%;
+  min-height: 26px;
+  accent-color: #38bdf8;
+  cursor: pointer;
+}
+
+/* Color Palette */
+.color-palette {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.color-circle {
+  width: 32px;
+  height: 32px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.15s, outline 0.15s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+.color-circle:hover {
+  transform: scale(1.1);
+}
+
+.color-circle.active {
+  outline: 2px solid #38bdf8;
+  outline-offset: 3px;
+  transform: scale(1.05);
+}
+
+html:not(.dark) .color-circle {
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+html:not(.dark) .color-circle.active {
+  outline-color: #0284c7;
+}
+
+.custom-color-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.custom-color-input input[type=color] {
+  width: 38px;
+  height: 36px;
+  padding: 1px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background: #101b30;
+  cursor: pointer;
+}
+
+html:not(.dark) .custom-color-input input[type=color] {
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
+/* Toggle Switch */
+.switch-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #1e2e44;
+  background: #101b30;
+}
+
+html:not(.dark) .switch-control {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+.switch-control input[type=checkbox] {
+  width: 20px;
+  height: 20px;
+  accent-color: #38bdf8;
+  cursor: pointer;
+}
+
+/* Section Manager List */
+.section-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section-item-row {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 9px;
+  border: 1px solid #23344c;
+  background: #111e32;
+  color: #e2e8f0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.section-item-row label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.section-item-row input[type=checkbox] {
+  width: 17px;
+  height: 17px;
+  accent-color: #38bdf8;
+  cursor: pointer;
+}
+
+.section-item-row:hover {
+  border-color: #38bdf8;
+}
+
+html:not(.dark) .section-item-row {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+html:not(.dark) .section-item-row:hover {
+  border-color: #0284c7;
+  background: #f0fdf4;
+}
+
+/* Tip Box */
+.tip-box {
+  padding: 14px 16px;
+  border-left: 3px solid #38bdf8;
+  border-radius: 10px;
+  background: rgba(14, 116, 144, 0.12);
+  color: #cbd5e1;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  margin-top: 14px;
+}
+
+.tip-box strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #38bdf8;
+  font-size: 0.82rem;
+}
+
+.tip-box ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.tip-box li {
+  margin-bottom: 4px;
+}
+
+html:not(.dark) .tip-box {
+  background: #eff6ff;
+  border-left-color: #0284c7;
+  color: #334155;
+}
+
+html:not(.dark) .tip-box strong {
+  color: #0284c7;
+}
+
+/* Canvas Area */
+.canvas-container {
+  position: relative;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 0;
+  overflow: auto;
+  padding: 36px;
+  background: #080e1a;
+  background-image: radial-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+html:not(.dark) .canvas-container {
+  background: #e9eef5;
+  background-image: radial-gradient(rgba(100, 116, 139, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.page-wrapper {
+  position: relative;
+  flex: 0 0 auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, width 0.2s ease, height 0.2s ease;
+  border-radius: 2px;
+}
+
+.a4-page {
+  position: relative;
+  width: 21cm;
+  min-height: 29.7cm;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: var(--page-margin-y) var(--page-margin-x);
+  background: #ffffff;
+  color: #1f2937;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height);
+  border-radius: 2px;
+}
+
+/* Single Page Overflow Guide Line */
+.page-guide-1 {
+  position: absolute;
+  z-index: 25;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 2px dashed #94a3b8;
+  pointer-events: none;
+}
+
+.page-guide-1::after {
+  position: absolute;
+  right: 14px;
+  top: -24px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: #334155;
+  color: #f1f5f9;
+  font-size: 11px;
+  font-weight: 700;
+  content: 'A4 单页参考线';
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.page-guide-1.overflowing {
+  border-color: #f43f5e;
+}
+
+.page-guide-1.overflowing::after {
+  background: #ef4444;
+  color: #ffffff;
+  content: '已超出 1 页 A4';
+}
+
+/* Page Overflow Warning */
+.warning-banner {
+  position: fixed;
+  top: 135px;
+  left: 50%;
+  z-index: 120;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  border: 1px solid #ef4444;
+  border-radius: 10px;
+  background: #450a0a;
+  color: #fecaca;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: bannerPulse 2s infinite ease-in-out;
+}
+
+@keyframes bannerPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}
+
+/* Floating Toolbar for Text Selection */
+.floating-toolbar {
+  position: fixed;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.toolbar-btn {
+  min-width: 32px;
+  min-height: 30px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.toolbar-btn:hover {
+  background: #334155;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 18px;
+  background: #475569;
+  margin: 0 2px;
+}
+
+/* Resume Document Styling */
+.resume-header {
+  text-align: center;
+  margin-bottom: calc(var(--section-spacing) * 1.2);
+}
+
+.resume-header.compact-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.resume-header h1 {
+  margin: 0 0 0.25rem;
+  color: #111827;
+  font-size: 2.2em;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.resume-header-title {
+  color: var(--primary-color);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 0.95em;
+}
+
+.resume-header-contact {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px 15px;
+  color: #4b5563;
+  font-size: 0.85em;
+}
+
+.compact-header .resume-header-contact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: end;
+  text-align: right;
+}
+
+.resume-section {
+  position: relative;
+  margin-bottom: var(--section-spacing);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: calc(var(--item-spacing) * 0.7);
+  padding-bottom: 3px;
+  border-bottom: 1.5px solid var(--primary-color);
+  color: var(--primary-color);
+  font-family: var(--title-font-family);
+  font-size: 1.05em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.resume-item {
+  position: relative;
+  margin-bottom: var(--item-spacing);
+}
+
+.item-header, .item-sub-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.item-header {
+  margin-bottom: 2px;
+  color: #111827;
+  font-weight: 700;
+}
+
+.item-sub-header {
+  margin-bottom: 6px;
+  color: #4b5563;
+  font-style: italic;
+  font-size: 0.95em;
+}
+
+.resume-bullets {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.resume-bullets li {
+  margin-bottom: 3px;
+  color: #374151;
+}
+
+.skills-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.skills-row {
+  position: relative;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.skills-cat {
+  width: 18%;
+  padding: 0.4rem 0.5rem 0.4rem 0;
+  vertical-align: top;
+  color: #111827;
+  font-weight: 700;
+  position: relative;
+}
+
+.skills-items {
+  width: 82%;
+  padding: 0.4rem 0;
+  vertical-align: top;
+  color: #374151;
+}
+
+/* Item Action Overlay */
+.item-controls {
+  position: absolute;
+  top: 2px;
+  left: -44px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  background: #1e293b;
+  opacity: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: opacity 0.16s ease;
+}
+
+.resume-item:hover .item-controls,
+.skills-row:hover .item-controls {
+  opacity: 1;
+}
+
+[contenteditable=true] {
+  outline: none;
+  transition: background 0.15s;
+  border-radius: 3px;
+}
+
+[contenteditable=true]:hover {
+  background: rgba(56, 189, 248, 0.06);
+}
+
+[contenteditable=true]:focus {
+  background: rgba(56, 189, 248, 0.12);
+  outline: 1.5px dashed #0284c7;
+  outline-offset: 2px;
+}
+
+.a4-page a {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+/* Responsive Mobile Rules */
+@media (max-width: 960px) {
+  .workspace {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    flex: none;
+    border-right: 0;
+    border-bottom: 1px solid #1e2e44;
+    max-height: 520px;
+  }
+  html:not(.dark) .sidebar {
+    border-bottom-color: #e2e8f0;
+  }
+  .canvas-container {
+    min-height: 600px;
+    padding: 24px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tool-body {
+    padding: 10px;
+  }
+  .tool-topbar {
+    padding: 0 14px;
+  }
+  .tool-topbar-title {
+    display: none;
+  }
+  .tool-dashboard {
+    border-radius: 12px 12px 0 0;
+    padding: 12px 14px;
+  }
+  .top-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .top-actions > * {
+    flex: 1 1 30%;
+    min-width: 0;
+  }
+  .top-actions .zoom-control {
+    flex: 1 1 100%;
+  }
+  .presets-grid {
+    grid-template-columns: 1fr;
+  }
+  .tab-content-container {
+    padding: 14px;
+  }
+  .canvas-container {
+    min-height: 520px;
+    overflow-x: auto;
+    padding: 16px 8px;
+  }
+  .page-wrapper {
+    width: 100% !important;
+    height: auto !important;
+  }
+  .a4-page {
+    width: 100% !important;
+    min-height: 0;
+    padding: 18px 14px;
+    transform: none !important;
+  }
+  .compact-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .compact-header .resume-header-contact {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    text-align: left;
+  }
+  .item-header, .item-sub-header {
+    flex-wrap: wrap;
+  }
+  .item-header > *, .item-sub-header > * {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  .item-controls {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: max-content;
+    opacity: 1;
+    flex-direction: row;
+    margin-bottom: 4px;
+  }
+  .skills-table {
+    table-layout: fixed;
+  }
+  .skills-cat {
+    width: 32%;
+    overflow-wrap: anywhere;
+  }
+  .skills-items {
+    width: 68%;
+    overflow-wrap: anywhere;
+  }
+  .page-guide-1::after {
+    display: none;
+  }
+  .warning-banner {
+    top: 80px;
+    max-width: calc(100% - 24px);
+    font-size: 0.78rem;
+  }
+}
+
+/* Print Specific Styles */
+@media print {
+  body {
+    height: auto;
+    overflow: visible;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .tool-topbar, .tool-dashboard, .sidebar, .floating-toolbar, .warning-banner, .no-print, .item-controls {
+    display: none !important;
+  }
+  .tool-head, .description {
+    display: none !important;
+  }
+  .main-body, .tool-body, .card-model, .card-body {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+  }
+  .workspace {
+    display: block !important;
+    height: auto !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+  .canvas-container {
+    display: block !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+  .page-wrapper {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+  .a4-page {
+    width: 100% !important;
+    min-height: 100% !important;
+    box-shadow: none !important;
+    transform: none !important;
+    border: none !important;
+  }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+</style>
 </head>
 <body>
-<div class="grid-bg"></div>
 <header class="tool-topbar">
-  <a href="/" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+  <a href="/" class="tool-topbar-logo">在线工具集</a>
   <span class="tool-topbar-sep">/</span>
   <span class="tool-topbar-title">现代简历制作与排版器</span>
-  <a href="/" class="tool-topbar-home">&#8592; 首页</a>
+  <a href="/" class="tool-topbar-home">← 返回首页</a>
 </header>
 
-
-  <!-- Top Bar -->
-  <div class="top-bar no-print">
-    <div class="logo-container">
-      <svg viewBox="0 0 24 24">
-        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-      </svg>
-      <span class="logo-title">Modern Resume Maker</span>
-      <span style="font-size: 0.75rem; color: #475569; border: 1px solid #334155; padding: 2px 6px; border-radius: 4px;">单文件 · 开箱即用</span>
-    </div>
-    
-    <div class="top-actions">
-      <!-- Zoom controls -->
-      <div class="zoom-control">
-        <button onclick="zoomOut()" class="btn-icon-xs" style="color:white; padding: 2px 6px;">-</button>
-        <span id="zoom-val" style="width: 36px; text-align: center;">100%</span>
-        <button onclick="zoomIn()" class="btn-icon-xs" style="color:white; padding: 2px 6px;">+</button>
-      </div>
-      
-      <button onclick="downloadCleanHtml()" class="btn btn-secondary">
-        <svg style="width:14px;height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-        下载单网页HTML
-      </button>
-
-      <button onclick="downloadPng()" class="btn btn-secondary">
-        <svg style="width:14px;height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-        导出 PNG
-      </button>
-      
-      <button onclick="window.print()" class="btn btn-primary">
-        <svg style="width:14px;height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
-        打印 / 导出 PDF
-      </button>
-    </div>
-  </div>
-
-  <!-- Workspace Container -->
-  <div class="workspace">
-    <!-- Sidebar Controls -->
-    <div class="sidebar no-print">
-      <div class="tab-header">
-        <button onclick="switchTab('style-tab')" id="style-tab-btn" class="tab-btn active">主题样式</button>
-        <button onclick="switchTab('section-tab')" id="section-tab-btn" class="tab-btn">模块管理</button>
-        <button onclick="switchTab('json-tab')" id="json-tab-btn" class="tab-btn">数据源码</button>
-      </div>
-      
-      <div class="tab-content-container">
-        
-        <!-- Tab 1: Themes & Styling -->
-        <div id="style-tab" class="tab-content">
-          <div class="control-group">
-            <span class="control-label">精英风格预设</span>
-            <div class="presets-grid">
-              <button onclick="applyThemePreset('wallstreet')" id="preset-wallstreet" class="preset-btn active">
-                <span class="preset-title">🏛️ Wall Street Elite (纽约华尔街风格)</span>
-                <span class="preset-desc">精细衬线体 + 普鲁士深蓝，严谨、经典、厚重，最受大投行/美股上市公司高管认可。</span>
-              </button>
-              <button onclick="applyThemePreset('siliconvalley')" id="preset-siliconvalley" class="preset-btn">
-                <span class="preset-title">💻 Silicon Valley Tech (硅谷科技精英)</span>
-                <span class="preset-desc">极简非衬线体 + 深邃炭黑，高对比度、呼吸感强，适合AI、SaaS和头部科技巨头。</span>
-              </button>
-              <button onclick="applyThemePreset('mckinsey')" id="preset-mckinsey" class="preset-btn">
-                <span class="preset-title">💼 Consulting Standard (麦肯锡标准)</span>
-                <span class="preset-desc">Georgia 衬线 + 藏青蓝，段落极其清晰，完美展示多维度逻辑，咨询与商科首选。</span>
-              </button>
-              <button onclick="applyThemePreset('editorial')" id="preset-editorial" class="preset-btn">
-                <span class="preset-title">🎨 Premium Executive (现代创意精英)</span>
-                <span class="preset-desc">大雅 Playfair 衬线标题 + Inter 正文，优雅绛紫，极具视觉冲击力与现代美学。</span>
-              </button>
-            </div>
-          </div>
-          
-          <div class="control-group">
-            <span class="control-label">字体选择 (Fonts)</span>
-            <select id="font-select" onchange="applyFontFamily(this.value)">
-              <option value="garamond">EB Garamond (经典高贵衬线)</option>
-              <option value="inter">Inter (极简数字开发)</option>
-              <option value="georgia">Georgia (严谨咨询学术)</option>
-              <option value="outfit">Outfit (时尚新潮社交)</option>
-              <option value="playfair-inter">Playfair + Inter (意雅现代双搭)</option>
-              <option value="jetbrains">JetBrains Mono (科技代码工整)</option>
-            </select>
-          </div>
-          
-          <div class="control-group">
-            <span class="control-label">主题色彩 (Accent Color)</span>
-            <div class="color-palette">
-              <div onclick="setAccentColor('#0f2c59', this)" class="color-circle active" style="background-color: #0f2c59;"></div>
-              <div onclick="setAccentColor('#1e293b', this)" class="color-circle" style="background-color: #1e293b;"></div>
-              <div onclick="setAccentColor('#1e3a8a', this)" class="color-circle" style="background-color: #1e3a8a;"></div>
-              <div onclick="setAccentColor('#701a75', this)" class="color-circle" style="background-color: #701a75;"></div>
-              <div onclick="setAccentColor('#064e3b', this)" class="color-circle" style="background-color: #064e3b;"></div>
-            </div>
-            <div class="custom-color-input">
-              <input type="color" id="color-picker" oninput="setAccentColor(this.value)">
-              <span style="font-size: 0.8rem; color: var(--ui-text-muted);">自定义调色盘</span>
-            </div>
-          </div>
-          
-          <div class="control-group slider-container">
-            <div class="slider-header">
-              <span>正文字号</span>
-              <span class="slider-value" id="font-size-val">10.5pt</span>
-            </div>
-            <input type="range" id="font-size-slider" min="9" max="13" step="0.5" value="10.5" oninput="changeFontSize(this.value)">
-          </div>
-          
-          <div class="control-group slider-container">
-            <div class="slider-header">
-              <span>行高比例</span>
-              <span class="slider-value" id="line-height-val">1.45</span>
-            </div>
-            <input type="range" id="line-height-slider" min="1.2" max="1.8" step="0.05" value="1.45" oninput="changeLineHeight(this.value)">
-          </div>
-          
-          <div class="control-group slider-container">
-            <div class="slider-header">
-              <span>上下边距</span>
-              <span class="slider-value" id="margin-y-val">1.5cm</span>
-            </div>
-            <input type="range" id="margin-y-slider" min="1.0" max="3.0" step="0.1" value="1.5" oninput="changeMarginY(this.value)">
-          </div>
-          
-          <div class="control-group slider-container">
-            <div class="slider-header">
-              <span>左右边距</span>
-              <span class="slider-value" id="margin-x-val">2cm</span>
-            </div>
-            <input type="range" id="margin-x-slider" min="1.0" max="3.0" step="0.1" value="2.0" oninput="changeMarginX(this.value)">
-          </div>
-
-          <div class="control-group slider-container">
-            <div class="slider-header">
-              <span>大板块间距</span>
-              <span class="slider-value" id="section-spacing-val">1.2rem</span>
-            </div>
-            <input type="range" id="section-spacing-slider" min="0.6" max="2.0" step="0.05" value="1.2" oninput="changeSectionSpacing(this.value)">
-          </div>
-
-          <div class="control-group slider-container">
-            <div class="slider-header">
-              <span>项目/经历间距</span>
-              <span class="slider-value" id="item-spacing-val">0.7rem</span>
-            </div>
-            <input type="range" id="item-spacing-slider" min="0.4" max="1.5" step="0.05" value="0.7" oninput="changeItemSpacing(this.value)">
-          </div>
-          
-          <div class="control-group" style="display:flex; align-items:center; justify-content:space-between;">
-            <span class="control-label" style="margin-bottom:0;">紧凑头部（极致压行）</span>
-            <label style="position:relative; display:inline-block; width:40px; height:20px;">
-              <input type="checkbox" id="compact-header-toggle" onchange="toggleCompactHeader(this.checked)" checked style="opacity:0;width:0;height:0;">
-              <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#334155;border-radius:10px;transition:.3s;"></span>
-              <span id="compact-toggle-dot" style="position:absolute;content:'';height:16px;width:16px;left:2px;bottom:2px;background-color:#6366f1;border-radius:50%;transition:.3s;transform:translateX(20px);"></span>
-            </label>
-          </div>
-
-          <div class="tip-box">
-            <strong>💡 编辑技巧：</strong>
-            <ul style="padding-left: 1rem; margin-top: 0.25rem; display: flex; flex-direction: column; gap: 2px;">
-              <li>双击或点击简历任意文本直接打字。</li>
-              <li>选中文本可调出浮动黑金排版条进行加粗等。</li>
-              <li>鼠标悬停在经历块或技能上可进行删除/移动。</li>
-            </ul>
-          </div>
+<main class="main-body tool-page-body" id="app">
+  <div class="tool-body">
+    <div class="card-model">
+      <div class="card-body">
+        <div class="tool-head">
+          <h1 class="title">现代简历制作与排版器</h1>
         </div>
-        
-        <!-- Tab 2: Section Management -->
-        <div id="section-tab" class="tab-content hidden">
-          <div class="control-group">
-            <span class="control-label">显示与排列顺序</span>
-            <div class="section-list" id="section-manager-list">
-              <!-- Dynamically populated -->
+        <div class="description">所见即所得的 A4 简历工作台 · 本地私密编辑 · 精英版式预设 · 支持 HTML / PNG / PDF 导出</div>
+
+        <!-- Tool Dashboard -->
+        <div class="tool-dashboard no-print">
+          <div class="logo-container">
+            <div class="logo-icon-svg" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 4h5v6h6v10H6V4zm2 8h8v2H8v-2zm0 4h8v2H8v-2z"/>
+              </svg>
+            </div>
+            <div class="logo-badge-wrap">
+              <span class="logo-title">Resume Studio</span>
+              <span class="eyebrow"><span class="eyebrow-dot"></span>LOCAL · PRIVATE</span>
             </div>
           </div>
-          
-          <div class="control-group" style="margin-top: 2rem;">
-            <span class="control-label">添加新模块</span>
-            <div style="display:flex; flex-direction:column; gap:0.5rem;">
-              <button onclick="addProjectItem()" class="btn btn-secondary" style="justify-content: center;">+ 添加项目经历 (Projects)</button>
-              <button onclick="addExperienceItem()" class="btn btn-secondary" style="justify-content: center;">+ 添加工作/创业经历 (Experience)</button>
-              <button onclick="addSkillItem()" class="btn btn-secondary" style="justify-content: center;">+ 添加专业技能类别 (Skills)</button>
-              <button onclick="addEducationItem()" class="btn btn-secondary" style="justify-content: center;">+ 添加教育背景 (Education)</button>
+
+          <div class="top-actions">
+            <!-- Zoom Controls -->
+            <div class="zoom-control">
+              <button onclick="zoomOut()" class="btn-icon-xs" aria-label="缩小视图" title="缩小视图">−</button>
+              <span id="zoom-val" class="zoom-label">100%</span>
+              <button onclick="zoomIn()" class="btn-icon-xs" aria-label="放大视图" title="放大视图">+</button>
             </div>
-          </div>
-        </div>
-        
-        <!-- Tab 3: JSON Code Editor -->
-        <div id="json-tab" class="tab-content hidden">
-          <div class="control-group">
-            <span class="control-label">简历 JSON 原数据</span>
-            <p style="font-size: 0.7rem; color: var(--ui-text-muted); margin-bottom: 0.5rem; line-height: 1.3;">
-              您可以通过修改以下 JSON 数据实现高效率的内容替换与配置：
-            </p>
-            <textarea id="json-textarea" style="height: 350px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; background-color: #0b0f19; color: #34d399; resize: vertical; line-height: 1.4; border-color: #1e293b;"></textarea>
-            <div style="margin-top: 1rem; display: flex; gap: 0.5rem; width: 100%;">
-              <button onclick="applyJsonFromTextarea()" class="btn btn-primary" style="flex:1; justify-content:center;">应用并更新</button>
-              <button onclick="resetToDefaultJson()" class="btn btn-secondary" style="flex:1; justify-content:center;">恢复默认</button>
-            </div>
-          </div>
-          
-          <div class="control-group">
-            <span class="control-label">导入与导出文件</span>
-            <div style="display:flex; gap:0.5rem;">
-              <button onclick="triggerJsonImport()" class="btn btn-secondary" style="flex:1; justify-content:center;">
-                <svg style="width:12px;height:12px;" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
-                导入 JSON
-              </button>
-              <button onclick="downloadJson()" class="btn btn-secondary" style="flex:1; justify-content:center;">
-                <svg style="width:12px;height:12px;" viewBox="0 0 24 24"><path fill="currentColor" d="M5 20h14v-2H5v2zm0-10h4v6h6v-6h4l-7-7-7 7z"/></svg>
-                导出 JSON
-              </button>
-            </div>
-            <input type="file" id="json-file-input" style="display: none;" accept=".json" onchange="importJsonFile(event)">
-          </div>
-        </div>
-        
-      </div>
-    </div>
-    
-    <!-- Desk Canvas workspace -->
-    <div class="canvas-container" id="canvas-container">
-      <!-- Page Exceeds Warning -->
-      <div id="page-overflow-warning" class="warning-banner hidden">
-        <svg style="width:16px;height:16px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-        <span><strong>⚠️ 内容已超出1页 A4 纸张限度</strong>，打印可能分裂。建议微调字号、边距或精简行数。</span>
-      </div>
-      
-      <!-- Realistic A4 page wrap -->
-      <div class="page-wrapper" id="page-wrapper">
-        <div id="resume-page" class="a4-page">
-          <!-- Resume dynamically rendered here -->
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Floating Selection Format Toolbar -->
-  <div id="floating-toolbar" class="floating-toolbar no-print">
-    <button onclick="formatText('bold')" class="toolbar-btn" title="加粗 (Ctrl+B)">
-      <strong>B</strong>
-    </button>
-    <button onclick="formatText('italic')" class="toolbar-btn" title="斜体 (Ctrl+I)">
-      <span style="font-style: italic; font-family: serif; font-weight: bold;">I</span>
-    </button>
-    <button onclick="formatText('underline')" class="toolbar-btn" title="下划线 (Ctrl+U)">
-      <span style="text-decoration: underline;">U</span>
-    </button>
-    <div class="toolbar-divider"></div>
-    <button onclick="addLink()" class="toolbar-btn" title="插入超链接">
-      <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
-    </button>
-    <button onclick="formatText('unlink')" class="toolbar-btn" title="取消链接">
-      <svg viewBox="0 0 24 24"><path d="M17 7h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1 0 1.43-1 2.63-2.34 2.98l1.46 1.46C21.08 15.66 22 13.93 22 12c0-2.76-2.24-5-5-5zm-1 4H8v2h8v-2zm3.07 5.07l-1.46-1.46L17 15.41l3.58 3.58L22 17.58l-2.93-2.51zM2 4.27l2.28 2.28A4.94 4.94 0 0 0 2 12c0 2.76 2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1 0-1.71 1.39-3.1 3.1-3.1h4V7H8.27L5.73 4.46 2 4.27z"/></svg>
-    </button>
-    <button onclick="formatText('removeFormat')" class="toolbar-btn" title="清除格式">
-      <span style="font-family: sans-serif; font-size: 0.75rem;">Tx</span>
-    </button>
-  </div>
-
-  <!-- JavaScript App Logic -->
-  <script>
-    // 内置默认示例简历（全部为虚构的 Mock 演示数据，可在“数据源码”中替换为自己的内容）
-    const defaultResumeData = {
-      "personalInfo": {
-        "name": "李知远",
-        "title": "全栈与 AI 应用开发 / 本科在读",
-        "phone": "138-0000-8888",
-        "email": "lizhiyuan@example.com",
-        "github": "github.com/lizhiyuan-dev",
-        "website": "lizhiyuan.example.com",
-        "summary": "电子信息工程本科在读，活跃于开源社区，喜欢跟进新技术并动手做产品。获大学生服务外包创新创业大赛华东赛区三等奖；能独立交付全栈应用与 AI 工程项目，GitHub 积累 10+ 可运行项目，寻找 AI 应用 / 全栈方向实习。"
-      },
-      "education": [
-        {
-          "school": "南江大学",
-          "degree": "电子信息工程 (本科在读)",
-          "date": "2025.09 - 2029.06",
-          "achievements": "服务外包创新创业大赛 华东赛区三等奖 | CET-4"
-        }
-      ],
-      "experience": [
-        {
-          "company": "青藤校园共享打印 (个人运营)",
-          "role": "校园代理 / 项目负责人",
-          "date": "2025.10 - 2026.07",
-          "description": [
-            "主动联系学校行政老师，以每年 5000 元管理费签约引入自助打印机两台。",
-            "首台投放教学楼后日订单极低，经后台数据分析迁移至图书馆后单量翻倍；两台年流水约 **60,000 元**。",
-            "招募 2 名学生兼职负责加纸巡检；自己负责后台监控与故障排障，设备在线率 95%+。"
-          ]
-        },
-        {
-          "company": "校内项目工作组 (勤工助学)",
-          "role": "前端 / NLP 数据处理",
-          "date": "2025.10 - 2026.06",
-          "description": [
-            "**前端信息展示页美化**：用 Tailwind CSS 重构校内信息展示页面的 UI 与响应式布局。",
-            "**校园导航 SPA**：负责前端与地图服务 API 对接，调试 API Key 安全调用与 Referer 域名鉴权。",
-            "**NLP 与数据挖掘**：用 Embedding 模型将校园反馈文本编码为向量并按余弦相似度做意图归类；对问答日志聚类提取高频标签，支撑智能问答路由。"
-          ]
-        }
-      ],
-      "projects": [
-        {
-          "name": "JobAlign — 人岗匹配与简历画像系统 ([github.com/lizhiyuan-dev/job-align](https://github.com/lizhiyuan-dev/job-align))",
-          "role": "后端开发 / 匹配算法设计",
-          "date": "2025.12 - 2026.05",
-          "description": [
-            "**Python / FastAPI 后端架构**：参与搭建双端后台系统，配合 SQLAlchemy 与 SQLite3 构建 RESTful API。",
-            "**基于 LangChain 的 AI 简历解析**：设计多级 LLM 结构化抽取管道，通过 JSON Schema 强约束稳定提取简历与 JD 的 5 大维度画像特征。",
-            "**语义标签归一化**：Embedding + 余弦相似度构建标签对齐系统，LLM 将非标中文术语自动映射至英文标准 Key。",
-            "**人岗精排匹配算法设计**：主导技术栈、能级落差、工具与软素质等 5 大维度打分引擎，输出 Safety / Target / Reach 三档推荐。"
-          ]
-        },
-        {
-          "name": "WordEcho — 中老年亲子英语跟读 SPA ([github.com/lizhiyuan-dev/wordecho](https://github.com/lizhiyuan-dev/wordecho))",
-          "role": "独立开发",
-          "date": "2025.05",
-          "description": [
-            "提示词链 + JSON Schema 输出约束，让 LLM 稳定生成亲子共学场景的中英双语短句，不漏字段。",
-            "接入云端 TTS 与口语发音评分 API，支持跟读打分与人机 PK；localStorage 持久化收藏与错题。"
-          ]
-        },
-        {
-          "name": "诗笺阁 — 古诗词在线鉴赏 ([lizhiyuan.example.com/shijiange](https://lizhiyuan.example.com/shijiange))",
-          "role": "独立开发",
-          "date": "2025.12 - 2026.06",
-          "description": [
-            "初版：单文件 HTML 前端 + Node.js 读写 JSON 的 CRUD 后端，跑通最小闭环。",
-            "重构到 Next.js 14 App Router：CSR 与 SSR 分工渲染，自定义 404 与多级容错降级，分页渲染优化首屏与 SEO。"
-          ]
-        },
-        {
-          "name": "沉浸式阅读 — Tampermonkey 用户脚本 ([lizhiyuan.example.com/immersive-reader](https://lizhiyuan.example.com/immersive-reader))",
-          "role": "作者 / 维护者",
-          "date": "2026.01 - 至今",
-          "description": [
-            "自主设计、测试、维护，功能涵盖屏蔽推荐流与广告、划词翻译、离线收藏、全屏沉浸阅读。",
-            "开源社区安装量 **100+**，长期保持迭代，升级功能体验。"
-          ]
-        }
-      ],
-      "skills": [
-        {
-          "category": "AI 应用",
-          "items": "提示词工程, JSON Schema 输出约束, LangChain 多步链, RAG, Embedding 检索 + 余弦相似度归一化, MCP 协议"
-        },
-        {
-          "category": "前端",
-          "items": "React 19, Next.js 14 (App Router, CSR/SSR), Tailwind CSS, HTML5 / CSS3 / 原生 JS, Tampermonkey 用户脚本"
-        },
-        {
-          "category": "后端",
-          "items": "FastAPI, Python 3.10+, SQLAlchemy, SQLite3, Node.js, RESTful API 设计与跨域 / 鉴权处理"
-        },
-        {
-          "category": "工具、工作流与部署",
-          "items": "Git / GitHub, AI 辅助开发（Claude Code / Codex）, 自建效率工具集, Linux (Nginx / HTTPS / 多项目部署)"
-        }
-      ]
-    };
-
-    // State Variables
-    let resumeData = {};
-    let activeTab = 'style-tab';
-    let zoom = 1.0;
-    let compactHeader = true;
-    
-    // Default Section order and visibility
-    const defaultSectionOrder = ['summary', 'education', 'projects', 'experience', 'skills'];
-    let sectionOrder = [...defaultSectionOrder];
-    let hiddenSections = new Set();
-    
-    // Theme configurations
-    const themePresets = {
-      wallstreet: {
-        font: 'garamond',
-        primary: '#0f2c59',
-        fontSize: '9.5',
-        lineHeight: '1.2',
-        marginHorizontal: '1.0',
-        marginVertical: '1.0',
-        sectionSpacing: '0.6',
-        itemSpacing: '0.4'
-      },
-      siliconvalley: {
-        font: 'inter',
-        primary: '#1e293b',
-        fontSize: '10.0',
-        lineHeight: '1.5',
-        marginHorizontal: '1.8',
-        marginVertical: '1.4',
-        sectionSpacing: '1.25',
-        itemSpacing: '0.7'
-      },
-      mckinsey: {
-        font: 'georgia',
-        primary: '#1e3a8a',
-        fontSize: '10.5',
-        lineHeight: '1.4',
-        marginHorizontal: '2.2',
-        marginVertical: '1.8',
-        sectionSpacing: '1.05',
-        itemSpacing: '0.6'
-      },
-      editorial: {
-        font: 'playfair-inter',
-        primary: '#701a75',
-        fontSize: '10.5',
-        lineHeight: '1.5',
-        marginHorizontal: '2.0',
-        marginVertical: '1.6',
-        sectionSpacing: '1.25',
-        itemSpacing: '0.75'
-      }
-    };
-
-    // Initialize application
-    window.addEventListener('DOMContentLoaded', () => {
-      // Version control to auto-update default data when template updates
-      const savedVersion = localStorage.getItem('modern_resume_version');
-      const currentVersion = '1.0';
-      
-      // Load data from localStorage or fallback
-      const savedData = localStorage.getItem('modern_resume_data');
-      if (savedData && savedVersion === currentVersion) {
-        try {
-          resumeData = JSON.parse(savedData);
-        } catch (e) {
-          resumeData = JSON.parse(JSON.stringify(defaultResumeData));
-        }
-      } else {
-        // First load or version update: load fresh defaults and set version
-        resumeData = JSON.parse(JSON.stringify(defaultResumeData));
-        localStorage.setItem('modern_resume_version', currentVersion);
-        saveToLocalStorage();
-      }
-      
-      const savedOrder = localStorage.getItem('modern_resume_section_order');
-      if (savedOrder) {
-        try {
-          sectionOrder = JSON.parse(savedOrder);
-        } catch (e) {
-          sectionOrder = [...defaultSectionOrder];
-        }
-      }
-      
-      const savedHidden = localStorage.getItem('modern_resume_hidden_sections');
-      if (savedHidden) {
-        try {
-          hiddenSections = new Set(JSON.parse(savedHidden));
-        } catch (e) {}
-      }
-
-      // Initial render
-      renderResume();
-      renderSectionManager();
-      updateJsonTextArea();
-      
-      // Apply default preset styles
-      applyThemePreset('wallstreet');
-      
-      // Add event listeners to input elements inside editing area
-      setupCanvasListeners();
-      
-      // Floating toolbar selection hook
-      setupSelectionToolbar();
-      
-      // Watch for print event to scale pages properly
-      window.matchMedia('print').addEventListener('change', (mql) => {
-        if (mql.matches) {
-          // pre print
-        } else {
-          // post print, force check overflow
-          setTimeout(checkPageOverflow, 100);
-        }
-      });
-    });
-
-    // Save state helper
-    function saveToLocalStorage() {
-      localStorage.setItem('modern_resume_data', JSON.stringify(resumeData));
-      localStorage.setItem('modern_resume_section_order', JSON.stringify(sectionOrder));
-      localStorage.setItem('modern_resume_hidden_sections', JSON.stringify([...hiddenSections]));
-    }
-
-    // Convert simple markdown markers (*bold* / **bold** / [label](url)) to HTML tags
-    function parseMarkdownToHtml(text) {
-      if (typeof text !== 'string') return '';
-      // Bold
-      let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      // Link
-      html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
-      return html;
-    }
-
-    // Set variable path values in object
-    function setValueByPath(obj, path, value) {
-      const parts = path.split('.');
-      let current = obj;
-      
-      for (let i = 0; i < parts.length - 1; i++) {
-        const part = parts[i];
-        const nextPart = parts[i + 1];
-        const isNextIdx = /^\d+$/.test(nextPart);
-        
-        if (current[part] === undefined) {
-          current[part] = isNextIdx ? [] : {};
-        }
-        
-        if (isNextIdx && !Array.isArray(current[part])) {
-          current[part] = [];
-        }
-        
-        current = current[part];
-      }
-      
-      const lastKey = parts[parts.length - 1];
-      current[lastKey] = value;
-    }
-
-    // Setup bidirectional binding listeners on the resume canvas
-    function setupCanvasListeners() {
-      const canvas = document.getElementById('resume-page');
-      
-      canvas.addEventListener('input', (e) => {
-        const path = e.target.getAttribute('data-path');
-        if (path) {
-          // Read DOM state
-          let val;
-          if (e.target.tagName === 'UL') {
-            // Read all LI values into array
-            val = Array.from(e.target.querySelectorAll('li')).map(li => li.innerHTML);
-          } else {
-            val = e.target.innerHTML;
-          }
-          
-          setValueByPath(resumeData, path, val);
-          saveToLocalStorage();
-          updateJsonTextArea();
-          
-          // Fast overflow boundary re-check
-          checkPageOverflow();
-        }
-      });
-
-      // Handle raw paste inside contenteditable to prevent styles leakage
-      canvas.addEventListener('paste', (e) => {
-        e.preventDefault();
-        const text = (e.originalEvent || e).clipboardData.getData('text/plain');
-        document.execCommand('insertText', false, text);
-      });
-    }
-
-    // Dynamic A4 Height detector
-    function getA4HeightInPx() {
-      const temp = document.createElement('div');
-      temp.style.height = '29.7cm';
-      temp.style.visibility = 'hidden';
-      temp.style.position = 'absolute';
-      document.body.appendChild(temp);
-      const height = temp.offsetHeight;
-      document.body.removeChild(temp);
-      return height;
-    }
-
-    // Check if height exceeds A4 limit line
-    function checkPageOverflow() {
-      const page = document.getElementById('resume-page');
-      const a4Height = getA4HeightInPx();
-      const warning = document.getElementById('page-overflow-warning');
-      const guide = document.getElementById('page-break-guide');
-      
-      if (!guide) return;
-      
-      guide.style.top = `${a4Height}px`;
-      
-      if (page.offsetHeight > a4Height) {
-        warning.classList.remove('hidden');
-        guide.classList.add('overflowing');
-      } else {
-        warning.classList.add('hidden');
-        guide.classList.remove('overflowing');
-      }
-    }
-
-    // Tab switcher
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      
-      document.getElementById(tabId).classList.remove('hidden');
-      document.getElementById(`${tabId}-btn`).classList.add('active');
-      activeTab = tabId;
-    }
-
-    // Zoom Functions
-    function zoomIn() {
-      if (zoom >= 1.5) return;
-      zoom += 0.05;
-      applyZoom();
-    }
-
-    // Zoom Out
-    function zoomOut() {
-      if (zoom <= 0.6) return;
-      zoom -= 0.05;
-      applyZoom();
-    }
-
-    function applyZoom() {
-      const page = document.getElementById('resume-page');
-      const wrapper = document.getElementById('page-wrapper');
-      
-      page.style.transform = `scale(${zoom})`;
-      page.style.transformOrigin = 'top center';
-      
-      wrapper.style.height = `${29.7 * zoom}cm`;
-      wrapper.style.width = `${21 * zoom}cm`;
-      
-      document.getElementById('zoom-val').innerText = Math.round(zoom * 100) + '%';
-    }
-
-    // Dynamic Styles Adjusters
-    function updateCssVariable(name, value) {
-      document.documentElement.style.setProperty(name, value);
-    }
-
-    function changeFontSize(val) {
-      updateCssVariable('--font-size-base', `${val}pt`);
-      document.getElementById('font-size-val').innerText = `${val}pt`;
-      checkPageOverflow();
-    }
-
-    function changeLineHeight(val) {
-      updateCssVariable('--line-height', val);
-      document.getElementById('line-height-val').innerText = val;
-      checkPageOverflow();
-    }
-
-    function changeMarginY(val) {
-      updateCssVariable('--page-margin-y', `${val}cm`);
-      document.getElementById('margin-y-val').innerText = `${val}cm`;
-      checkPageOverflow();
-    }
-
-    function changeMarginX(val) {
-      updateCssVariable('--page-margin-x', `${val}cm`);
-      document.getElementById('margin-x-val').innerText = `${val}cm`;
-      checkPageOverflow();
-    }
-
-    function changeSectionSpacing(val) {
-      updateCssVariable('--section-spacing', `${val}rem`);
-      document.getElementById('section-spacing-val').innerText = `${val}rem`;
-      checkPageOverflow();
-    }
-
-    function changeItemSpacing(val) {
-      updateCssVariable('--item-spacing', `${val}rem`);
-      document.getElementById('item-spacing-val').innerText = `${val}rem`;
-      checkPageOverflow();
-    }
-
-    function applyFontFamily(font) {
-      if (font === 'inter') {
-        updateCssVariable('--font-family', "'Inter', sans-serif");
-        updateCssVariable('--title-font-family', "'Inter', sans-serif");
-      } else if (font === 'garamond') {
-        updateCssVariable('--font-family', "'EB Garamond', serif");
-        updateCssVariable('--title-font-family', "'EB Garamond', serif");
-      } else if (font === 'georgia') {
-        updateCssVariable('--font-family', "Georgia, serif");
-        updateCssVariable('--title-font-family', "Georgia, serif");
-      } else if (font === 'outfit') {
-        updateCssVariable('--font-family', "'Outfit', sans-serif");
-        updateCssVariable('--title-font-family', "'Outfit', sans-serif");
-      } else if (font === 'playfair-inter') {
-        updateCssVariable('--font-family', "'Inter', sans-serif");
-        updateCssVariable('--title-font-family', "'Playfair Display', serif");
-      } else if (font === 'jetbrains') {
-        updateCssVariable('--font-family', "'JetBrains Mono', monospace");
-        updateCssVariable('--title-font-family', "'JetBrains Mono', monospace");
-      }
-      setTimeout(checkPageOverflow, 100);
-    }
-
-    function setAccentColor(hex, el) {
-      updateCssVariable('--primary-color', hex);
-      document.getElementById('color-picker').value = hex;
-      
-      if (el) {
-        document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-      }
-    }
-
-    // Apply Presets
-    function applyThemePreset(presetKey) {
-      const preset = themePresets[presetKey];
-      if (!preset) return;
-      
-      // Update UI elements
-      document.getElementById('font-select').value = preset.font;
-      document.getElementById('color-picker').value = preset.primary;
-      document.getElementById('font-size-slider').value = preset.fontSize;
-      document.getElementById('line-height-slider').value = preset.lineHeight;
-      document.getElementById('margin-y-slider').value = preset.marginVertical;
-      document.getElementById('margin-x-slider').value = preset.marginHorizontal;
-      document.getElementById('section-spacing-slider').value = preset.sectionSpacing;
-      document.getElementById('item-spacing-slider').value = preset.itemSpacing;
-      
-      // Update display labels
-      document.getElementById('font-size-val').innerText = `${preset.fontSize}pt`;
-      document.getElementById('line-height-val').innerText = preset.lineHeight;
-      document.getElementById('margin-y-val').innerText = `${preset.marginVertical}cm`;
-      document.getElementById('margin-x-val').innerText = `${preset.marginHorizontal}cm`;
-      document.getElementById('section-spacing-val').innerText = `${preset.sectionSpacing}rem`;
-      document.getElementById('item-spacing-val').innerText = `${preset.itemSpacing}rem`;
-      
-      // Apply variables
-      applyFontFamily(preset.font);
-      setAccentColor(preset.primary);
-      updateCssVariable('--font-size-base', `${preset.fontSize}pt`);
-      updateCssVariable('--line-height', preset.lineHeight);
-      updateCssVariable('--page-margin-y', `${preset.marginVertical}cm`);
-      updateCssVariable('--page-margin-x', `${preset.marginHorizontal}cm`);
-      updateCssVariable('--section-spacing', `${preset.sectionSpacing}rem`);
-      updateCssVariable('--item-spacing', `${preset.itemSpacing}rem`);
-      
-      // Adjust circles styling in palette
-      document.querySelectorAll('.color-circle').forEach(circle => {
-        circle.classList.remove('active');
-        if (circle.style.backgroundColor === hexToRgb(preset.primary)) {
-          circle.classList.add('active');
-        }
-      });
-      
-      // Highlight active button
-      document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`preset-${presetKey}`).classList.add('active');
-      
-      setTimeout(checkPageOverflow, 150);
-    }
-
-    // Helper hex to rgb matching
-    function hexToRgb(hex) {
-      let c;
-      if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
-        c= hex.substring(1).split('');
-        if(c.length== 3){
-          c= [c[0], c[0], c[1], c[1], c[2], c[2]];
-        }
-        c= '0x' + c.join('');
-        return 'rgb('+[(c>>16)&255, (c>>8)&255, c&255].join(', ')+')';
-      }
-      return hex;
-    }
-
-    // Section Manager Render
-    function renderSectionManager() {
-      const list = document.getElementById('section-manager-list');
-      list.innerHTML = '';
-      
-      const displayNames = {
-        summary: '📝 个人总结 (Summary)',
-        education: '🏛️ 教育经历 (Education)',
-        projects: '🎯 项目经验 (Projects)',
-        experience: '💼 创业与工作 (Experience)',
-        skills: '🛠️ 专业技能 (Skills)'
-      };
-      
-      sectionOrder.forEach((sectionName, index) => {
-        const isHidden = hiddenSections.has(sectionName);
-        const row = document.createElement('div');
-        row.className = 'section-item-row';
-        row.innerHTML = `
-          <div class="section-info">
-            <input type="checkbox" ${!isHidden ? 'checked' : ''} onchange="toggleSectionVisibility('${sectionName}')" id="chk-${sectionName}">
-            <label for="chk-${sectionName}" style="cursor:pointer; font-weight:600;">${displayNames[sectionName] || sectionName}</label>
-          </div>
-          <div class="section-actions">
-            <button onclick="moveSection(${index}, -1)" class="btn-icon-xs" style="color:white; padding:2px;" title="上移">
-              <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:currentColor;"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+            <button onclick="downloadCleanHtml()" class="action-btn action-btn-secondary" title="下载纯净网页 HTML">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              <span>下载 HTML</span>
             </button>
-            <button onclick="moveSection(${index}, 1)" class="btn-icon-xs" style="color:white; padding:2px;" title="下移">
-              <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:currentColor;"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+            <button onclick="downloadPng()" class="action-btn action-btn-secondary" title="高清导出为 PNG 图像">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span>导出 PNG</span>
+            </button>
+            <button onclick="window.print()" class="action-btn action-btn-primary" title="调用系统打印机或另存为 PDF">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span>打印 / 导出 PDF</span>
             </button>
           </div>
-        `;
-        list.appendChild(row);
-      });
-    }
+        </div>
 
-    function moveSection(index, direction) {
-      const newIndex = index + direction;
-      if (newIndex < 0 || newIndex >= sectionOrder.length) return;
-      
-      const temp = sectionOrder[index];
-      sectionOrder[index] = sectionOrder[newIndex];
-      sectionOrder[newIndex] = temp;
-      
-      renderResume();
-      renderSectionManager();
-      saveToLocalStorage();
-    }
+        <!-- Two Column Workspace -->
+        <div class="workspace">
+          <!-- Sidebar Controls -->
+          <aside class="sidebar no-print">
+            <div class="tab-header">
+              <button onclick="switchTab('style-tab')" id="style-tab-btn" class="tab-btn active">主题样式</button>
+              <button onclick="switchTab('section-tab')" id="section-tab-btn" class="tab-btn">模块管理</button>
+              <button onclick="switchTab('json-tab')" id="json-tab-btn" class="tab-btn">数据源码</button>
+            </div>
 
-    function toggleSectionVisibility(sectionName) {
-      if (hiddenSections.has(sectionName)) {
-        hiddenSections.delete(sectionName);
-      } else {
-        hiddenSections.add(sectionName);
-      }
-      renderResume();
-      renderSectionManager();
-      saveToLocalStorage();
-    }
-
-    function toggleCompactHeader(checked) {
-      compactHeader = checked;
-      const dot = document.getElementById('compact-toggle-dot');
-      if (checked) {
-        dot.style.transform = 'translateX(20px)';
-        dot.style.background = '#6366f1';
-      } else {
-        dot.style.transform = 'translateX(0)';
-        dot.style.background = 'white';
-      }
-      renderResume();
-      setTimeout(checkPageOverflow, 100);
-    }
-
-    // Dynamic rendering of resume on A4 canvas
-    function renderResume() {
-      const page = document.getElementById('resume-page');
-      page.innerHTML = '';
-      
-      // 1. Render page break limits
-      const guide = document.createElement('div');
-      guide.id = 'page-break-guide';
-      guide.className = 'page-guide-1 no-print';
-      page.appendChild(guide);
-      
-      // 2. Render Header (Always visible)
-      const headerDiv = document.createElement('div');
-      headerDiv.className = compactHeader ? 'resume-header compact-header' : 'resume-header';
-
-      if (compactHeader) {
-        headerDiv.innerHTML = `
-          <div>
-            <h1 contenteditable="true" data-path="personalInfo.name">${parseMarkdownToHtml(resumeData.personalInfo.name)}</h1>
-            <div class="resume-header-title" contenteditable="true" data-path="personalInfo.title">${parseMarkdownToHtml(resumeData.personalInfo.title)}</div>
-          </div>
-          <div class="resume-header-contact">
-            <span>📞 <span contenteditable="true" data-path="personalInfo.phone">${resumeData.personalInfo.phone}</span></span>
-            <span>✉️ <span contenteditable="true" data-path="personalInfo.email">${resumeData.personalInfo.email}</span></span>
-            <span>🐙 <span contenteditable="true" data-path="personalInfo.github">${resumeData.personalInfo.github}</span></span>
-            <span>🌐 <span contenteditable="true" data-path="personalInfo.website">${resumeData.personalInfo.website}</span></span>
-          </div>
-        `;
-      } else {
-        headerDiv.innerHTML = `
-          <h1 contenteditable="true" data-path="personalInfo.name">${parseMarkdownToHtml(resumeData.personalInfo.name)}</h1>
-          <div class="resume-header-title" contenteditable="true" data-path="personalInfo.title">${parseMarkdownToHtml(resumeData.personalInfo.title)}</div>
-          <div class="resume-header-contact">
-            <span>📞 <span contenteditable="true" data-path="personalInfo.phone">${resumeData.personalInfo.phone}</span></span>
-            <span>✉️ <span contenteditable="true" data-path="personalInfo.email">${resumeData.personalInfo.email}</span></span>
-            <span>🐙 <span contenteditable="true" data-path="personalInfo.github">${resumeData.personalInfo.github}</span></span>
-            <span>🌐 <span contenteditable="true" data-path="personalInfo.website">${resumeData.personalInfo.website}</span></span>
-          </div>
-        `;
-      }
-      page.appendChild(headerDiv);
-      
-      // 3. Render Sections in configured order
-      sectionOrder.forEach((sectionKey) => {
-        if (hiddenSections.has(sectionKey)) return;
-        
-        const sectionDiv = document.createElement('div');
-        sectionDiv.className = 'resume-section';
-        sectionDiv.id = `section-${sectionKey}`;
-        
-        switch (sectionKey) {
-          case 'summary':
-            sectionDiv.innerHTML = `
-              <div class="section-title"><span>Professional Summary / 个人总结</span></div>
-              <div contenteditable="true" data-path="personalInfo.summary" style="text-align: justify; word-break: break-all;">
-                ${parseMarkdownToHtml(resumeData.personalInfo.summary)}
-              </div>
-            `;
-            break;
-            
-          case 'education':
-            let eduItems = resumeData.education.map((edu, idx) => `
-              <div class="resume-item">
-                <div class="item-controls no-print">
-                  <button onclick="moveItem('education', ${idx}, -1)" class="btn-icon-xs" title="上移">
-                    <svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
-                  </button>
-                  <button onclick="moveItem('education', ${idx}, 1)" class="btn-icon-xs" title="下移">
-                    <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
-                  </button>
-                  <button onclick="deleteItem('education', ${idx})" class="btn-icon-xs" style="color:#ef4444;" title="删除">
-                    <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-                  </button>
-                </div>
-                <div class="item-header">
-                  <span contenteditable="true" data-path="education.${idx}.school">${edu.school}</span>
-                  <span contenteditable="true" data-path="education.${idx}.date" style="font-weight: normal; color: #64748b; font-size: 0.9em;">${edu.date}</span>
-                </div>
-                <div class="item-sub-header">
-                  <span contenteditable="true" data-path="education.${idx}.degree">${edu.degree}</span>
-                  <span contenteditable="true" data-path="education.${idx}.achievements" style="font-size: 0.9em; font-weight: normal; font-style: normal; color: #4b5563;">${edu.achievements}</span>
-                </div>
-              </div>
-            `).join('');
-            
-            sectionDiv.innerHTML = `
-              <div class="section-title">
-                <span>Education / 教育背景</span>
-                <button onclick="addEducationItem()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded border border-slate-300 font-normal normal-case tracking-normal no-print flex items-center gap-1">
-                  <span>+ 添加经历</span>
-                </button>
-              </div>
-              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                ${eduItems}
-              </div>
-            `;
-            break;
-            
-          case 'projects':
-            let projItems = resumeData.projects.map((proj, idx) => `
-              <div class="resume-item">
-                <div class="item-controls no-print">
-                  <button onclick="moveItem('projects', ${idx}, -1)" class="btn-icon-xs" title="上移">
-                    <svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
-                  </button>
-                  <button onclick="moveItem('projects', ${idx}, 1)" class="btn-icon-xs" title="下移">
-                    <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
-                  </button>
-                  <button onclick="deleteItem('projects', ${idx})" class="btn-icon-xs" style="color:#ef4444;" title="删除">
-                    <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-                  </button>
-                </div>
-                <div class="item-header">
-                  <span contenteditable="true" data-path="projects.${idx}.name">${parseMarkdownToHtml(proj.name)}</span>
-                  <span contenteditable="true" data-path="projects.${idx}.date" style="font-weight: normal; color: #64748b; font-size: 0.9em;">${proj.date}</span>
-                </div>
-                <div class="item-sub-header">
-                  <span contenteditable="true" data-path="projects.${idx}.role">${proj.role}</span>
-                </div>
-                <ul contenteditable="true" data-path="projects.${idx}.description" class="resume-bullets">
-                  ${proj.description.map(desc => `<li>${parseMarkdownToHtml(desc)}</li>`).join('')}
-                </ul>
-              </div>
-            `).join('');
-            
-            sectionDiv.innerHTML = `
-              <div class="section-title">
-                <span>Project Experience / 项目经历</span>
-                <button onclick="addProjectItem()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded border border-slate-300 font-normal normal-case tracking-normal no-print flex items-center gap-1">
-                  <span>+ 添加项目</span>
-                </button>
-              </div>
-              <div style="display: flex; flex-direction: column; gap: calc(var(--item-spacing) * 1.1);">
-                ${projItems}
-              </div>
-            `;
-            break;
-            
-          case 'experience':
-            let expItems = resumeData.experience.map((exp, idx) => `
-              <div class="resume-item">
-                <div class="item-controls no-print">
-                  <button onclick="moveItem('experience', ${idx}, -1)" class="btn-icon-xs" title="上移">
-                    <svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
-                  </button>
-                  <button onclick="moveItem('experience', ${idx}, 1)" class="btn-icon-xs" title="下移">
-                    <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
-                  </button>
-                  <button onclick="deleteItem('experience', ${idx})" class="btn-icon-xs" style="color:#ef4444;" title="删除">
-                    <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-                  </button>
-                </div>
-                <div class="item-header">
-                  <span contenteditable="true" data-path="experience.${idx}.company">${exp.company}</span>
-                  <span contenteditable="true" data-path="experience.${idx}.date" style="font-weight: normal; color: #64748b; font-size: 0.9em;">${exp.date}</span>
-                </div>
-                <div class="item-sub-header">
-                  <span contenteditable="true" data-path="experience.${idx}.role">${exp.role}</span>
-                </div>
-                <ul contenteditable="true" data-path="experience.${idx}.description" class="resume-bullets">
-                  ${exp.description.map(desc => `<li>${parseMarkdownToHtml(desc)}</li>`).join('')}
-                </ul>
-              </div>
-            `).join('');
-            
-            sectionDiv.innerHTML = `
-              <div class="section-title">
-                <span>Work & Entrepreneurship / 工作与创业经历</span>
-                <button onclick="addExperienceItem()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded border border-slate-300 font-normal normal-case tracking-normal no-print flex items-center gap-1">
-                  <span>+ 添加经历</span>
-                </button>
-              </div>
-              <div style="display: flex; flex-direction: column; gap: calc(var(--item-spacing) * 1.1);">
-                ${expItems}
-              </div>
-            `;
-            break;
-            
-          case 'skills':
-            let skillRows = resumeData.skills.map((skill, idx) => `
-              <tr class="skills-row relative group/item">
-                <td class="skills-cat">
-                  <div class="item-controls no-print" style="left: -42px; top: 4px;">
-                    <button onclick="moveItem('skills', ${idx}, -1)" class="btn-icon-xs" title="上移">
-                      <svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
+            <div class="tab-content-container">
+              <!-- Tab 1: Theme & Style -->
+              <div id="style-tab" class="tab-content">
+                <div class="control-group">
+                  <span class="control-label">风格预设 <span class="control-subtext">一键专业排版</span></span>
+                  <div class="presets-grid">
+                    <button onclick="applyThemePreset('wallstreet')" id="preset-wallstreet" class="preset-btn active">
+                      <span class="preset-title">🏛️ 华尔街精英</span>
+                      <span class="preset-desc">经典衬线与普鲁士深蓝，严谨专业</span>
                     </button>
-                    <button onclick="moveItem('skills', ${idx}, 1)" class="btn-icon-xs" title="下移">
-                      <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+                    <button onclick="applyThemePreset('siliconvalley')" id="preset-siliconvalley" class="preset-btn">
+                      <span class="preset-title">💻 硅谷极简</span>
+                      <span class="preset-desc">极简无衬线与高呼吸感，极客科技感</span>
                     </button>
-                    <button onclick="deleteItem('skills', ${idx})" class="btn-icon-xs" style="color:#ef4444;" title="删除">
-                      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+                    <button onclick="applyThemePreset('mckinsey')" id="preset-mckinsey" class="preset-btn">
+                      <span class="preset-title">💼 麦肯锡标准</span>
+                      <span class="preset-desc">商学院标准，清晰理性沉稳</span>
+                    </button>
+                    <button onclick="applyThemePreset('editorial')" id="preset-editorial" class="preset-btn">
+                      <span class="preset-title">🎨 高阶主管</span>
+                      <span class="preset-desc">雅致标题与现代排版，突显个人品味</span>
                     </button>
                   </div>
-                  <span contenteditable="true" data-path="skills.${idx}.category">${skill.category}</span>
-                </td>
-                <td class="skills-items" contenteditable="true" data-path="skills.${idx}.items">
-                  ${parseMarkdownToHtml(skill.items)}
-                </td>
-              </tr>
-            `).join('');
-            
-            sectionDiv.innerHTML = `
-              <div class="section-title">
-                <span>Technical Skills / 专业技能</span>
-                <button onclick="addSkillItem()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded border border-slate-300 font-normal normal-case tracking-normal no-print flex items-center gap-1">
-                  <span>+ 添加类别</span>
-                </button>
+                </div>
+
+                <div class="control-group">
+                  <span class="control-label">字体搭配</span>
+                  <select id="font-select" onchange="applyFontFamily(this.value)">
+                    <option value="garamond">EB Garamond (经典衬线)</option>
+                    <option value="inter">Inter (现代极简无衬线)</option>
+                    <option value="georgia">Georgia (严谨正式)</option>
+                    <option value="outfit">Outfit (几何先锋感)</option>
+                    <option value="playfair-inter">Playfair + Inter (杂志质感)</option>
+                    <option value="jetbrains">JetBrains Mono (开发者极客)</option>
+                  </select>
+                </div>
+
+                <div class="control-group">
+                  <span class="control-label">主题强调色</span>
+                  <div class="color-palette">
+                    <button onclick="setAccentColor('#0f2c59',this)" class="color-circle active" style="background:#0f2c59" aria-label="藏青" title="深蓝藏青"></button>
+                    <button onclick="setAccentColor('#1e293b',this)" class="color-circle" style="background:#1e293b" aria-label="炭黑" title="高级炭黑"></button>
+                    <button onclick="setAccentColor('#1e3a8a',this)" class="color-circle" style="background:#1e3a8a" aria-label="蓝色" title="科技纯蓝"></button>
+                    <button onclick="setAccentColor('#701a75',this)" class="color-circle" style="background:#701a75" aria-label="绛紫" title="优雅绛紫"></button>
+                    <button onclick="setAccentColor('#064e3b',this)" class="color-circle" style="background:#064e3b" aria-label="墨绿" title="常春藤墨绿"></button>
+                  </div>
+                  <div class="custom-color-input">
+                    <input type="color" id="color-picker" oninput="setAccentColor(this.value)" title="点击自定义颜色">
+                    <span>调色盘自定义颜色</span>
+                  </div>
+                </div>
+
+                <!-- Sliders for Typography & Layout -->
+                <div class="slider-container">
+                  <div class="slider-header">
+                    <span>正文字号</span>
+                    <span class="slider-value" id="font-size-val">9.5pt</span>
+                  </div>
+                  <input type="range" id="font-size-slider" min="9" max="13" step="0.5" value="9.5" oninput="changeFontSize(this.value)">
+                </div>
+
+                <div class="slider-container">
+                  <div class="slider-header">
+                    <span>行高比例</span>
+                    <span class="slider-value" id="line-height-val">1.2</span>
+                  </div>
+                  <input type="range" id="line-height-slider" min="1.2" max="1.8" step="0.05" value="1.2" oninput="changeLineHeight(this.value)">
+                </div>
+
+                <div class="slider-container">
+                  <div class="slider-header">
+                    <span>页面上下边距</span>
+                    <span class="slider-value" id="margin-y-val">1cm</span>
+                  </div>
+                  <input type="range" id="margin-y-slider" min="1" max="3" step="0.1" value="1" oninput="changeMarginY(this.value)">
+                </div>
+
+                <div class="slider-container">
+                  <div class="slider-header">
+                    <span>页面左右边距</span>
+                    <span class="slider-value" id="margin-x-val">1cm</span>
+                  </div>
+                  <input type="range" id="margin-x-slider" min="1" max="3" step="0.1" value="1" oninput="changeMarginX(this.value)">
+                </div>
+
+                <div class="slider-container">
+                  <div class="slider-header">
+                    <span>板块垂直间距</span>
+                    <span class="slider-value" id="section-spacing-val">0.6rem</span>
+                  </div>
+                  <input type="range" id="section-spacing-slider" min="0.6" max="2" step="0.05" value="0.6" oninput="changeSectionSpacing(this.value)">
+                </div>
+
+                <div class="slider-container">
+                  <div class="slider-header">
+                    <span>条目内间距</span>
+                    <span class="slider-value" id="item-spacing-val">0.4rem</span>
+                  </div>
+                  <input type="range" id="item-spacing-slider" min="0.4" max="1.5" step="0.05" value="0.4" oninput="changeItemSpacing(this.value)">
+                </div>
+
+                <div class="control-group switch-control">
+                  <span class="control-label" style="margin:0">紧凑型头部排版</span>
+                  <input type="checkbox" id="compact-header-toggle" onchange="toggleCompactHeader(this.checked)" checked>
+                </div>
+
+                <div class="tip-box">
+                  <strong>💡 快捷编辑指南</strong>
+                  <ul>
+                    <li>点击简历中任意文字即可直接原位打字编辑。</li>
+                    <li>选中文本时会唤出浮动格式工具条（加粗、链接）。</li>
+                    <li>鼠标悬停任意经历条目左侧，可点击 ↑ ↓ 调序或 ✕ 删除。</li>
+                  </ul>
+                </div>
               </div>
-              <table class="skills-table">
-                <tbody>
-                  ${skillRows}
-                </tbody>
-              </table>
-            `;
-            break;
-        }
-        
-        page.appendChild(sectionDiv);
-      });
-      
-      // Re-enable contenteditable hooks on newly rendered DOM elements
-      document.querySelectorAll('#resume-page [contenteditable]').forEach(el => {
-        el.setAttribute('contenteditable', 'true');
-      });
-      
-      // Auto checking overflow
-      setTimeout(checkPageOverflow, 100);
-    }
 
-    // Array Mutator Actions
-    function addEducationItem() {
-      resumeData.education.push({
-        school: "院校名称",
-        degree: "专业名称 (学历学位)",
-        date: "2026.09 - 2030.06",
-        achievements: "核心成就 / GPA / 荣誉奖励"
-      });
-      renderResume();
-      saveToLocalStorage();
-      updateJsonTextArea();
-    }
+              <!-- Tab 2: Section Management -->
+              <div id="section-tab" class="tab-content hidden">
+                <div class="control-group">
+                  <span class="control-label">模块显示与上下排序</span>
+                  <div class="section-list" id="section-manager-list"></div>
+                </div>
 
-    function addProjectItem() {
-      resumeData.projects.push({
-        name: "新项目名称",
-        role: "核心开发者 / 负责人",
-        date: "2026.01 - 至今",
-        description: [
-          "**关键贡献点1**：描述具体的技术实现、优化指标与成果。",
-          "**关键贡献点2**：使用大模型或工程手段解决了某痛点问题。"
-        ]
-      });
-      renderResume();
-      saveToLocalStorage();
-      updateJsonTextArea();
-    }
+                <div class="control-group">
+                  <span class="control-label">添加新经历条目</span>
+                  <div style="display:grid;gap:8px">
+                    <button onclick="addProjectItem()" class="action-btn action-btn-secondary" style="justify-content:flex-start">
+                      <span>＋ 添加项目经历 (Project)</span>
+                    </button>
+                    <button onclick="addExperienceItem()" class="action-btn action-btn-secondary" style="justify-content:flex-start">
+                      <span>＋ 添加工作经历 (Experience)</span>
+                    </button>
+                    <button onclick="addSkillItem()" class="action-btn action-btn-secondary" style="justify-content:flex-start">
+                      <span>＋ 添加技能类别 (Skill)</span>
+                    </button>
+                    <button onclick="addEducationItem()" class="action-btn action-btn-secondary" style="justify-content:flex-start">
+                      <span>＋ 添加教育背景 (Education)</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-    function addExperienceItem() {
-      resumeData.experience.push({
-        company: "公司/机构名称",
-        role: "职位岗位名称",
-        date: "2026.01 - 至今",
-        description: [
-          "工作产出描述点一",
-          "工作产出描述点二"
-        ]
-      });
-      renderResume();
-      saveToLocalStorage();
-      updateJsonTextArea();
-    }
+              <!-- Tab 3: JSON Source Data -->
+              <div id="json-tab" class="tab-content hidden">
+                <div class="control-group">
+                  <span class="control-label">简历 JSON 数据源</span>
+                  <p style="font-size:0.75rem;color:var(--ui-muted);margin:0 0 8px">
+                    修改或粘贴 JSON 数据后点击应用，可瞬间完成简历批量替换或版本迁移。
+                  </p>
+                  <textarea id="json-textarea" style="height:320px;font-family:ui-monospace,Menlo,Monaco,Consolas,monospace;font-size:12px;line-height:1.4"></textarea>
+                  <div style="display:flex;gap:8px;margin-top:10px">
+                    <button onclick="applyJsonFromTextarea()" class="action-btn action-btn-primary" style="flex:1">应用并更新</button>
+                    <button onclick="resetToDefaultJson()" class="action-btn action-btn-secondary" style="flex:1">恢复默认</button>
+                  </div>
+                </div>
 
-    function addSkillItem() {
-      resumeData.skills.push({
-        category: "新技能分类",
-        items: "技能细项1, 技能细项2, 技能细项3"
-      });
-      renderResume();
-      saveToLocalStorage();
-      updateJsonTextArea();
-    }
+                <div class="control-group">
+                  <span class="control-label">数据备份与恢复</span>
+                  <div style="display:flex;gap:8px">
+                    <button onclick="triggerJsonImport()" class="action-btn action-btn-secondary" style="flex:1">导入 JSON 文件</button>
+                    <button onclick="downloadJson()" class="action-btn action-btn-secondary" style="flex:1">导出 JSON 备份</button>
+                  </div>
+                  <input type="file" id="json-file-input" accept=".json" style="display:none" onchange="importJsonFile(event)">
+                </div>
+              </div>
+            </div>
+          </aside>
 
-    function moveItem(arrayKey, index, direction) {
-      const arr = resumeData[arrayKey];
-      const newIndex = index + direction;
-      if (newIndex < 0 || newIndex >= arr.length) return;
-      
-      const temp = arr[index];
-      arr[index] = arr[newIndex];
-      arr[newIndex] = temp;
-      
-      renderResume();
-      saveToLocalStorage();
-      updateJsonTextArea();
-    }
+          <!-- Canvas Preview -->
+          <section class="canvas-container" id="canvas-container">
+            <div id="page-overflow-warning" class="warning-banner hidden">
+              <span>⚠️</span>
+              <span>内容已超出 1 页 A4 建议范围，建议微调字号或间距</span>
+            </div>
 
-    function deleteItem(arrayKey, index) {
-      if (confirm("确定要删除这一项经历/技能吗？")) {
-        resumeData[arrayKey].splice(index, 1);
-        renderResume();
-        saveToLocalStorage();
-        updateJsonTextArea();
-      }
-    }
+            <div class="page-wrapper" id="page-wrapper">
+              <div id="resume-page" class="a4-page"></div>
+            </div>
+          </section>
+        </div>
 
-    // Synchronize JSON Textarea
-    function updateJsonTextArea() {
-      const textarea = document.getElementById('json-textarea');
-      textarea.value = JSON.stringify(resumeData, null, 2);
-    }
+        <!-- Floating Format Toolbar -->
+        <div id="floating-toolbar" class="floating-toolbar no-print">
+          <button onclick="formatText('bold')" class="toolbar-btn" title="加粗"><b>B</b></button>
+          <button onclick="formatText('italic')" class="toolbar-btn" title="斜体"><i>I</i></button>
+          <button onclick="formatText('underline')" class="toolbar-btn" title="下划线"><u>U</u></button>
+          <div class="toolbar-divider"></div>
+          <button onclick="addLink()" class="toolbar-btn" title="添加链接">↗</button>
+          <button onclick="formatText('removeFormat')" class="toolbar-btn" title="清除格式">Tx</button>
+        </div>
 
-    function applyJsonFromTextarea() {
-      const textarea = document.getElementById('json-textarea');
-      try {
-        const parsed = JSON.parse(textarea.value);
-        resumeData = parsed;
-        renderResume();
-        saveToLocalStorage();
-        alert('JSON 数据更新成功！');
-      } catch (err) {
-        alert('JSON 格式有误，请核对：\n' + err.message);
-      }
-    }
-
-    function resetToDefaultJson() {
-      if (confirm("确定要恢复到内置的示例简历吗？（所有内容均为虚构演示数据，恢复后当前修改将被覆盖）")) {
-        resumeData = JSON.parse(JSON.stringify(defaultResumeData));
-        sectionOrder = [...defaultSectionOrder];
-        hiddenSections.clear();
-        
-        renderResume();
-        renderSectionManager();
-        updateJsonTextArea();
-        applyThemePreset('wallstreet');
-        saveToLocalStorage();
-      }
-    }
-
-    // JSON file Import/Export
-    function triggerJsonImport() {
-      document.getElementById('json-file-input').click();
-    }
-
-    function importJsonFile(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          resumeData = parsed;
-          renderResume();
-          updateJsonTextArea();
-          saveToLocalStorage();
-          alert('成功导入简历 JSON 文件！');
-        } catch (err) {
-          alert('导入失败，JSON 文件格式错误：' + err.message);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function downloadJson() {
-      const blob = new Blob([JSON.stringify(resumeData, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${resumeData.personalInfo.name}_简历数据.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    // Selection Floating Toolbar Setup
-    function setupSelectionToolbar() {
-      const toolbar = document.getElementById('floating-toolbar');
-      
-      document.addEventListener('selectionchange', () => {
-        const selection = window.getSelection();
-        
-        if (selection.isCollapsed) {
-          toolbar.style.display = 'none';
-          return;
-        }
-        
-        let node = selection.anchorNode;
-        let insideResume = false;
-        while (node) {
-          if (node.id === 'resume-page') {
-            insideResume = true;
-            break;
-          }
-          node = node.parentNode;
-        }
-        
-        if (!insideResume) {
-          toolbar.style.display = 'none';
-          return;
-        }
-        
-        // Calculate coordinates
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        
-        toolbar.style.display = 'flex';
-        toolbar.style.top = `${rect.top + window.scrollY - toolbar.offsetHeight - 8}px`;
-        toolbar.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (toolbar.offsetWidth / 2)}px`;
-      });
-    }
-
-    function formatText(command) {
-      document.execCommand(command, false, null);
-    }
-
-    function addLink() {
-      const url = prompt("请输入链接 URL:");
-      if (url) {
-        document.execCommand("createLink", false, url);
-      }
-    }
-
-    // Clean standalone HTML export
-    function downloadCleanHtml() {
-      const resumeHtml = document.getElementById('resume-page').innerHTML;
-      const styles = document.documentElement.style;
-      const primaryColor = styles.getPropertyValue('--primary-color') || '#0f2c59';
-      const fontFamily = styles.getPropertyValue('--font-family') || "'Inter', sans-serif";
-      const titleFontFamily = styles.getPropertyValue('--title-font-family') || "'Inter', sans-serif";
-      const fontSizeBase = styles.getPropertyValue('--font-size-base') || '10.5pt';
-      const lineHeight = styles.getPropertyValue('--line-height') || '1.45';
-      const pageMarginY = styles.getPropertyValue('--page-margin-y') || '1.5cm';
-      const pageMarginX = styles.getPropertyValue('--page-margin-x') || '2cm';
-      const sectionSpacing = styles.getPropertyValue('--section-spacing') || '1.2rem';
-      const itemSpacing = styles.getPropertyValue('--item-spacing') || '0.7rem';
-
-      const fullHtml = `<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${resumeData.personalInfo.name} - 精英个人简历</title>
-<link href="/lib/fonts/resume/resume-fonts.css" rel="stylesheet">
-  <style>
-    :root {
-      --primary-color: ${primaryColor};
-      --font-family: ${fontFamily};
-      --title-font-family: ${titleFontFamily};
-      --font-size-base: ${fontSizeBase};
-      --line-height: ${lineHeight};
-      --page-margin-y: ${pageMarginY};
-      --page-margin-x: ${pageMarginX};
-      --section-spacing: ${sectionSpacing};
-      --item-spacing: ${itemSpacing};
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      background-color: #f1f5f9;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
-    
-    .a4-page {
-      width: 21cm;
-      min-height: 29.7cm;
-      background-color: white;
-      padding: var(--page-margin-y) var(--page-margin-x);
-      box-sizing: border-box;
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      margin: 2rem auto;
-      font-family: var(--font-family);
-      font-size: var(--font-size-base);
-      line-height: var(--line-height);
-      color: #1f2937;
-    }
-
-    strong {
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .resume-header {
-      text-align: center;
-      margin-bottom: calc(var(--section-spacing) * 1.2);
-    }
-    
-    .resume-header h1 {
-      font-size: 2.2em;
-      font-weight: 800;
-      color: #111827;
-      letter-spacing: -0.025em;
-      margin-bottom: 0.25rem;
-    }
-    
-    .resume-header-title {
-      font-size: 0.95em;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--primary-color);
-      margin-bottom: 0.5rem;
-    }
-    
-    .resume-header-contact {
-      font-size: 0.85em;
-      color: #4b5563;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.5rem 1rem;
-    }
-    
-    .resume-header-contact span {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-    
-    .resume-header-contact a {
-      color: #4b5563;
-      text-decoration: none;
-    }
-    
-    .resume-header-contact a:hover {
-      text-decoration: underline;
-      color: var(--primary-color);
-    }
-
-    .resume-section {
-      margin-bottom: var(--section-spacing);
-      position: relative;
-    }
-
-    .section-title {
-      font-family: var(--title-font-family, var(--font-family));
-      font-size: 1.05em;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--primary-color);
-      border-bottom: 1.5px solid var(--primary-color);
-      padding-bottom: 3px;
-      margin-bottom: calc(var(--item-spacing) * 0.7);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .resume-item {
-      margin-bottom: var(--item-spacing);
-    }
-    .resume-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      font-weight: 700;
-      color: #111827;
-      margin-bottom: 2px;
-    }
-
-    .item-sub-header {
-      display: flex;
-      justify-content: space-between;
-      font-style: italic;
-      color: #4b5563;
-      font-size: 0.95em;
-      margin-bottom: 6px;
-    }
-
-    .resume-bullets {
-      list-style-type: disc;
-      padding-left: 1.25rem;
-      margin: 0;
-    }
-    .resume-bullets li {
-      margin-bottom: 3px;
-      color: #374151;
-    }
-    .resume-bullets li:last-child {
-      margin-bottom: 0;
-    }
-
-    .skills-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    .skills-row {
-      border-bottom: 1px solid #f3f4f6;
-    }
-    
-    .skills-row:last-child {
-      border-bottom: none;
-    }
-    
-    .skills-cat {
-      font-weight: 700;
-      color: #111827;
-      padding: 0.4rem 0.5rem 0.4rem 0;
-      vertical-align: top;
-      width: 16%;
-      white-space: nowrap;
-    }
-
-    .skills-items {
-      padding: 0.4rem 0;
-      color: #374151;
-      vertical-align: top;
-      width: 84%;
-    }
-
-    /* Print styling */
-    @media print {
-      body {
-        background-color: white !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-      .a4-page {
-        margin: 0 !important;
-        box-shadow: none !important;
-        width: 100% !important;
-        min-height: 100% !important;
-        padding: var(--page-margin-y) var(--page-margin-x) !important;
-      }
-      @page {
-        size: A4;
-        margin: 0;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="a4-page">
-    ${resumeHtml}
+      </div>
+    </div>
   </div>
-  <script>
-    // Clean up editor indicators if they leaked
-    document.querySelectorAll('[contenteditable]').forEach(el => {
-      el.removeAttribute('contenteditable');
-    });
-    document.querySelectorAll('.no-print').forEach(el => {
-      el.remove();
-    });
-  <\/script>
-</body>
-</html>`;
+</main>
 
-      // Trigger download
-      const blob = new Blob([fullHtml], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
+<script>
+const defaultResumeData = {
+  personalInfo: {
+    name: '李知远',
+    title: '全栈与 AI 应用开发 / 本科在读',
+    phone: '138-0000-8888',
+    email: 'lizhiyuan@example.com',
+    github: 'github.com/lizhiyuan-dev',
+    website: 'lizhiyuan.example.com',
+    summary: '电子信息工程本科在读，活跃于开源社区，能独立交付全栈应用与 AI 工程项目，寻找 AI 应用 / 全栈方向实习。'
+  },
+  education: [
+    {
+      school: '南江大学',
+      degree: '电子信息工程 (本科在读)',
+      date: '2025.09 - 2029.06',
+      achievements: '服务外包创新创业大赛 华东赛区三等奖 | CET-4'
+    }
+  ],
+  experience: [
+    {
+      company: '青藤校园共享打印 (个人运营)',
+      role: '校园代理 / 项目负责人',
+      date: '2025.10 - 2026.07',
+      description: [
+        '主动联系学校引入自助打印机，优化投放位置后单量翻倍。',
+        '招募学生兼职负责巡检，自己负责后台监控与故障排障。'
+      ]
+    }
+  ],
+  projects: [
+    {
+      name: 'JobAlign — 人岗匹配与简历画像系统',
+      role: '后端开发 / 匹配算法设计',
+      date: '2025.12 - 2026.05',
+      description: [
+        '使用 Python / FastAPI 搭建 RESTful API 与数据模型。',
+        '通过 Embedding 与余弦相似度构建标签对齐和精排匹配算法。'
+      ]
+    },
+    {
+      name: 'WordEcho — 亲子英语跟读 SPA',
+      role: '独立开发',
+      date: '2025.05',
+      description: [
+        '接入云端 TTS 与口语评分 API，localStorage 持久化用户数据。'
+      ]
+    }
+  ],
+  skills: [
+    { category: 'AI 应用', items: '提示词工程, JSON Schema, LangChain, RAG, Embedding, MCP' },
+    { category: '前端', items: 'React, Next.js, Tailwind CSS, HTML5 / CSS3 / JavaScript' },
+    { category: '后端与部署', items: 'FastAPI, Python, SQLAlchemy, Node.js, Git / Linux' }
+  ]
+};
+
+let resumeData = {};
+let zoom = 1;
+let compactHeader = true;
+let sectionOrder = ['summary', 'education', 'projects', 'experience', 'skills'];
+let hiddenSections = new Set();
+
+const themePresets = {
+  wallstreet: {
+    font: 'garamond',
+    primary: '#0f2c59',
+    fontSize: '9.5',
+    lineHeight: '1.2',
+    marginHorizontal: '1',
+    marginVertical: '1',
+    sectionSpacing: '.6',
+    itemSpacing: '.4'
+  },
+  siliconvalley: {
+    font: 'inter',
+    primary: '#1e293b',
+    fontSize: '10',
+    lineHeight: '1.5',
+    marginHorizontal: '1.8',
+    marginVertical: '1.4',
+    sectionSpacing: '1.25',
+    itemSpacing: '.7'
+  },
+  mckinsey: {
+    font: 'georgia',
+    primary: '#1e3a8a',
+    fontSize: '10.5',
+    lineHeight: '1.4',
+    marginHorizontal: '2.2',
+    marginVertical: '1.8',
+    sectionSpacing: '1.05',
+    itemSpacing: '.6'
+  },
+  editorial: {
+    font: 'playfair-inter',
+    primary: '#701a75',
+    fontSize: '10.5',
+    lineHeight: '1.5',
+    marginHorizontal: '2',
+    marginVertical: '1.6',
+    sectionSpacing: '1.25',
+    itemSpacing: '.75'
+  }
+};
+
+function $(id) {
+  return document.getElementById(id);
+}
+
+function saveToLocalStorage() {
+  localStorage.setItem('modern_resume_data', JSON.stringify(resumeData));
+  localStorage.setItem('modern_resume_section_order', JSON.stringify(sectionOrder));
+  localStorage.setItem('modern_resume_hidden_sections', JSON.stringify([...hiddenSections]));
+}
+
+function esc(v) {
+  return String(v ?? '').replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+}
+
+function parseMarkdownToHtml(v) {
+  return esc(v)
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
+}
+
+function checkPageOverflow() {
+  const p = $('resume-page');
+  const g = $('page-break-guide');
+  const w = $('page-overflow-warning');
+  if (!p || !g || !w) return;
+  // A4 standard height is 29.7cm (~1122.5px at 96 DPI, approx 29.7 * 3.78)
+  const h = 29.7 * 3.78;
+  g.style.top = h + 'px';
+  const isOverflow = p.offsetHeight > h;
+  w.classList.toggle('hidden', !isOverflow);
+  g.classList.toggle('overflowing', isOverflow);
+}
+
+function renderResume() {
+  const p = $('resume-page');
+  p.innerHTML = '<div id="page-break-guide" class="page-guide-1 no-print"></div>';
+  const x = resumeData.personalInfo || {};
+
+  p.insertAdjacentHTML(
+    'beforeend',
+    `<header class="resume-header ${compactHeader ? 'compact-header' : ''}">
+      <div>
+        <h1 contenteditable="true" data-path="personalInfo.name">${parseMarkdownToHtml(x.name)}</h1>
+        <div class="resume-header-title" contenteditable="true" data-path="personalInfo.title">${parseMarkdownToHtml(x.title)}</div>
+      </div>
+      <div class="resume-header-contact">
+        <span>📞 <span contenteditable="true" data-path="personalInfo.phone">${esc(x.phone)}</span></span>
+        <span>✉️ <span contenteditable="true" data-path="personalInfo.email">${esc(x.email)}</span></span>
+        <span>🐙 <span contenteditable="true" data-path="personalInfo.github">${esc(x.github)}</span></span>
+        <span>🌐 <span contenteditable="true" data-path="personalInfo.website">${esc(x.website)}</span></span>
+      </div>
+    </header>`
+  );
+
+  const labels = {
+    summary: 'Professional Summary / 个人总结',
+    education: 'Education / 教育背景',
+    projects: 'Project Experience / 项目经历',
+    experience: 'Work & Entrepreneurship / 工作经历',
+    skills: 'Technical Skills / 专业技能'
+  };
+
+  sectionOrder.forEach(key => {
+    if (hiddenSections.has(key)) return;
+    let html = `<section class="resume-section" id="section-${key}"><div class="section-title"><span>${labels[key]}</span></div>`;
+
+    if (key === 'summary') {
+      html += `<div contenteditable="true" data-path="personalInfo.summary">${parseMarkdownToHtml(x.summary)}</div>`;
+    }
+    if (key === 'education') {
+      html += (resumeData.education || []).map((v, i) => item('education', i, v, 'school', 'degree')).join('');
+    }
+    if (key === 'projects') {
+      html += (resumeData.projects || []).map((v, i) => item('projects', i, v, 'name', 'role', true)).join('');
+    }
+    if (key === 'experience') {
+      html += (resumeData.experience || []).map((v, i) => item('experience', i, v, 'company', 'role', true)).join('');
+    }
+    if (key === 'skills') {
+      html +=
+        '<table class="skills-table"><tbody>' +
+        (resumeData.skills || [])
+          .map(
+            (v, i) =>
+              `<tr class="skills-row">
+                <td class="skills-cat">
+                  <div class="item-controls no-print">
+                    <button class="btn-icon-xs" onclick="moveItem('skills',${i},-1)" title="上移">↑</button>
+                    <button class="btn-icon-xs" onclick="moveItem('skills',${i},1)" title="下移">↓</button>
+                    <button class="btn-icon-xs" onclick="deleteItem('skills',${i})" title="删除">×</button>
+                  </div>
+                  <span contenteditable="true" data-path="skills.${i}.category">${esc(v.category)}</span>
+                </td>
+                <td class="skills-items" contenteditable="true" data-path="skills.${i}.items">${parseMarkdownToHtml(v.items)}</td>
+              </tr>`
+          )
+          .join('') +
+        '</tbody></table>';
+    }
+    p.insertAdjacentHTML('beforeend', html + '</section>');
+  });
+
+  setTimeout(checkPageOverflow, 50);
+}
+
+function item(key, i, v, title, role, bullets) {
+  return `<div class="resume-item">
+    <div class="item-controls no-print">
+      <button class="btn-icon-xs" onclick="moveItem('${key}',${i},-1)" title="上移">↑</button>
+      <button class="btn-icon-xs" onclick="moveItem('${key}',${i},1)" title="下移">↓</button>
+      <button class="btn-icon-xs" onclick="deleteItem('${key}',${i})" title="删除">×</button>
+    </div>
+    <div class="item-header">
+      <span contenteditable="true" data-path="${key}.${i}.${title}">${parseMarkdownToHtml(v[title])}</span>
+      <span contenteditable="true" data-path="${key}.${i}.date" style="font-weight:400;color:#64748b">${esc(v.date)}</span>
+    </div>
+    <div class="item-sub-header">
+      <span contenteditable="true" data-path="${key}.${i}.${role}">${esc(v[role])}</span>
+    </div>
+    ${
+      bullets
+        ? `<ul class="resume-bullets" contenteditable="true" data-path="${key}.${i}.description">
+            ${v.description.map(d => `<li>${parseMarkdownToHtml(d)}</li>`).join('')}
+           </ul>`
+        : ''
+    }
+  </div>`;
+}
+
+function setValueByPath(o, path, v) {
+  const a = path.split('.');
+  let c = o;
+  for (let i = 0; i < a.length - 1; i++) {
+    c = c[a[i]] ?? (c[a[i]] = /^\d+$/.test(a[i + 1]) ? [] : {});
+  }
+  c[a.at(-1)] = v;
+}
+
+function setupCanvasListeners() {
+  const c = $('resume-page');
+  c.addEventListener('input', e => {
+    const path = e.target.dataset.path;
+    if (path) {
+      setValueByPath(
+        resumeData,
+        path,
+        e.target.tagName === 'UL'
+          ? [...e.target.querySelectorAll('li')].map(x => x.innerHTML)
+          : e.target.innerHTML
+      );
+      saveToLocalStorage();
+      updateJsonTextArea();
+    }
+  });
+  c.addEventListener('paste', e => {
+    e.preventDefault();
+    document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
+  });
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(x => x.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+  $(id).classList.remove('hidden');
+  $(id + '-btn').classList.add('active');
+}
+
+function zoomIn() {
+  if (zoom < 1.5) {
+    zoom += 0.05;
+    applyZoom();
+  }
+}
+
+function zoomOut() {
+  if (zoom > 0.6) {
+    zoom -= 0.05;
+    applyZoom();
+  }
+}
+
+function applyZoom() {
+  const p = $('resume-page');
+  const w = $('page-wrapper');
+  p.style.transform = `scale(${zoom})`;
+  p.style.transformOrigin = 'top center';
+  w.style.height = 29.7 * zoom + 'cm';
+  w.style.width = 21 * zoom + 'cm';
+  $('zoom-val').textContent = Math.round(zoom * 100) + '%';
+}
+
+function css(n, v) {
+  document.documentElement.style.setProperty(n, v);
+}
+
+function changeFontSize(v) {
+  css('--font-size-base', v + 'pt');
+  $('font-size-val').textContent = v + 'pt';
+  const slider = $('font-size-slider');
+  if (slider && slider.value !== v) slider.value = v;
+  checkPageOverflow();
+}
+
+function changeLineHeight(v) {
+  css('--line-height', v);
+  $('line-height-val').textContent = v;
+  const slider = $('line-height-slider');
+  if (slider && slider.value !== v) slider.value = v;
+  checkPageOverflow();
+}
+
+function changeMarginY(v) {
+  css('--page-margin-y', v + 'cm');
+  $('margin-y-val').textContent = v + 'cm';
+  const slider = $('margin-y-slider');
+  if (slider && slider.value !== v) slider.value = v;
+  checkPageOverflow();
+}
+
+function changeMarginX(v) {
+  css('--page-margin-x', v + 'cm');
+  const e = $('margin-x-val');
+  if (e) e.textContent = v + 'cm';
+  const slider = $('margin-x-slider');
+  if (slider && slider.value !== v) slider.value = v;
+  checkPageOverflow();
+}
+
+function changeSectionSpacing(v) {
+  css('--section-spacing', v + 'rem');
+  $('section-spacing-val').textContent = v + 'rem';
+  const slider = $('section-spacing-slider');
+  if (slider && slider.value !== v) slider.value = v;
+}
+
+function changeItemSpacing(v) {
+  css('--item-spacing', v + 'rem');
+  $('item-spacing-val').textContent = v + 'rem';
+  const slider = $('item-spacing-slider');
+  if (slider && slider.value !== v) slider.value = v;
+}
+
+function applyFontFamily(v) {
+  const f =
+    {
+      inter: "'Inter', -apple-system, sans-serif",
+      garamond: "'EB Garamond', Georgia, serif",
+      georgia: "Georgia, 'Times New Roman', serif",
+      outfit: "'Outfit', 'Inter', sans-serif",
+      'playfair-inter': "'Inter', -apple-system, sans-serif",
+      jetbrains: "'JetBrains Mono', Consolas, monospace"
+    }[v] || 'Inter, sans-serif';
+  css('--font-family', f);
+  css('--title-font-family', f);
+}
+
+function setAccentColor(v, el) {
+  css('--primary-color', v);
+  $('color-picker').value = v;
+  if (el) {
+    document.querySelectorAll('.color-circle').forEach(x => x.classList.remove('active'));
+    el.classList.add('active');
+  }
+}
+
+function applyThemePreset(k) {
+  const v = themePresets[k];
+  if (!v) return;
+  $('font-select').value = v.font;
+  applyFontFamily(v.font);
+  setAccentColor(v.primary);
+  changeFontSize(v.fontSize);
+  changeLineHeight(v.lineHeight);
+  changeMarginY(v.marginVertical);
+  changeMarginX(v.marginHorizontal);
+  changeSectionSpacing(v.sectionSpacing);
+  changeItemSpacing(v.itemSpacing);
+  document.querySelectorAll('.preset-btn').forEach(x => x.classList.remove('active'));
+  const presetBtn = $('preset-' + k);
+  if (presetBtn) presetBtn.classList.add('active');
+}
+
+function toggleCompactHeader(v) {
+  compactHeader = v;
+  renderResume();
+}
+
+function renderSectionManager() {
+  const names = {
+    summary: '📝 个人总结 (Summary)',
+    education: '🏛️ 教育经历 (Education)',
+    projects: '🎯 项目经验 (Projects)',
+    experience: '💼 工作经历 (Experience)',
+    skills: '🛠️ 专业技能 (Skills)'
+  };
+  $('section-manager-list').innerHTML = sectionOrder
+    .map(
+      (n, i) =>
+        `<div class="section-item-row">
+          <label>
+            <input type="checkbox" ${hiddenSections.has(n) ? '' : 'checked'} onchange="toggleSectionVisibility('${n}')">
+            <span>${names[n]}</span>
+          </label>
+          <span>
+            <button class="btn-icon-xs" onclick="moveSection(${i},-1)" title="上移模块">↑</button>
+            <button class="btn-icon-xs" onclick="moveSection(${i},1)" title="下移模块">↓</button>
+          </span>
+        </div>`
+    )
+    .join('');
+}
+
+function moveSection(i, d) {
+  if (i + d < 0 || i + d >= sectionOrder.length) return;
+  [sectionOrder[i], sectionOrder[i + d]] = [sectionOrder[i + d], sectionOrder[i]];
+  renderResume();
+  renderSectionManager();
+  saveToLocalStorage();
+}
+
+function toggleSectionVisibility(n) {
+  hiddenSections.has(n) ? hiddenSections.delete(n) : hiddenSections.add(n);
+  renderResume();
+  renderSectionManager();
+  saveToLocalStorage();
+}
+
+function addEducationItem() {
+  resumeData.education.push({
+    school: '院校名称',
+    degree: '专业名称 (学位)',
+    date: '2026 - 2030',
+    achievements: '核心成就 / 荣誉奖项'
+  });
+  renderResume();
+  saveToLocalStorage();
+  updateJsonTextArea();
+}
+
+function addProjectItem() {
+  resumeData.projects.push({
+    name: '新项目名称',
+    role: '核心角色 / 开发者',
+    date: '2026 - 至今',
+    description: ['关键贡献点与成果描述。']
+  });
+  renderResume();
+  saveToLocalStorage();
+  updateJsonTextArea();
+}
+
+function addExperienceItem() {
+  resumeData.experience.push({
+    company: '公司 / 机构名称',
+    role: '职位岗位',
+    date: '2026 - 至今',
+    description: ['工作产出及核心业务成果描述。']
+  });
+  renderResume();
+  saveToLocalStorage();
+  updateJsonTextArea();
+}
+
+function addSkillItem() {
+  resumeData.skills.push({
+    category: '新技能分类',
+    items: '技能细项列表 (如技术栈、工具链、框架)'
+  });
+  renderResume();
+  saveToLocalStorage();
+  updateJsonTextArea();
+}
+
+function moveItem(k, i, d) {
+  const a = resumeData[k];
+  if (i + d < 0 || i + d >= a.length) return;
+  [a[i], a[i + d]] = [a[i + d], a[i]];
+  renderResume();
+  saveToLocalStorage();
+  updateJsonTextArea();
+}
+
+function deleteItem(k, i) {
+  if (confirm('确定要删除这一项吗？')) {
+    resumeData[k].splice(i, 1);
+    renderResume();
+    saveToLocalStorage();
+    updateJsonTextArea();
+  }
+}
+
+function updateJsonTextArea() {
+  $('json-textarea').value = JSON.stringify(resumeData, null, 2);
+}
+
+function applyJsonFromTextarea() {
+  try {
+    resumeData = JSON.parse($('json-textarea').value);
+    renderResume();
+    saveToLocalStorage();
+    alert('JSON 数据更新成功！');
+  } catch (e) {
+    alert('JSON 格式有误：' + e.message);
+  }
+}
+
+function resetToDefaultJson() {
+  if (confirm('确定恢复默认示例简历吗？')) {
+    resumeData = JSON.parse(JSON.stringify(defaultResumeData));
+    sectionOrder = ['summary', 'education', 'projects', 'experience', 'skills'];
+    hiddenSections.clear();
+    renderResume();
+    renderSectionManager();
+    updateJsonTextArea();
+    saveToLocalStorage();
+  }
+}
+
+function triggerJsonImport() {
+  $('json-file-input').click();
+}
+
+function importJsonFile(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = x => {
+    try {
+      resumeData = JSON.parse(x.target.result);
+      renderResume();
+      updateJsonTextArea();
+      saveToLocalStorage();
+    } catch (err) {
+      alert('导入失败：' + err.message);
+    }
+  };
+  r.readAsText(f);
+}
+
+function downloadJson() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(resumeData, null, 2)], { type: 'application/json' }));
+  a.download = 'resume-data.json';
+  a.click();
+}
+
+function setupSelectionToolbar() {
+  document.addEventListener('selectionchange', () => {
+    const s = getSelection();
+    const t = $('floating-toolbar');
+    if (s.isCollapsed || !$('resume-page').contains(s.anchorNode)) {
+      t.style.display = 'none';
+      return;
+    }
+    const r = s.getRangeAt(0).getBoundingClientRect();
+    t.style.display = 'flex';
+    t.style.top = Math.max(8, r.top - 46) + 'px';
+    t.style.left = Math.max(8, r.left + r.width / 2 - t.offsetWidth / 2) + 'px';
+  });
+}
+
+function formatText(c) {
+  document.execCommand(c, false, null);
+}
+
+function addLink() {
+  const u = prompt('请输入链接 URL:');
+  if (u) document.execCommand('createLink', false, u);
+}
+
+function downloadCleanHtml() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(
+    new Blob(
+      [
+        `<!doctype html><html><head><meta charset="utf-8"><title>个人简历</title><style>body{font-family:Inter,system-ui,sans-serif;max-width:820px;margin:32px auto;padding:0 20px;color:#1f2937}.no-print{display:none}a{color:#0f2c59}</style></head><body>${$('resume-page').innerHTML}</body></html>`
+      ],
+      { type: 'text/html' }
+    )
+  );
+  a.download = 'resume.html';
+  a.click();
+}
+
+function downloadPng() {
+  const p = $('resume-page');
+  if (typeof html2canvas !== 'function') {
+    alert('PNG 模块尚未加载');
+    return;
+  }
+  html2canvas(p, { scale: 2, backgroundColor: '#ffffff' })
+    .then(c => {
       const a = document.createElement('a');
-      a.href = url;
-      a.download = `${resumeData.personalInfo.name}_简历.html`;
-      document.body.appendChild(a);
+      a.download = 'resume.png';
+      a.href = c.toDataURL();
       a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-    // Export PNG via html2canvas
-    function downloadPng() {
-      const page = document.getElementById('resume-page');
-      // Temporarily hide editor-only elements
-      const noPrintEls = page.querySelectorAll('.no-print');
-      noPrintEls.forEach(el => el.style.display = 'none');
+    })
+    .catch(e => alert('PNG 导出失败：' + e.message));
+}
 
-      html2canvas(page, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff'
-      }).then(canvas => {
-        noPrintEls.forEach(el => el.style.display = '');
-        const link = document.createElement('a');
-        link.download = `${resumeData.personalInfo.name}_简历.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      }).catch(err => {
-        noPrintEls.forEach(el => el.style.display = '');
-        alert('PNG 导出失败：' + err.message);
-      });
-    }
-  </script>
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    resumeData = JSON.parse(localStorage.getItem('modern_resume_data')) || JSON.parse(JSON.stringify(defaultResumeData));
+  } catch (e) {
+    resumeData = JSON.parse(JSON.stringify(defaultResumeData));
+  }
+  try {
+    sectionOrder = JSON.parse(localStorage.getItem('modern_resume_section_order')) || sectionOrder;
+    hiddenSections = new Set(JSON.parse(localStorage.getItem('modern_resume_hidden_sections')) || []);
+  } catch (e) {}
+
+  renderResume();
+  renderSectionManager();
+  updateJsonTextArea();
+  setupCanvasListeners();
+  setupSelectionToolbar();
+  applyThemePreset('wallstreet');
+  saveToLocalStorage();
+});
+</script>
 </body>
 </html>
