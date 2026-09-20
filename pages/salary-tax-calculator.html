@@ -1,641 +1,1756 @@
-<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
 <!DOCTYPE html>
 <html lang="zh" class="dark">
 <head>
-    <script src="./js/theme.js"></script>
-    <script src="./js/i18n.js"></script>
-    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-    <title>2026最新个税与五险一金计算器 - 在线工具</title>
-    <meta name="description" content="2026最新个人所得税与五险一金在线计算器：支持税前月薪、社保与公积金缴费基数与比例设置（预设北上广深杭等各大城市标准）、六项专项附加扣除，按中国现行个人所得税超额累进税率表（年度累计预扣预缴法）精准计算税后到手工资、个人及企业缴纳明细全账单，附图表比例展示与12个月薪资走势。" />
-    <meta name="keywords" content="个税计算器,2026个税计算器,五险一金计算器,税后工资计算,专项附加扣除,累计预扣预缴,社保公积金计算,用工成本计算器" />
+<script src="./js/theme.js"></script><script src="./js/i18n.js"></script>
+<script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>2026最新个税与五险一金计算器 - 在线工具</title>
+<meta name="description" content="2026最新个人所得税与五险一金在线精算器，按年度累计预扣预缴法精准核算税后到手工资、个人及企业五险一金与综合用工成本。">
+<link rel="shortcut icon" href="/favicon.ico">
+<link href="./lib/element-plus/index.css" rel="stylesheet">
+<link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet">
+<link href="./css/6767-site.css?v=20260905" rel="stylesheet">
+<link href="./css/tool-dark.css?v=20260905" rel="stylesheet">
+<style>
+:root {
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
 
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link href="./lib/element-plus/index.css" rel="stylesheet" />
-    <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet" />
-    <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
-    <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
+* { box-sizing: border-box; }
 
-    <style>
-        .tax-calc-container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .stat-card {
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(51, 65, 85, 0.7);
-            border-radius: 12px;
-            padding: 16px 18px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.25s ease;
-        }
-        .stat-card:hover {
-            border-color: rgba(34, 211, 238, 0.6);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-        }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-        }
-        .stat-card.primary::before { background: #22d3ee; }
-        .stat-card.success::before { background: #10b981; }
-        .stat-card.warning::before { background: #f59e0b; }
-        .stat-card.danger::before { background: #f43f5e; }
-        .stat-card.purple::before { background: #a855f7; }
+.tax-calc-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-        .stat-card .label {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .stat-card .value {
-            font-size: 1.55rem;
-            font-weight: 700;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            color: #f1f5f9;
-            letter-spacing: -0.5px;
-        }
-        .stat-card .sub-text {
-            font-size: 0.75rem;
-            color: #64748b;
-            margin-top: 4px;
-        }
+.tool-head {
+  border-bottom: 0;
+  margin-bottom: 6px;
+}
 
-        .preset-chip-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .preset-chip {
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(51, 65, 85, 0.8);
-            color: #cbd5e1;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .preset-chip:hover {
-            border-color: #22d3ee;
-            color: #22d3ee;
-            background: rgba(34, 211, 238, 0.1);
-        }
-        .preset-chip.active {
-            background: rgba(34, 211, 238, 0.18);
-            border-color: #22d3ee;
-            color: #22d3ee;
-            font-weight: 600;
-        }
+.hero-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 
-        .chart-section {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(51, 65, 85, 0.6);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-        .chart-flex {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-around;
-            gap: 24px;
-        }
-        .donut-container {
-            position: relative;
-            width: 180px;
-            height: 180px;
-        }
-        .donut-center-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            pointer-events: none;
-        }
-        .donut-center-text .t1 { font-size: 0.72rem; color: #94a3b8; }
-        .donut-center-text .t2 { font-size: 1.15rem; font-weight: 700; color: #22d3ee; }
+.hero-header .title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
 
-        .legend-list {
-            flex: 1;
-            min-width: 240px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(30, 41, 59, 0.4);
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(51, 65, 85, 0.4);
-        }
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-        }
-        .legend-name {
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            display: flex;
-            align-items: center;
-        }
-        .legend-val {
-            font-family: ui-monospace, monospace;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #f8fafc;
-        }
+html.dark .hero-header .title { color: #f8fafc; }
+html:not(.dark) .hero-header .title { color: #0f172a; }
 
-        .dark-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            font-size: 0.85rem;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid rgba(51, 65, 85, 0.6);
-        }
-        .dark-table th {
-            background: rgba(30, 41, 59, 0.9);
-            color: #94a3b8;
-            padding: 10px 12px;
-            text-align: right;
-            font-weight: 600;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.6);
-        }
-        .dark-table th:first-child, .dark-table td:first-child { text-align: left; }
-        .dark-table td {
-            padding: 9px 12px;
-            color: #cbd5e1;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.35);
-            text-align: right;
-        }
-        .dark-table tr:last-child td { border-bottom: none; }
-        .dark-table tr:hover td { background: rgba(30, 41, 59, 0.5); }
-        .dark-table .highlight-row td { background: rgba(34, 211, 238, 0.08); font-weight: 600; }
-        .jump-tax-tag {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            border-radius: 4px;
-            padding: 1px 6px;
-            font-size: 0.72rem;
-            margin-left: 6px;
-        }
+.description {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 6px;
+  margin-bottom: 16px;
+}
+html.dark .description { color: #cbd5e1; }
+html:not(.dark) .description { color: #334155; }
 
-        .section-title {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #e2e8f0;
-            margin: 20px 0 12px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .section-title::before {
-            content: '';
-            display: inline-block;
-            width: 3px;
-            height: 14px;
-            background: #22d3ee;
-            border-radius: 2px;
-        }
+/* Status Badges */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
 
-        .badge-cyan {
-            background: rgba(34, 211, 238, 0.15);
-            color: #22d3ee;
-            border: 1px solid rgba(34, 211, 238, 0.3);
-            border-radius: 4px;
-            padding: 2px 7px;
-            font-size: 0.75rem;
-        }
+.badge-pill.cyan {
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+}
 
-        .helper-tip {
-            font-size: 0.78rem;
-            color: #64748b;
-            margin-top: 4px;
-        }
-    </style>
+html:not(.dark) .badge-pill.cyan {
+  background: #e0f2fe;
+  border: 1px solid #7dd3fc;
+  color: #0369a1;
+}
+
+/* Tool Dashboard Top Bar */
+.tool-dashboard {
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 16px 0 20px;
+  transition: all 0.2s ease;
+}
+
+html.dark .tool-dashboard {
+  background: #090e1f;
+  border: 1px solid #1e293b;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+html:not(.dark) .tool-dashboard {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.dashboard-title-group strong {
+  font-size: 15px;
+  display: block;
+}
+html.dark .dashboard-title-group strong { color: #f1f5f9; }
+html:not(.dark) .dashboard-title-group strong { color: #0f172a; }
+
+.dashboard-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+html.dark .dashboard-meta-pill {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid #334155;
+  color: #cbd5e1;
+}
+
+html.dark .dashboard-meta-pill strong {
+  color: #38bdf8;
+}
+
+html:not(.dark) .dashboard-meta-pill {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+}
+
+html:not(.dark) .dashboard-meta-pill strong {
+  color: #0284c7;
+}
+
+/* Quick Selectors & Control Panel */
+.modern-panel {
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 22px;
+  border: 1px solid;
+  transition: border-color 0.2s;
+}
+
+html.dark .modern-panel {
+  background: #0b1120;
+  border-color: #1e293b;
+}
+
+html:not(.dark) .modern-panel {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+html.dark .section-label { color: #cbd5e1; }
+html:not(.dark) .section-label { color: #334155; }
+
+.section-sub-tip {
+  font-size: 12px;
+  font-weight: 500;
+}
+html.dark .section-sub-tip { color: #94a3b8; }
+html:not(.dark) .section-sub-tip { color: #475569; }
+
+.section-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 28px 0 16px;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+html.dark .section-header-row { color: #f8fafc; }
+html:not(.dark) .section-header-row { color: #0f172a; }
+
+.section-header-row:before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  border-radius: 2px;
+  background: #38bdf8;
+}
+
+html:not(.dark) .section-header-row:before {
+  background: #0284c7;
+}
+
+/* Chip Groups */
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.interactive-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.interactive-chip:hover {
+  transform: translateY(-1px);
+}
+
+.interactive-chip:active {
+  transform: translateY(0);
+}
+
+html.dark .interactive-chip {
+  background: #111a2e;
+  border-color: #1e293b;
+  color: #cbd5e1;
+}
+
+html.dark .interactive-chip:hover {
+  background: #17233d;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+html.dark .interactive-chip.active {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}
+
+html:not(.dark) .interactive-chip {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+html:not(.dark) .interactive-chip:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+html:not(.dark) .interactive-chip.active {
+  background: #e0f2fe;
+  border-color: #0284c7;
+  color: #0369a1;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.15);
+}
+
+/* Form Styling & Overrides */
+.form-shell {
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 24px;
+  border: 1px solid;
+}
+
+html.dark .form-shell {
+  background: #090e1f;
+  border-color: #1e293b;
+}
+
+html:not(.dark) .form-shell {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.w100 {
+  width: 100% !important;
+}
+
+.helper-tip {
+  font-size: 12px;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+html.dark .helper-tip { color: #94a3b8; }
+html:not(.dark) .helper-tip { color: #475569; }
+
+/* Element Plus Custom Dual-mode Styling */
+html.dark .el-form-item__label {
+  color: #cbd5e1 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+}
+
+html:not(.dark) .el-form-item__label {
+  color: #1e293b !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+}
+
+html.dark .el-input__wrapper,
+html.dark .el-select__wrapper {
+  background-color: #111a2e !important;
+  box-shadow: 0 0 0 1px #263449 inset !important;
+  border-radius: var(--radius-md) !important;
+  min-height: 38px !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .el-input__wrapper:hover,
+html.dark .el-select__wrapper:hover {
+  box-shadow: 0 0 0 1px #38bdf8 inset !important;
+}
+
+html.dark .el-input__wrapper.is-focus,
+html.dark .el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1.5px #38bdf8 inset !important;
+}
+
+html.dark .el-input__inner,
+html.dark .el-select__placeholder,
+html.dark .el-select__selected-item {
+  color: #f1f5f9 !important;
+}
+
+html.dark .el-input-number__decrease,
+html.dark .el-input-number__increase {
+  background: #172235 !important;
+  color: #cbd5e1 !important;
+  border-color: #263449 !important;
+}
+
+html.dark .el-input-number__decrease:hover,
+html.dark .el-input-number__increase:hover {
+  color: #38bdf8 !important;
+}
+
+/* Light mode element-plus */
+html:not(.dark) .el-input__wrapper,
+html:not(.dark) .el-select__wrapper {
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 1px #cbd5e1 inset !important;
+  border-radius: var(--radius-md) !important;
+  min-height: 38px !important;
+  color: #0f172a !important;
+}
+
+html:not(.dark) .el-input__wrapper:hover,
+html:not(.dark) .el-select__wrapper:hover {
+  box-shadow: 0 0 0 1px #0284c7 inset !important;
+}
+
+html:not(.dark) .el-input__wrapper.is-focus,
+html:not(.dark) .el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1.5px #0284c7 inset !important;
+}
+
+html:not(.dark) .el-input__inner,
+html:not(.dark) .el-select__placeholder,
+html:not(.dark) .el-select__selected-item {
+  color: #0f172a !important;
+}
+
+html:not(.dark) .el-input-number__decrease,
+html:not(.dark) .el-input-number__increase {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Collapse styling */
+.el-collapse {
+  border: none !important;
+  margin: 18px 0 !important;
+}
+
+.el-collapse-item {
+  margin-bottom: 12px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid;
+}
+
+html.dark .el-collapse-item {
+  border-color: #1e293b;
+  background: #0f172a;
+}
+
+html:not(.dark) .el-collapse-item {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+.el-collapse-item__header {
+  min-height: 48px !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+  font-weight: 650 !important;
+  border-bottom: none !important;
+}
+
+html.dark .el-collapse-item__header {
+  background: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
+html:not(.dark) .el-collapse-item__header {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.el-collapse-item__wrap {
+  background: transparent !important;
+  border-bottom: none !important;
+  padding: 0 16px 14px !important;
+}
+
+.collapse-header-flex {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 12px;
+}
+
+/* Action Buttons */
+.action-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  min-height: 42px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-btn-primary {
+  background: #0284c7;
+  border: 1px solid #0284c7;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+}
+
+.action-btn-primary:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+}
+
+html.dark .action-btn-primary {
+  background: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+}
+
+html.dark .action-btn-primary:hover {
+  background: #0369a1;
+  border-color: #7dd3fc;
+}
+
+.action-btn-secondary {
+  border: 1px solid;
+}
+
+html.dark .action-btn-secondary {
+  background: #111a2e;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+html.dark .action-btn-secondary:hover {
+  background: #172235;
+  color: #f1f5f9;
+  border-color: #475569;
+}
+
+html:not(.dark) .action-btn-secondary {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+html:not(.dark) .action-btn-secondary:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* Big Hero Result Card & Metrics Grid */
+.hero-result-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 16px;
+  border: 1px solid;
+  transition: all 0.2s;
+}
+
+html.dark .hero-result-card {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+html:not(.dark) .hero-result-card {
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+  border-color: #bae6fd;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.08);
+}
+
+.hero-result-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.hero-main-metric .label {
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+html.dark .hero-main-metric .label { color: #cbd5e1; }
+html:not(.dark) .hero-main-metric .label { color: #334155; }
+
+.hero-main-metric .big-number {
+  font-family: var(--font-mono);
+  font-size: 38px;
+  font-weight: 850;
+  line-height: 1.15;
+  margin: 10px 0 6px;
+  letter-spacing: -0.02em;
+}
+
+html.dark .hero-main-metric .big-number {
+  color: #38bdf8;
+  text-shadow: 0 0 24px rgba(56, 189, 248, 0.35);
+}
+
+html:not(.dark) .hero-main-metric .big-number {
+  color: #0284c7;
+}
+
+.hero-main-metric .hero-sub {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+html.dark .hero-main-metric .hero-sub { color: #94a3b8; }
+html:not(.dark) .hero-main-metric .hero-sub { color: #475569; }
+
+.hero-main-metric .hero-sub strong {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+html.dark .hero-main-metric .hero-sub strong { color: #f1f5f9; }
+html:not(.dark) .hero-main-metric .hero-sub strong { color: #0f172a; }
+
+.hero-side-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.hero-mini-box {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid;
+}
+
+html.dark .hero-mini-box {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: #1e293b;
+}
+
+html:not(.dark) .hero-mini-box {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.hero-mini-box .title-sm {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+html.dark .hero-mini-box .title-sm { color: #cbd5e1; }
+html:not(.dark) .hero-mini-box .title-sm { color: #334155; }
+
+.hero-mini-box .val-sm {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 750;
+}
+html.dark .hero-mini-box .val-sm { color: #f8fafc; }
+html:not(.dark) .hero-mini-box .val-sm { color: #0f172a; }
+
+.hero-mini-box .val-sm.highlight-warn {
+  color: #fbbf24;
+}
+html:not(.dark) .hero-mini-box .val-sm.highlight-warn {
+  color: #b45309;
+}
+
+.hero-mini-box .val-sm.highlight-succ {
+  color: #34d399;
+}
+html:not(.dark) .hero-mini-box .val-sm.highlight-succ {
+  color: #047857;
+}
+
+/* Secondary Stat Cards Grid */
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  border: 1px solid;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+.stat-card.warning:before { background: #f59e0b; }
+.stat-card.danger:before { background: #f43f5e; }
+.stat-card.purple:before { background: #8b5cf6; }
+.stat-card.success:before { background: #10b981; }
+
+html.dark .stat-card {
+  background: #0b1120;
+  border-color: #1e293b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+html:not(.dark) .stat-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.stat-card .card-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+html.dark .stat-card .card-head-row { color: #cbd5e1; }
+html:not(.dark) .stat-card .card-head-row { color: #1e293b; }
+
+.stat-card .stat-val {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 800;
+  margin: 10px 0 6px;
+  letter-spacing: -0.02em;
+}
+
+html.dark .stat-card.warning .stat-val { color: #fbbf24; }
+html:not(.dark) .stat-card.warning .stat-val { color: #b45309; }
+
+html.dark .stat-card.danger .stat-val { color: #fb7185; }
+html:not(.dark) .stat-card.danger .stat-val { color: #be123c; }
+
+html.dark .stat-card.purple .stat-val { color: #c084fc; }
+html:not(.dark) .stat-card.purple .stat-val { color: #6d28d9; }
+
+html.dark .stat-card.success .stat-val { color: #34d399; }
+html:not(.dark) .stat-card.success .stat-val { color: #047857; }
+
+.stat-card .card-foot {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+html.dark .stat-card .card-foot { color: #94a3b8; }
+html:not(.dark) .stat-card .card-foot { color: #475569; }
+
+.mini-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mini-badge.warning {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+html:not(.dark) .mini-badge.warning {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.mini-badge.danger {
+  background: rgba(244, 63, 94, 0.18);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.4);
+}
+html:not(.dark) .mini-badge.danger {
+  background: #ffe4e6;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+}
+
+.mini-badge.purple {
+  background: rgba(139, 92, 246, 0.18);
+  color: #c084fc;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+}
+html:not(.dark) .mini-badge.purple {
+  background: #ede9fe;
+  color: #6b21a8;
+  border: 1px solid #ddd6fe;
+}
+
+.mini-badge.success {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+html:not(.dark) .mini-badge.success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+/* Visualization & Donut Chart */
+.chart-container-box {
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid;
+}
+
+html.dark .chart-container-box {
+  background: #090e1f;
+  border-color: #1e293b;
+}
+
+html:not(.dark) .chart-container-box {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+.chart-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.donut-visual {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  flex: 0 0 190px;
+}
+
+.donut-visual svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.donut-track {
+  stroke: #e2e8f0;
+}
+html.dark .donut-track {
+  stroke: #1e293b;
+}
+
+.donut-slice-net {
+  stroke: #0284c7;
+}
+html.dark .donut-slice-net {
+  stroke: #38bdf8;
+}
+
+.donut-slice-ins {
+  stroke: #e11d48;
+}
+html.dark .donut-slice-ins {
+  stroke: #fb7185;
+}
+
+.donut-slice-tax {
+  stroke: #d97706;
+}
+html.dark .donut-slice-tax {
+  stroke: #f59e0b;
+}
+
+.donut-visual circle {
+  transition: stroke-dasharray 0.4s ease, stroke-dashoffset 0.4s ease;
+}
+
+.donut-center-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.donut-center-info .cap {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+html.dark .donut-center-info .cap { color: #cbd5e1; }
+html:not(.dark) .donut-center-info .cap { color: #334155; }
+
+.donut-center-info .num {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+html.dark .donut-center-info .num { color: #38bdf8; }
+html:not(.dark) .donut-center-info .num { color: #0284c7; }
+
+.legend-group {
+  display: flex;
+  flex: 1;
+  min-width: 260px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid;
+  font-size: 13px;
+  transition: transform 0.15s;
+}
+
+.legend-row:hover {
+  transform: translateX(2px);
+}
+
+html.dark .legend-row {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+html:not(.dark) .legend-row {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.legend-info-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+html.dark .legend-info-left { color: #cbd5e1; }
+html:not(.dark) .legend-info-left { color: #1e293b; }
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-dot.net {
+  background: #0284c7;
+}
+html.dark .legend-dot.net {
+  background: #38bdf8;
+}
+
+.legend-dot.ins {
+  background: #e11d48;
+}
+html.dark .legend-dot.ins {
+  background: #fb7185;
+}
+
+.legend-dot.tax {
+  background: #d97706;
+}
+html.dark .legend-dot.tax {
+  background: #f59e0b;
+}
+
+.legend-dot.comp {
+  background: #7c3aed;
+}
+html.dark .legend-dot.comp {
+  background: #c084fc;
+}
+
+.legend-val-right {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-align: right;
+  font-size: 13px;
+}
+
+html.dark .legend-val-right { color: #f1f5f9; }
+html:not(.dark) .legend-val-right { color: #0f172a; }
+
+.legend-val-right .legend-sub-ratio {
+  font-size: 12px;
+  font-weight: 500;
+}
+html.dark .legend-val-right .legend-sub-ratio { color: #94a3b8; }
+html:not(.dark) .legend-val-right .legend-sub-ratio { color: #475569; }
+
+/* Tables Design */
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.dark .table-scroll-wrapper {
+  border-color: #1e293b;
+  background: #0b1120;
+}
+
+html:not(.dark) .table-scroll-wrapper {
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
+.custom-tax-table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.custom-tax-table th {
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid;
+}
+
+.custom-tax-table th:first-child {
+  text-align: left;
+}
+
+html.dark .custom-tax-table th {
+  background: #0e172a;
+  color: #cbd5e1;
+  border-color: #1e293b;
+}
+
+html:not(.dark) .custom-tax-table th {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+.custom-tax-table td {
+  padding: 11px 14px;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.custom-tax-table td:first-child {
+  text-align: left;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+html.dark .custom-tax-table td {
+  color: #cbd5e1;
+  border-color: #162033;
+}
+
+html:not(.dark) .custom-tax-table td {
+  color: #1e293b;
+  border-color: #f1f5f9;
+}
+
+.custom-tax-table tbody tr:hover td {
+  background: rgba(2, 132, 199, 0.04);
+}
+
+html.dark .custom-tax-table tbody tr:hover td {
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.custom-tax-table .row-highlight td {
+  font-weight: 750;
+}
+
+html.dark .custom-tax-table .row-highlight td {
+  background: rgba(56, 189, 248, 0.1);
+  color: #f8fafc;
+  border-top: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+html:not(.dark) .custom-tax-table .row-highlight td {
+  background: #eff6ff;
+  color: #1e40af;
+  border-top: 1px solid #bfdbfe;
+}
+
+.cell-tax-val {
+  color: #fbbf24;
+}
+html:not(.dark) .cell-tax-val {
+  color: #b45309;
+}
+
+.cell-net-val {
+  color: #38bdf8;
+  font-weight: 700;
+}
+html:not(.dark) .cell-net-val {
+  color: #0284c7;
+  font-weight: 700;
+}
+
+.cell-net-val-bold {
+  color: #38bdf8;
+  font-weight: 800;
+}
+html:not(.dark) .cell-net-val-bold {
+  color: #0369a1;
+  font-weight: 800;
+}
+
+.jump-rate-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+html.dark .jump-rate-pill {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+html:not(.dark) .jump-rate-pill {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+/* Educational Reference Section */
+.educational-section {
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-top: 24px;
+  border: 1px solid;
+}
+
+html.dark .educational-section {
+  background: #090e1f;
+  border-color: #1e293b;
+}
+
+html:not(.dark) .educational-section {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+.educational-section h3 {
+  font-size: 15px;
+  font-weight: 750;
+  margin: 18px 0 8px;
+}
+
+html.dark .educational-section h3 { color: #f8fafc; }
+html:not(.dark) .educational-section h3 { color: #0f172a; }
+
+.educational-section h3:first-child {
+  margin-top: 0;
+}
+
+.educational-section p {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+html.dark .educational-section p { color: #cbd5e1; }
+html:not(.dark) .educational-section p { color: #334155; }
+
+.educational-section code {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+html.dark .educational-section code {
+  background: #111a2e;
+  color: #38bdf8;
+  border: 1px solid #1e293b;
+}
+
+html:not(.dark) .educational-section code {
+  background: #f1f5f9;
+  color: #0369a1;
+  border: 1px solid #cbd5e1;
+}
+
+.bracket-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.bracket-table th, .bracket-table td {
+  padding: 9px 12px;
+  border: 1px solid;
+}
+
+html.dark .bracket-table th {
+  background: #0f172a;
+  color: #cbd5e1;
+  border-color: #1e293b;
+}
+
+html.dark .bracket-table td {
+  border-color: #1e293b;
+  color: #cbd5e1;
+}
+
+html:not(.dark) .bracket-table th {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+html:not(.dark) .bracket-table td {
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.bracket-table td:nth-child(3), .bracket-table td:nth-child(4) {
+  font-family: var(--font-mono);
+}
+
+/* Mobile Responsive Optimizations */
+@media (max-width: 768px) {
+  .tax-calc-wrapper {
+    padding: 0 4px;
+  }
+  .card-body {
+    padding: 16px 12px !important;
+  }
+  .hero-header .title {
+    font-size: 21px;
+  }
+  .tool-dashboard {
+    padding: 14px;
+  }
+  .modern-panel, .form-shell, .chart-container-box, .educational-section {
+    padding: 14px;
+  }
+  .hero-result-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .hero-main-metric .big-number {
+    font-size: 30px;
+  }
+  .stat-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .stat-card {
+    padding: 12px;
+  }
+  .stat-card .stat-val {
+    font-size: 19px;
+  }
+  .donut-visual {
+    width: 160px;
+    height: 160px;
+    flex-basis: 160px;
+  }
+  .donut-center-info .num {
+    font-size: 22px;
+  }
+  .action-btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-side-metrics {
+    grid-template-columns: 1fr;
+  }
+  .interactive-chip {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+</style>
 </head>
 <body>
 <div class="grid-bg"></div>
-
-<!-- 统一顶部导航 -->
 <header class="tool-topbar">
-  <a href="./" class="tool-topbar-logo" aria-label="首页">
-    <span>在线工具集</span>
-  </a>
+  <a href="./" class="tool-topbar-logo">在线工具集</a>
   <span class="tool-topbar-sep">/</span>
   <a href="./life" class="tool-topbar-cat">生活实用</a>
   <span class="tool-topbar-sep">/</span>
-  <span class="tool-topbar-title">2026最新个税与五险一金计算器</span>
-  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+  <span class="tool-topbar-title">个税与五险一金计算器</span>
+  <a href="./" class="tool-topbar-home">← 首页</a>
 </header>
 
-<main class="main-body tool-page-body">
-  <div class="tool-body tax-calc-container">
+<main class="main-body tool-page-body" id="app">
+  <div class="tool-body tax-calc-wrapper">
     <div class="card-model">
       <div class="card-body">
         <div class="tool-head">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <h1 class="title" style="margin-bottom: 0;">2026最新个税与五险一金计算器</h1>
-            <span class="badge-cyan">拓展时间: 2026-08-31 · 纯前端离线精算</span>
+          <div class="hero-header">
+            <h1 class="title">2026 个税与五险一金计算器</h1>
+            <span class="badge-pill cyan">离线精算 · 2026 最新标准</span>
           </div>
         </div>
-        <div class="description" style="margin-top: 8px;">
-          按中国现行个人所得税超额累进税率表（年度累计预扣预缴法）与各地最新社保公积金标准，精准计算五险一金个人/企业缴纳明细、六项专项附加扣除、税后实发到手薪资与企业综合用工成本。
+        <div class="description">按年度累计预扣预缴法精准核算税后到手工资、个人及企业五险一金支出与企业综合用工成本。支持全国重点城市基数与七项专项附加扣除。</div>
+
+        <!-- Top Dashboard Status Bar -->
+        <div class="tool-dashboard">
+          <div class="dashboard-title-group">
+            <strong>全国政策与精算配置</strong>
+            <div class="helper-tip">选择所在城市与目标月薪，基数范围及缴费费率将自动适配</div>
+          </div>
+          <div class="dashboard-meta-pill">
+            <span>当前城市：<strong>{{ currentCityData.name }}</strong></span>
+            <span>·</span>
+            <span>起征点：<strong>5,000 元/月</strong></span>
+          </div>
         </div>
 
-        <!-- 快速预设城市 -->
-        <div class="section-title">城市与薪资快速预设</div>
-        <div style="margin-bottom: 12px;">
-          <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 6px;">选择常驻城市（自动适配当地社保基数上下限及公积金标准）：</div>
-          <div class="preset-chip-group">
-            <span v-for="c in cityList" :key="c.name" 
-                  class="preset-chip" :class="{active: currentCity === c.name}" 
-                  @click="selectCity(c.name)">
+        <!-- City & Salary Quick Preset Panel -->
+        <div class="modern-panel">
+          <div class="section-label">
+            <span>📍 热门常驻城市预设</span>
+            <span class="section-sub-tip">已载入社保公积金标准</span>
+          </div>
+          <div class="chip-group">
+            <button
+              type="button"
+              v-for="c in cityList"
+              :key="c.name"
+              class="interactive-chip"
+              :class="{ active: currentCity === c.name }"
+              @click="selectCity(c.name)"
+            >
               {{ c.name }}
-            </span>
+            </button>
           </div>
-        </div>
 
-        <div style="margin-bottom: 20px;">
-          <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 6px;">快捷月薪选择：</div>
-          <div class="preset-chip-group">
-            <span v-for="s in salaryPresets" :key="s" 
-                  class="preset-chip" :class="{active: formData.salary === s}" 
-                  @click="formData.salary = s; compute()">
+          <div class="section-label" style="margin-top: 18px">
+            <span>💰 快捷税前月薪（元）</span>
+            <span class="section-sub-tip">点击立即换算</span>
+          </div>
+          <div class="chip-group">
+            <button
+              type="button"
+              v-for="s in salaryPresets"
+              :key="s"
+              class="interactive-chip"
+              :class="{ active: formData.salary === s }"
+              @click="formData.salary = s; compute()"
+            >
               ￥{{ s.toLocaleString() }}
-            </span>
+            </button>
           </div>
         </div>
 
-        <!-- 核心输入表单 -->
-        <el-form :model="formData" label-position="top" class="tool-form">
-          <el-row :gutter="18">
-            <el-col :xs="24" :sm="12" :md="8">
-              <el-form-item label="税前月薪 (元)">
-                <el-input-number v-model="formData.salary" :min="0" :max="10000000" :step="1000" class="w100" @change="onSalaryChange" />
-                <div class="helper-tip">每月应发应计基本税前薪资</div>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="8">
-              <el-form-item label="社保缴费基数模式">
-                <el-select v-model="formData.socialBaseMode" class="w100" @change="compute">
-                  <el-option label="按税前工资 (在上下限区间内自动取值)" value="auto"></el-option>
-                  <el-option label="手动指定社保基数" value="custom"></el-option>
-                </el-select>
-                <div class="helper-tip">{{ currentCityData.name }} 基数范围: ￥{{ currentCityData.socialMin }} ~ ￥{{ currentCityData.socialMax }}</div>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="8" v-if="formData.socialBaseMode === 'custom'">
-              <el-form-item label="自定义社保缴费基数 (元)">
-                <el-input-number v-model="formData.customSocialBase" :min="0" :max="1000000" :step="500" class="w100" @change="compute" />
-              </el-form-item>
-            </el-col>
-          </el-row>
+        <!-- Form Parameter Shell -->
+        <div class="form-shell">
+          <el-form :model="formData" label-position="top" class="tool-form">
+            <div class="section-header-row" style="margin-top: 0">薪资与缴费基础参数</div>
+            <el-row :gutter="18">
+              <el-col :xs="24" :sm="12" :md="8">
+                <el-form-item label="税前月薪（元）">
+                  <el-input-number
+                    v-model="formData.salary"
+                    :min="0"
+                    :max="10000000"
+                    :step="1000"
+                    class="w100"
+                    @change="onSalaryChange"
+                  />
+                  <div class="helper-tip">合同约定的每月应发税前薪资</div>
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="12" :md="8">
+                <el-form-item label="社保缴费基数模式">
+                  <el-select v-model="formData.socialBaseMode" class="w100" @change="compute">
+                    <el-option label="按工资自动限额取值" value="auto"/>
+                    <el-option label="手动指定基数" value="custom"/>
+                  </el-select>
+                  <div class="helper-tip">{{ currentCityData.name }}社保基数：￥{{ currentCityData.socialMin }} ~ ￥{{ currentCityData.socialMax }}</div>
+                </el-form-item>
+              </el-col>
+              <el-col v-if="formData.socialBaseMode === 'custom'" :xs="24" :sm="12" :md="8">
+                <el-form-item label="自定义社保基数（元）">
+                  <el-input-number
+                    v-model="formData.customSocialBase"
+                    :min="0"
+                    :max="1000000"
+                    :step="500"
+                    class="w100"
+                    @change="compute"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-          <el-row :gutter="18">
-            <el-col :xs="24" :sm="12" :md="8">
-              <el-form-item label="公积金缴费比例 (%)">
-                <el-select v-model="formData.housingFundRate" class="w100" @change="compute">
-                  <el-option label="5% (小微/最低标准)" :value="5"></el-option>
-                  <el-option label="7% (上海等常规)" :value="7"></el-option>
-                  <el-option label="8% (常见企事业单位)" :value="8"></el-option>
-                  <el-option label="10% (良好企业)" :value="10"></el-option>
-                  <el-option label="12% (顶格封顶标准)" :value="12"></el-option>
-                </el-select>
-                <div class="helper-tip">个人与企业一般按 1:1 等比例缴纳</div>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="8">
-              <el-form-item label="公积金缴费基数模式">
-                <el-select v-model="formData.fundBaseMode" class="w100" @change="compute">
-                  <el-option label="按税前工资 (在上下限区间内自动取值)" value="auto"></el-option>
-                  <el-option label="手动指定公积金基数" value="custom"></el-option>
-                </el-select>
-                <div class="helper-tip">{{ currentCityData.name }} 公积金基数: ￥{{ currentCityData.fundMin }} ~ ￥{{ currentCityData.fundMax }}</div>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="8" v-if="formData.fundBaseMode === 'custom'">
-              <el-form-item label="自定义公积金基数 (元)">
-                <el-input-number v-model="formData.customFundBase" :min="0" :max="1000000" :step="500" class="w100" @change="compute" />
-              </el-form-item>
-            </el-col>
-          </el-row>
+            <el-row :gutter="18">
+              <el-col :xs="24" :sm="12" :md="8">
+                <el-form-item label="公积金缴费比例">
+                  <el-select v-model="formData.housingFundRate" class="w100" @change="compute">
+                    <el-option label="5%（法定下限）" :value="5"/>
+                    <el-option label="7%（常见标准）" :value="7"/>
+                    <el-option label="8%（常见标准）" :value="8"/>
+                    <el-option label="10%" :value="10"/>
+                    <el-option label="12%（法定上限）" :value="12"/>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="12" :md="8">
+                <el-form-item label="公积金缴费基数模式">
+                  <el-select v-model="formData.fundBaseMode" class="w100" @change="compute">
+                    <el-option label="按工资自动限额取值" value="auto"/>
+                    <el-option label="手动指定基数" value="custom"/>
+                  </el-select>
+                  <div class="helper-tip">{{ currentCityData.name }}公积金基数：￥{{ currentCityData.fundMin }} ~ ￥{{ currentCityData.fundMax }}</div>
+                </el-form-item>
+              </el-col>
+              <el-col v-if="formData.fundBaseMode === 'custom'" :xs="24" :sm="12" :md="8">
+                <el-form-item label="自定义公积金基数（元）">
+                  <el-input-number
+                    v-model="formData.customFundBase"
+                    :min="0"
+                    :max="1000000"
+                    :step="500"
+                    class="w100"
+                    @change="compute"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-          <!-- 专项附加扣除 (2026年最新标准) -->
-          <el-collapse v-model="activeCollapse" style="margin: 16px 0; border-color: rgba(51,65,85,0.6);">
-            <el-collapse-item name="deductions">
-              <template #title>
-                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding-right: 12px;">
-                  <span style="font-weight: 600; color: #e2e8f0;">六项专项附加扣除设置（2026标准）</span>
-                  <span style="font-size: 0.82rem; color: #22d3ee; font-weight: bold;">
-                    当前扣除合计: ￥{{ totalDeductions.toLocaleString() }} / 月
-                  </span>
-                </div>
-              </template>
-              
-              <div style="padding: 10px 4px;">
+            <!-- Collapsible Sections: Deductions & Advanced Rates -->
+            <el-collapse v-model="activeCollapse">
+              <el-collapse-item name="deductions">
+                <template #title>
+                  <div class="collapse-header-flex">
+                    <span>✨ 专项附加扣除配置（个税抵扣）</span>
+                    <span class="badge-pill cyan">已抵扣 ￥{{ totalDeductions.toLocaleString() }} / 月</span>
+                  </div>
+                </template>
                 <el-row :gutter="18">
                   <el-col :xs="24" :sm="12" :md="8">
-                    <el-form-item label="3岁以下婴幼儿照护 (2000元/孩/月)">
+                    <el-form-item label="3岁以下婴幼儿照护">
                       <el-select v-model="deductions.infantCount" class="w100" @change="compute">
-                        <el-option label="无 (0元)" :value="0"></el-option>
-                        <el-option label="1个孩子 (2000元/月)" :value="1"></el-option>
-                        <el-option label="2个孩子 (4000元/月)" :value="2"></el-option>
-                        <el-option label="3个孩子 (6000元/月)" :value="3"></el-option>
+                        <el-option label="无" :value="0"/>
+                        <el-option label="1 个子女（2,000 元/月）" :value="1"/>
+                        <el-option label="2 个子女（4,000 元/月）" :value="2"/>
+                        <el-option label="3 个子女（6,000 元/月）" :value="3"/>
                       </el-select>
                     </el-form-item>
                   </el-col>
-
                   <el-col :xs="24" :sm="12" :md="8">
-                    <el-form-item label="子女教育 (2000元/孩/月)">
+                    <el-form-item label="子女教育（学前至博士）">
                       <el-select v-model="deductions.childCount" class="w100" @change="compute">
-                        <el-option label="无 (0元)" :value="0"></el-option>
-                        <el-option label="1个子女 (2000元/月)" :value="1"></el-option>
-                        <el-option label="2个子女 (4000元/月)" :value="2"></el-option>
-                        <el-option label="3个子女 (6000元/月)" :value="3"></el-option>
+                        <el-option label="无" :value="0"/>
+                        <el-option label="1 个子女（2,000 元/月）" :value="1"/>
+                        <el-option label="2 个子女（4,000 元/月）" :value="2"/>
+                        <el-option label="3 个子女（6,000 元/月）" :value="3"/>
                       </el-select>
                     </el-form-item>
                   </el-col>
-
                   <el-col :xs="24" :sm="12" :md="8">
-                    <el-form-item label="赡养老人 (60岁以上父母)">
+                    <el-form-item label="赡养老人（年满60岁）">
                       <el-select v-model="deductions.elderCare" class="w100" @change="compute">
-                        <el-option label="无扣除 (0元)" :value="0"></el-option>
-                        <el-option label="独生子女 (顶格扣除 3000元/月)" :value="3000"></el-option>
-                        <el-option label="非独生子女 - 兄弟姐妹分摊 (1500元/月)" :value="1500"></el-option>
-                        <el-option label="非独生子女 - 兄弟姐妹分摊 (1000元/月)" :value="1000"></el-option>
+                        <el-option label="无" :value="0"/>
+                        <el-option label="独生子女（3,000 元/月）" :value="3000"/>
+                        <el-option label="非独生子女分摊（1,500 元/月）" :value="1500"/>
+                        <el-option label="非独生子女分摊（1,000 元/月）" :value="1000"/>
                       </el-select>
                     </el-form-item>
                   </el-col>
-
                   <el-col :xs="24" :sm="12" :md="8">
-                    <el-form-item label="住房贷款利息 (首套房贷)">
+                    <el-form-item label="住房贷款利息（首套）">
                       <el-select v-model="deductions.loanInterest" class="w100" @change="onHousingDeductionChange('loan')">
-                        <el-option label="无首套房贷扣除 (0元)" :value="0"></el-option>
-                        <el-option label="首套房贷利息扣除 (1000元/月)" :value="1000"></el-option>
+                        <el-option label="无" :value="0"/>
+                        <el-option label="首套房贷（1,000 元/月）" :value="1000"/>
                       </el-select>
                     </el-form-item>
                   </el-col>
-
                   <el-col :xs="24" :sm="12" :md="8">
-                    <el-form-item label="住房租金 (主要城市/省会)">
+                    <el-form-item label="住房租金（与房贷利息二选一）">
                       <el-select v-model="deductions.housingRent" class="w100" @change="onHousingDeductionChange('rent')">
-                        <el-option label="无租房扣除 (0元)" :value="0"></el-option>
-                        <el-option label="直辖市/省会/计划单列市 (1500元/月)" :value="1500"></el-option>
-                        <el-option label="市辖区人口>100万城市 (1100元/月)" :value="1100"></el-option>
-                        <el-option label="其他城市 (800元/月)" :value="800"></el-option>
+                        <el-option label="无" :value="0"/>
+                        <el-option label="直辖市/省会/重点城市（1,500 元/月）" :value="1500"/>
+                        <el-option label="市辖区人口超百万城市（1,100 元/月）" :value="1100"/>
+                        <el-option label="其他城市（800 元/月）" :value="800"/>
                       </el-select>
                     </el-form-item>
                   </el-col>
-
                   <el-col :xs="24" :sm="12" :md="8">
                     <el-form-item label="继续教育">
                       <el-select v-model="deductions.education" class="w100" @change="compute">
-                        <el-option label="无继续教育扣除 (0元)" :value="0"></el-option>
-                        <el-option label="学历(学位)继续教育 (400元/月)" :value="400"></el-option>
-                        <el-option label="职业资格继续教育 (当年平摊 300元/月)" :value="300"></el-option>
+                        <el-option label="无" :value="0"/>
+                        <el-option label="学历（学位）继续教育（400 元/月）" :value="400"/>
+                        <el-option label="职业资格继续教育（300 元/月）" :value="300"/>
                       </el-select>
                     </el-form-item>
                   </el-col>
                 </el-row>
-                <div style="font-size: 0.76rem; color: #64748b;">
-                  * 注：住房贷款利息与住房租金扣除二选一，不能同时享受；起征点 5000 元/月已由税法自动扣除。
-                </div>
-              </div>
-            </el-collapse-item>
+                <div class="helper-tip">说明：住房贷款利息与住房租金不可同时享受；基本减除费用（起征点 5,000 元/月）已在计算中自动予以全额扣除。</div>
+              </el-collapse-item>
 
-            <!-- 高级五险一金费率微调 -->
-            <el-collapse-item name="advancedInsurance">
-              <template #title>
-                <span style="font-weight: 600; color: #e2e8f0;">高级五险一金比例自定义</span>
-              </template>
-              <div style="padding: 10px 4px;">
+              <el-collapse-item name="advancedInsurance">
+                <template #title>
+                  <div class="collapse-header-flex">
+                    <span>⚙️ 高级五险一金比例自定义</span>
+                    <span class="section-sub-tip">支持精细调节各类险种费率</span>
+                  </div>
+                </template>
                 <el-row :gutter="14">
                   <el-col :xs="12" :sm="8" :md="4">
                     <el-form-item label="养老(个人%)">
-                      <el-input-number v-model="customRates.pensionPerson" :min="0" :max="20" :step="0.5" :precision="1" class="w100" @change="compute" />
+                      <el-input-number v-model="customRates.pensionPerson" :min="0" :max="20" :step=".5" :precision="1" class="w100" @change="compute"/>
                     </el-form-item>
                   </el-col>
                   <el-col :xs="12" :sm="8" :md="4">
                     <el-form-item label="养老(企业%)">
-                      <el-input-number v-model="customRates.pensionCompany" :min="0" :max="30" :step="0.5" :precision="1" class="w100" @change="compute" />
+                      <el-input-number v-model="customRates.pensionCompany" :min="0" :max="30" :step=".5" :precision="1" class="w100" @change="compute"/>
                     </el-form-item>
                   </el-col>
                   <el-col :xs="12" :sm="8" :md="4">
                     <el-form-item label="医疗(个人%)">
-                      <el-input-number v-model="customRates.medicalPerson" :min="0" :max="10" :step="0.5" :precision="1" class="w100" @change="compute" />
+                      <el-input-number v-model="customRates.medicalPerson" :min="0" :max="10" :step=".5" :precision="1" class="w100" @change="compute"/>
                     </el-form-item>
                   </el-col>
                   <el-col :xs="12" :sm="8" :md="4">
                     <el-form-item label="医疗(企业%)">
-                      <el-input-number v-model="customRates.medicalCompany" :min="0" :max="20" :step="0.5" :precision="1" class="w100" @change="compute" />
+                      <el-input-number v-model="customRates.medicalCompany" :min="0" :max="20" :step=".5" :precision="1" class="w100" @change="compute"/>
                     </el-form-item>
                   </el-col>
                   <el-col :xs="12" :sm="8" :md="4">
                     <el-form-item label="失业(个人%)">
-                      <el-input-number v-model="customRates.unemploymentPerson" :min="0" :max="5" :step="0.1" :precision="2" class="w100" @change="compute" />
+                      <el-input-number v-model="customRates.unemploymentPerson" :min="0" :max="5" :step=".1" :precision="2" class="w100" @change="compute"/>
                     </el-form-item>
                   </el-col>
                   <el-col :xs="12" :sm="8" :md="4">
                     <el-form-item label="失业(企业%)">
-                      <el-input-number v-model="customRates.unemploymentCompany" :min="0" :max="5" :step="0.1" :precision="2" class="w100" @change="compute" />
+                      <el-input-number v-model="customRates.unemploymentCompany" :min="0" :max="5" :step=".1" :precision="2" class="w100" @change="compute"/>
                     </el-form-item>
                   </el-col>
-                </el-row>
-                <el-row :gutter="14">
                   <el-col :xs="12" :sm="8" :md="4">
                     <el-form-item label="工伤(企业%)">
-                      <el-input-number v-model="customRates.injuryCompany" :min="0" :max="5" :step="0.05" :precision="2" class="w100" @change="compute" />
+                      <el-input-number v-model="customRates.injuryCompany" :min="0" :max="5" :step=".05" :precision="2" class="w100" @change="compute"/>
                     </el-form-item>
                   </el-col>
                   <el-col :xs="12" :sm="8" :md="4">
-                    <el-form-item label="大病统筹/补充(元)">
-                      <el-input-number v-model="customRates.medicalExtra" :min="0" :max="100" :step="1" class="w100" @change="compute" />
+                    <el-form-item label="大病补充(元)">
+                      <el-input-number v-model="customRates.medicalExtra" :min="0" :max="100" class="w100" @change="compute"/>
                     </el-form-item>
                   </el-col>
                   <el-col :xs="12" :sm="8" :md="4">
                     <el-form-item label="补充公积金(%)">
-                      <el-input-number v-model="customRates.suppFundRate" :min="0" :max="10" :step="1" class="w100" @change="compute" />
+                      <el-input-number v-model="customRates.suppFundRate" :min="0" :max="10" class="w100" @change="compute"/>
                     </el-form-item>
                   </el-col>
                 </el-row>
+              </el-collapse-item>
+            </el-collapse>
+
+            <div class="action-toolbar">
+              <button type="button" class="action-btn action-btn-primary" @click="compute">
+                ⚡ 立即重新核算
+              </button>
+              <button type="button" class="action-btn action-btn-secondary" @click="resetDefaults">
+                ↺ 恢复默认预设
+              </button>
+            </div>
+          </el-form>
+        </div>
+
+        <!-- Hero Take-Home Card -->
+        <div class="hero-result-card">
+          <div class="hero-result-grid">
+            <div class="hero-main-metric">
+              <div class="label">
+                <span>税后实发工资（首月到手）</span>
+                <span class="badge-pill cyan">薪资到手率 {{ netSalaryRatio }}%</span>
               </div>
-            </el-collapse-item>
-          </el-collapse>
-
-          <div style="display: flex; gap: 12px; margin-top: 12px;">
-            <el-button type="primary" size="large" @click="compute" style="min-width: 140px;">
-              ⚡ 立即精确计算
-            </el-button>
-            <el-button size="large" @click="resetDefaults">
-              恢复默认
-            </el-button>
-          </div>
-        </el-form>
-
-        <div class="divider"></div>
-
-        <!-- 计算结果核心指标看板 -->
-        <div class="section-title">计算结果看板 (首月核算)</div>
-        <div class="stats-grid">
-          <div class="stat-card primary">
-            <div class="label">
-              <span>税后实发工资 (到手)</span>
-              <span class="badge-cyan">到手率 {{ netSalaryRatio }}%</span>
+              <div class="big-number">
+                ￥{{ result.netSalary.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+              </div>
+              <div class="hero-sub">
+                <span>扣除五险一金 ￥{{ result.personTotalInsurance.toFixed(2) }}</span>
+                <span>·</span>
+                <span>扣除个税 ￥{{ result.tax.toFixed(2) }}</span>
+                <span>·</span>
+                <span>年度预计到手 <strong>￥{{ annualSummary.totalNetSalary.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></span>
+              </div>
             </div>
-            <div class="value">￥{{ result.netSalary.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
-            <div class="sub-text">扣除五险一金及个税后实发</div>
+            <div class="hero-side-metrics">
+              <div class="hero-mini-box">
+                <div class="title-sm">社保缴费基数</div>
+                <div class="val-sm">￥{{ result.socialBase.toFixed(2) }}</div>
+              </div>
+              <div class="hero-mini-box">
+                <div class="title-sm">公积金缴费基数</div>
+                <div class="val-sm">￥{{ result.fundBase.toFixed(2) }}</div>
+              </div>
+              <div class="hero-mini-box">
+                <div class="title-sm">首月适用税率</div>
+                <div class="val-sm highlight-warn">{{ result.firstMonthTaxRate }}%</div>
+              </div>
+              <div class="hero-mini-box">
+                <div class="title-sm">用工成本系数</div>
+                <div class="val-sm highlight-succ">{{ result.companyCostRatio }}x</div>
+              </div>
+            </div>
           </div>
+        </div>
 
+        <!-- 4 Sub-Metrics Grid -->
+        <div class="stat-cards-grid">
           <div class="stat-card warning">
-            <div class="label">
-              <span>个人所得税 (当月预扣)</span>
-              <span>档位 {{ result.firstMonthTaxRate }}%</span>
+            <div class="card-head-row">
+              <span>个人所得税 (首月)</span>
+              <span class="mini-badge warning">档位 {{ result.firstMonthTaxRate }}%</span>
             </div>
-            <div class="value" style="color: #fbbf24;">￥{{ result.tax.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
-            <div class="sub-text">起征点 ￥5,000 | 扣除 ￥{{ totalDeductions }}</div>
+            <div class="stat-val">￥{{ result.tax.toFixed(2) }}</div>
+            <div class="card-foot">专项扣除 ￥{{ totalDeductions }} / 月</div>
           </div>
 
           <div class="stat-card danger">
-            <div class="label">
+            <div class="card-head-row">
               <span>个人五险一金</span>
-              <span>占比 {{ result.personInsuranceRatio }}%</span>
+              <span class="mini-badge danger">占比 {{ result.personInsuranceRatio }}%</span>
             </div>
-            <div class="value" style="color: #f87171;">￥{{ result.personTotalInsurance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
-            <div class="sub-text">社保 ￥{{ result.personSocialSum }} + 公积金 ￥{{ result.personFundSum }}</div>
+            <div class="stat-val">￥{{ result.personTotalInsurance.toFixed(2) }}</div>
+            <div class="card-foot">社保 ￥{{ result.personSocialSum }} + 公积金 ￥{{ result.personFundSum }}</div>
           </div>
 
           <div class="stat-card purple">
-            <div class="label">
-              <span>企业五险一金</span>
-              <span>占比 {{ result.companyInsuranceRatio }}%</span>
+            <div class="card-head-row">
+              <span>企业承担五险一金</span>
+              <span class="mini-badge purple">比例 {{ result.companyInsuranceRatio }}%</span>
             </div>
-            <div class="value" style="color: #c084fc;">￥{{ result.companyTotalInsurance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
-            <div class="sub-text">社保 ￥{{ result.companySocialSum }} + 公积金 ￥{{ result.companyFundSum }}</div>
+            <div class="stat-val">￥{{ result.companyTotalInsurance.toFixed(2) }}</div>
+            <div class="card-foot">社保 ￥{{ result.companySocialSum }} + 公积金 ￥{{ result.companyFundSum }}</div>
           </div>
 
           <div class="stat-card success">
-            <div class="label">
-              <span>企业用工总支出</span>
-              <span>薪资倍率 {{ result.companyCostRatio }}x</span>
+            <div class="card-head-row">
+              <span>企业用工总成本</span>
+              <span class="mini-badge success">{{ result.companyCostRatio }} 倍薪资</span>
             </div>
-            <div class="value" style="color: #34d399;">￥{{ result.companyTotalCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
-            <div class="sub-text">税前月薪 + 企业五险一金</div>
+            <div class="stat-val">￥{{ result.companyTotalCost.toFixed(2) }}</div>
+            <div class="card-foot">税前月薪 + 企业各类缴纳总额</div>
           </div>
         </div>
 
-        <!-- 视觉图表区域 -->
-        <div class="chart-section">
-          <div style="font-size: 0.95rem; font-weight: 600; color: #e2e8f0; margin-bottom: 16px;">
-            薪资流向与用工成本分布分析 (Donut Chart)
-          </div>
-          <div class="chart-flex">
-            <div class="donut-container">
-              <svg viewBox="0 0 100 100" style="transform: rotate(-90deg); width: 100%; height: 100%;">
-                <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(51, 65, 85, 0.4)" stroke-width="14"></circle>
-                <!-- 实发工资 -->
-                <circle cx="50" cy="50" r="38" fill="none" stroke="#22d3ee" stroke-width="14"
-                        :stroke-dasharray="chartSvg.dashNet" stroke-dashoffset="0"></circle>
-                <!-- 个人五险一金 -->
-                <circle cx="50" cy="50" r="38" fill="none" stroke="#f43f5e" stroke-width="14"
-                        :stroke-dasharray="chartSvg.dashIns" :stroke-dashoffset="chartSvg.offsetIns"></circle>
-                <!-- 个人所得税 -->
-                <circle cx="50" cy="50" r="38" fill="none" stroke="#f59e0b" stroke-width="14"
-                        :stroke-dasharray="chartSvg.dashTax" :stroke-dashoffset="chartSvg.offsetTax"></circle>
+        <!-- Salary Flow Analysis & Donut Chart -->
+        <div class="chart-container-box">
+          <div class="section-header-row" style="margin-top: 0">薪资结构与流向分解</div>
+          <div class="chart-layout">
+            <div class="donut-visual">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="38" fill="none" class="donut-track" stroke-width="13"/>
+                <circle cx="50" cy="50" r="38" fill="none" class="donut-slice-net" stroke-width="13" :stroke-dasharray="chartSvg.dashNet"/>
+                <circle cx="50" cy="50" r="38" fill="none" class="donut-slice-ins" stroke-width="13" :stroke-dasharray="chartSvg.dashIns" :stroke-dashoffset="chartSvg.offsetIns"/>
+                <circle cx="50" cy="50" r="38" fill="none" class="donut-slice-tax" stroke-width="13" :stroke-dasharray="chartSvg.dashTax" :stroke-dashoffset="chartSvg.offsetTax"/>
               </svg>
-              <div class="donut-center-text">
-                <div class="t1">税后到手</div>
-                <div class="t2">{{ netSalaryRatio }}%</div>
+              <div class="donut-center-info">
+                <div class="cap">税后到手</div>
+                <div class="num">{{ netSalaryRatio }}%</div>
               </div>
             </div>
 
-            <div class="legend-list">
-              <div class="legend-item">
-                <div class="legend-name">
-                  <span class="legend-dot" style="background: #22d3ee;"></span>
-                  <span>税后实发到手薪资</span>
+            <div class="legend-group">
+              <div class="legend-row">
+                <div class="legend-info-left">
+                  <i class="legend-dot net"></i>
+                  <span>税后实发工资</span>
                 </div>
-                <div class="legend-val" style="color: #22d3ee;">
-                  ￥{{ result.netSalary.toFixed(2) }} ({{ (result.netSalary / (formData.salary || 1) * 100).toFixed(1) }}%)
-                </div>
-              </div>
-              <div class="legend-item">
-                <div class="legend-name">
-                  <span class="legend-dot" style="background: #f43f5e;"></span>
-                  <span>个人五险一金扣除</span>
-                </div>
-                <div class="legend-val" style="color: #f43f5e;">
-                  ￥{{ result.personTotalInsurance.toFixed(2) }} ({{ (result.personTotalInsurance / (formData.salary || 1) * 100).toFixed(1) }}%)
+                <div class="legend-val-right">
+                  ￥{{ result.netSalary.toFixed(2) }}
+                  <span class="legend-sub-ratio"> ({{ ((result.netSalary / (formData.salary || 1)) * 100).toFixed(1) }}%)</span>
                 </div>
               </div>
-              <div class="legend-item">
-                <div class="legend-name">
-                  <span class="legend-dot" style="background: #f59e0b;"></span>
-                  <span>个人所得税 (当月)</span>
+
+              <div class="legend-row">
+                <div class="legend-info-left">
+                  <i class="legend-dot ins"></i>
+                  <span>个人五险一金</span>
                 </div>
-                <div class="legend-val" style="color: #f59e0b;">
-                  ￥{{ result.tax.toFixed(2) }} ({{ (result.tax / (formData.salary || 1) * 100).toFixed(1) }}%)
+                <div class="legend-val-right">
+                  ￥{{ result.personTotalInsurance.toFixed(2) }}
+                  <span class="legend-sub-ratio"> ({{ result.personInsuranceRatio }}%)</span>
                 </div>
               </div>
-              <div class="legend-item">
-                <div class="legend-name">
-                  <span class="legend-dot" style="background: #a855f7;"></span>
-                  <span>企业额外支出 (企业五险一金)</span>
+
+              <div class="legend-row">
+                <div class="legend-info-left">
+                  <i class="legend-dot tax"></i>
+                  <span>个人所得税</span>
                 </div>
-                <div class="legend-val" style="color: #c084fc;">
-                  ￥{{ result.companyTotalInsurance.toFixed(2) }} (占总成本 {{ (result.companyTotalInsurance / (result.companyTotalCost || 1) * 100).toFixed(1) }}%)
+                <div class="legend-val-right">
+                  ￥{{ result.tax.toFixed(2) }}
+                  <span class="legend-sub-ratio"> ({{ ((result.tax / (formData.salary || 1)) * 100).toFixed(1) }}%)</span>
+                </div>
+              </div>
+
+              <div class="legend-row">
+                <div class="legend-info-left">
+                  <i class="legend-dot comp"></i>
+                  <span>企业额外用工缴纳</span>
+                </div>
+                <div class="legend-val-right">
+                  ￥{{ result.companyTotalInsurance.toFixed(2) }}
+                  <span class="legend-sub-ratio"> ({{ result.companyInsuranceRatio }}%)</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 五险一金明细表 -->
-        <div class="section-title">五险一金缴纳明细全表 (月度)</div>
-        <div style="overflow-x: auto; margin-bottom: 24px;">
-          <table class="dark-table">
+        <!-- Monthly Detailed Insurance Breakdown Table -->
+        <div class="section-header-row">五险一金月度明细清单</div>
+        <div class="table-scroll-wrapper">
+          <table class="custom-tax-table">
             <thead>
               <tr>
-                <th>缴纳项目</th>
+                <th>险种项目</th>
                 <th>缴费基数</th>
-                <th>个人缴纳比例</th>
+                <th>个人比例</th>
                 <th>个人缴纳金额</th>
-                <th>企业缴纳比例</th>
+                <th>企业比例</th>
                 <th>企业缴纳金额</th>
-                <th>项目合计</th>
+                <th>月度合计</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>养老保险</td>
+                <td>基本养老保险</td>
                 <td>￥{{ result.socialBase.toFixed(2) }}</td>
                 <td>{{ customRates.pensionPerson }}%</td>
                 <td>￥{{ result.personPension.toFixed(2) }}</td>
@@ -644,9 +1759,9 @@
                 <td>￥{{ (result.personPension + result.companyPension).toFixed(2) }}</td>
               </tr>
               <tr>
-                <td>医疗保险</td>
+                <td>基本医疗保险</td>
                 <td>￥{{ result.socialBase.toFixed(2) }}</td>
-                <td>{{ customRates.medicalPerson }}% <span v-if="customRates.medicalExtra > 0">+￥{{ customRates.medicalExtra }}</span></td>
+                <td>{{ customRates.medicalPerson }}%</td>
                 <td>￥{{ result.personMedical.toFixed(2) }}</td>
                 <td>{{ customRates.medicalCompany }}%</td>
                 <td>￥{{ result.companyMedical.toFixed(2) }}</td>
@@ -671,15 +1786,6 @@
                 <td>￥{{ result.companyInjury.toFixed(2) }}</td>
               </tr>
               <tr>
-                <td>生育保险</td>
-                <td>￥{{ result.socialBase.toFixed(2) }}</td>
-                <td>0%</td>
-                <td>￥0.00</td>
-                <td>已合并/0.8%</td>
-                <td>已并入医疗/￥0.00</td>
-                <td>￥0.00</td>
-              </tr>
-              <tr>
                 <td>住房公积金</td>
                 <td>￥{{ result.fundBase.toFixed(2) }}</td>
                 <td>{{ formData.housingFundRate }}%</td>
@@ -688,117 +1794,107 @@
                 <td>￥{{ result.companyFund.toFixed(2) }}</td>
                 <td>￥{{ (result.personFund + result.companyFund).toFixed(2) }}</td>
               </tr>
-              <tr v-if="customRates.suppFundRate > 0">
-                <td>补充公积金</td>
-                <td>￥{{ result.fundBase.toFixed(2) }}</td>
-                <td>{{ customRates.suppFundRate }}%</td>
-                <td>￥{{ result.personSuppFund.toFixed(2) }}</td>
-                <td>{{ customRates.suppFundRate }}%</td>
-                <td>￥{{ result.companySuppFund.toFixed(2) }}</td>
-                <td>￥{{ (result.personSuppFund + result.companySuppFund).toFixed(2) }}</td>
-              </tr>
-              <tr class="highlight-row">
-                <td style="font-weight: 700; color: #22d3ee;">共计合计</td>
+              <tr class="row-highlight">
+                <td>月度汇总合计</td>
                 <td>-</td>
-                <td style="color: #f87171;">-</td>
-                <td style="color: #f87171; font-weight: 700;">￥{{ result.personTotalInsurance.toFixed(2) }}</td>
-                <td style="color: #c084fc;">-</td>
-                <td style="color: #c084fc; font-weight: 700;">￥{{ result.companyTotalInsurance.toFixed(2) }}</td>
-                <td style="color: #34d399; font-weight: 700;">￥{{ (result.personTotalInsurance + result.companyTotalInsurance).toFixed(2) }}</td>
+                <td>-</td>
+                <td>￥{{ result.personTotalInsurance.toFixed(2) }}</td>
+                <td>-</td>
+                <td>￥{{ result.companyTotalInsurance.toFixed(2) }}</td>
+                <td>￥{{ (result.personTotalInsurance + result.companyTotalInsurance).toFixed(2) }}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <!-- 全年12个月累计预扣预缴薪资明细表 -->
-        <div class="section-title">
-          <span>全年12个月薪资与累计预扣预缴个税走势表</span>
-          <span style="font-size: 0.78rem; font-weight: normal; color: #94a3b8; margin-left: 10px;">
-            （如累计应纳税所得额超过3.6万、14.4万、30万等将触发个税跳档）
-          </span>
+        <!-- 12-Month Cumulative Projection Table -->
+        <div class="section-header-row">
+          <span>全年 12 个月累计预扣预缴走势</span>
+          <span class="section-sub-tip">（高亮标注税率跳档月份）</span>
         </div>
-        <div style="overflow-x: auto; margin-bottom: 24px;">
-          <table class="dark-table">
+        <div class="table-scroll-wrapper">
+          <table class="custom-tax-table">
             <thead>
               <tr>
                 <th>月份</th>
                 <th>税前工资</th>
                 <th>个人社保公积金</th>
                 <th>专项附加扣除</th>
-                <th>基本减除(起征点)</th>
                 <th>累计应纳税所得额</th>
-                <th>税率档位</th>
-                <th>当月个税</th>
-                <th>累计已缴个税</th>
-                <th>税后实发到手</th>
-                <th>企业总成本</th>
+                <th>税率</th>
+                <th>当月应纳税额</th>
+                <th>累计已纳个税</th>
+                <th>当月税后实发</th>
+                <th>企业用工成本</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="m in monthlyList" :key="m.month" :class="{'highlight-row': m.jumpTax}">
-                <td style="font-weight: 600;">
-                  {{ m.month }}月
-                  <span v-if="m.jumpTax" class="jump-tax-tag">跳档 {{ m.taxRate }}%</span>
+              <tr v-for="m in monthlyList" :key="m.month" :class="{ 'row-highlight': m.jumpTax }">
+                <td>
+                  {{ m.month }} 月
+                  <span v-if="m.jumpTax" class="jump-rate-pill">跳档 {{ m.taxRate }}%</span>
                 </td>
                 <td>￥{{ m.salary.toFixed(2) }}</td>
                 <td>￥{{ m.personInsurance.toFixed(2) }}</td>
                 <td>￥{{ m.deduction.toFixed(2) }}</td>
-                <td>￥5,000.00</td>
                 <td>￥{{ m.cumTaxableIncome.toFixed(2) }}</td>
                 <td>{{ m.taxRate }}%</td>
-                <td style="color: #fbbf24; font-weight: 600;">￥{{ m.monthTax.toFixed(2) }}</td>
+                <td class="cell-tax-val">￥{{ m.monthTax.toFixed(2) }}</td>
                 <td>￥{{ m.cumTax.toFixed(2) }}</td>
-                <td style="color: #22d3ee; font-weight: 700;">￥{{ m.netSalary.toFixed(2) }}</td>
-                <td style="color: #34d399;">￥{{ m.companyCost.toFixed(2) }}</td>
+                <td class="cell-net-val">￥{{ m.netSalary.toFixed(2) }}</td>
+                <td>￥{{ m.companyCost.toFixed(2) }}</td>
               </tr>
-              <tr class="highlight-row" style="background: rgba(30,41,59,0.9);">
-                <td style="font-weight: 700; color: #22d3ee;">年度总计</td>
+              <tr class="row-highlight">
+                <td>年度总计</td>
                 <td>￥{{ annualSummary.totalSalary.toFixed(2) }}</td>
                 <td>￥{{ annualSummary.totalPersonIns.toFixed(2) }}</td>
                 <td>￥{{ annualSummary.totalDeductions.toFixed(2) }}</td>
-                <td>￥60,000.00</td>
                 <td>￥{{ annualSummary.cumTaxableIncome.toFixed(2) }}</td>
                 <td>-</td>
-                <td style="color: #fbbf24; font-weight: 700;">￥{{ annualSummary.totalTax.toFixed(2) }}</td>
+                <td class="cell-tax-val">￥{{ annualSummary.totalTax.toFixed(2) }}</td>
                 <td>￥{{ annualSummary.totalTax.toFixed(2) }}</td>
-                <td style="color: #22d3ee; font-weight: 700;">￥{{ annualSummary.totalNetSalary.toFixed(2) }}</td>
-                <td style="color: #34d399; font-weight: 700;">￥{{ annualSummary.totalCompanyCost.toFixed(2) }}</td>
+                <td class="cell-net-val-bold">￥{{ annualSummary.totalNetSalary.toFixed(2) }}</td>
+                <td>￥{{ annualSummary.totalCompanyCost.toFixed(2) }}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div class="divider"></div>
-
-        <!-- 知识与政策普及 -->
-        <div class="content">
-          <h3>中国个人所得税计算公式与政策说明 (2026年最新标准)</h3>
+        <!-- Educational Reference Section -->
+        <div class="educational-section">
+          <h3>📘 个人所得税累计预扣预缴算法说明</h3>
           <p>
-            <strong>1. 累计预扣预缴税额计算公式：</strong><br />
-            <code>累计应纳税所得额 = 累计收入 - 累计免税收入 - 累计基本减除费用(5000元/月) - 累计专项扣除(五险一金) - 累计专项附加扣除 - 累计依法确定的其他扣除</code><br />
-            <code>本期应预扣预缴税额 = (累计应纳税所得额 × 预扣率 - 速算扣除数) - 累计减免税额 - 累计已预扣预缴税额</code>
+            按照《中华人民共和国个人所得税法》现行规定，居民个人的综合所得日常采取累计预扣预缴方式计算税款：
+          </p>
+          <p>
+            <code>本期应预扣预缴税额 =（累计预扣预缴应纳税所得额 × 预扣率 − 速算扣除数）− 累计减免税额 − 累计已预扣预缴税额</code>
+          </p>
+          <p>
+            其中，<code>累计应纳税所得额 = 累计收入 − 累计免税收入 − 累计基本减除费用（5,000元/月）− 累计专项扣除（五险一金）− 累计专项附加扣除 − 累计依法确定的其他扣除</code>。
           </p>
 
-          <h3>个人所得税综合所得税率表 (年度累计)</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>级数</th>
-                <th>年度累计应纳税所得额范围</th>
-                <th>税率 (%)</th>
-                <th>速算扣除数 (元)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>1</td><td>不超过 36,000 元的部分</td><td>3%</td><td>0</td></tr>
-              <tr><td>2</td><td>超过 36,000 元至 144,000 元的部分</td><td>10%</td><td>2,520</td></tr>
-              <tr><td>3</td><td>超过 144,000 元至 300,000 元的部分</td><td>20%</td><td>16,920</td></tr>
-              <tr><td>4</td><td>超过 300,000 元至 420,000 元的部分</td><td>25%</td><td>31,920</td></tr>
-              <tr><td>5</td><td>超过 420,000 元至 660,000 元的部分</td><td>30%</td><td>52,920</td></tr>
-              <tr><td>6</td><td>超过 660,000 元至 960,000 元的部分</td><td>35%</td><td>85,920</td></tr>
-              <tr><td>7</td><td>超过 960,000 元的部分</td><td>45%</td><td>181,920</td></tr>
-            </tbody>
-          </table>
+          <h3>📊 居民个人综合所得超额累进税率表</h3>
+          <div style="overflow-x:auto">
+            <table class="bracket-table">
+              <thead>
+                <tr>
+                  <th>级数</th>
+                  <th>全年应纳税所得额区间（元）</th>
+                  <th>税率（%）</th>
+                  <th>速算扣除数（元）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>不超过 36,000 元</td><td>3%</td><td>0</td></tr>
+                <tr><td>2</td><td>超过 36,000 元至 144,000 元的部分</td><td>10%</td><td>2,520</td></tr>
+                <tr><td>3</td><td>超过 144,000 元至 300,000 元的部分</td><td>20%</td><td>16,920</td></tr>
+                <tr><td>4</td><td>超过 300,000 元至 420,000 元的部分</td><td>25%</td><td>31,920</td></tr>
+                <tr><td>5</td><td>超过 420,000 元至 660,000 元的部分</td><td>30%</td><td>52,920</td></tr>
+                <tr><td>6</td><td>超过 660,000 元至 960,000 元的部分</td><td>35%</td><td>85,920</td></tr>
+                <tr><td>7</td><td>超过 960,000 元的部分</td><td>45%</td><td>181,920</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </div>
@@ -808,469 +1904,480 @@
 
 <script src="./lib/vue/vue.global.prod.js"></script>
 <script src="./lib/element-plus/index.js"></script>
-    <script src="./lib/element-plus/locale/en.js"></script>
-    <script src="./lib/element-plus/locale/zh-tw.js"></script>
 <script>
-  const { createApp, ref, reactive, computed, onMounted } = Vue;
+const { createApp, ref, reactive, computed, onMounted } = Vue;
 
-  const CITIES = [
-    {
-      name: '北京',
-      socialMin: 6821,
-      socialMax: 35283,
-      fundMin: 2420,
-      fundMax: 35283,
-      fundDefault: 12,
-      rates: {
-        pensionPerson: 8, pensionCompany: 16,
-        medicalPerson: 2, medicalCompany: 9.8,
-        medicalExtra: 3,
-        unemploymentPerson: 0.5, unemploymentCompany: 0.5,
-        injuryCompany: 0.4,
-        suppFundRate: 0
-      }
-    },
-    {
-      name: '上海',
-      socialMin: 7384,
-      socialMax: 36921,
-      fundMin: 2690,
-      fundMax: 36921,
-      fundDefault: 7,
-      rates: {
-        pensionPerson: 8, pensionCompany: 16,
-        medicalPerson: 2, medicalCompany: 10,
-        medicalExtra: 0,
-        unemploymentPerson: 0.5, unemploymentCompany: 0.5,
-        injuryCompany: 0.26,
-        suppFundRate: 0
-      }
-    },
-    {
-      name: '深圳',
-      socialMin: 4123,
-      socialMax: 32319,
-      fundMin: 2360,
-      fundMax: 37701,
-      fundDefault: 5,
-      rates: {
-        pensionPerson: 8, pensionCompany: 15,
-        medicalPerson: 2, medicalCompany: 5,
-        medicalExtra: 0,
-        unemploymentPerson: 0.3, unemploymentCompany: 0.7,
-        injuryCompany: 0.34,
-        suppFundRate: 0
-      }
-    },
-    {
-      name: '广州',
-      socialMin: 5284,
-      socialMax: 26421,
-      fundMin: 2300,
-      fundMax: 38082,
-      fundDefault: 5,
-      rates: {
-        pensionPerson: 8, pensionCompany: 15,
-        medicalPerson: 2, medicalCompany: 5.5,
-        medicalExtra: 0,
-        unemploymentPerson: 0.2, unemploymentCompany: 0.8,
-        injuryCompany: 0.2,
-        suppFundRate: 0
-      }
-    },
-    {
-      name: '杭州',
-      socialMin: 4462,
-      socialMax: 24060,
-      fundMin: 2280,
-      fundMax: 38390,
-      fundDefault: 12,
-      rates: {
-        pensionPerson: 8, pensionCompany: 15,
-        medicalPerson: 2, medicalCompany: 9.5,
-        medicalExtra: 0,
-        unemploymentPerson: 0.5, unemploymentCompany: 0.5,
-        injuryCompany: 0.4,
-        suppFundRate: 0
-      }
-    },
-    {
-      name: '成都',
-      socialMin: 4246,
-      socialMax: 21228,
-      fundMin: 2100,
-      fundMax: 29353,
-      fundDefault: 8,
-      rates: {
-        pensionPerson: 8, pensionCompany: 16,
-        medicalPerson: 2, medicalCompany: 6.9,
-        medicalExtra: 0,
-        unemploymentPerson: 0.4, unemploymentCompany: 0.6,
-        injuryCompany: 0.2,
-        suppFundRate: 0
-      }
-    },
-    {
-      name: '南京',
-      socialMin: 4494,
-      socialMax: 24042,
-      fundMin: 2280,
-      fundMax: 35000,
-      fundDefault: 8,
-      rates: {
-        pensionPerson: 8, pensionCompany: 16,
-        medicalPerson: 2, medicalCompany: 8,
-        medicalExtra: 10,
-        unemploymentPerson: 0.5, unemploymentCompany: 0.5,
-        injuryCompany: 0.4,
-        suppFundRate: 0
-      }
-    },
-    {
-      name: '武汉',
-      socialMin: 4077,
-      socialMax: 22122,
-      fundMin: 2010,
-      fundMax: 30000,
-      fundDefault: 8,
-      rates: {
-        pensionPerson: 8, pensionCompany: 16,
-        medicalPerson: 2, medicalCompany: 8,
-        medicalExtra: 7,
-        unemploymentPerson: 0.3, unemploymentCompany: 0.7,
-        injuryCompany: 0.3,
-        suppFundRate: 0
-      }
-    },
-    {
-      name: '自定义/全国',
-      socialMin: 3500,
-      socialMax: 35000,
-      fundMin: 2000,
-      fundMax: 35000,
-      fundDefault: 8,
-      rates: {
-        pensionPerson: 8, pensionCompany: 16,
-        medicalPerson: 2, medicalCompany: 8,
-        medicalExtra: 0,
-        unemploymentPerson: 0.5, unemploymentCompany: 0.5,
-        injuryCompany: 0.4,
-        suppFundRate: 0
-      }
+const CITIES = [
+  {
+    name: '北京',
+    socialMin: 6821,
+    socialMax: 35283,
+    fundMin: 2420,
+    fundMax: 35283,
+    fundDefault: 12,
+    rates: {
+      pensionPerson: 8,
+      pensionCompany: 16,
+      medicalPerson: 2,
+      medicalCompany: 9.8,
+      medicalExtra: 3,
+      unemploymentPerson: 0.5,
+      unemploymentCompany: 0.5,
+      injuryCompany: 0.4,
+      suppFundRate: 0
     }
-  ];
+  },
+  {
+    name: '上海',
+    socialMin: 7384,
+    socialMax: 36921,
+    fundMin: 2690,
+    fundMax: 36921,
+    fundDefault: 7,
+    rates: {
+      pensionPerson: 8,
+      pensionCompany: 16,
+      medicalPerson: 2,
+      medicalCompany: 10,
+      medicalExtra: 0,
+      unemploymentPerson: 0.5,
+      unemploymentCompany: 0.5,
+      injuryCompany: 0.26,
+      suppFundRate: 0
+    }
+  },
+  {
+    name: '深圳',
+    socialMin: 4123,
+    socialMax: 32319,
+    fundMin: 2360,
+    fundMax: 37701,
+    fundDefault: 5,
+    rates: {
+      pensionPerson: 8,
+      pensionCompany: 15,
+      medicalPerson: 2,
+      medicalCompany: 5,
+      medicalExtra: 0,
+      unemploymentPerson: 0.3,
+      unemploymentCompany: 0.7,
+      injuryCompany: 0.34,
+      suppFundRate: 0
+    }
+  },
+  {
+    name: '广州',
+    socialMin: 5284,
+    socialMax: 26421,
+    fundMin: 2300,
+    fundMax: 38082,
+    fundDefault: 5,
+    rates: {
+      pensionPerson: 8,
+      pensionCompany: 15,
+      medicalPerson: 2,
+      medicalCompany: 5.5,
+      medicalExtra: 0,
+      unemploymentPerson: 0.2,
+      unemploymentCompany: 0.8,
+      injuryCompany: 0.2,
+      suppFundRate: 0
+    }
+  },
+  {
+    name: '杭州',
+    socialMin: 4462,
+    socialMax: 24060,
+    fundMin: 2280,
+    fundMax: 38390,
+    fundDefault: 12,
+    rates: {
+      pensionPerson: 8,
+      pensionCompany: 15,
+      medicalPerson: 2,
+      medicalCompany: 9.5,
+      medicalExtra: 0,
+      unemploymentPerson: 0.5,
+      unemploymentCompany: 0.5,
+      injuryCompany: 0.4,
+      suppFundRate: 0
+    }
+  },
+  {
+    name: '成都',
+    socialMin: 4246,
+    socialMax: 21228,
+    fundMin: 2100,
+    fundMax: 29353,
+    fundDefault: 8,
+    rates: {
+      pensionPerson: 8,
+      pensionCompany: 16,
+      medicalPerson: 2,
+      medicalCompany: 6.9,
+      medicalExtra: 0,
+      unemploymentPerson: 0.4,
+      unemploymentCompany: 0.6,
+      injuryCompany: 0.2,
+      suppFundRate: 0
+    }
+  },
+  {
+    name: '南京',
+    socialMin: 4494,
+    socialMax: 24042,
+    fundMin: 2280,
+    fundMax: 35000,
+    fundDefault: 8,
+    rates: {
+      pensionPerson: 8,
+      pensionCompany: 16,
+      medicalPerson: 2,
+      medicalCompany: 8,
+      medicalExtra: 10,
+      unemploymentPerson: 0.5,
+      unemploymentCompany: 0.5,
+      injuryCompany: 0.4,
+      suppFundRate: 0
+    }
+  },
+  {
+    name: '武汉',
+    socialMin: 4077,
+    socialMax: 22122,
+    fundMin: 2010,
+    fundMax: 30000,
+    fundDefault: 8,
+    rates: {
+      pensionPerson: 8,
+      pensionCompany: 16,
+      medicalPerson: 2,
+      medicalCompany: 8,
+      medicalExtra: 7,
+      unemploymentPerson: 0.3,
+      unemploymentCompany: 0.7,
+      injuryCompany: 0.3,
+      suppFundRate: 0
+    }
+  },
+  {
+    name: '自定义/全国',
+    socialMin: 3500,
+    socialMax: 35000,
+    fundMin: 2000,
+    fundMax: 35000,
+    fundDefault: 8,
+    rates: {
+      pensionPerson: 8,
+      pensionCompany: 16,
+      medicalPerson: 2,
+      medicalCompany: 8,
+      medicalExtra: 0,
+      unemploymentPerson: 0.5,
+      unemploymentCompany: 0.5,
+      injuryCompany: 0.4,
+      suppFundRate: 0
+    }
+  }
+];
 
-  const app = createApp({
-    setup() {
-      const cityList = ref(CITIES);
-      const currentCity = ref('北京');
-      const salaryPresets = [6000, 10000, 15000, 20000, 30000, 50000, 80000, 100000];
-      const activeCollapse = ref(['deductions']);
+const app = createApp({
+  setup() {
+    const cityList = ref(CITIES);
+    const currentCity = ref('北京');
+    const salaryPresets = [6000, 10000, 15000, 20000, 30000, 50000, 80000, 100000];
+    const activeCollapse = ref(['deductions']);
 
-      const formData = reactive({
-        salary: 15000,
-        socialBaseMode: 'auto',
-        customSocialBase: 15000,
-        housingFundRate: 12,
-        fundBaseMode: 'auto',
-        customFundBase: 15000
-      });
+    const formData = reactive({
+      salary: 15000,
+      socialBaseMode: 'auto',
+      customSocialBase: 15000,
+      housingFundRate: 12,
+      fundBaseMode: 'auto',
+      customFundBase: 15000
+    });
 
-      const deductions = reactive({
-        infantCount: 0,
-        childCount: 0,
-        elderCare: 0,
-        loanInterest: 1000,
-        housingRent: 0,
-        education: 0
-      });
+    const deductions = reactive({
+      infantCount: 0,
+      childCount: 0,
+      elderCare: 0,
+      loanInterest: 1000,
+      housingRent: 0,
+      education: 0
+    });
 
-      const customRates = reactive({
-        pensionPerson: 8, pensionCompany: 16,
-        medicalPerson: 2, medicalCompany: 9.8,
-        medicalExtra: 3,
-        unemploymentPerson: 0.5, unemploymentCompany: 0.5,
-        injuryCompany: 0.4,
-        suppFundRate: 0
-      });
+    const customRates = reactive({
+      pensionPerson: 8,
+      pensionCompany: 16,
+      medicalPerson: 2,
+      medicalCompany: 9.8,
+      medicalExtra: 3,
+      unemploymentPerson: 0.5,
+      unemploymentCompany: 0.5,
+      injuryCompany: 0.4,
+      suppFundRate: 0
+    });
 
-      const currentCityData = computed(() => {
-        return CITIES.find(c => c.name === currentCity.value) || CITIES[0];
-      });
+    const currentCityData = computed(() => {
+      return CITIES.find(c => c.name === currentCity.value) || CITIES[0];
+    });
 
-      const totalDeductions = computed(() => {
-        return (deductions.infantCount * 2000) +
-               (deductions.childCount * 2000) +
-               deductions.elderCare +
-               deductions.loanInterest +
-               deductions.housingRent +
-               deductions.education;
-      });
+    const totalDeductions = computed(() => {
+      return (
+        deductions.infantCount * 2000 +
+        deductions.childCount * 2000 +
+        deductions.elderCare +
+        deductions.loanInterest +
+        deductions.housingRent +
+        deductions.education
+      );
+    });
 
-      const selectCity = (cityName) => {
-        currentCity.value = cityName;
-        const c = CITIES.find(item => item.name === cityName);
-        if (c) {
-          formData.housingFundRate = c.fundDefault;
-          Object.assign(customRates, c.rates);
-        }
-        compute();
-      };
+    const selectCity = n => {
+      currentCity.value = n;
+      const c = CITIES.find(x => x.name === n);
+      if (c) {
+        formData.housingFundRate = c.fundDefault;
+        Object.assign(customRates, c.rates);
+      }
+      compute();
+    };
 
-      const onSalaryChange = () => {
-        if (formData.socialBaseMode === 'custom') {
-          formData.customSocialBase = formData.salary;
-        }
-        if (formData.fundBaseMode === 'custom') {
-          formData.customFundBase = formData.salary;
-        }
-        compute();
-      };
+    const onSalaryChange = () => {
+      if (formData.socialBaseMode === 'custom') formData.customSocialBase = formData.salary;
+      if (formData.fundBaseMode === 'custom') formData.customFundBase = formData.salary;
+      compute();
+    };
 
-      const onHousingDeductionChange = (type) => {
-        if (type === 'loan' && deductions.loanInterest > 0) {
-          deductions.housingRent = 0;
-        } else if (type === 'rent' && deductions.housingRent > 0) {
-          deductions.loanInterest = 0;
-        }
-        compute();
-      };
-
-      const resetDefaults = () => {
-        selectCity('北京');
-        formData.salary = 15000;
-        formData.socialBaseMode = 'auto';
-        formData.fundBaseMode = 'auto';
-        deductions.infantCount = 0;
-        deductions.childCount = 0;
-        deductions.elderCare = 0;
-        deductions.loanInterest = 1000;
+    const onHousingDeductionChange = t => {
+      if (t === 'loan' && deductions.loanInterest > 0) {
         deductions.housingRent = 0;
-        deductions.education = 0;
-        compute();
-      };
+      } else if (t === 'rent' && deductions.housingRent > 0) {
+        deductions.loanInterest = 0;
+      }
+      compute();
+    };
 
-      // Tax bracket lookup (Annual Cumulative)
-      const getTaxDetails = (cumTaxable) => {
-        if (cumTaxable <= 0) return { rate: 0, deduction: 0 };
-        if (cumTaxable <= 36000) return { rate: 3, deduction: 0 };
-        if (cumTaxable <= 144000) return { rate: 10, deduction: 2520 };
-        if (cumTaxable <= 300000) return { rate: 20, deduction: 16920 };
-        if (cumTaxable <= 420000) return { rate: 25, deduction: 31920 };
-        if (cumTaxable <= 660000) return { rate: 30, deduction: 52920 };
-        if (cumTaxable <= 960000) return { rate: 35, deduction: 85920 };
-        return { rate: 45, deduction: 181920 };
-      };
+    const resetDefaults = () => {
+      selectCity('北京');
+      formData.salary = 15000;
+      formData.socialBaseMode = 'auto';
+      formData.fundBaseMode = 'auto';
+      deductions.infantCount = 0;
+      deductions.childCount = 0;
+      deductions.elderCare = 0;
+      deductions.loanInterest = 1000;
+      deductions.housingRent = 0;
+      deductions.education = 0;
+      compute();
+    };
 
-      const result = reactive({
-        socialBase: 0,
-        fundBase: 0,
-        personPension: 0, companyPension: 0,
-        personMedical: 0, companyMedical: 0,
-        personUnemp: 0, companyUnemp: 0,
-        companyInjury: 0,
-        personFund: 0, companyFund: 0,
-        personSuppFund: 0, companySuppFund: 0,
-        personSocialSum: 0, companySocialSum: 0,
-        personFundSum: 0, companyFundSum: 0,
-        personTotalInsurance: 0,
-        companyTotalInsurance: 0,
-        companyTotalCost: 0,
-        tax: 0,
-        netSalary: 0,
-        firstMonthTaxRate: 3,
-        personInsuranceRatio: '0.0',
-        companyInsuranceRatio: '0.0',
-        companyCostRatio: '1.0'
-      });
+    const getTaxDetails = x => {
+      if (x <= 0) return { rate: 0, deduction: 0 };
+      if (x <= 36000) return { rate: 3, deduction: 0 };
+      if (x <= 144000) return { rate: 10, deduction: 2520 };
+      if (x <= 300000) return { rate: 20, deduction: 16920 };
+      if (x <= 420000) return { rate: 25, deduction: 31920 };
+      if (x <= 660000) return { rate: 30, deduction: 52920 };
+      if (x <= 960000) return { rate: 35, deduction: 85920 };
+      return { rate: 45, deduction: 181920 };
+    };
 
-      const monthlyList = ref([]);
-      const annualSummary = reactive({
-        totalSalary: 0,
-        totalPersonIns: 0,
-        totalDeductions: 0,
-        cumTaxableIncome: 0,
-        totalTax: 0,
-        totalNetSalary: 0,
-        totalCompanyCost: 0
-      });
+    const result = reactive({
+      socialBase: 0,
+      fundBase: 0,
+      personPension: 0,
+      companyPension: 0,
+      personMedical: 0,
+      companyMedical: 0,
+      personUnemp: 0,
+      companyUnemp: 0,
+      companyInjury: 0,
+      personFund: 0,
+      companyFund: 0,
+      personSuppFund: 0,
+      companySuppFund: 0,
+      personSocialSum: '0.00',
+      companySocialSum: '0.00',
+      personFundSum: '0.00',
+      companyFundSum: '0.00',
+      personTotalInsurance: 0,
+      companyTotalInsurance: 0,
+      companyTotalCost: 0,
+      tax: 0,
+      netSalary: 0,
+      firstMonthTaxRate: 3,
+      personInsuranceRatio: '0.0',
+      companyInsuranceRatio: '0.0',
+      companyCostRatio: '1.0'
+    });
 
-      const compute = () => {
-        const salary = Number(formData.salary) || 0;
-        const city = currentCityData.value;
+    const monthlyList = ref([]);
+    const annualSummary = reactive({
+      totalSalary: 0,
+      totalPersonIns: 0,
+      totalDeductions: 0,
+      cumTaxableIncome: 0,
+      totalTax: 0,
+      totalNetSalary: 0,
+      totalCompanyCost: 0
+    });
 
-        // 1. Determine Social Insurance Base
-        let sBase = salary;
-        if (formData.socialBaseMode === 'custom') {
-          sBase = Number(formData.customSocialBase) || 0;
-        } else {
-          sBase = Math.max(city.socialMin, Math.min(city.socialMax, salary));
-        }
+    const compute = () => {
+      const salary = Number(formData.salary) || 0;
+      const city = currentCityData.value;
 
-        // 2. Determine Housing Fund Base
-        let fBase = salary;
-        if (formData.fundBaseMode === 'custom') {
-          fBase = Number(formData.customFundBase) || 0;
-        } else {
-          fBase = Math.max(city.fundMin, Math.min(city.fundMax, salary));
-        }
+      let sBase =
+        formData.socialBaseMode === 'custom'
+          ? Number(formData.customSocialBase) || 0
+          : Math.max(city.socialMin, Math.min(city.socialMax, salary));
 
-        result.socialBase = sBase;
-        result.fundBase = fBase;
+      let fBase =
+        formData.fundBaseMode === 'custom'
+          ? Number(formData.customFundBase) || 0
+          : Math.max(city.fundMin, Math.min(city.fundMax, salary));
 
-        // 3. Calculate components
-        result.personPension = sBase * (customRates.pensionPerson / 100);
-        result.companyPension = sBase * (customRates.pensionCompany / 100);
+      result.socialBase = sBase;
+      result.fundBase = fBase;
 
-        result.personMedical = sBase * (customRates.medicalPerson / 100) + Number(customRates.medicalExtra || 0);
-        result.companyMedical = sBase * (customRates.medicalCompany / 100);
+      result.personPension = (sBase * customRates.pensionPerson) / 100;
+      result.companyPension = (sBase * customRates.pensionCompany) / 100;
 
-        result.personUnemp = sBase * (customRates.unemploymentPerson / 100);
-        result.companyUnemp = sBase * (customRates.unemploymentCompany / 100);
+      result.personMedical = (sBase * customRates.medicalPerson) / 100 + Number(customRates.medicalExtra || 0);
+      result.companyMedical = (sBase * customRates.medicalCompany) / 100;
 
-        result.companyInjury = sBase * (customRates.injuryCompany / 100);
+      result.personUnemp = (sBase * customRates.unemploymentPerson) / 100;
+      result.companyUnemp = (sBase * customRates.unemploymentCompany) / 100;
 
-        const fundRate = Number(formData.housingFundRate) / 100;
-        result.personFund = fBase * fundRate;
-        result.companyFund = fBase * fundRate;
+      result.companyInjury = (sBase * customRates.injuryCompany) / 100;
 
-        const suppFundRate = Number(customRates.suppFundRate) / 100;
-        result.personSuppFund = fBase * suppFundRate;
-        result.companySuppFund = fBase * suppFundRate;
+      const fr = Number(formData.housingFundRate) / 100;
+      const sr = Number(customRates.suppFundRate) / 100;
+      result.personFund = fBase * fr;
+      result.companyFund = fBase * fr;
+      result.personSuppFund = fBase * sr;
+      result.companySuppFund = fBase * sr;
 
-        result.personSocialSum = (result.personPension + result.personMedical + result.personUnemp).toFixed(2);
-        result.companySocialSum = (result.companyPension + result.companyMedical + result.companyUnemp + result.companyInjury).toFixed(2);
+      result.personSocialSum = (result.personPension + result.personMedical + result.personUnemp).toFixed(2);
+      result.companySocialSum = (result.companyPension + result.companyMedical + result.companyUnemp + result.companyInjury).toFixed(2);
+      result.personFundSum = (result.personFund + result.personSuppFund).toFixed(2);
+      result.companyFundSum = (result.companyFund + result.companySuppFund).toFixed(2);
 
-        result.personFundSum = (result.personFund + result.personSuppFund).toFixed(2);
-        result.companyFundSum = (result.companyFund + result.companySuppFund).toFixed(2);
+      result.personTotalInsurance =
+        result.personPension + result.personMedical + result.personUnemp + result.personFund + result.personSuppFund;
+      result.companyTotalInsurance =
+        result.companyPension +
+        result.companyMedical +
+        result.companyUnemp +
+        result.companyInjury +
+        result.companyFund +
+        result.companySuppFund;
 
-        result.personTotalInsurance = result.personPension + result.personMedical + result.personUnemp + result.personFund + result.personSuppFund;
-        result.companyTotalInsurance = result.companyPension + result.companyMedical + result.companyUnemp + result.companyInjury + result.companyFund + result.companySuppFund;
+      result.companyTotalCost = salary + result.companyTotalInsurance;
 
-        result.companyTotalCost = salary + result.companyTotalInsurance;
+      let list = [];
+      let cs = 0;
+      let ct = 0;
+      let ci = 0;
+      let cd = 0;
+      let paid = 0;
+      let last = 3;
 
-        // 4. Calculate 12-month Cumulative Tax & Net Salary
-        const list = [];
-        let cumSalary = 0;
-        let cumThreshold = 0;
-        let cumPersonIns = 0;
-        let cumDeduct = 0;
-        let cumTaxPaid = 0;
-        let lastTaxRate = 3;
+      for (let m = 1; m <= 12; m++) {
+        cs += salary;
+        ct += 5000;
+        ci += result.personTotalInsurance;
+        cd += totalDeductions.value;
+        const taxable = Math.max(0, cs - ct - ci - cd);
+        const d = getTaxDetails(taxable);
+        const cum = Math.max(0, (taxable * d.rate) / 100 - d.deduction);
+        const tax = Math.max(0, cum - paid);
+        paid = cum;
+        const jump = m > 1 && d.rate > last;
+        last = d.rate;
 
-        for (let m = 1; m <= 12; m++) {
-          cumSalary += salary;
-          cumThreshold += 5000;
-          cumPersonIns += result.personTotalInsurance;
-          cumDeduct += totalDeductions.value;
+        list.push({
+          month: m,
+          salary,
+          personInsurance: result.personTotalInsurance,
+          deduction: totalDeductions.value,
+          cumTaxableIncome: taxable,
+          taxRate: d.rate,
+          monthTax: tax,
+          cumTax: cum,
+          netSalary: Math.max(0, salary - result.personTotalInsurance - tax),
+          companyCost: result.companyTotalCost,
+          jumpTax: jump
+        });
+      }
 
-          const cumTaxable = Math.max(0, cumSalary - cumThreshold - cumPersonIns - cumDeduct);
-          const taxDetail = getTaxDetails(cumTaxable);
-          const cumTax = Math.max(0, cumTaxable * (taxDetail.rate / 100) - taxDetail.deduction);
-          const monthTax = Math.max(0, cumTax - cumTaxPaid);
-          cumTaxPaid = cumTax;
+      monthlyList.value = list;
+      const first = list[0];
+      result.tax = first.monthTax;
+      result.netSalary = first.netSalary;
+      result.firstMonthTaxRate = first.taxRate;
+      result.personInsuranceRatio = salary ? ((result.personTotalInsurance / salary) * 100).toFixed(1) : '0.0';
+      result.companyInsuranceRatio = salary ? ((result.companyTotalInsurance / salary) * 100).toFixed(1) : '0.0';
+      result.companyCostRatio = salary ? (result.companyTotalCost / salary).toFixed(2) : '1.0';
 
-          const netSal = Math.max(0, salary - result.personTotalInsurance - monthTax);
-          const compCost = salary + result.companyTotalInsurance;
+      annualSummary.totalSalary = salary * 12;
+      annualSummary.totalPersonIns = result.personTotalInsurance * 12;
+      annualSummary.totalDeductions = totalDeductions.value * 12;
+      annualSummary.cumTaxableIncome = list[11].cumTaxableIncome;
+      annualSummary.totalTax = paid;
+      annualSummary.totalNetSalary = list.reduce((a, x) => a + x.netSalary, 0);
+      annualSummary.totalCompanyCost = result.companyTotalCost * 12;
+    };
 
-          const jump = (m > 1 && taxDetail.rate > lastTaxRate);
-          lastTaxRate = taxDetail.rate;
+    const netSalaryRatio = computed(() => {
+      const s = Number(formData.salary) || 0;
+      return s ? ((result.netSalary / s) * 100).toFixed(1) : '0.0';
+    });
 
-          list.push({
-            month: m,
-            salary: salary,
-            personInsurance: result.personTotalInsurance,
-            deduction: totalDeductions.value,
-            cumTaxableIncome: cumTaxable,
-            taxRate: taxDetail.rate,
-            monthTax: monthTax,
-            cumTax: cumTax,
-            netSalary: netSal,
-            companyCost: compCost,
-            jumpTax: jump
-          });
-        }
-
-        monthlyList.value = list;
-
-        // First month results for top cards
-        const firstMonth = list[0];
-        result.tax = firstMonth.monthTax;
-        result.netSalary = firstMonth.netSalary;
-        result.firstMonthTaxRate = firstMonth.taxRate;
-
-        // Ratios
-        result.personInsuranceRatio = salary > 0 ? (result.personTotalInsurance / salary * 100).toFixed(1) : '0.0';
-        result.companyInsuranceRatio = salary > 0 ? (result.companyTotalInsurance / salary * 100).toFixed(1) : '0.0';
-        result.companyCostRatio = salary > 0 ? (result.companyTotalCost / salary).toFixed(2) : '1.0';
-
-        // Annual Summary
-        annualSummary.totalSalary = salary * 12;
-        annualSummary.totalPersonIns = result.personTotalInsurance * 12;
-        annualSummary.totalDeductions = totalDeductions.value * 12;
-        annualSummary.cumTaxableIncome = list[11].cumTaxableIncome;
-        annualSummary.totalTax = cumTaxPaid;
-        annualSummary.totalNetSalary = list.reduce((acc, cur) => acc + cur.netSalary, 0);
-        annualSummary.totalCompanyCost = result.companyTotalCost * 12;
-      };
-
-      const netSalaryRatio = computed(() => {
-        const s = Number(formData.salary) || 0;
-        if (s <= 0) return '0.0';
-        return (result.netSalary / s * 100).toFixed(1);
-      });
-
-      // SVG Donut Chart Calculation (Circumference = 2 * PI * 38 = ~238.76)
-      const chartSvg = computed(() => {
-        const c = 238.76;
-        const total = Math.max(1, Number(formData.salary) || 1);
-        const pNet = Math.max(0, result.netSalary) / total;
-        const pIns = Math.max(0, result.personTotalInsurance) / total;
-        const pTax = Math.max(0, result.tax) / total;
-
-        const lenNet = pNet * c;
-        const lenIns = pIns * c;
-        const lenTax = pTax * c;
-
-        return {
-          dashNet: `${lenNet.toFixed(2)} ${(c - lenNet).toFixed(2)}`,
-          dashIns: `${lenIns.toFixed(2)} ${(c - lenIns).toFixed(2)}`,
-          offsetIns: (-lenNet).toFixed(2),
-          dashTax: `${lenTax.toFixed(2)} ${(c - lenTax).toFixed(2)}`,
-          offsetTax: (-(lenNet + lenIns)).toFixed(2)
-        };
-      });
-
-      onMounted(() => {
-        compute();
-      });
+    const chartSvg = computed(() => {
+      const c = 238.76;
+      const total = Math.max(1, Number(formData.salary) || 1);
+      const n = (Math.max(0, result.netSalary) / total) * c;
+      const i = (Math.max(0, result.personTotalInsurance) / total) * c;
+      const t = (Math.max(0, result.tax) / total) * c;
 
       return {
-        cityList,
-        currentCity,
-        currentCityData,
-        salaryPresets,
-        activeCollapse,
-        formData,
-        deductions,
-        customRates,
-        totalDeductions,
-        selectCity,
-        onSalaryChange,
-        onHousingDeductionChange,
-        resetDefaults,
-        result,
-        monthlyList,
-        annualSummary,
-        netSalaryRatio,
-        chartSvg,
-        compute
+        dashNet: `${n.toFixed(2)} ${(c - n).toFixed(2)}`,
+        dashIns: `${i.toFixed(2)} ${(c - i).toFixed(2)}`,
+        offsetIns: (-n).toFixed(2),
+        dashTax: `${t.toFixed(2)} ${(c - t).toFixed(2)}`,
+        offsetTax: (-(n + i)).toFixed(2)
       };
-    }
-  });
+    });
 
-  app.use(ElementPlus);
-  app.mount('.main-body');
+    onMounted(compute);
+
+    return {
+      cityList,
+      currentCity,
+      currentCityData,
+      salaryPresets,
+      activeCollapse,
+      formData,
+      deductions,
+      customRates,
+      totalDeductions,
+      selectCity,
+      onSalaryChange,
+      onHousingDeductionChange,
+      resetDefaults,
+      result,
+      monthlyList,
+      annualSummary,
+      netSalaryRatio,
+      chartSvg,
+      compute
+    };
+  }
+});
+
+app.use(ElementPlus);
+app.mount('#app');
 </script>
 </body>
 </html>
