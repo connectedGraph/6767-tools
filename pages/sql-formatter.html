@@ -16,119 +16,470 @@
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     <style>
-        .control-bar {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(56, 189, 248, 0.25);
-            backdrop-filter: blur(16px);
-            border-radius: 12px;
-            padding: 14px 20px;
+        /* ================= Modern Dual-Theme Architecture ================= */
+        :root {
+            --sql-font-mono: 'JetBrains Mono', Consolas, Monaco, 'Fira Code', 'Courier New', monospace;
+        }
+
+        /* 顶部控制栏 / 仪表盘 */
+        .sql-dashboard {
+            border-radius: 14px;
+            padding: 16px 20px;
             margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        html.dark .sql-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        html:not(.dark) .sql-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04), inset 0 1px 0 #ffffff;
+        }
+
+        .dashboard-row {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            gap: 12px;
         }
-        .options-group {
+
+        /* 配置项组合 */
+        .sql-options-group {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 16px;
-            font-size: 13px;
-            color: #94a3b8;
-            font-family: 'JetBrains Mono', monospace;
         }
-        .opt-item {
+        .sql-opt-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        html.dark .sql-opt-item { color: #94a3b8; }
+        html:not(.dark) .sql-opt-item { color: #475569; }
+
+        .sql-opt-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        html.dark .sql-opt-label { color: #64748b; }
+        html:not(.dark) .sql-opt-label { color: #64748b; }
+
+        /* 下拉选择框 */
+        .sql-select-wrap {
+            position: relative;
+            display: inline-block;
+        }
+        .sql-select {
+            appearance: none;
+            -webkit-appearance: none;
+            padding: 7px 32px 7px 12px;
+            min-height: 36px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        html.dark .sql-select {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #f1f5f9;
+        }
+        html.dark .sql-select:hover {
+            border-color: #38bdf8;
+        }
+        html.dark .sql-select:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+        }
+        html:not(.dark) .sql-select {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+        }
+        html:not(.dark) .sql-select:hover {
+            border-color: #0284c7;
+        }
+        html:not(.dark) .sql-select:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+        }
+        .sql-select-chevron {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 11px;
+        }
+        html.dark .sql-select-chevron { color: #64748b; }
+        html:not(.dark) .sql-select-chevron { color: #94a3b8; }
+
+        /* 复选框美化 */
+        .sql-checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.15s ease;
+        }
+        html.dark .sql-checkbox-label:hover {
+            background: rgba(56, 189, 248, 0.08);
+        }
+        html:not(.dark) .sql-checkbox-label:hover {
+            background: rgba(2, 132, 199, 0.06);
+        }
+        .sql-checkbox {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            accent-color: #0284c7;
+        }
+
+        /* 按钮与交互控件 */
+        .sql-btn-group {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             gap: 8px;
         }
-        .geek-select {
-            background: #090f1d !important;
-            border: 1px solid rgba(51, 65, 85, 0.8) !important;
-            color: #e2e8f0 !important;
-            font-size: 12px;
-            font-family: 'JetBrains Mono', monospace;
-            border-radius: 6px;
-            padding: 6px 12px;
-            outline: none;
-            cursor: pointer;
-        }
-        .geek-select:focus { border-color: #38bdf8 !important; }
-
-        .btn-group {
-            display: flex;
+        .action-btn {
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-        }
-        .tool-btn {
-            padding: 8px 16px;
-            font-size: 12px;
-            font-weight: 600;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 14px;
+            min-height: 38px;
             border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.15s;
-            border: 1px solid rgba(51, 65, 85, 0.8);
+            transition: all 0.15s ease;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+        
+        /* 按钮变体: Primary 美化 */
+        .btn-primary {
+            background: #0284c7;
+            border: 1px solid #0284c7;
+            color: #ffffff !important;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+        }
+        .btn-primary:hover {
+            background: #0369a1;
+            border-color: #0369a1;
+        }
+        html.dark .btn-primary {
+            background: #0284c7;
+            border: 1px solid #38bdf8;
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+        }
+        html.dark .btn-primary:hover {
+            background: #0ea5e9;
+            border-color: #7dd3fc;
+        }
+
+        /* 按钮变体: Standard 次要 */
+        html.dark .btn-standard {
             background: #0f172a;
+            border: 1px solid #334155;
             color: #cbd5e1;
         }
-        .tool-btn:hover { transform: translateY(-1px); border-color: #38bdf8; color: #38bdf8; }
-        .tool-btn-primary {
-            background: #0284c7;
+        html.dark .btn-standard:hover {
             border-color: #38bdf8;
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+            color: #38bdf8;
+            background: #131f38;
         }
-        .tool-btn-primary:hover { background: #0369a1; color: #ffffff; }
+        html:not(.dark) .btn-standard {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        html:not(.dark) .btn-standard:hover {
+            border-color: #0284c7;
+            color: #0284c7;
+            background: #f1f5f9;
+        }
 
-        .workspace-grid {
+        /* 按钮变体: Amber 压缩单行 */
+        html.dark .btn-amber {
+            background: rgba(217, 119, 6, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+        }
+        html.dark .btn-amber:hover {
+            background: rgba(217, 119, 6, 0.28);
+            border-color: #fbbf24;
+            color: #fef08a;
+        }
+        html:not(.dark) .btn-amber {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            color: #b45309;
+        }
+        html:not(.dark) .btn-amber:hover {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+
+        /* 按钮变体: Danger 清空 */
+        html.dark .btn-danger {
+            background: rgba(225, 29, 72, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.35);
+            color: #fb7185;
+        }
+        html.dark .btn-danger:hover {
+            background: rgba(225, 29, 72, 0.25);
+            border-color: #f43f5e;
+            color: #ffe4e6;
+        }
+        html:not(.dark) .btn-danger {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #e11d48;
+        }
+        html:not(.dark) .btn-danger:hover {
+            background: #ffe4e6;
+            border-color: #f43f5e;
+            color: #be123c;
+        }
+
+        /* 小号工具栏按钮 */
+        .btn-sm {
+            min-height: 30px;
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        /* 工作区双栏布局 */
+        .sql-workspace-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+            margin-bottom: 24px;
         }
-        @media (max-width: 900px) {
-            .workspace-grid { grid-template-columns: 1fr; }
+        @media (max-width: 960px) {
+            .sql-workspace-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .editor-box {
-            background: #070b14;
-            border: 1px solid rgba(56, 189, 248, 0.2);
+        /* 编辑器卡片容器 */
+        .sql-editor-box {
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
+            transition: all 0.2s ease;
         }
-        .editor-topbar {
-            background: #0f172a;
+        html.dark .sql-editor-box {
+            background: #070b14;
+            border: 1px solid #1e293b;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+        html.dark .sql-editor-box:focus-within {
+            border-color: rgba(56, 189, 248, 0.45);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(56, 189, 248, 0.3);
+        }
+        html:not(.dark) .sql-editor-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+        }
+        html:not(.dark) .sql-editor-box:focus-within {
+            border-color: #0284c7;
+            box-shadow: 0 4px 18px rgba(2, 132, 199, 0.12), 0 0 0 1px #0284c7;
+        }
+
+        /* 编辑器顶栏 */
+        .sql-editor-topbar {
             padding: 10px 16px;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.7);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--sql-font-mono);
             font-size: 12px;
+            user-select: none;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        html.dark .sql-editor-topbar {
+            background: #0f172a;
+            border-bottom: 1px solid #1e293b;
             color: #94a3b8;
+        }
+        html:not(.dark) .sql-editor-topbar {
+            background: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        .editor-topbar-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+        .editor-topbar-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 统计徽章 */
+        .sql-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        html.dark .sql-stat-badge {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+        html:not(.dark) .sql-stat-badge {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        /* 文本区域 */
+        .sql-textarea-wrapper {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            display: flex;
         }
         .sql-textarea {
             width: 100%;
-            height: 460px;
-            background: #070b14 !important;
-            color: #f1f5f9 !important;
-            font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+            height: 100%;
+            font-family: var(--sql-font-mono);
             font-size: 13px;
-            line-height: 1.6;
+            line-height: 1.65;
             padding: 16px;
             border: none;
             outline: none;
-            resize: vertical;
+            resize: none;
             box-sizing: border-box;
+            tab-size: 4;
+            white-space: pre;
+            overflow-wrap: normal;
+            overflow-x: auto;
         }
-        .sql-textarea.output {
-            color: #38bdf8 !important;
-            background: #070b14 !important;
+        html.dark .sql-textarea {
+            background: #070b14;
+            color: #f1f5f9;
         }
+        html.dark .sql-textarea::placeholder {
+            color: #475569;
+        }
+        html:not(.dark) .sql-textarea {
+            background: #ffffff;
+            color: #0f172a;
+        }
+        html:not(.dark) .sql-textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        /* 输出文本域高亮着色风格 */
+        html.dark .sql-textarea.output {
+            background: #080e1a;
+            color: #7dd3fc;
+        }
+        html:not(.dark) .sql-textarea.output {
+            background: #f8fafc;
+            color: #0369a1;
+        }
+
+        /* 底部操作与提示条 */
+        .sql-editor-footer {
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            font-family: var(--sql-font-mono);
+        }
+        html.dark .sql-editor-footer {
+            background: #0c1222;
+            border-top: 1px solid #1e293b;
+            color: #64748b;
+        }
+        html:not(.dark) .sql-editor-footer {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        /* 特性与说明网格卡片 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+        .feature-card {
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: transform 0.15s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-2px);
+        }
+        html.dark .feature-card {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+        }
+        html:not(.dark) .feature-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        .feature-title {
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        html.dark .feature-title { color: #38bdf8; }
+        html:not(.dark) .feature-title { color: #0284c7; }
+        .feature-desc {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        html.dark .feature-desc { color: #94a3b8; }
+        html:not(.dark) .feature-desc { color: #64748b; }
     </style>
 </head>
 <body>
@@ -151,69 +502,143 @@
                 </div>
                 <div class="description">专业 SQL 语句在线美化与压缩工具，基于官方 sql-formatter 引擎，支持 MySQL, PostgreSQL, Oracle, SQLite, T-SQL, MariaDB 等主流方言，支持关键字大写与缩进定制。</div>
 
-    <!-- Control Bar -->
-    <div class="control-bar">
-        <div class="options-group">
-            <div class="opt-item">
-                <span>方言:</span>
-                <select v-model="dialect" @change="formatSql" class="geek-select">
-                    <option value="sql">Standard SQL (通用)</option>
-                    <option value="mysql">MySQL / MariaDB</option>
-                    <option value="postgresql">PostgreSQL</option>
-                    <option value="sqlite">SQLite</option>
-                    <option value="plsql">Oracle PL/SQL</option>
-                    <option value="tsql">SQL Server (T-SQL)</option>
-                </select>
-            </div>
+                <!-- 现代多功能仪表盘/控制栏 -->
+                <div class="sql-dashboard">
+                    <div class="dashboard-row">
+                        <!-- 方言与缩进选项 -->
+                        <div class="sql-options-group">
+                            <div class="sql-opt-item">
+                                <span class="sql-opt-label">SQL 方言</span>
+                                <div class="sql-select-wrap">
+                                    <select v-model="dialect" @change="formatSql" class="sql-select" aria-label="SQL 方言">
+                                        <option value="sql">Standard SQL (标准通用)</option>
+                                        <option value="mysql">MySQL / MariaDB</option>
+                                        <option value="postgresql">PostgreSQL</option>
+                                        <option value="sqlite">SQLite</option>
+                                        <option value="plsql">Oracle PL/SQL</option>
+                                        <option value="tsql">SQL Server (T-SQL)</option>
+                                    </select>
+                                    <span class="sql-select-chevron">▼</span>
+                                </div>
+                            </div>
 
-            <div class="opt-item">
-                <span>缩进:</span>
-                <select v-model="tabWidth" @change="formatSql" class="geek-select">
-                    <option :value="2">2 空格</option>
-                    <option :value="4">4 空格</option>
-                    <option value="tab">Tab 缩进</option>
-                </select>
-            </div>
+                            <div class="sql-opt-item">
+                                <span class="sql-opt-label">缩进风格</span>
+                                <div class="sql-select-wrap">
+                                    <select v-model="tabWidth" @change="formatSql" class="sql-select" aria-label="缩进风格">
+                                        <option :value="2">2 个空格 (2 Spaces)</option>
+                                        <option :value="4">4 个空格 (4 Spaces)</option>
+                                        <option value="tab">制表符缩进 (Tab)</option>
+                                    </select>
+                                    <span class="sql-select-chevron">▼</span>
+                                </div>
+                            </div>
 
-            <label class="opt-item" style="cursor: pointer;">
-                <input type="checkbox" v-model="uppercaseKeyword" @change="formatSql" />
-                <span>关键字大写 (UPPERCASE)</span>
-            </label>
-        </div>
+                            <label class="sql-checkbox-label">
+                                <input type="checkbox" v-model="uppercaseKeyword" @change="formatSql" class="sql-checkbox" />
+                                <span>关键字大写 (UPPERCASE)</span>
+                            </label>
+                        </div>
 
-        <div class="btn-group">
-            <button @click="loadSample" class="tool-btn">载入复杂示例</button>
-            <button @click="formatSql" class="tool-btn tool-btn-primary">✨ 立即美化</button>
-            <button @click="minifySql" class="tool-btn" style="color: #fbbf24;">📦 压缩单行</button>
-            <button @click="clearSql" class="tool-btn" style="color: #f43f5e;">清空</button>
-        </div>
-    </div>
-
-    <!-- Dual Workspace Grid -->
-    <div class="workspace-grid">
-        <div class="editor-box">
-            <div class="editor-topbar">
-                <span>// 原始 SQL 输入 (Raw Input)</span>
-                <span>{{ rawSql.length }} 字符</span>
-            </div>
-            <textarea v-model="rawSql" @input="formatSql" placeholder="在此粘贴待格式化的 SQL 语句..." class="sql-textarea"></textarea>
-        </div>
-
-        <div class="editor-box">
-            <div class="editor-topbar">
-                <span style="color: #38bdf8;">// 格式化输出 (Formatted Output)</span>
-                <div style="display: flex; gap: 8px;">
-                    <button @click="copyFormatted" class="tool-btn" style="padding: 4px 10px; font-size: 11px;">📋 复制结果</button>
-                    <button @click="downloadSql" class="tool-btn" style="padding: 4px 10px; font-size: 11px;">💾 导出 .sql</button>
+                        <!-- 快捷操作按钮组 -->
+                        <div class="sql-btn-group">
+                            <button @click="loadSample" class="action-btn btn-standard" title="载入多表联查与窗口函数测试用例">
+                                <span>📑 载入示例</span>
+                            </button>
+                            <button @click="formatSql" class="action-btn btn-primary" title="执行格式化美化 (快捷键: Ctrl+Enter)">
+                                <span>✨ 立即美化</span>
+                            </button>
+                            <button @click="minifySql" class="action-btn btn-amber" title="清除注释并压缩为单行 SQL">
+                                <span>📦 压缩单行</span>
+                            </button>
+                            <button @click="clearSql" class="action-btn btn-danger" title="清空输入与输出区域">
+                                <span>🗑️ 清空</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <textarea readonly :value="formattedSql" class="sql-textarea output"></textarea>
-        </div>
-    </div>
+
+                <!-- 左右分栏工作区 -->
+                <div class="sql-workspace-grid">
+                    <!-- 左侧：原始输入 -->
+                    <div class="sql-editor-box">
+                        <div class="sql-editor-topbar">
+                            <span class="editor-topbar-title">
+                                <span>📝 原始 SQL 输入 (Raw Input)</span>
+                            </span>
+                            <div class="editor-topbar-actions">
+                                <span class="sql-stat-badge">{{ rawLineCount }} 行 · {{ rawSql.length }} 字符</span>
+                                <button @click="pasteFromClipboard" class="action-btn btn-standard btn-sm" title="从剪贴板粘贴">📋 粘贴</button>
+                            </div>
+                        </div>
+                        <div class="sql-textarea-wrapper">
+                            <textarea
+                                v-model="rawSql"
+                                @input="formatSql"
+                                @keydown="handleKeydown"
+                                placeholder="在此粘贴或输入待格式化的 SQL 语句 (支持 Ctrl+Enter 快捷美化)..."
+                                class="sql-textarea"
+                                spellcheck="false"
+                            ></textarea>
+                        </div>
+                        <div class="sql-editor-footer">
+                            <span>输入即时自动格式化</span>
+                            <span>快捷键: Ctrl / ⌘ + Enter 美化</span>
+                        </div>
+                    </div>
+
+                    <!-- 右侧：格式化输出 -->
+                    <div class="sql-editor-box">
+                        <div class="sql-editor-topbar">
+                            <span class="editor-topbar-title" style="color: #38bdf8;">
+                                <span>⚡ 格式化输出 (Formatted Result)</span>
+                            </span>
+                            <div class="editor-topbar-actions">
+                                <span class="sql-stat-badge">{{ formattedLineCount }} 行 · {{ formattedSql.length }} 字符</span>
+                                <button @click="copyFormatted" class="action-btn btn-standard btn-sm" title="复制格式化结果">📋 复制结果</button>
+                                <button @click="downloadSql" class="action-btn btn-standard btn-sm" title="导出下载为 .sql 脚本">💾 导出 .sql</button>
+                            </div>
+                        </div>
+                        <div class="sql-textarea-wrapper">
+                            <textarea
+                                readonly
+                                :value="formattedSql"
+                                placeholder="格式化结果将在此实时呈现..."
+                                class="sql-textarea output"
+                                spellcheck="false"
+                            ></textarea>
+                        </div>
+                        <div class="sql-editor-footer">
+                            <span>{{ parseStatusText }}</span>
+                            <span v-if="sizeDiffText">{{ sizeDiffText }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 扩展信息与功能介绍 -->
                 <div class="divider"></div>
                 <div class="content">
-                    <h3>介绍</h3>
-                    <p>SQL 格式化工具基于业界主流的 sql-formatter 解析引擎构建，支持 Standard SQL、MySQL、PostgreSQL、Oracle PL/SQL、SQLite、SQL Server (T-SQL) 等多种 SQL 方言。提供关键字大写转换、自定义缩进、单行压缩与一键导出功能，帮助开发者快速规范数据库脚本与日志查询语句。</p>
+                    <h3 class="font-bold text-lg mb-3">工具介绍与功能特性</h3>
+                    <p>SQL 格式化与美化器基于业界领先的 <strong>sql-formatter</strong> 语法解析引擎构建，支持 Standard SQL、MySQL、MariaDB、PostgreSQL、Oracle PL/SQL、SQLite、SQL Server (T-SQL) 等主流数据库方言。支持一键转换关键字大写、2/4 空格及 Tab 缩进、去除冗余注释与压缩单行 SQL，满足开发者在编写查询、审查日志、重构存储过程等多场景下的代码美化需求。</p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-title">🌐 多方言语法兼容</div>
+                            <div class="feature-desc">深度适配 MySQL、PostgreSQL、Oracle、SQLite、T-SQL 特有语法结构与操作符。</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-title">📐 自定义层级缩进</div>
+                            <div class="feature-desc">支持灵活切换 2 空格、4 空格或 Tab 制表符缩进，符合不同工程规范标准。</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-title">🔠 关键字规范大写</div>
+                            <div class="feature-desc">智能统一 SELECT、JOIN、GROUP BY、OVER 等关键字大写，显著提高 SQL 可读性。</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-title">🔒 纯本地离线解析</div>
+                            <div class="feature-desc">所有 SQL 文本均在客户端浏览器完成排版转换，绝不上云存储，确保数据安全。</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -223,11 +648,11 @@
 
 <script src="./lib/vue/vue.global.prod.js"></script>
 <script src="./lib/element-plus/index.js"></script>
-    <script src="./lib/element-plus/locale/en.js"></script>
-    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/element-plus/locale/en.js"></script>
+<script src="./lib/element-plus/locale/zh-tw.js"></script>
 <script src="./lib/sql-formatter/sql-formatter.min.js"></script>
 <script>
-    const { createApp, ref, onMounted } = Vue;
+    const { createApp, ref, computed, onMounted } = Vue;
 
     createApp({
         setup() {
@@ -236,6 +661,7 @@
             const dialect = ref('sql');
             const tabWidth = ref(2);
             const uppercaseKeyword = ref(true);
+            const hasError = ref(false);
 
             const sampleSql = `WITH RankedOrders AS (
     SELECT o.order_id, o.customer_id, o.order_date, o.total_amount,
@@ -254,9 +680,40 @@ HAVING COUNT(oi.item_id) >= 2
 ORDER BY r.total_amount DESC, c.customer_name ASC
 LIMIT 50;`;
 
+            // 计算行数
+            const rawLineCount = computed(() => {
+                if (!rawSql.value) return 0;
+                return rawSql.value.split('\n').length;
+            });
+
+            const formattedLineCount = computed(() => {
+                if (!formattedSql.value) return 0;
+                return formattedSql.value.split('\n').length;
+            });
+
+            // 状态描述
+            const parseStatusText = computed(() => {
+                if (!rawSql.value.trim()) return '等待输入 SQL...';
+                if (hasError.value) return '⚠️ 语法容错解析模式';
+                return '✓ 格式化完成 (已同步)';
+            });
+
+            // 大小对比
+            const sizeDiffText = computed(() => {
+                if (!rawSql.value.trim() || !formattedSql.value.trim()) return '';
+                const rawLen = rawSql.value.length;
+                const fmtLen = formattedSql.value.length;
+                if (rawLen === 0) return '';
+                const diff = fmtLen - rawLen;
+                if (diff === 0) return '体积持平';
+                const pct = Math.round((Math.abs(diff) / rawLen) * 100);
+                return diff > 0 ? `排版展开 +${pct}%` : `体积压缩 -${pct}%`;
+            });
+
             function formatSql() {
                 if (!rawSql.value.trim()) {
                     formattedSql.value = '';
+                    hasError.value = false;
                     return;
                 }
                 try {
@@ -266,8 +723,10 @@ LIMIT 50;`;
                         useTabs: tabWidth.value === 'tab',
                         keywordCase: uppercaseKeyword.value ? 'upper' : 'preserve',
                     });
+                    hasError.value = false;
                 } catch (e) {
-                    formattedSql.value = '-- [解析提示]: ' + e.message + '\n\n' + rawSql.value;
+                    hasError.value = true;
+                    formattedSql.value = '-- [解析提示]: ' + (e.message || '未知语法异常') + '\n\n' + rawSql.value;
                 }
             }
 
@@ -278,33 +737,118 @@ LIMIT 50;`;
                     .replace(/--.*$/gm, '')
                     .replace(/\s+/g, ' ')
                     .trim();
-                ElementPlus.ElMessage.success('已压缩为单行 SQL！');
+                hasError.value = false;
+                if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                    ElementPlus.ElMessage.success('已压缩为单行 SQL！');
+                }
             }
 
             function loadSample() {
                 rawSql.value = sampleSql;
                 formatSql();
+                if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                    ElementPlus.ElMessage.info('已载入测试用例！');
+                }
             }
 
             function clearSql() {
                 rawSql.value = '';
                 formattedSql.value = '';
+                hasError.value = false;
+                if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                    ElementPlus.ElMessage.info('已清空内容');
+                }
             }
 
             function copyFormatted() {
-                if (!formattedSql.value) return;
-                navigator.clipboard.writeText(formattedSql.value).then(() => {
-                    ElementPlus.ElMessage.success('已复制格式化后的 SQL！');
-                });
+                if (!formattedSql.value) {
+                    if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                        ElementPlus.ElMessage.warning('暂无内容可复制');
+                    }
+                    return;
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(formattedSql.value).then(() => {
+                        if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                            ElementPlus.ElMessage.success('已复制格式化后的 SQL！');
+                        }
+                    }).catch(() => {
+                        fallbackCopy(formattedSql.value);
+                    });
+                } else {
+                    fallbackCopy(formattedSql.value);
+                }
+            }
+
+            function fallbackCopy(text) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                    if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                        ElementPlus.ElMessage.success('已复制格式化后的 SQL！');
+                    }
+                } catch (err) {
+                    if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                        ElementPlus.ElMessage.error('复制失败，请手动选择复制');
+                    }
+                }
+                document.body.removeChild(ta);
+            }
+
+            function pasteFromClipboard() {
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    navigator.clipboard.readText().then(text => {
+                        if (text) {
+                            rawSql.value = text;
+                            formatSql();
+                            if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                                ElementPlus.ElMessage.success('已从剪贴板粘贴！');
+                            }
+                        }
+                    }).catch(() => {
+                        if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                            ElementPlus.ElMessage.info('请使用 Ctrl+V 快捷键进行粘贴');
+                        }
+                    });
+                } else {
+                    if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                        ElementPlus.ElMessage.info('请使用 Ctrl+V 快捷键进行粘贴');
+                    }
+                }
             }
 
             function downloadSql() {
-                if (!formattedSql.value) return;
+                if (!formattedSql.value) {
+                    if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                        ElementPlus.ElMessage.warning('暂无内容可导出');
+                    }
+                    return;
+                }
                 const blob = new Blob([formattedSql.value], { type: 'text/sql;charset=utf-8' });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
                 a.download = 'query-' + Date.now() + '.sql';
                 a.click();
+                URL.revokeObjectURL(a.href);
+                if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                    ElementPlus.ElMessage.success('SQL 文件已开始下载');
+                }
+            }
+
+            // 快捷键支持 Ctrl+Enter 或 Cmd+Enter 美化
+            function handleKeydown(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    formatSql();
+                    if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                        ElementPlus.ElMessage.success('格式化完成！');
+                    }
+                }
             }
 
             onMounted(() => {
@@ -317,12 +861,19 @@ LIMIT 50;`;
                 dialect,
                 tabWidth,
                 uppercaseKeyword,
+                hasError,
+                rawLineCount,
+                formattedLineCount,
+                parseStatusText,
+                sizeDiffText,
                 formatSql,
                 minifySql,
                 loadSample,
                 clearSql,
                 copyFormatted,
-                downloadSql
+                downloadSql,
+                pasteFromClipboard,
+                handleKeydown
             };
         }
     }).use(ElementPlus).mount('#app');
