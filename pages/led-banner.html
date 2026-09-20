@@ -1,796 +1,1839 @@
 <!DOCTYPE html>
-<!-- Tool Created: 2026-08-31 | Extension by Antigravity Agent -->
 <html lang="zh" class="dark">
 <head>
-    <script src="./js/theme.js"></script>
-    <script src="./js/i18n.js"></script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-    <title>手持全屏弹幕 / LED滚动屏幕 - 演唱会打call、机场接机与荧光手幅 | 在线跑马灯 - 在线工具</title>
-    <meta name="description" content="全屏手机手持弹幕神器，支持输入任意文字，实时全屏横向或纵向滚动走字。可调节字体大小、滚动速度、文字颜色、背景颜色、闪烁发光效果、点阵LED效果与彩虹渐变色，自带防熄屏支持。" />
-    <meta name="keywords" content="手持弹幕, LED滚动屏幕, 手机全屏弹幕, 演唱会打call, 机场接机牌, 荧光手幅, 跑马灯, LED点阵屏" />
+<script src="./js/theme.js"></script><script src="./js/i18n.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>手持全屏弹幕 / LED滚动屏幕 - 在线工具</title>
+<meta name="description" content="全屏手机手持弹幕神器，支持输入任意文字，实时全屏横向或纵向滚动走字，演唱会应援打call、机场接机、夜市招牌、表白神器。">
+<link rel="shortcut icon" href="/favicon.ico">
+<link href="./lib/element-plus/index.css" rel="stylesheet">
+<link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet">
+<link href="./css/6767-site.css?v=20260905" rel="stylesheet">
+<link href="./css/tool-dark.css?v=20260905" rel="stylesheet">
+<style>
+/* ── 全局与布局变量 ── */
+:root {
+    --led-accent: #0284c7;
+    --led-accent-glow: rgba(2, 132, 199, 0.4);
+    --led-radius: 12px;
+}
+html.dark {
+    --led-accent: #38bdf8;
+    --led-accent-glow: rgba(56, 189, 248, 0.4);
+}
+* {
+    box-sizing: border-box;
+}
+.led-container {
+    width: 100%;
+    margin: 0 auto;
+}
 
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link href="./lib/element-plus/index.css" rel="stylesheet" />
-    <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet" />
-    <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
-    <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
+/* ── 顶部控制栏/仪表盘 (双模质感与高反差) ── */
+.tool-dashboard {
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 16px 0 20px;
+    transition: all 0.2s ease;
+}
+html.dark .tool-dashboard {
+    background-color: #090e1f;
+    border: 1px solid #1e293b;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+html:not(.dark) .tool-dashboard {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+}
 
-    <style>
-        /* LED 弹幕专用样式 */
-        .led-preview-wrapper {
-            position: relative;
-            width: 100%;
-            height: 280px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid #334155;
-            background: #000000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.dash-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.dash-kicker {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+html.dark .dash-kicker {
+    color: #38bdf8;
+}
+html:not(.dark) .dash-kicker {
+    color: #0369a1;
+}
+.dash-sub {
+    font-size: 13px;
+    margin: 0;
+}
+html.dark .dash-sub {
+    color: #94a3b8;
+}
+html:not(.dark) .dash-sub {
+    color: #334155;
+}
 
-        /* 预览区内的视口 */
-        .led-viewport {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.dash-tags {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+html.dark .status-pill-blue {
+    background-color: #0c2d48;
+    border: 1px solid #0284c7;
+    color: #7dd3fc;
+}
+html:not(.dark) .status-pill-blue {
+    background-color: #e0f2fe;
+    border: 1px solid #bae6fd;
+    color: #0369a1;
+}
+html.dark .status-pill-green {
+    background-color: #064e3b;
+    border: 1px solid #059669;
+    color: #6ee7b7;
+}
+html:not(.dark) .status-pill-green {
+    background-color: #dcfce7;
+    border: 1px solid #86efac;
+    color: #166534;
+}
 
-        /* LED 跑马灯文字容器 */
-        .led-marquee-track {
-            display: flex;
-            align-items: center;
-            white-space: pre;
-            will-change: transform;
-            line-height: 1.1;
-            font-weight: 900;
-        }
+/* ── 按钮与交互控件 ── */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 18px;
+    min-height: 40px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    border: none;
+    text-decoration: none;
+}
+.action-btn:active {
+    transform: scale(0.98);
+}
+.action-btn-primary {
+    background-color: #0369a1;
+    background-image: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    border: 1px solid #0284c7;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+.action-btn-primary span {
+    color: #ffffff;
+}
+.action-btn-primary:hover {
+    background-color: #075985;
+    background-image: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
+    color: #ffffff;
+}
+html.dark .action-btn-primary {
+    background-color: #0369a1;
+    background-image: linear-gradient(135deg, rgba(14, 116, 144, 0.9) 0%, rgba(2, 132, 199, 0.9) 100%);
+    border: 1px solid #38bdf8;
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(56, 189, 248, 0.3);
+}
+html.dark .action-btn-primary span {
+    color: #ffffff;
+}
+html.dark .action-btn-primary:hover {
+    background-color: #0284c7;
+    background-image: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 22px rgba(56, 189, 248, 0.5);
+}
+html:not(.dark) .action-btn-primary {
+    background-color: #0369a1;
+    background-image: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    border: 1px solid #0284c7;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+}
+html:not(.dark) .action-btn-primary span {
+    color: #ffffff;
+}
+html:not(.dark) .action-btn-primary:hover {
+    background-color: #075985;
+    background-image: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    color: #ffffff;
+}
 
-        /* 点阵 LED 网格遮罩 */
-        .led-dot-grid {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 5;
-            background-image: radial-gradient(rgba(0, 0, 0, 0.75) 1.5px, transparent 1.5px);
-            background-size: 5px 5px;
-        }
+.action-btn-ghost {
+    border-radius: 8px;
+    min-height: 36px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+html.dark .action-btn-ghost {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+}
+html.dark .action-btn-ghost:hover {
+    background-color: #1e293b;
+    border-color: #38bdf8;
+    color: #38bdf8;
+}
+html:not(.dark) .action-btn-ghost {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+}
+html:not(.dark) .action-btn-ghost:hover {
+    background-color: #e0f2fe;
+    border-color: #0284c7;
+    color: #0284c7;
+}
 
-        /* 彩虹流光文字动画 */
-        .rainbow-text {
-            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
-            background-size: 400% 100%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rainbowFlow 4s linear infinite;
-        }
+/* ── LED 硬件外观拟物外框 (Bezel) ── */
+.led-bezel-outer {
+    position: relative;
+    border-radius: 16px;
+    padding: 10px;
+    background-color: #0f172a;
+    background-image: linear-gradient(145deg, #1e293b, #090d16);
+    border: 2px solid #334155;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    margin-bottom: 22px;
+    transition: border-color 0.2s ease;
+}
+html.dark .led-bezel-outer {
+    background-color: #0b0f19;
+    border-color: #334155;
+}
+html:not(.dark) .led-bezel-outer {
+    background-color: #0f172a;
+    border-color: #475569;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
 
-        @keyframes rainbowFlow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
+.led-bezel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px 10px;
+    font-size: 12px;
+    color: #94a3b8;
+    user-select: none;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.bezel-live-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #ef4444;
+}
+.live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    box-shadow: 0 0 8px #ef4444;
+    animation: pulseLive 1.5s infinite;
+}
+@keyframes pulseLive {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+}
+.bezel-mode-tag {
+    color: #cbd5e1;
+    font-size: 11px;
+    background-color: #090e1a;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #334155;
+}
+.bezel-quick-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.bezel-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 32px;
+    border-radius: 6px;
+    background-color: #1e293b;
+    border: 1px solid #475569;
+    color: #f8fafc;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.15s;
+}
+.bezel-btn:hover {
+    background-color: #334155;
+    color: #38bdf8;
+    border-color: #38bdf8;
+}
 
-        /* 闪烁模式动画 */
-        .blink-strobe {
-            animation: strobeAnim 0.25s steps(2, start) infinite;
-        }
-        @keyframes strobeAnim {
-            to { visibility: hidden; }
-        }
+/* ── LED 屏幕显示窗口 ── */
+.led-preview-wrapper {
+    position: relative;
+    width: 100%;
+    height: clamp(190px, 30vw, 290px);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #000000;
+    box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.led-viewport {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.led-viewport.is-mirrored {
+    transform: scaleX(-1);
+}
+.led-marquee-track {
+    display: flex;
+    align-items: center;
+    white-space: pre;
+    will-change: transform;
+    line-height: 1.1;
+    font-weight: 900;
+    user-select: none;
+}
 
-        .blink-breathe {
-            animation: breatheAnim 1.4s ease-in-out infinite alternate;
-        }
-        @keyframes breatheAnim {
-            0% { opacity: 0.15; filter: brightness(0.4); }
-            100% { opacity: 1; filter: brightness(1.3); }
-        }
+/* 仿真 LED 点阵网格层 */
+.led-dot-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.75) 1.5px, transparent 1.5px);
+    background-size: 5px 5px;
+}
+/* 扫描线质感光栅 */
+.led-scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 6;
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background-size: 100% 4px;
+}
 
-        .blink-heartbeat {
-            animation: heartbeatAnim 1s ease-in-out infinite;
-        }
-        @keyframes heartbeatAnim {
-            0%, 100% { transform: scale(1); }
-            15% { transform: scale(1.1); }
-            30% { transform: scale(0.96); }
-            45% { transform: scale(1.06); }
-        }
+/* 屏幕底部快捷提示 */
+.bezel-footer-hint {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 8px 2px;
+    font-size: 12px;
+    color: #cbd5e1;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.bezel-hint-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #cbd5e1;
+}
 
-        /* 字体系列选择 */
-        .font-sans-heavy { font-family: "Impact", "Arial Black", system-ui, sans-serif; }
-        .font-mono-tech { font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
-        .font-dot-matrix { font-family: "Courier New", Courier, monospace; letter-spacing: 2px; }
+/* ── 字体风格类 ── */
+.font-sans-heavy {
+    font-family: Impact, "Arial Black", "PingFang SC", system-ui, sans-serif;
+    letter-spacing: 0.02em;
+}
+.font-mono-tech {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    letter-spacing: 0.04em;
+}
+.font-dot-matrix {
+    font-family: "Courier New", "Lucida Console", monospace;
+    letter-spacing: 3px;
+    font-weight: 900;
+}
 
-        /* 全屏弹幕沉浸模式 */
-        .fullscreen-banner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 99999;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            touch-action: none;
-            user-select: none;
-        }
+/* ── 动画特效 ── */
+.rainbow-text {
+    background-image: linear-gradient(90deg, #ff0055, #ff9900, #ffee00, #00ff66, #00ffff, #0066ff, #cc00ff, #ff0055);
+    background-size: 400% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbowFlow 4s linear infinite;
+}
+@keyframes rainbowFlow {
+    0% { background-position: 0 50%; }
+    100% { background-position: 100% 50%; }
+}
+.blink-strobe {
+    animation: strobeAnim 0.22s steps(2, start) infinite;
+}
+@keyframes strobeAnim {
+    to { visibility: hidden; }
+}
+.blink-breathe {
+    animation: breatheAnim 1.4s ease-in-out infinite alternate;
+}
+@keyframes breatheAnim {
+    0% { opacity: 0.15; filter: brightness(0.4); }
+    100% { opacity: 1; filter: brightness(1.3); }
+}
+.blink-heartbeat {
+    animation: heartbeatAnim 1s ease-in-out infinite;
+}
+@keyframes heartbeatAnim {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.12); }
+    28% { transform: scale(0.96); }
+    42% { transform: scale(1.08); }
+    70% { transform: scale(1); }
+}
 
-        /* 全屏浮动控制栏 */
-        .fs-floating-bar {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(51, 65, 85, 0.8);
-            border-radius: 30px;
-            padding: 8px 18px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 100000;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
+/* ── 控制面板网格 ── */
+.led-controls-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 10px;
+}
+@media (max-width: 880px) {
+    .led-controls-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
-        .fs-floating-bar.hidden-bar {
-            opacity: 0;
-            transform: translate(-50%, 30px);
-            pointer-events: none;
-        }
+.led-card {
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+html.dark .led-card {
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+html:not(.dark) .led-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+}
 
-        /* 快捷调色盘圆点 */
-        .color-dot {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid #334155;
-            transition: all 0.15s ease;
-        }
-        .color-dot:hover, .color-dot.active {
-            transform: scale(1.2);
-            border-color: #ffffff;
-            box-shadow: 0 0 10px rgba(255,255,255,0.6);
-        }
+.led-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid;
+}
+html.dark .led-card-header {
+    border-bottom-color: #1e293b;
+}
+html:not(.dark) .led-card-header {
+    border-bottom-color: #f1f5f9;
+}
+.led-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+html.dark .led-card-title {
+    color: #f1f5f9;
+}
+html:not(.dark) .led-card-title {
+    color: #0f172a;
+}
 
-        /* 预设卡片 */
-        .preset-chip {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 20px;
-            padding: 5px 12px;
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            white-space: nowrap;
-        }
-        .preset-chip:hover {
-            background: #334155;
-            color: #22d3ee;
-            border-color: #22d3ee;
-        }
-    </style>
+/* 表单行与控件 */
+.led-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.led-field-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.led-label {
+    font-size: 13px;
+    font-weight: 700;
+}
+html.dark .led-label {
+    color: #cbd5e1;
+}
+html:not(.dark) .led-label {
+    color: #1e293b;
+}
 
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="在线工具集" />
-    <meta property="og:title" content="手持全屏弹幕 / LED滚动屏幕 - 演唱会打call、机场接机与荧光手幅 | 在线跑马灯 - 在线工具" />
-    <meta property="og:description" content="全屏手机手持弹幕神器，支持输入任意文字，实时全屏横向或纵向滚动走字。可调节字体大小、滚动速度、文字颜色、背景颜色、闪烁发光效果、点阵LED效果与彩虹渐变色，自带防熄屏支持。" />
-    <meta property="og:url" content="https://tool.6767.chat/led-banner" />
-    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="canonical" href="https://tool.6767.chat/led-banner" />
+.led-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+.led-slider-row .led-label {
+    min-width: 68px;
+    flex: 0 0 68px;
+}
+.led-slider-row .el-slider {
+    flex: 1;
+    min-width: 100px;
+}
+.led-slider-val {
+    min-width: 64px;
+    text-align: right;
+    font-family: ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+html.dark .led-slider-val {
+    background-color: #0c2d48;
+    color: #38bdf8;
+    border: 1px solid #0284c7;
+}
+html:not(.dark) .led-slider-val {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+
+/* 快捷符号按键 */
+.symbol-chips-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.symbol-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    min-height: 38px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+html.dark .symbol-btn {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    color: #f8fafc;
+}
+html.dark .symbol-btn:hover {
+    background-color: #334155;
+    border-color: #38bdf8;
+    transform: translateY(-1px);
+}
+html:not(.dark) .symbol-btn {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+}
+html:not(.dark) .symbol-btn:hover {
+    background-color: #e0f2fe;
+    border-color: #0284c7;
+    transform: translateY(-1px);
+}
+
+/* 快捷场景套用 */
+.preset-chips-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.preset-chip-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 38px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+html.dark .preset-chip-btn {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    color: #f1f5f9;
+}
+html.dark .preset-chip-btn:hover {
+    background-color: #334155;
+    border-color: #38bdf8;
+    color: #38bdf8;
+    transform: translateY(-1px);
+}
+html:not(.dark) .preset-chip-btn {
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+}
+html:not(.dark) .preset-chip-btn:hover {
+    background-color: #e0f2fe;
+    border-color: #0284c7;
+    color: #0369a1;
+    transform: translateY(-1px);
+}
+
+/* 颜色色块选择 */
+.color-swatches-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.color-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.15s ease;
+    position: relative;
+}
+.color-circle:hover {
+    transform: scale(1.15);
+}
+html.dark .color-circle {
+    border-color: #475569;
+}
+html:not(.dark) .color-circle {
+    border-color: #94a3b8;
+}
+.color-circle.active {
+    transform: scale(1.18);
+    border-color: #0284c7 !important;
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.7);
+}
+html.dark .color-circle.active {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+}
+
+/* 特效勾选卡片组 */
+.fx-toggles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+@media (max-width: 500px) {
+    .fx-toggles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.fx-toggle-card {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    min-height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+html.dark .fx-toggle-card {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+}
+html.dark .fx-toggle-card:hover {
+    border-color: #38bdf8;
+}
+html.dark .fx-toggle-card .el-checkbox__label {
+    color: #f1f5f9;
+    font-weight: 600;
+}
+html:not(.dark) .fx-toggle-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+html:not(.dark) .fx-toggle-card:hover {
+    border-color: #0284c7;
+}
+html:not(.dark) .fx-toggle-card .el-checkbox__label {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+/* 分割线 */
+.led-divider {
+    height: 1px;
+    margin: 4px 0;
+}
+html.dark .led-divider {
+    background-color: #1e293b;
+}
+html:not(.dark) .led-divider {
+    background-color: #f1f5f9;
+}
+
+/* 快捷微调按钮组 */
+.quick-chips-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+.quick-chip {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+html.dark .quick-chip {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+}
+html.dark .quick-chip:hover, html.dark .quick-chip.active {
+    background-color: #0c2d48;
+    border-color: #38bdf8;
+    color: #38bdf8;
+}
+html:not(.dark) .quick-chip {
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+}
+html:not(.dark) .quick-chip:hover, html:not(.dark) .quick-chip.active {
+    background-color: #e0f2fe;
+    border-color: #0284c7;
+    color: #0369a1;
+}
+
+/* ── 全屏手持沉浸遮罩 ── */
+.fullscreen-banner-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+    user-select: none;
+    cursor: pointer;
+}
+.fullscreen-banner-overlay .led-viewport {
+    z-index: 2;
+}
+
+/* 全屏悬浮控制栏 */
+.fs-floating-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: calc(100vw - 24px);
+    padding: 10px 18px;
+    border-radius: 40px;
+    z-index: 100000;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background-color: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+    color: #f1f5f9;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fs-floating-bar.hidden-bar {
+    opacity: 0;
+    transform: translate(-50%, 40px);
+    pointer-events: none;
+}
+.fs-floating-hint {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 16px;
+    border-radius: 20px;
+    background-color: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e2e8f0;
+    font-size: 12px;
+    z-index: 100000;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+.fs-floating-bar .fs-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #f1f5f9;
+    white-space: nowrap;
+}
+.fs-floating-bar .action-btn-ghost {
+    background-color: #1e293b;
+    border: 1px solid #475569;
+    color: #f8fafc;
+}
+.fs-floating-bar .action-btn-ghost:hover {
+    background-color: #334155;
+    color: #38bdf8;
+    border-color: #38bdf8;
+}
+
+/* ── Element Plus 控件美化兼容 ── */
+.led-container .el-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.led-container .el-radio-button__inner {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px !important;
+    border: 1px solid transparent !important;
+    font-size: 13px;
+    font-weight: 600;
+}
+html.dark .led-container .el-radio-button__inner {
+    background-color: #1e293b;
+    border-color: #334155 !important;
+    color: #cbd5e1;
+}
+html.dark .led-container .el-radio-button__original-radio:checked + .el-radio-button__inner {
+    background-color: #0284c7 !important;
+    border-color: #38bdf8 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.4) !important;
+}
+html:not(.dark) .led-container .el-radio-button__inner {
+    background-color: #f8fafc;
+    border-color: #cbd5e1 !important;
+    color: #1e293b;
+}
+html:not(.dark) .led-container .el-radio-button__original-radio:checked + .el-radio-button__inner {
+    background-color: #0369a1 !important;
+    border-color: #0369a1 !important;
+    color: #ffffff !important;
+}
+
+.led-container .el-input__wrapper, 
+.led-container .el-textarea__inner {
+    border-radius: 10px;
+    font-size: 14px;
+}
+html.dark .led-container .el-textarea__inner {
+    background-color: #090e1f;
+    border-color: #334155;
+    color: #f1f5f9;
+}
+html.dark .led-container .el-textarea__inner:focus {
+    border-color: #38bdf8;
+}
+html:not(.dark) .led-container .el-textarea__inner {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+html:not(.dark) .led-container .el-textarea__inner:focus {
+    border-color: #0284c7;
+}
+
+/* ── 场景使用技巧卡片 ── */
+.led-guide-section {
+    margin-top: 32px;
+}
+.led-guide-title {
+    font-size: 16px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+}
+html.dark .led-guide-title {
+    color: #f1f5f9;
+}
+html:not(.dark) .led-guide-title {
+    color: #0f172a;
+}
+
+.led-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+@media (max-width: 1024px) {
+    .led-guide-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 580px) {
+    .led-guide-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.led-guide-card {
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+html.dark .led-guide-card {
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+}
+html.dark .led-guide-card:hover {
+    border-color: #38bdf8;
+    transform: translateY(-2px);
+}
+html.dark .led-guide-card h3 {
+    color: #38bdf8;
+    font-size: 14px;
+    font-weight: 750;
+    margin: 0;
+}
+html.dark .led-guide-card p {
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+html:not(.dark) .led-guide-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+html:not(.dark) .led-guide-card:hover {
+    border-color: #0284c7;
+    transform: translateY(-2px);
+}
+html:not(.dark) .led-guide-card h3 {
+    color: #0369a1;
+    font-size: 14px;
+    font-weight: 750;
+    margin: 0;
+}
+html:not(.dark) .led-guide-card p {
+    color: #334155;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ── 移动端适配 (375px) ── */
+@media (max-width: 768px) {
+    .tool-dashboard {
+        padding: 12px 14px;
+    }
+    .led-bezel-outer {
+        padding: 8px;
+    }
+    .led-preview-wrapper {
+        height: 200px;
+    }
+    .led-card {
+        padding: 14px;
+    }
+    .fs-floating-bar {
+        bottom: 12px;
+        padding: 8px 12px;
+        gap: 8px;
+        border-radius: 24px;
+    }
+    .fs-floating-bar .el-slider {
+        width: 68px !important;
+    }
+    .fs-floating-bar .el-button {
+        padding: 6px 8px;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .rainbow-text, .blink-strobe, .blink-breathe, .blink-heartbeat, .live-dot {
+        animation: none;
+    }
+}
+</style>
 </head>
 <body>
 <div class="grid-bg"></div>
-
-<!-- 统一顶部导航 -->
 <header class="tool-topbar">
-  <a href="./" class="tool-topbar-logo" aria-label="首页">
-    <span>在线工具集</span>
-  </a>
+  <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
   <span class="tool-topbar-sep">/</span>
   <span class="tool-topbar-title">手持全屏弹幕</span>
-  <a href="./" class="tool-topbar-home">&#8592; 首页</a>
+  <a href="./" class="tool-topbar-home">← 首页</a>
 </header>
 
-<main class="main-body tool-page-body">
-  <div class="tool-body">
-    <div class="card-model">
-      <div class="card-body">
-          <div class="tool-head flex items-center justify-between flex-wrap gap-2">
-            <div>
-              <h1 class="title">手持全屏弹幕 / LED 滚动屏幕 (LED Banner)</h1>
-              <div class="description mt-1">
-                演唱会打call、机场接机、地摊招牌、表白神器。支持全屏沉浸滚动、点阵LED、发光彩虹与防熄屏。
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <el-tag type="info" effect="dark">纯前端离线</el-tag>
-              <el-tag type="success" effect="dark">拓展时间: 2026-08-31</el-tag>
-            </div>
-          </div>
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head"><h1 class="title">手持全屏弹幕 / LED 滚动屏幕</h1></div>
+                <div class="description">演唱会打call、机场接机、地摊招牌、表白神器。实时预览，轻触即可进入沉浸式手持模式。</div>
 
-          <div id="ledApp" v-cloak class="mt-4 flex flex-col gap-5">
-            <!-- 实时预览屏幕 -->
-            <div class="flex flex-col gap-2">
-              <div class="flex items-center justify-between">
-                <span class="text-sm font-bold text-slate-300">📺 实时效果预览 (点击进入全屏手持模式)</span>
-                <el-button type="primary" size="small" @click="enterFullscreen">
-                  📱 一键进入全屏手持模式
-                </el-button>
-              </div>
+                <!-- 现代 LED 弹幕工作台容器 -->
+                <div id="ledApp" v-cloak class="led-container">
+                    
+                    <!-- 1. 顶部控制栏/仪表盘 -->
+                    <section class="tool-dashboard">
+                        <div class="dash-info">
+                            <span class="dash-kicker">LED Banner Studio</span>
+                            <p class="dash-sub">将手机或平板瞬间变为发光灯牌、走字屏与打CALL神器</p>
+                        </div>
+                        <div class="dash-tags">
+                            <span class="status-pill status-pill-blue">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                                纯前端渲染
+                            </span>
+                            <span class="status-pill status-pill-green">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                防息屏支持
+                            </span>
+                            <button class="action-btn action-btn-primary" @click="enterFullscreen">
+                                <span>📱 进入全屏手持模式</span>
+                            </button>
+                        </div>
+                    </section>
 
-              <div 
-                class="led-preview-wrapper cursor-pointer" 
-                :style="{ backgroundColor: config.bgColor }"
-                @click="enterFullscreen"
-                title="点击进入全屏"
-              >
-                <!-- 点阵网格遮罩 -->
-                <div v-if="config.dotMatrix" class="led-dot-grid"></div>
+                    <!-- 2. LED 拟物发光屏幕外框 (Bezel) -->
+                    <section class="led-bezel-outer">
+                        <div class="led-bezel-header">
+                            <div class="bezel-live-status">
+                                <span class="live-dot"></span>
+                                <span>LIVE SIMULATOR</span>
+                                <span class="bezel-mode-tag">
+                                    {{ config.direction === 'left' ? '⇦ 向左滚动' : 
+                                       config.direction === 'right' ? '⇨ 向右滚动' : 
+                                       config.direction === 'up' ? '⇧ 向上滚动' : 
+                                       config.direction === 'down' ? '⇩ 向下滚动' : '⏹ 静止模式' }}
+                                    | 速度: {{ speedLabels[config.speed] }} ({{ config.speed }})
+                                </span>
+                            </div>
+                            <div class="bezel-quick-tools">
+                                <button class="bezel-btn" :title="isPaused ? '恢复滚动' : '暂停滚动'" @click="togglePause">
+                                    {{ isPaused ? '▶' : '⏸' }}
+                                </button>
+                                <button class="bezel-btn" :title="isMirrored ? '关闭镜像' : '开启镜像反转(适向前风挡反光)'" @click="toggleMirror">
+                                    🪞
+                                </button>
+                                <button class="bezel-btn" title="进入全屏沉浸模式" @click="enterFullscreen">
+                                    ⛶
+                                </button>
+                            </div>
+                        </div>
 
-                <!-- 视口与跑马灯文字 -->
-                <div class="led-viewport" ref="previewViewport">
-                  <div 
-                    class="led-marquee-track"
-                    :class="[getFontClass(), getBlinkClass(), { 'rainbow-text': config.isRainbow }]"
-                    :style="getTextStyle(false)"
-                  >
-                    {{ bannerText || '请输入弹幕文字...' }}
-                  </div>
-                </div>
-              </div>
-            </div>
+                        <!-- 屏幕主体 -->
+                        <div class="led-preview-wrapper" 
+                             :style="{ backgroundColor: config.bgColor }" 
+                             @click="enterFullscreen" 
+                             title="轻触屏幕直接进入全屏手持模式">
+                            <div v-if="config.dotMatrix" class="led-dot-grid"></div>
+                            <div class="led-scanlines"></div>
+                            <div class="led-viewport" :class="{ 'is-mirrored': isMirrored }" ref="previewViewport">
+                                <div class="led-marquee-track" 
+                                     :class="[getFontClass(), getBlinkClass(), { 'rainbow-text': config.isRainbow }]" 
+                                     :style="getTextStyle(false)">
+                                    {{ bannerText || '请输入弹幕文字...' }}
+                                </div>
+                            </div>
+                        </div>
 
-            <!-- 控制面板 (分块卡片) -->
-            <div class="flex flex-col gap-4">
-              <!-- 第一块：文字内容与常用预设 -->
-              <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-800 flex flex-col gap-3">
-                <div class="font-bold text-slate-200 flex items-center justify-between">
-                  <span class="text-sm">✍️ 弹幕文字内容</span>
-                  <el-button size="small" type="danger" plain @click="bannerText = ''">清空</el-button>
-                </div>
+                        <div class="bezel-footer-hint">
+                            <span class="bezel-hint-text">
+                                💡 轻触屏幕即可进入沉浸全屏模式；支持手机横屏举起使用
+                            </span>
+                            <span v-if="isMirrored" style="color: #38bdf8; font-weight: 700;">
+                                [ 已开启车用前挡风镜像 ]
+                            </span>
+                        </div>
+                    </section>
 
-                <el-input 
-                  v-model="bannerText" 
-                  type="textarea" 
-                  :rows="3" 
-                  placeholder="在此输入你想展示的文字，如：XX我爱你！/ 机场接机 / 全场10元"
-                  maxlength="200"
-                  show-word-limit
-                />
+                    <!-- 3. 双列现代化控制网格 -->
+                    <div class="led-controls-grid">
+                        
+                        <!-- 左列 1: 文本内容与快捷预设 -->
+                        <div class="led-card">
+                            <div class="led-card-header">
+                                <h2 class="led-card-title">
+                                    <span>✍️ 弹幕文字内容与快捷符</span>
+                                </h2>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="action-btn-ghost" @click="bannerText = ''" title="清空文字">清空</button>
+                                    <button class="action-btn-ghost" @click="resetConfig" title="恢复所有设置为默认值">重置</button>
+                                </div>
+                            </div>
 
-                <!-- 常用符号与表情快速插入 -->
-                <div class="flex flex-wrap items-center gap-2 pt-1">
-                  <span class="text-xs text-slate-400 whitespace-nowrap">快捷符号:</span>
-                  <el-button v-for="sym in ['❤️', '✨', '🔥', '🎉', '🌟', '🚀', '📢', '👉', '🎂']" :key="sym" size="small" @click="insertSymbol(sym)">
-                    {{ sym }}
-                  </el-button>
-                </div>
+                            <el-input 
+                                v-model="bannerText" 
+                                type="textarea" 
+                                :rows="3" 
+                                placeholder="输入你想展示的文字，如：为你打 CALL！/ 机场接机 / 摆摊优惠" 
+                                maxlength="200" 
+                                show-word-limit>
+                            </el-input>
 
-                <!-- 热门场景预设模板 -->
-                <div class="mt-2 pt-2 border-t border-slate-800/80">
-                  <div class="text-xs text-slate-400 mb-2">🔥 热门场景一键套用：</div>
-                  <div class="flex flex-wrap gap-2">
-                    <span v-for="preset in scenePresets" :key="preset.name" class="preset-chip" @click="applyPreset(preset)">
-                      {{ preset.name }}
-                    </span>
-                  </div>
-                </div>
-              </div>
+                            <!-- 快捷 Emoji / 符号按钮 -->
+                            <div class="led-field">
+                                <span class="led-label">常用高频符号一键插入</span>
+                                <div class="symbol-chips-wrap">
+                                    <button v-for="sym in ['❤️','✨','🔥','🎉','🌟','🚀','📢','👉','🎂','🍻','💍','✈️','🚗','💯']" 
+                                            :key="sym" 
+                                            class="symbol-btn" 
+                                            @click="insertSymbol(sym)">
+                                        {{ sym }}
+                                    </button>
+                                </div>
+                            </div>
 
-              <!-- 第二块：排版与运动控制 -->
-              <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-800 flex flex-col gap-4">
-                <div class="font-bold text-slate-200 text-sm">🚀 滚动方向与排版调节</div>
+                            <div class="led-divider"></div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <!-- 滚动方向 -->
-                  <div class="flex flex-col gap-2">
-                    <span class="text-xs text-slate-400">滚动方向：</span>
-                    <el-radio-group v-model="config.direction" size="small" class="flex flex-wrap gap-1">
-                      <el-radio-button label="left">从右向左 ←</el-radio-button>
-                      <el-radio-button label="right">从左向右 →</el-radio-button>
-                      <el-radio-button label="up">从下向上 ↑</el-radio-button>
-                      <el-radio-button label="down">从上向下 ↓</el-radio-button>
-                      <el-radio-button label="static">静止居中</el-radio-button>
-                    </el-radio-group>
-                  </div>
+                            <!-- 热门场景模板 -->
+                            <div class="led-field">
+                                <span class="led-label">🔥 热门场景一键套用 (自动匹配字体、颜色与动效)</span>
+                                <div class="preset-chips-wrap">
+                                    <button v-for="preset in scenePresets" 
+                                            :key="preset.name" 
+                                            class="preset-chip-btn" 
+                                            @click="applyPreset(preset)">
+                                        <span>{{ preset.icon || '📌' }}</span>
+                                        <span>{{ preset.name }}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-                  <!-- 字体样式选择 -->
-                  <div class="flex flex-col gap-2">
-                    <span class="text-xs text-slate-400">字体样式：</span>
-                    <el-radio-group v-model="config.fontFamily" size="small">
-                      <el-radio-button label="heavy">粗黑体</el-radio-button>
-                      <el-radio-button label="dot">点阵体</el-radio-button>
-                      <el-radio-button label="mono">等宽体</el-radio-button>
-                    </el-radio-group>
-                  </div>
-                </div>
+                        <!-- 左列 2: 运动方向与字体排版 -->
+                        <div class="led-card">
+                            <div class="led-card-header">
+                                <h2 class="led-card-title">
+                                    <span>🚀 运动方向与字体样式</span>
+                                </h2>
+                            </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-slate-800/80">
-                  <!-- 字体大小 -->
-                  <div class="flex items-center gap-3">
-                    <span class="text-xs text-slate-400 whitespace-nowrap" style="width: 70px;">字体大小:</span>
-                    <div class="flex-1"><el-slider v-model="config.fontSize" :min="20" :max="300" :step="2" /></div>
-                    <span class="text-xs text-slate-300 font-mono" style="width: 48px; text-align: right;">{{ config.fontSize }}px</span>
-                  </div>
+                            <!-- 方向切换 -->
+                            <div class="led-field">
+                                <span class="led-label">滚动走字方向</span>
+                                <el-radio-group v-model="config.direction" size="small">
+                                    <el-radio-button label="left">⇦ 右→左</el-radio-button>
+                                    <el-radio-button label="right">⇨ 左→右</el-radio-button>
+                                    <el-radio-button label="up">⇧ 下→上</el-radio-button>
+                                    <el-radio-button label="down">⇩ 上→下</el-radio-button>
+                                    <el-radio-button label="static">⏹ 静止居中</el-radio-button>
+                                </el-radio-group>
+                            </div>
 
-                  <!-- 滚动速度 -->
-                  <div class="flex items-center gap-3" v-if="config.direction !== 'static'">
-                    <span class="text-xs text-slate-400 whitespace-nowrap" style="width: 70px;">滚动速度:</span>
-                    <div class="flex-1"><el-slider v-model="config.speed" :min="1" :max="10" :step="1" /></div>
-                    <span class="text-xs text-slate-300 font-mono" style="width: 48px; text-align: right;">{{ speedLabels[config.speed] }}</span>
-                  </div>
-                </div>
-              </div>
+                            <!-- 字体风格 -->
+                            <div class="led-field">
+                                <span class="led-label">字体风格质感</span>
+                                <el-radio-group v-model="config.fontFamily" size="small">
+                                    <el-radio-button label="heavy">粗黑重体</el-radio-button>
+                                    <el-radio-button label="dot">点阵屏风</el-radio-button>
+                                    <el-radio-button label="mono">极客等宽</el-radio-button>
+                                </el-radio-group>
+                            </div>
 
-              <!-- 第三块：色彩与发光视觉特效 -->
-              <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-800 flex flex-col gap-4">
-                <div class="font-bold text-slate-200 text-sm">🎨 炫彩配色与发光特效</div>
+                            <div class="led-divider"></div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <!-- 文字颜色 -->
-                  <div class="flex items-center gap-3">
-                    <span class="text-xs text-slate-400 whitespace-nowrap" style="width: 70px;">文字颜色:</span>
-                    <div class="flex items-center gap-2 flex-wrap">
-                      <div 
-                        v-for="color in textColors" 
-                        :key="color" 
-                        class="color-dot" 
-                        :class="{ active: config.textColor === color && !config.isRainbow }"
-                        :style="{ backgroundColor: color }"
-                        @click="config.textColor = color; config.isRainbow = false"
-                      ></div>
-                      <el-color-picker v-model="config.textColor" size="small" @change="config.isRainbow = false" />
+                            <!-- 字号大小滑块 -->
+                            <div class="led-field">
+                                <div class="led-slider-row">
+                                    <span class="led-label">字体大小</span>
+                                    <el-slider v-model="config.fontSize" :min="20" :max="300" :step="2"></el-slider>
+                                    <span class="led-slider-val">{{ config.fontSize }}px</span>
+                                </div>
+                                <div class="quick-chips-row">
+                                    <span class="quick-chip" :class="{ active: config.fontSize === 50 }" @click="config.fontSize = 50">小号 50px</span>
+                                    <span class="quick-chip" :class="{ active: config.fontSize === 80 }" @click="config.fontSize = 80">推荐 80px</span>
+                                    <span class="quick-chip" :class="{ active: config.fontSize === 120 }" @click="config.fontSize = 120">醒目 120px</span>
+                                    <span class="quick-chip" :class="{ active: config.fontSize === 180 }" @click="config.fontSize = 180">特大 180px</span>
+                                    <span class="quick-chip" :class="{ active: config.fontSize === 240 }" @click="config.fontSize = 240">超大 240px</span>
+                                </div>
+                            </div>
+
+                            <!-- 滚动速度滑块 -->
+                            <div class="led-field" v-if="config.direction !== 'static'">
+                                <div class="led-slider-row">
+                                    <span class="led-label">滚动速度</span>
+                                    <el-slider v-model="config.speed" :min="1" :max="10"></el-slider>
+                                    <span class="led-slider-val">{{ speedLabels[config.speed] }} ({{ config.speed }})</span>
+                                </div>
+                                <div class="quick-chips-row">
+                                    <span class="quick-chip" :class="{ active: config.speed === 2 }" @click="config.speed = 2">慢速 2档</span>
+                                    <span class="quick-chip" :class="{ active: config.speed === 5 }" @click="config.speed = 5">标准 5档</span>
+                                    <span class="quick-chip" :class="{ active: config.speed === 8 }" @click="config.speed = 8">飞快 8档</span>
+                                    <span class="quick-chip" :class="{ active: config.speed === 10 }" @click="config.speed = 10">极速 10档</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右列 1: 配色方案与光效 -->
+                        <div class="led-card">
+                            <div class="led-card-header">
+                                <h2 class="led-card-title">
+                                    <span>🎨 炫彩配色与霓虹发光</span>
+                                </h2>
+                            </div>
+
+                            <!-- 文字颜色 -->
+                            <div class="led-field">
+                                <div class="led-field-row">
+                                    <span class="led-label">文字颜色</span>
+                                    <div class="color-swatches-wrap">
+                                        <div v-for="color in textColors" 
+                                             :key="color" 
+                                             class="color-circle" 
+                                             :class="{ active: config.textColor === color && !config.isRainbow }" 
+                                             :style="{ backgroundColor: color }" 
+                                             @click="config.textColor = color; config.isRainbow = false;"
+                                             :title="color">
+                                        </div>
+                                        <el-color-picker v-model="config.textColor" size="small" @change="config.isRainbow = false"></el-color-picker>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 背景颜色 -->
+                            <div class="led-field">
+                                <div class="led-field-row">
+                                    <span class="led-label">背景颜色</span>
+                                    <div class="color-swatches-wrap">
+                                        <div v-for="color in bgColors" 
+                                             :key="color" 
+                                             class="color-circle" 
+                                             :class="{ active: config.bgColor === color }" 
+                                             :style="{ backgroundColor: color }" 
+                                             @click="config.bgColor = color"
+                                             :title="color">
+                                        </div>
+                                        <el-color-picker v-model="config.bgColor" size="small"></el-color-picker>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="led-divider"></div>
+
+                            <!-- 特效开关组合 -->
+                            <div class="fx-toggles-grid">
+                                <label class="fx-toggle-card">
+                                    <el-checkbox v-model="config.isRainbow">🌈 彩虹流光色</el-checkbox>
+                                </label>
+                                <label class="fx-toggle-card">
+                                    <el-checkbox v-model="config.glowEffect">✨ 霓虹辉光</el-checkbox>
+                                </label>
+                                <label class="fx-toggle-card">
+                                    <el-checkbox v-model="config.dotMatrix">💡 LED 点阵纹理</el-checkbox>
+                                </label>
+                                <label class="fx-toggle-card">
+                                    <el-checkbox v-model="isMirrored">🪞 镜像反转模式</el-checkbox>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 右列 2: 频闪与动效节奏 -->
+                        <div class="led-card">
+                            <div class="led-card-header">
+                                <h2 class="led-card-title">
+                                    <span>⚡ 闪烁模式与动效节奏</span>
+                                </h2>
+                            </div>
+
+                            <div class="led-field">
+                                <span class="led-label">氛围闪烁节奏</span>
+                                <el-radio-group v-model="config.blinkMode" size="small">
+                                    <el-radio-button label="none">💡 常亮 (稳定)</el-radio-button>
+                                    <el-radio-button label="breathe">🌊 柔和呼吸</el-radio-button>
+                                    <el-radio-button label="heartbeat">💓 动感心跳</el-radio-button>
+                                    <el-radio-button label="strobe">⚡ 极速频闪</el-radio-button>
+                                </el-radio-group>
+                            </div>
+
+                            <div class="led-divider"></div>
+
+                            <div class="dash-tags" style="margin-top: 6px; justify-content: flex-start;">
+                                <button class="action-btn action-btn-primary" style="flex: 1;" @click="enterFullscreen">
+                                    <span>📱 立即进入全屏手持模式</span>
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
-                  </div>
 
-                  <!-- 背景颜色 -->
-                  <div class="flex items-center gap-3">
-                    <span class="text-xs text-slate-400 whitespace-nowrap" style="width: 70px;">背景颜色:</span>
-                    <div class="flex items-center gap-2 flex-wrap">
-                      <div 
-                        v-for="color in bgColors" 
-                        :key="color" 
-                        class="color-dot" 
-                        :class="{ active: config.bgColor === color }"
-                        :style="{ backgroundColor: color }"
-                        @click="config.bgColor = color"
-                      ></div>
-                      <el-color-picker v-model="config.bgColor" size="small" />
+                    <!-- 4. 全屏手持沉浸式遮罩 -->
+                    <div v-show="isFullscreen" 
+                         class="fullscreen-banner-overlay" 
+                         :style="{ backgroundColor: config.bgColor }" 
+                         @click="toggleFullscreenBar">
+                        
+                        <!-- 点阵层 -->
+                        <div v-if="config.dotMatrix" class="led-dot-grid"></div>
+                        <div class="led-scanlines"></div>
+
+                        <!-- 视口与文字轨 -->
+                        <div class="led-viewport" :class="{ 'is-mirrored': isMirrored }" ref="fullscreenViewport">
+                            <div class="led-marquee-track" 
+                                 :class="[getFontClass(), getBlinkClass(), { 'rainbow-text': config.isRainbow }]" 
+                                 :style="getTextStyle(true)">
+                                {{ bannerText || '请输入弹幕文字...' }}
+                            </div>
+                        </div>
+
+                        <!-- 顶部轻微提示 -->
+                        <div v-show="showFloatingBar" class="fs-floating-hint">
+                            轻触屏幕任意位置呼出/隐藏底部控制栏 · ESC 退出
+                        </div>
+
+                        <!-- 底部悬浮控制胶囊 -->
+                        <div class="fs-floating-bar" :class="{ 'hidden-bar': !showFloatingBar }" @click.stop>
+                            <el-button type="primary" size="small" circle @click="exitFullscreen" title="关闭全屏">✕</el-button>
+                            
+                            <span class="fs-label">速度</span>
+                            <el-slider v-model="config.speed" :min="1" :max="10" style="width: 80px"></el-slider>
+                            
+                            <span class="fs-label">字号</span>
+                            <el-slider v-model="config.fontSize" :min="40" :max="400" style="width: 80px"></el-slider>
+
+                            <button class="action-btn-ghost" style="padding: 4px 10px; min-height: 32px; font-size: 12px;" @click="toggleMirror" :title="isMirrored ? '关闭镜像' : '开启镜像'">
+                                {{ isMirrored ? '正常' : '🪞镜像' }}
+                            </button>
+                            
+                            <el-button size="small" type="danger" plain @click="exitFullscreen">退出全屏</el-button>
+                        </div>
                     </div>
-                  </div>
+
+                    <!-- 5. 场景指南与技巧 -->
+                    <div class="divider my-6"></div>
+                    <section class="led-guide-section">
+                        <h2 class="led-guide-title">
+                            <span>💡 LED 手持弹幕应用场景与进阶技巧</span>
+                        </h2>
+                        <div class="led-guide-grid">
+                            <article class="led-guide-card">
+                                <h3>🎤 演唱会与粉丝打CALL</h3>
+                                <p>开启「彩虹流光」或荧光粉配「呼吸」闪烁，双手将手机横屏高高举起，在黑暗观众席中成为全场焦点。</p>
+                            </article>
+                            <article class="led-guide-card">
+                                <h3>✈️ 机场高铁接机找人</h3>
+                                <p>设置醒目亮黄色粗体大字，选择「静止居中」或慢速滚动，高亮度对比在数十米开外也能一眼认清姓名。</p>
+                            </article>
+                            <article class="led-guide-card">
+                                <h3>🛍️ 地摊夜市与促销招牌</h3>
+                                <p>用闲置平板或手机横放做走字牌，设置「频闪」或双向匀速跑动，持续吸客且完全无需购买额外硬件。</p>
+                            </article>
+                            <article class="led-guide-card">
+                                <h3>🚖 车载前挡风反光投屏</h3>
+                                <p>开启「镜像反转」后将手机平放在汽车中控台上，透过前挡风玻璃反光即可得到正向清晰的HUD接驾提示牌。</p>
+                            </article>
+                        </div>
+                    </section>
+
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-slate-800/80 items-center">
-                  <!-- 视觉特效开关 -->
-                  <div class="flex flex-wrap items-center gap-4">
-                    <el-checkbox v-model="config.isRainbow" label="🌈 彩虹流光色" />
-                    <el-checkbox v-model="config.dotMatrix" label="💡 LED 点阵晶格" />
-                    <el-checkbox v-model="config.glowEffect" label="✨ 霓虹发光辉光" />
-                  </div>
-
-                  <!-- 闪烁发光效果 -->
-                  <div class="flex items-center gap-3">
-                    <span class="text-xs text-slate-400 whitespace-nowrap">闪烁模式:</span>
-                    <el-radio-group v-model="config.blinkMode" size="small">
-                      <el-radio-button label="none">常亮</el-radio-button>
-                      <el-radio-button label="breathe">呼吸灯</el-radio-button>
-                      <el-radio-button label="heartbeat">心跳脉冲</el-radio-button>
-                      <el-radio-button label="strobe">极速频闪</el-radio-button>
-                    </el-radio-group>
-                  </div>
-                </div>
-              </div>
             </div>
-
-            <!-- 全屏沉浸模式覆盖层 -->
-            <div 
-              v-show="isFullscreen" 
-              class="fullscreen-banner-overlay"
-              :style="{ backgroundColor: config.bgColor }"
-              @click="toggleFullscreenBar"
-            >
-              <!-- 全屏点阵遮罩 -->
-              <div v-if="config.dotMatrix" class="led-dot-grid"></div>
-
-              <!-- 全屏跑马灯文字 -->
-              <div class="led-viewport" ref="fullscreenViewport">
-                <div 
-                  class="led-marquee-track"
-                  :class="[getFontClass(), getBlinkClass(), { 'rainbow-text': config.isRainbow }]"
-                  :style="getTextStyle(true)"
-                >
-                  {{ bannerText || '请输入弹幕文字...' }}
-                </div>
-              </div>
-
-              <!-- 浮动快速控制条 -->
-              <div class="fs-floating-bar" :class="{ 'hidden-bar': !showFloatingBar }" @click.stop>
-                <el-button type="primary" size="small" circle @click="exitFullscreen">
-                  ✕
-                </el-button>
-                <span class="text-xs text-slate-300">速度:</span>
-                <el-slider v-model="config.speed" :min="1" :max="10" style="width: 100px;" />
-                <span class="text-xs text-slate-300">字号:</span>
-                <el-slider v-model="config.fontSize" :min="40" :max="400" style="width: 100px;" />
-                <el-button size="small" type="danger" plain @click="exitFullscreen">
-                  退出全屏
-                </el-button>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="divider my-6"></div>
-
-          <!-- 使用场景与常见技巧 -->
-          <div class="content">
-            <h3 class="text-lg font-bold text-slate-200 mb-3">LED 手持弹幕应用场景与技巧</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-400">
-              <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
-                <h4 class="font-bold text-cyan-300 mb-2">🎤 演唱会与粉丝应援</h4>
-                <p>开启「彩虹流光」与「LED 点阵」，把手机横过来高高举起，瞬间化身最耀眼的电子荧光灯牌！</p>
-              </div>
-              <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
-                <h4 class="font-bold text-cyan-300 mb-2">✈️ 机场与车站接机</h4>
-                <p>设置醒目亮黄色或绿色粗体大字，静止居中或从右向左匀速滚动，百米开外一眼就能认出你。</p>
-              </div>
-              <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
-                <h4 class="font-bold text-cyan-300 mb-2">🛍️ 夜市摆摊与店铺招牌</h4>
-                <p>用闲置平板或手机播放「全场 10 元」、「清仓特惠」，自带呼吸闪烁效果，吸引客流路人驻足。</p>
-              </div>
-            </div>
-          </div>
-
         </div>
-      </div>
     </div>
 </main>
 
 <script src="./lib/vue/vue.global.prod.js"></script>
 <script src="./lib/element-plus/index.js"></script>
-    <script src="./lib/element-plus/locale/en.js"></script>
-    <script src="./lib/element-plus/locale/zh-tw.js"></script>
 <script src="./js/common.js"></script>
-
 <script>
-  const { createApp, ref, reactive, computed, onMounted, onUnmounted, watch, nextTick } = Vue;
+const { createApp, ref, reactive, onMounted, onUnmounted, watch, nextTick } = Vue;
 
-  const app = createApp({
+const app = createApp({
     setup() {
-      const bannerText = ref('🌟 为你打 CALL！绝美神颜 🌟');
-      const isFullscreen = ref(false);
-      const showFloatingBar = ref(true);
-      let floatingBarTimer = null;
-      let wakeLock = null;
+        const bannerText = ref('🌟 为你打 CALL！绝美神颜 🌟');
+        const isFullscreen = ref(false);
+        const showFloatingBar = ref(true);
+        const isPaused = ref(false);
+        const isMirrored = ref(false);
 
-      // 弹幕配置
-      const config = reactive({
-        direction: 'left', // 'left', 'right', 'up', 'down', 'static'
-        fontSize: 80,
-        speed: 5,
-        textColor: '#00ff66',
-        bgColor: '#000000',
-        fontFamily: 'heavy', // 'heavy', 'dot', 'mono'
-        isRainbow: false,
-        dotMatrix: true,
-        glowEffect: true,
-        blinkMode: 'none' // 'none', 'breathe', 'heartbeat', 'strobe'
-      });
+        let floatingBarTimer = null;
+        let wakeLock = null;
 
-      // 速度描述
-      const speedLabels = {
-        1: '超慢', 2: '较慢', 3: '慢', 4: '标准', 5: '适中',
-        6: '较快', 7: '快', 8: '飞快', 9: '极速', 10: '光速'
-      };
+        const config = reactive({
+            direction: 'left',
+            fontSize: 80,
+            speed: 5,
+            textColor: '#00ff66',
+            bgColor: '#000000',
+            fontFamily: 'heavy',
+            isRainbow: false,
+            dotMatrix: true,
+            glowEffect: true,
+            blinkMode: 'none'
+        });
 
-      // 预设高饱和荧光色彩
-      const textColors = [
-        '#00ff66', // 荧光绿
-        '#00f0ff', // 电光蓝
-        '#ff007f', // 魅惑粉
-        '#ffe600', // 激光黄
-        '#ff2d55', // 烈焰红
-        '#ffffff', // 纯白
-        '#ff6600'  // 赛博橙
-      ];
-
-      const bgColors = [
-        '#000000', // 纯黑
-        '#050a14', // 极夜蓝
-        '#1a1a1a', // 暗夜灰
-        '#2a0808', // 暗红
-        '#0f172a'  // 蓝黑
-      ];
-
-      // 场景预设
-      const scenePresets = [
-        { name: '追星打CALL', text: '❤️ XX 我爱你！绝美神颜 ✨', textColor: '#ff007f', bgColor: '#000000', direction: 'left', isRainbow: false, dotMatrix: true, glowEffect: true, blinkMode: 'breathe' },
-        { name: '机场接机', text: '✈️ 欢迎领导莅临指导 · 接机中', textColor: '#ffe600', bgColor: '#000000', direction: 'left', isRainbow: false, dotMatrix: true, glowEffect: true, blinkMode: 'none' },
-        { name: '表白求婚', text: '做我女朋友吧 ❤️ Marry Me 💍', textColor: '#ff2d55', bgColor: '#000000', direction: 'static', isRainbow: false, dotMatrix: false, glowEffect: true, blinkMode: 'heartbeat' },
-        { name: '摆摊夜市', text: '🔥 全场 10 元一件！买一送一 🔥', textColor: '#00ff66', bgColor: '#000000', direction: 'left', isRainbow: false, dotMatrix: true, glowEffect: true, blinkMode: 'none' },
-        { name: '聚会干杯', text: '🍻 祝生日快乐！今晚不醉不归 🎂', textColor: '#00f0ff', bgColor: '#000000', direction: 'left', isRainbow: true, dotMatrix: true, glowEffect: true, blinkMode: 'breathe' },
-        { name: '彩虹流光', text: '🌈 ANTIGRAVITY LED RUNNER 🚀', textColor: '#ffffff', bgColor: '#000000', direction: 'left', isRainbow: true, dotMatrix: true, glowEffect: true, blinkMode: 'none' }
-      ];
-
-      function applyPreset(preset) {
-        bannerText.value = preset.text;
-        config.textColor = preset.textColor;
-        config.bgColor = preset.bgColor;
-        config.direction = preset.direction;
-        config.isRainbow = preset.isRainbow;
-        config.dotMatrix = preset.dotMatrix;
-        config.glowEffect = preset.glowEffect;
-        config.blinkMode = preset.blinkMode;
-        ElementPlus.ElMessage.success(`已应用「${preset.name}」模板`);
-      }
-
-      function insertSymbol(sym) {
-        bannerText.value += sym;
-      }
-
-      function getFontClass() {
-        if (config.fontFamily === 'heavy') return 'font-sans-heavy';
-        if (config.fontFamily === 'dot') return 'font-dot-matrix';
-        if (config.fontFamily === 'mono') return 'font-mono-tech';
-        return '';
-      }
-
-      function getBlinkClass() {
-        if (config.blinkMode === 'strobe') return 'blink-strobe';
-        if (config.blinkMode === 'breathe') return 'blink-breathe';
-        if (config.blinkMode === 'heartbeat') return 'blink-heartbeat';
-        return '';
-      }
-
-      // 动态生成样式与发光
-      function getTextStyle(isFs) {
-        const size = isFs ? config.fontSize * 1.5 : config.fontSize;
-        const style = {
-          fontSize: `${size}px`,
-          color: config.isRainbow ? 'transparent' : config.textColor
+        const speedLabels = {
+            1: '超慢',
+            2: '较慢',
+            3: '慢',
+            4: '标准',
+            5: '适中',
+            6: '较快',
+            7: '快',
+            8: '飞快',
+            9: '极速',
+            10: '光速'
         };
 
-        if (config.glowEffect && !config.isRainbow) {
-          style.textShadow = `0 0 10px ${config.textColor}, 0 0 20px ${config.textColor}, 0 0 40px ${config.textColor}`;
-        }
+        const textColors = ['#00ff66', '#00f0ff', '#ff007f', '#ffe600', '#ff2d55', '#ffffff', '#ff6600', '#a855f7', '#38bdf8', '#34d399'];
+        const bgColors = ['#000000', '#050a14', '#111827', '#1a1a1a', '#2a0808', '#0f172a'];
 
-        return style;
-      }
-
-      // 动画引擎控制 (原生 requestAnimationFrame 循环平滑滚动)
-      let previewAnimId = null;
-      let fsAnimId = null;
-      let previewPos = 0;
-      let fsPos = 0;
-
-      function startAnimation() {
-        stopAnimation();
-
-        function renderPreview() {
-          const vp = document.querySelector('.led-preview-wrapper .led-viewport');
-          const track = document.querySelector('.led-preview-wrapper .led-marquee-track');
-          if (vp && track) {
-            const vpW = vp.clientWidth;
-            const vpH = vp.clientHeight;
-            const tW = track.clientWidth;
-            const tH = track.clientHeight;
-            const speedFactor = config.speed * 0.8;
-
-            if (config.direction === 'left') {
-              previewPos -= speedFactor;
-              if (previewPos < -tW) previewPos = vpW;
-              track.style.transform = `translateX(${previewPos}px)`;
-            } else if (config.direction === 'right') {
-              previewPos += speedFactor;
-              if (previewPos > vpW) previewPos = -tW;
-              track.style.transform = `translateX(${previewPos}px)`;
-            } else if (config.direction === 'up') {
-              previewPos -= speedFactor * 0.6;
-              if (previewPos < -tH) previewPos = vpH;
-              track.style.transform = `translateY(${previewPos}px)`;
-            } else if (config.direction === 'down') {
-              previewPos += speedFactor * 0.6;
-              if (previewPos > vpH) previewPos = -tH;
-              track.style.transform = `translateY(${previewPos}px)`;
-            } else {
-              track.style.transform = 'none';
+        const scenePresets = [
+            {
+                name: '追星打CALL',
+                icon: '❤️',
+                text: '❤️ XX 我爱你！绝美神颜 ✨',
+                textColor: '#ff007f',
+                bgColor: '#000000',
+                direction: 'left',
+                isRainbow: false,
+                dotMatrix: true,
+                glowEffect: true,
+                blinkMode: 'breathe'
+            },
+            {
+                name: '机场接机',
+                icon: '✈️',
+                text: '✈️ 欢迎领导莅临指导 · 接机中',
+                textColor: '#ffe600',
+                bgColor: '#000000',
+                direction: 'left',
+                isRainbow: false,
+                dotMatrix: true,
+                glowEffect: true,
+                blinkMode: 'none'
+            },
+            {
+                name: '表白求婚',
+                icon: '💍',
+                text: '做我女朋友吧 ❤️ Marry Me 💍',
+                textColor: '#ff2d55',
+                bgColor: '#000000',
+                direction: 'static',
+                isRainbow: false,
+                dotMatrix: false,
+                glowEffect: true,
+                blinkMode: 'heartbeat'
+            },
+            {
+                name: '摆摊夜市',
+                icon: '🔥',
+                text: '🔥 全场 10 元一件！买一送一 🔥',
+                textColor: '#00ff66',
+                bgColor: '#000000',
+                direction: 'left',
+                isRainbow: false,
+                dotMatrix: true,
+                glowEffect: true,
+                blinkMode: 'none'
+            },
+            {
+                name: '聚会干杯',
+                icon: '🍻',
+                text: '🍻 祝生日快乐！今晚不醉不归 🎂',
+                textColor: '#00f0ff',
+                bgColor: '#000000',
+                direction: 'left',
+                isRainbow: true,
+                dotMatrix: true,
+                glowEffect: true,
+                blinkMode: 'breathe'
+            },
+            {
+                name: '彩虹流光',
+                icon: '🌈',
+                text: '🌈 ANTIGRAVITY LED RUNNER 🚀',
+                textColor: '#ffffff',
+                bgColor: '#000000',
+                direction: 'left',
+                isRainbow: true,
+                dotMatrix: true,
+                glowEffect: true,
+                blinkMode: 'none'
+            },
+            {
+                name: '网约车找人',
+                icon: '🚖',
+                text: '🚖 尾号 8866 乘客在此 👋',
+                textColor: '#38bdf8',
+                bgColor: '#000000',
+                direction: 'left',
+                isRainbow: false,
+                dotMatrix: true,
+                glowEffect: true,
+                blinkMode: 'none'
+            },
+            {
+                name: '夜跑提醒',
+                icon: '🏃',
+                text: '🏃 夜跑中 · 请保持车距 ⚠️',
+                textColor: '#ffe600',
+                bgColor: '#000000',
+                direction: 'left',
+                isRainbow: false,
+                dotMatrix: true,
+                glowEffect: true,
+                blinkMode: 'strobe'
             }
-          }
-          previewAnimId = requestAnimationFrame(renderPreview);
-        }
+        ];
 
-        function renderFullscreen() {
-          if (!isFullscreen.value) return;
-          const vp = document.querySelector('.fullscreen-banner-overlay .led-viewport');
-          const track = document.querySelector('.fullscreen-banner-overlay .led-marquee-track');
-          if (vp && track) {
-            const vpW = vp.clientWidth;
-            const vpH = vp.clientHeight;
-            const tW = track.clientWidth;
-            const tH = track.clientHeight;
-            const speedFactor = config.speed * 1.5;
-
-            if (config.direction === 'left') {
-              fsPos -= speedFactor;
-              if (fsPos < -tW) fsPos = vpW;
-              track.style.transform = `translateX(${fsPos}px)`;
-            } else if (config.direction === 'right') {
-              fsPos += speedFactor;
-              if (fsPos > vpW) fsPos = -tW;
-              track.style.transform = `translateX(${fsPos}px)`;
-            } else if (config.direction === 'up') {
-              fsPos -= speedFactor * 0.8;
-              if (fsPos < -tH) fsPos = vpH;
-              track.style.transform = `translateY(${fsPos}px)`;
-            } else if (config.direction === 'down') {
-              fsPos += speedFactor * 0.8;
-              if (fsPos > vpH) fsPos = -tH;
-              track.style.transform = `translateY(${fsPos}px)`;
-            } else {
-              track.style.transform = 'none';
+        function applyPreset(p) {
+            bannerText.value = p.text;
+            Object.assign(config, {
+                textColor: p.textColor,
+                bgColor: p.bgColor,
+                direction: p.direction,
+                isRainbow: p.isRainbow,
+                dotMatrix: p.dotMatrix,
+                glowEffect: p.glowEffect,
+                blinkMode: p.blinkMode
+            });
+            if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                ElementPlus.ElMessage.success(`已应用「${p.name}」模板`);
             }
-          }
-          fsAnimId = requestAnimationFrame(renderFullscreen);
         }
 
-        previewAnimId = requestAnimationFrame(renderPreview);
-        if (isFullscreen.value) {
-          fsAnimId = requestAnimationFrame(renderFullscreen);
+        function insertSymbol(s) {
+            bannerText.value += s;
         }
-      }
 
-      function stopAnimation() {
-        if (previewAnimId) cancelAnimationFrame(previewAnimId);
-        if (fsAnimId) cancelAnimationFrame(fsAnimId);
-      }
+        function getFontClass() {
+            return config.fontFamily === 'heavy' ? 'font-sans-heavy' :
+                   config.fontFamily === 'dot' ? 'font-dot-matrix' :
+                   config.fontFamily === 'mono' ? 'font-mono-tech' : '';
+        }
 
-      // 全屏模式控制与防熄屏
-      async function enterFullscreen() {
-        isFullscreen.value = true;
-        showFloatingBar.value = true;
-        hideFloatingBarWithDelay();
+        function getBlinkClass() {
+            return config.blinkMode === 'strobe' ? 'blink-strobe' :
+                   config.blinkMode === 'breathe' ? 'blink-breathe' :
+                   config.blinkMode === 'heartbeat' ? 'blink-heartbeat' : '';
+        }
 
-        // 尝试请求浏览器原生全屏
-        try {
-          const docEl = document.documentElement;
-          if (docEl.requestFullscreen) {
-            await docEl.requestFullscreen();
-          } else if (docEl.webkitRequestFullscreen) {
-            await docEl.webkitRequestFullscreen();
-          }
-        } catch (e) {}
+        function getTextStyle(fs) {
+            const size = fs ? Math.round(config.fontSize * 1.5) : config.fontSize;
+            const style = {
+                fontSize: `${size}px`,
+                color: config.isRainbow ? 'transparent' : config.textColor
+            };
+            if (config.glowEffect && !config.isRainbow) {
+                style.textShadow = `0 0 10px ${config.textColor}, 0 0 20px ${config.textColor}, 0 0 40px ${config.textColor}`;
+            }
+            return style;
+        }
 
-        // 申请屏幕常亮唤醒锁 (Wake Lock API)
-        try {
-          if ('wakeLock' in navigator) {
-            wakeLock = await navigator.wakeLock.request('screen');
-          }
-        } catch (e) {}
+        let previewAnimId = null;
+        let fsAnimId = null;
+        let previewPos = 100;
+        let fsPos = 0;
 
-        nextTick(() => {
-          fsPos = window.innerWidth;
-          startAnimation();
+        function startAnimation() {
+            stopAnimation();
+
+            function renderPreview() {
+                const vp = document.querySelector('.led-preview-wrapper .led-viewport');
+                const track = document.querySelector('.led-preview-wrapper .led-marquee-track');
+                if (vp && track) {
+                    const w = vp.clientWidth;
+                    const h = vp.clientHeight;
+                    const tw = track.clientWidth;
+                    const th = track.clientHeight;
+                    const f = config.speed * 0.8;
+
+                    if (!isPaused.value) {
+                        if (config.direction === 'left') {
+                            previewPos -= f;
+                            if (previewPos < -tw) previewPos = w;
+                            track.style.transform = `translateX(${previewPos}px)`;
+                        } else if (config.direction === 'right') {
+                            previewPos += f;
+                            if (previewPos > w) previewPos = -tw;
+                            track.style.transform = `translateX(${previewPos}px)`;
+                        } else if (config.direction === 'up') {
+                            previewPos -= f * 0.6;
+                            if (previewPos < -th) previewPos = h;
+                            track.style.transform = `translateY(${previewPos}px)`;
+                        } else if (config.direction === 'down') {
+                            previewPos += f * 0.6;
+                            if (previewPos > h) previewPos = -th;
+                            track.style.transform = `translateY(${previewPos}px)`;
+                        } else {
+                            track.style.transform = 'none';
+                        }
+                    }
+                }
+                previewAnimId = requestAnimationFrame(renderPreview);
+            }
+
+            function renderFullscreen() {
+                if (!isFullscreen.value) return;
+                const vp = document.querySelector('.fullscreen-banner-overlay .led-viewport');
+                const track = document.querySelector('.fullscreen-banner-overlay .led-marquee-track');
+                if (vp && track) {
+                    const w = vp.clientWidth;
+                    const h = vp.clientHeight;
+                    const tw = track.clientWidth;
+                    const th = track.clientHeight;
+                    const f = config.speed * 1.5;
+
+                    if (!isPaused.value) {
+                        if (config.direction === 'left') {
+                            fsPos -= f;
+                            if (fsPos < -tw) fsPos = w;
+                            track.style.transform = `translateX(${fsPos}px)`;
+                        } else if (config.direction === 'right') {
+                            fsPos += f;
+                            if (fsPos > w) fsPos = -tw;
+                            track.style.transform = `translateX(${fsPos}px)`;
+                        } else if (config.direction === 'up') {
+                            fsPos -= f * 0.8;
+                            if (fsPos < -th) fsPos = h;
+                            track.style.transform = `translateY(${fsPos}px)`;
+                        } else if (config.direction === 'down') {
+                            fsPos += f * 0.8;
+                            if (fsPos > h) fsPos = -th;
+                            track.style.transform = `translateY(${fsPos}px)`;
+                        } else {
+                            track.style.transform = 'none';
+                        }
+                    }
+                }
+                fsAnimId = requestAnimationFrame(renderFullscreen);
+            }
+
+            previewAnimId = requestAnimationFrame(renderPreview);
+            if (isFullscreen.value) {
+                fsAnimId = requestAnimationFrame(renderFullscreen);
+            }
+        }
+
+        function stopAnimation() {
+            if (previewAnimId) cancelAnimationFrame(previewAnimId);
+            if (fsAnimId) cancelAnimationFrame(fsAnimId);
+        }
+
+        function togglePause() {
+            isPaused.value = !isPaused.value;
+        }
+
+        function toggleMirror() {
+            isMirrored.value = !isMirrored.value;
+        }
+
+        async function enterFullscreen() {
+            isFullscreen.value = true;
+            showFloatingBar.value = true;
+            hideFloatingBarWithDelay();
+            try {
+                const d = document.documentElement;
+                if (d.requestFullscreen) await d.requestFullscreen();
+                else if (d.webkitRequestFullscreen) await d.webkitRequestFullscreen();
+            } catch (e) {}
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (e) {}
+            nextTick(() => {
+                fsPos = window.innerWidth;
+                startAnimation();
+            });
+        }
+
+        async function exitFullscreen() {
+            isFullscreen.value = false;
+            try {
+                if (document.fullscreenElement && document.exitFullscreen) {
+                    await document.exitFullscreen();
+                }
+            } catch (e) {}
+            if (wakeLock !== null) {
+                try {
+                    await wakeLock.release();
+                    wakeLock = null;
+                } catch (e) {}
+            }
+        }
+
+        function toggleFullscreenBar() {
+            showFloatingBar.value = !showFloatingBar.value;
+            if (showFloatingBar.value) hideFloatingBarWithDelay();
+        }
+
+        function hideFloatingBarWithDelay() {
+            if (floatingBarTimer) clearTimeout(floatingBarTimer);
+            floatingBarTimer = setTimeout(() => {
+                showFloatingBar.value = false;
+            }, 3500);
+        }
+
+        function handleKeyDown(e) {
+            if (e.key === 'Escape' && isFullscreen.value) {
+                exitFullscreen();
+            }
+        }
+
+        const STORAGE_KEY = 'online_tools_led_banner_v1';
+        function saveStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                    bannerText: bannerText.value,
+                    config,
+                    isMirrored: isMirrored.value
+                }));
+            } catch (e) {}
+        }
+
+        function loadStorage() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const d = JSON.parse(raw);
+                    if (d.bannerText) bannerText.value = d.bannerText;
+                    if (d.config) Object.assign(config, d.config);
+                    if (typeof d.isMirrored === 'boolean') isMirrored.value = d.isMirrored;
+                }
+            } catch (e) {}
+        }
+
+        function resetConfig() {
+            bannerText.value = '🌟 为你打 CALL！绝美神颜 🌟';
+            Object.assign(config, {
+                direction: 'left',
+                fontSize: 80,
+                speed: 5,
+                textColor: '#00ff66',
+                bgColor: '#000000',
+                fontFamily: 'heavy',
+                isRainbow: false,
+                dotMatrix: true,
+                glowEffect: true,
+                blinkMode: 'none'
+            });
+            isMirrored.value = false;
+            isPaused.value = false;
+            if (typeof ElementPlus !== 'undefined' && ElementPlus.ElMessage) {
+                ElementPlus.ElMessage.info('已恢复默认设置');
+            }
+        }
+
+        watch([bannerText, config, isMirrored], saveStorage, { deep: true });
+
+        // 方向切换时智能重置跑马灯初始坐标
+        watch(() => config.direction, () => {
+            const vp = document.querySelector('.led-preview-wrapper .led-viewport');
+            if (vp) {
+                if (config.direction === 'left') previewPos = vp.clientWidth;
+                else if (config.direction === 'right') previewPos = -100;
+                else if (config.direction === 'up') previewPos = vp.clientHeight;
+                else if (config.direction === 'down') previewPos = -50;
+            }
+            fsPos = window.innerWidth;
         });
-      }
 
-      async function exitFullscreen() {
-        isFullscreen.value = false;
-        try {
-          if (document.fullscreenElement && document.exitFullscreen) {
-            await document.exitFullscreen();
-          }
-        } catch (e) {}
-
-        if (wakeLock !== null) {
-          try {
-            await wakeLock.release();
-            wakeLock = null;
-          } catch (e) {}
-        }
-      }
-
-      function toggleFullscreenBar() {
-        showFloatingBar.value = !showFloatingBar.value;
-        if (showFloatingBar.value) {
-          hideFloatingBarWithDelay();
-        }
-      }
-
-      function hideFloatingBarWithDelay() {
-        if (floatingBarTimer) clearTimeout(floatingBarTimer);
-        floatingBarTimer = setTimeout(() => {
-          showFloatingBar.value = false;
-        }, 3500);
-      }
-
-      // 监听全屏按键退出
-      function handleKeyDown(e) {
-        if (e.key === 'Escape' && isFullscreen.value) {
-          exitFullscreen();
-        }
-      }
-
-      // 持久化存储
-      const STORAGE_KEY = 'online_tools_led_banner_v1';
-      function saveStorage() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            bannerText: bannerText.value,
-            config
-          }));
-        } catch (e) {}
-      }
-
-      function loadStorage() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (raw) {
-            const data = JSON.parse(raw);
-            if (data.bannerText) bannerText.value = data.bannerText;
-            if (data.config) Object.assign(config, data.config);
-          }
-        } catch (e) {}
-      }
-
-      watch([bannerText, config], () => {
-        saveStorage();
-      }, { deep: true });
-
-      onMounted(() => {
-        loadStorage();
-        window.addEventListener('keydown', handleKeyDown);
-        nextTick(() => {
-          previewPos = 100;
-          startAnimation();
+        onMounted(() => {
+            loadStorage();
+            window.addEventListener('keydown', handleKeyDown);
+            nextTick(() => {
+                previewPos = 100;
+                startAnimation();
+            });
         });
-      });
 
-      onUnmounted(() => {
-        stopAnimation();
-        window.removeEventListener('keydown', handleKeyDown);
-        if (wakeLock !== null) {
-          wakeLock.release().catch(() => {});
-        }
-      });
+        onUnmounted(() => {
+            stopAnimation();
+            window.removeEventListener('keydown', handleKeyDown);
+            if (wakeLock !== null) {
+                wakeLock.release().catch(() => {});
+            }
+        });
 
-      return {
-        bannerText,
-        isFullscreen,
-        showFloatingBar,
-        config,
-        speedLabels,
-        textColors,
-        bgColors,
-        scenePresets,
-        applyPreset,
-        insertSymbol,
-        getFontClass,
-        getBlinkClass,
-        getTextStyle,
-        enterFullscreen,
-        exitFullscreen,
-        toggleFullscreenBar
-      };
+        return {
+            bannerText,
+            isFullscreen,
+            showFloatingBar,
+            isPaused,
+            isMirrored,
+            config,
+            speedLabels,
+            textColors,
+            bgColors,
+            scenePresets,
+            applyPreset,
+            insertSymbol,
+            getFontClass,
+            getBlinkClass,
+            getTextStyle,
+            enterFullscreen,
+            exitFullscreen,
+            toggleFullscreenBar,
+            togglePause,
+            toggleMirror,
+            resetConfig
+        };
     }
-  });
+});
 
-  app.use(ElementPlus);
-  app.mount('#ledApp');
+app.use(ElementPlus);
+app.mount('#app');
 </script>
 </body>
 </html>
