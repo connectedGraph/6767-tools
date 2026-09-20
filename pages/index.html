@@ -1011,7 +1011,16 @@
     </style>
 </head>
 <body>
-<div id="siteTopActions" class="site-top-actions"></div>
+<div id="siteTopActions" class="site-top-actions">
+    <div id="visitsBadge" class="visits-badge" aria-label="访问数据">
+        <span class="visits-dot" aria-hidden="true"></span>
+        <span class="visits-text">今日</span>
+        <span class="visits-num" id="visitsToday">—</span>
+        <span class="visits-sep" aria-hidden="true">·</span>
+        <span class="visits-text">在线</span>
+        <span class="visits-num visits-num-online" id="visitsOnline">—</span>
+    </div>
+</div>
 <main class="main-body tool-page-body" id="app">
     <div class="tool-body">
         <div class="card-model">
@@ -1054,6 +1063,11 @@
                         <div class="dashboard-stat-item" title="服务端留存与上传">
                             <span class="stat-number stat-green">0</span>
                             <span class="stat-label">后端留存</span>
+                        </div>
+                        <div class="dashboard-stat-divider" aria-hidden="true"></div>
+                        <div class="dashboard-stat-item" title="累计访问次数">
+                            <span class="stat-number stat-cyan" id="visitsTotal">—</span>
+                            <span class="stat-label">累计访问</span>
                         </div>
                     </div>
                 </div>
@@ -1299,6 +1313,61 @@ var catIcons = {
             if (e.key === 'Enter') go();
         });
     }
+
+    /* ── 访问统计 (/api/visits + heartbeat) ── */
+    (function initVisits() {
+        var fmtNum = function (n) { return (n === null || n === undefined) ? '—' : Number(n).toLocaleString('en-US'); };
+        var badge = document.getElementById('visitsBadge');
+        var todayEl = document.getElementById('visitsToday');
+        var onlineEl = document.getElementById('visitsOnline');
+        var totalEl = document.getElementById('visitsTotal');
+        var inFlight = false, counted = false;
+
+        function apply(data) {
+            if (!data) return;
+            if (todayEl && data.today !== undefined) todayEl.textContent = fmtNum(data.today);
+            if (onlineEl && data.online !== undefined) onlineEl.textContent = fmtNum(data.online);
+            if (totalEl && data.total !== undefined) totalEl.textContent = fmtNum(data.total);
+            if (badge) badge.classList.add('is-ready');
+        }
+
+        function load() {
+            if (inFlight) return;
+            inFlight = true;
+            fetch(counted ? '/api/visits?peek=1' : '/api/visits', { cache: 'no-store' })
+                .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+                .then(function(json) { counted = true; apply(json && json.data); })
+                .catch(function() {})
+                .then(function() { inFlight = false; });
+        }
+
+        load();
+        setInterval(load, 5000);
+
+        var SID_KEY = 'visits-sid';
+        var sid = '';
+        try { sid = sessionStorage.getItem(SID_KEY) || ''; } catch (e) {}
+        if (!sid) {
+            sid = (window.crypto && window.crypto.randomUUID)
+                ? crypto.randomUUID()
+                : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+            try { sessionStorage.setItem(SID_KEY, sid); } catch (e) {}
+        }
+
+        function beat() {
+            if (document.hidden) return;
+            fetch('/api/visits/heartbeat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sid: sid }),
+                keepalive: true
+            }).catch(function() {});
+        }
+
+        beat();
+        setInterval(beat, 30000);
+        document.addEventListener('visibilitychange', function() { if (!document.hidden) beat(); });
+    })();
 })();
 </script>
 </body>
