@@ -2,84 +2,1029 @@
 <html lang="zh" class="dark">
 <head>
     <script src="./js/theme.js"></script>
-    <script src="./js/i18n.js"></script><script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no" />
     <title>空格键速度测试 | 在线空格键计数器挑战 - 测手速、练反应 - 在线工具</title>
-        <meta name="description" content="在线空格键速度测试工具，精准计算您在给定时间内敲击空格键的次数。帮助游戏玩家提升跳跃、闪避操作速度，训练手眼协调与反应能力。" />
-        <meta name="keywords" content="空格键测试， 空格键计数器， 空格键点击速度， 键盘手速挑战， 反应速度训练， 游戏按键练习， 空格键纪录， 手速测试， 双指敲击技巧" />
+    <meta name="description" content="在线空格键速度测试工具，精准计算您在给定时间内敲击空格键的次数。帮助游戏玩家提升跳跃、闪避操作速度，训练手眼协调与反应能力。" />
+    <meta name="keywords" content="空格键测试， 空格键计数器， 空格键点击速度， 键盘手速挑战， 反应速度训练， 游戏按键练习， 空格键纪录， 手速测试， 双指敲击技巧" />
 
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="dns-prefetch" href="" />
-        <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
     <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet" />
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
     
     <style>
-        .game-container { width: 100% !important; max-width: unset !important; display: flex; user-select: none; }
-        .game-body { flex: 1; }
-        .game-body .game-top { display: flex; justify-content: space-around; margin: 0 -5px 15px -5px; }
-        .game-body .game-top .item { display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--el-color-primary); color: #fff; width: 100%; margin: 0 5px; padding: 5px; border-radius: 5px; }
-        .game-body .game-top .item:nth-of-type(1) { background: linear-gradient(45deg,#6a11cb,#2575fc) !important; }
-        .game-body .game-top .item:nth-of-type(2) { background: linear-gradient(45deg, #fc4a1a, #f7b733) !important; }
-        .game-body .game-top .item:nth-of-type(3) { background: linear-gradient(45deg, #00b09b, #96c93d) !important; }
-        .game-body .game-top .item .data { font-size: 20px; }
-        .game-body .game-area { width: 100%; max-width: unset !important; min-height: 400px; height: auto; padding: 10px; border-radius: 4px; background: #242526; color: #fff; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; position: relative; overflow: hidden; -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-tap-highlight-color: transparent; }
-        .game-body .game-area .my-icon { font-size: 100px; line-height: 100px; }
-        .game-body .game-area .tip1 { font-size: 32px; padding: 30px 0 10px 0; }
-        .game-body .game-area .tip2 { font-size: 20px; margin-top: 5px; }
-        .game-body .game-area .wave { width: 100px; height: 100px; position: absolute; background-color: var(--el-color-primary-light-3); border-radius: 50%; opacity: 0; pointer-events: none; animation: waveAnim 0.5s ease-out; }
+        /* ==========================================================================
+           Spacebar Counter - Modern UI / UX Overhaul
+           Scoped styles with comprehensive Dark / Light Mode support
+           ========================================================================== */
+        .spacebar-tool, .spacebar-tool * {
+            box-sizing: border-box;
+        }
+
+        .spacebar-tool {
+            width: 100%;
+            color: #1e293b;
+            font-family: inherit;
+        }
+
+        html.dark .spacebar-tool {
+            color: #f1f5f9;
+        }
+        html:not(.dark) .spacebar-tool {
+            color: #0f172a;
+        }
+
+        /* 1. Top Dashboard / Stats */
+        .space-dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin: 18px 0 16px;
+        }
+
+        .space-stat-card {
+            min-height: 90px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        html.dark .space-stat-card {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.03), 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        html:not(.dark) .space-stat-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02), 0 2px 8px rgba(15, 23, 42, 0.04);
+        }
+
+        .space-stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        html.dark .space-stat-card:hover {
+            border-color: #38bdf8;
+            box-shadow: 0 6px 18px rgba(14, 165, 233, 0.15);
+        }
+
+        html:not(.dark) .space-stat-card:hover {
+            border-color: #0284c7;
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.1);
+        }
+
+        .space-stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .space-stat-label {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        html.dark .space-stat-label {
+            color: #94a3b8;
+        }
+        html:not(.dark) .space-stat-label {
+            color: #64748b;
+        }
+
+        .space-stat-icon {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .space-stat-value {
+            font-size: clamp(24px, 3.2vw, 32px);
+            line-height: 1.1;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        html.dark .space-stat-value {
+            color: #f8fafc;
+        }
+        html:not(.dark) .space-stat-value {
+            color: #0f172a;
+        }
+
+        .space-stat-value .unit {
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        /* Stat card accent underlines */
+        .space-stat-card::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .space-stat-card.stat-timer::after {
+            background: linear-gradient(90deg, #6366f1, #3b82f6);
+        }
+        .space-stat-card.stat-speed::after {
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+        }
+        .space-stat-card.stat-score::after {
+            background: linear-gradient(90deg, #10b981, #06b6d4);
+        }
+
+        /* 2. Main Stage & Sidebar Layout */
+        .space-layout {
+            display: flex;
+            gap: 16px;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .space-stage-col {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+
+        /* 3. Game Area (Click to start & Keypress receiver) */
+        .game-area {
+            width: 100%;
+            min-height: 410px;
+            padding: 28px 20px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+            text-align: center;
+        }
+
+        html.dark .game-area {
+            background: radial-gradient(ellipse at 50% 30%, #172033 0%, #090e1f 100%);
+            border: 2px dashed #2d3748;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        html:not(.dark) .game-area {
+            background: radial-gradient(ellipse at 50% 30%, #ffffff 0%, #f1f5f9 100%);
+            border: 2px dashed #cbd5e1;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        html.dark .game-area:hover {
+            border-color: #38bdf8;
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.15);
+        }
+
+        html:not(.dark) .game-area:hover {
+            border-color: #0284c7;
+            box-shadow: 0 10px 26px rgba(2, 132, 199, 0.12);
+        }
+
+        .game-area.is-active {
+            cursor: default;
+        }
+
+        html.dark .game-area.is-active {
+            border-style: solid;
+            border-color: #38bdf8;
+            box-shadow: 0 0 35px rgba(56, 189, 248, 0.22), inset 0 0 25px rgba(56, 189, 248, 0.08);
+        }
+
+        html:not(.dark) .game-area.is-active {
+            border-style: solid;
+            border-color: #0284c7;
+            box-shadow: 0 0 30px rgba(2, 132, 199, 0.18), inset 0 0 20px rgba(2, 132, 199, 0.05);
+        }
+
+        /* Wave Shockwave Animation (Target of spacebar-counter.js DOM injection) */
+        .wave {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            box-sizing: border-box;
+            animation: waveAnim 0.6s cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
+        }
+
+        html.dark .wave {
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.45) 0%, rgba(14, 165, 233, 0.15) 50%, transparent 75%);
+            border: 2px solid rgba(56, 189, 248, 0.85);
+            box-shadow: 0 0 22px rgba(56, 189, 248, 0.5);
+        }
+
+        html:not(.dark) .wave {
+            background: radial-gradient(circle, rgba(2, 132, 199, 0.35) 0%, rgba(3, 105, 161, 0.12) 50%, transparent 75%);
+            border: 2px solid rgba(2, 132, 199, 0.75);
+            box-shadow: 0 0 18px rgba(2, 132, 199, 0.35);
+        }
+
         @keyframes waveAnim {
-            0% { transform: scale(0); opacity: 1; }
-            100% { transform: scale(5); opacity: 0; }
+            0% {
+                transform: scale(0.2);
+                opacity: 0.95;
+            }
+            100% {
+                transform: scale(4.8);
+                opacity: 0;
+            }
         }
-        .game-setting { width: 250px; margin: 0 0 0 10px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; display: flex; flex-direction: column; overflow: auto; text-align: center; }
-        [dir=rtl] .game-setting { margin: 0 10px 0 0;}
-        .game-setting .title { font-size: 18px; margin-bottom: 10px; }
-        .game-setting .time-list { display: flex; flex-wrap: wrap; }
-        .game-setting .time-list .time-item { margin: 3px 0; padding: 8px 0; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; width: 100%; }
-        .game-setting .time-list .time-item:hover { border-color: #00b09b !important; }
-        .game-setting .time-list .time-item.active { background: linear-gradient(90deg, #00b09b 0, #96c93d 92.66%) !important; border-color: #00b09b !important; color: #fff; }
 
-        .game-result { display: flex; align-items: center; border: 4px solid #f80; border-radius: 16px; padding: 15px; user-select: none; }
-        .game-result .result-left img { width: 200px; margin-right: 10px; border-radius: 6px; }
-        [dir=rtl] .game-result .result-left img { margin: 0 0 0 10px; }
-        .game-result .result-right { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .game-result .result-right .rate { display: flex; align-items: center; line-height: 44px; }
-        .game-result .result-right .rate .solid { font-size: 28px; }
-        .game-result .result-right .rate .hollow { font-size: 34px; }
-        .game-result .result-right .result1 { font-size: 30px; font-weight: 600; }
-        .game-result .result-right .result1 span { font-size: 40px; margin: 0 5px; }
-        .game-result .result-right .result2 { font-size: 22px; padding: 5px 0; }
-        .game-result .result-right .result2 span { font-size: 36px; font-weight: 600; }
-        .game-result .result-right .result3 { font-size: 18px; }
-        .result-comment { display: flex; justify-content: center; text-align: center; font-size: 26px; font-style: italic; padding: 20px 0; user-select: none; }
-        .try-again { display: flex; justify-content: center; user-select: none; }
-        .try-again .btn { background: linear-gradient(45deg, #fc4a1a, #f7b733) !important; color: #fff; padding: 10px 30px; border-radius: 6px; cursor: pointer; }
-
-        .game-bottom { width: 100%; display: flex; align-items: center; justify-content: center; }
-
-        @media (max-width:1300px) {
-            .tool-body .relate-tool-box { display: block; }
-            .tool-body .right { display: none; }
+        /* 4. Keyboard Keycap Visual Component */
+        .space-key-container {
+            pointer-events: none;
+            margin-bottom: 22px;
+            perspective: 800px;
         }
-        @media (max-width:1100px) {
-            .game-container { flex-direction: column; }
-            .game-setting { margin: 10px 0 0 0; width: 100%; }
-            .game-setting .time-list .time-item { margin: 3px 1%; padding: 8px 0; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; width: 48%; }
-        }
-        @media (max-width:768px) {
-            .game-result { flex-direction: column; }
-            .game-result .result-left img { margin: 0 0 15px 0; }
 
-            .game-result .result-left img{width:180px;}
-            .game-result .result-right .result1 { font-size: 22px; }
-            .game-result .result-right .result1 span { font-size: 30px; }
-            .game-result .result-right .result2 { font-size: 20px; }
-            .game-result .result-right .result2 span { font-size: 26px; }
-            .game-result .result-right .result3 { font-size: 16px; }
-            .result-comment { font-size: 18px; }
+        .space-keycap {
+            width: clamp(220px, 45vw, 360px);
+            height: 68px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            transition: all 0.12s ease;
+            font-family: inherit;
+            font-weight: 800;
+        }
+
+        html.dark .space-keycap {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-bottom: 6px solid #020617;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+        }
+
+        html:not(.dark) .space-keycap {
+            background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+            border: 1px solid #cbd5e1;
+            border-bottom: 6px solid #94a3b8;
+            box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            color: #1e293b;
+        }
+
+        .space-keycap-symbol {
+            font-size: 24px;
+            line-height: 1;
+            opacity: 0.7;
+        }
+
+        .space-keycap-legend {
+            font-size: 16px;
+            letter-spacing: 0.22em;
+            font-weight: 800;
+        }
+
+        html.dark .space-keycap.active-keycap {
+            background: linear-gradient(180deg, #0369a1 0%, #0c4a6e 100%);
+            border-color: #38bdf8;
+            border-bottom-color: #082f49;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            animation: keycapPulse 1.2s infinite alternate;
+        }
+
+        html:not(.dark) .space-keycap.active-keycap {
+            background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+            border-color: #0284c7;
+            border-bottom-color: #075985;
+            box-shadow: 0 0 22px rgba(2, 132, 199, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            animation: keycapPulse 1.2s infinite alternate;
+        }
+
+        @keyframes keycapPulse {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(2px); }
+        }
+
+        /* Prompt Elements inside Stage */
+        .space-prompt-wrap {
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            max-width: 480px;
+        }
+
+        .space-start-title {
+            font-size: clamp(20px, 2.5vw, 26px);
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+
+        html.dark .space-start-title {
+            color: #f8fafc;
+        }
+        html:not(.dark) .space-start-title {
+            color: #0f172a;
+        }
+
+        .space-start-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        html.dark .space-start-desc {
+            color: #94a3b8;
+        }
+        html:not(.dark) .space-start-desc {
+            color: #64748b;
+        }
+
+        .space-start-desc kbd {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+            border: 1px solid;
+            font-family: monospace;
+        }
+
+        html.dark .space-start-desc kbd {
+            background: #1e293b;
+            border-color: #334155;
+            color: #38bdf8;
+        }
+        html:not(.dark) .space-start-desc kbd {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+            color: #0284c7;
+        }
+
+        .space-pill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .space-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 9999px;
+        }
+
+        html.dark .space-pill {
+            background: rgba(30, 41, 59, 0.7);
+            color: #cbd5e1;
+            border: 1px solid #334155;
+        }
+        html:not(.dark) .space-pill {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .space-pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        /* Active Stage Live Display */
+        .space-active-wrap {
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .space-live-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 9999px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        html.dark .space-live-status-badge {
+            background: rgba(14, 165, 233, 0.2);
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+        }
+        html:not(.dark) .space-live-status-badge {
+            background: rgba(2, 132, 199, 0.12);
+            border: 1px solid #0284c7;
+            color: #0284c7;
+        }
+
+        .live-beacon {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+            animation: beaconPulse 1s infinite alternate;
+        }
+
+        @keyframes beaconPulse {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            100% { transform: scale(1.3); opacity: 1; }
+        }
+
+        .space-live-hint {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        html.dark .space-live-hint {
+            color: #94a3b8;
+        }
+        html:not(.dark) .space-live-hint {
+            color: #64748b;
+        }
+
+        /* 5. Settings Panel (Time Duration Selector) */
+        .space-settings {
+            flex: 0 0 240px;
+            padding: 18px 16px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        html.dark .space-settings {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.03);
+        }
+
+        html:not(.dark) .space-settings {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .settings-title {
+            font-size: 15px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        html.dark .settings-title {
+            color: #f8fafc;
+        }
+        html:not(.dark) .settings-title {
+            color: #0f172a;
+        }
+
+        .settings-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 9999px;
+        }
+
+        html.dark .settings-badge {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+        }
+        html:not(.dark) .settings-badge {
+            background: rgba(2, 132, 199, 0.12);
+            color: #0284c7;
+        }
+
+        .settings-desc {
+            font-size: 12px;
+            line-height: 1.5;
+            margin: 0 0 14px 0;
+        }
+
+        html.dark .settings-desc {
+            color: #94a3b8;
+        }
+        html:not(.dark) .settings-desc {
+            color: #64748b;
+        }
+
+        .time-list-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .time-item {
+            min-height: 42px;
+            padding: 8px 6px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            border: 1px solid;
+        }
+
+        html.dark .time-item {
+            background: #0f172a;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+
+        html.dark .time-item:hover {
+            border-color: #38bdf8;
+            color: #e0f2fe;
+            background: #1e293b;
+        }
+
+        html.dark .time-item.active {
+            background: #0284c7 !important;
+            border-color: #38bdf8 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+        }
+
+        html:not(.dark) .time-item {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+
+        html:not(.dark) .time-item:hover {
+            border-color: #0284c7;
+            color: #0369a1;
+            background: #f0f9ff;
+        }
+
+        html:not(.dark) .time-item.active {
+            background: #0284c7 !important;
+            border-color: #0284c7 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+        }
+
+        .settings-info-card {
+            margin-top: auto;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        html.dark .settings-info-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid #1e293b;
+            color: #94a3b8;
+        }
+        html:not(.dark) .settings-info-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        .settings-info-card .info-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* 6. Action Toolbar (Bottom Buttons) */
+        .space-bottom-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            min-height: 38px;
+            padding: 8px 20px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid;
+        }
+
+        html.dark .action-btn {
+            background: #0f172a;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+
+        html.dark .action-btn:hover {
+            border-color: #38bdf8;
+            background: #082f49;
+            color: #e0f2fe;
+        }
+
+        html:not(.dark) .action-btn {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+
+        html:not(.dark) .action-btn:hover {
+            border-color: #0284c7;
+            background: #f0f9ff;
+            color: #0369a1;
+        }
+
+        .action-btn .btn-svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 7. Dialog & Result Overlay Modernization */
+        .space-result-dialog .el-dialog {
+            max-width: min(92vw, 680px) !important;
+            border-radius: 16px !important;
+            overflow: hidden;
+        }
+
+        html.dark .space-result-dialog .el-dialog {
+            background: #0b1120 !important;
+            border: 1px solid #1e293b !important;
+        }
+
+        html.dark .space-result-dialog .el-dialog__title {
+            color: #f8fafc !important;
+            font-weight: 800;
+        }
+
+        html:not(.dark) .space-result-dialog .el-dialog {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+
+        html:not(.dark) .space-result-dialog .el-dialog__title {
+            color: #0f172a !important;
+            font-weight: 800;
+        }
+
+        .game-result {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        html.dark .game-result {
+            background: #090e1f;
+            border-color: #1e293b;
+            color: #f8fafc;
+        }
+
+        html:not(.dark) .game-result {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .game-result .result-left {
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .game-result .result-left img {
+            width: 160px;
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            display: block;
+        }
+
+        .game-result .result-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .game-result .result-right .result1 {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        html.dark .game-result .result-right .result1 {
+            color: #f8fafc;
+        }
+        html:not(.dark) .game-result .result-right .result1 {
+            color: #0f172a;
+        }
+
+        .game-result .result-right .result1 span {
+            font-size: clamp(28px, 4vw, 36px);
+            font-weight: 900;
+            margin: 0 4px;
+        }
+
+        html.dark .game-result .result-right .result1 span {
+            color: #38bdf8;
+        }
+        html:not(.dark) .game-result .result-right .result1 span {
+            color: #0284c7;
+        }
+
+        .game-result .result-right .rate {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin: 8px 0;
+            font-size: 24px;
+            color: #f59e0b;
+        }
+
+        .game-result .result-right .rate .solid {
+            font-size: 26px;
+        }
+        .game-result .result-right .rate .hollow {
+            font-size: 26px;
+            opacity: 0.4;
+        }
+
+        .game-result .result-right .result2 {
+            font-size: 17px;
+            font-weight: 600;
+            padding: 4px 0;
+        }
+
+        html.dark .game-result .result-right .result2 {
+            color: #cbd5e1;
+        }
+        html:not(.dark) .game-result .result-right .result2 {
+            color: #334155;
+        }
+
+        .game-result .result-right .result2 span {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0 4px;
+        }
+
+        html.dark .game-result .result-right .result2 span {
+            color: #38bdf8;
+        }
+        html:not(.dark) .game-result .result-right .result2 span {
+            color: #0284c7;
+        }
+
+        .game-result .result-right .result3 {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        html.dark .game-result .result-right .result3 {
+            color: #94a3b8;
+        }
+        html:not(.dark) .game-result .result-right .result3 {
+            color: #64748b;
+        }
+
+        .result-comment {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            font-size: 18px;
+            font-style: italic;
+            padding: 16px 12px;
+            user-select: none;
+            line-height: 1.6;
+        }
+
+        html.dark .result-comment {
+            color: #cbd5e1;
+        }
+        html:not(.dark) .result-comment {
+            color: #475569;
+        }
+
+        .try-again {
+            display: flex;
+            justify-content: center;
+            user-select: none;
+            margin-top: 8px;
+        }
+
+        .try-again .btn {
+            min-height: 42px;
+            padding: 10px 32px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0284c7;
+            color: #ffffff;
+            border: none;
+        }
+
+        .try-again .btn:hover {
+            background: #0369a1;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+        }
+
+        html.dark .try-again .btn {
+            background: #0284c7;
+        }
+        html.dark .try-again .btn:hover {
+            background: #38bdf8;
+            color: #04101e;
+        }
+
+        /* 8. Content / Guide Section Modernization */
+        .content {
+            line-height: 1.75;
+            font-size: 15px;
+        }
+
+        html.dark .content {
+            color: #cbd5e1;
+        }
+        html:not(.dark) .content {
+            color: #334155;
+        }
+
+        .content h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 22px 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        html.dark .content h3 {
+            color: #f8fafc;
+        }
+        html:not(.dark) .content h3 {
+            color: #0f172a;
+        }
+
+        .content h3::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            border-radius: 2px;
+            background: #0284c7;
+        }
+
+        html.dark .content h3::before {
+            background: #38bdf8;
+        }
+
+        .content p, .content ul, .content ol {
+            margin-bottom: 12px;
+        }
+
+        .content ul, .content ol {
+            padding-left: 20px;
+        }
+
+        .content li {
+            margin-bottom: 6px;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 900px) {
+            .space-layout {
+                flex-direction: column;
+            }
+            .space-settings {
+                flex: 1 1 auto;
+                width: 100%;
+            }
+            .time-list-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-result {
+                flex-direction: column;
+                padding: 16px;
+            }
+            .game-result .result-left img {
+                width: 140px;
+                margin: 0 auto;
+            }
+            .game-result .result-right .result1 {
+                font-size: 20px;
+            }
+            .game-result .result-right .result1 span {
+                font-size: 26px;
+            }
+            .game-result .result-right .result2 {
+                font-size: 16px;
+            }
+            .game-result .result-right .result2 span {
+                font-size: 26px;
+            }
+            .result-comment {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .space-dashboard {
+                gap: 8px;
+            }
+            .space-stat-card {
+                padding: 10px 12px;
+                min-height: 78px;
+            }
+            .space-stat-label {
+                font-size: 11px;
+            }
+            .space-stat-value {
+                font-size: 20px;
+            }
+            .game-area {
+                min-height: 320px;
+                padding: 20px 14px;
+            }
+            .space-keycap {
+                height: 58px;
+            }
+            .space-keycap-legend {
+                font-size: 13px;
+                letter-spacing: 0.15em;
+            }
+            .space-keycap-symbol {
+                font-size: 18px;
+            }
+            .time-list-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 
@@ -106,61 +1051,136 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
-        
-
-
-<div class="tool-body flex">
-    <div class="left">
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
         <div class="card-model">
             <div class="card-body">
                 <div class="tool-head">
                     <h1 class="title">空格键计数器</h1>
                 </div>
                 <div class="description">在线空格键速度测试工具，精准计算您在给定时间内敲击空格键的次数。帮助游戏玩家提升跳跃、闪避操作速度，训练手眼协调与反应能力。</div>
-                <div class="tool-form game-container" v-cloak>
-                    <div class="game-body">
-                        <div class="game-top">
-                            <div class="item">
-                                <div class="data">{{timeStr}}</div>
-                                <div class="desc">定时器</div>
+                
+                <div class="tool-form spacebar-tool" v-cloak>
+                    <!-- 1. Real-time Metrics Dashboard -->
+                    <div class="space-dashboard" aria-label="实时测试数据">
+                        <div class="space-stat-card stat-timer">
+                            <div class="space-stat-header">
+                                <span class="space-stat-label">倒计时器</span>
+                                <span class="space-stat-icon">⏱️</span>
                             </div>
-                            <div class="item">
-                                <div class="data">{{avgClick}}</div>
-                                <div class="desc">点击/秒</div>
-                            </div>
-                            <div class="item">
-                                <div class="data">{{score}}</div>
-                                <div class="desc">得分</div>
+                            <div class="space-stat-value">
+                                <span>{{timeStr}}</span>
+                                <span class="unit">/ {{gameDuration}}s</span>
                             </div>
                         </div>
-                        <div class="game-area" v-on:click="areaClick">
-                            <template v-if="gameState==0">
-                                <i class="my-icon my-icon-spacebar-counter"></i>
-                                <div class="tip1">点击此处开始，然后快速敲击空格键</div>
-                            </template>
+                        <div class="space-stat-card stat-speed">
+                            <div class="space-stat-header">
+                                <span class="space-stat-label">敲击速度</span>
+                                <span class="space-stat-icon">⚡</span>
+                            </div>
+                            <div class="space-stat-value">
+                                <span>{{avgClick}}</span>
+                                <span class="unit">CPS</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="game-setting">
-                        <div class="title">选择时间</div>
-                        <div class="time-list">
-                            <div class="time-item" v-bind:class="gameDuration==3?'active':''" v-on:click="selectDuration(3)">3秒测试</div>
-                            <div class="time-item" v-bind:class="gameDuration==5?'active':''" v-on:click="selectDuration(5)">5秒测试</div>
-                            <div class="time-item" v-bind:class="gameDuration==10?'active':''" v-on:click="selectDuration(10)">10秒测试</div>
-                            <div class="time-item" v-bind:class="gameDuration==15?'active':''" v-on:click="selectDuration(15)">15秒测试</div>
-                            <div class="time-item" v-bind:class="gameDuration==30?'active':''" v-on:click="selectDuration(30)">30秒测试</div>
-                            <div class="time-item" v-bind:class="gameDuration==60?'active':''" v-on:click="selectDuration(60)">60秒测试</div>
+                        <div class="space-stat-card stat-score">
+                            <div class="space-stat-header">
+                                <span class="space-stat-label">敲击总数</span>
+                                <span class="space-stat-icon">🎯</span>
+                            </div>
+                            <div class="space-stat-value">
+                                <span>{{score}}</span>
+                                <span class="unit">次</span>
+                            </div>
                         </div>
                     </div>
 
-                    <el-dialog v-model="gameResultDialogVisible" title="您的得分结果" width="800" :close-on-click-modal="false" style="text-align: start;">
+                    <!-- 2. Main Stage & Setting Layout -->
+                    <div class="space-layout">
+                        <div class="space-stage-col">
+                            <div class="game-area" :class="{ 'is-active': gameState === 1 }" v-on:click="areaClick" role="button" tabindex="0" aria-label="点击此处开始测试，进入测试后全力敲击空格键">
+                                <!-- Idle View -->
+                                <template v-if="gameState==0">
+                                    <div class="space-key-container">
+                                        <div class="space-keycap">
+                                            <span class="space-keycap-symbol">␣</span>
+                                            <span class="space-keycap-legend">SPACEBAR</span>
+                                        </div>
+                                    </div>
+                                    <div class="space-prompt-wrap">
+                                        <div class="space-start-title">点击此处开始测试</div>
+                                        <p class="space-start-desc">点击此区域进入测试，随后全速敲击键盘 <kbd>空格键</kbd></p>
+                                        <div class="space-pill-tags">
+                                            <span class="space-pill"><i class="space-pill-dot"></i>推荐双指交替法</span>
+                                            <span class="space-pill"><i class="space-pill-dot"></i>当前测试：{{gameDuration}} 秒</span>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- Active Test View -->
+                                <template v-else>
+                                    <div class="space-key-container">
+                                        <div class="space-keycap active-keycap">
+                                            <span class="space-keycap-symbol">␣</span>
+                                            <span class="space-keycap-legend">SPACEBAR</span>
+                                        </div>
+                                    </div>
+                                    <div class="space-active-wrap">
+                                        <div class="space-live-status-badge">
+                                            <span class="live-beacon"></span>
+                                            <span>正在计时，全力敲击空格键！</span>
+                                        </div>
+                                        <div class="space-live-hint">保持节奏，冲击你的最高纪录</div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Duration Setting Sidebar -->
+                        <aside class="space-settings" aria-label="测试时长设置">
+                            <div class="settings-header">
+                                <h2 class="settings-title">测试时长</h2>
+                                <span class="settings-badge">{{gameDuration}} 秒模式</span>
+                            </div>
+                            <p class="settings-desc">选择不同时长，测试瞬时爆发或耐力</p>
+                            <div class="time-list-grid">
+                                <div class="time-item" :class="gameDuration==3?'active':''" v-on:click="selectDuration(3)" role="button" tabindex="0">3 秒测试</div>
+                                <div class="time-item" :class="gameDuration==5?'active':''" v-on:click="selectDuration(5)" role="button" tabindex="0">5 秒测试</div>
+                                <div class="time-item" :class="gameDuration==10?'active':''" v-on:click="selectDuration(10)" role="button" tabindex="0">10 秒测试</div>
+                                <div class="time-item" :class="gameDuration==15?'active':''" v-on:click="selectDuration(15)" role="button" tabindex="0">15 秒测试</div>
+                                <div class="time-item" :class="gameDuration==30?'active':''" v-on:click="selectDuration(30)" role="button" tabindex="0">30 秒测试</div>
+                                <div class="time-item" :class="gameDuration==60?'active':''" v-on:click="selectDuration(60)" role="button" tabindex="0">60 秒测试</div>
+                            </div>
+                            <div class="settings-info-card">
+                                <span class="info-icon">💡</span>
+                                <span>提示：敲击前点击左侧区域进入就绪状态，双手交替指法速度更快。</span>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <!-- Bottom Action Controls -->
+                    <div class="space-bottom-actions">
+                        <button type="button" class="action-btn" v-on:click="$refs.phbDialog.showPhb(levelGroupArr.indexOf(gameDuration + '秒'))">
+                            <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34c3.08-.63 5.43-3.23 5.43-6.66V4H6v4c0 3.43 2.35 6.03 5.43 6.66z"></path></svg>
+                            <span>排行榜</span>
+                        </button>
+                        <button type="button" class="action-btn" v-on:click="$refs.historyDialog.showHistory(levelGroupArr.indexOf(gameDuration + '秒'))">
+                            <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            <span>历史记录</span>
+                        </button>
+                    </div>
+
+                    <!-- Result Report Modal -->
+                    <el-dialog v-model="gameResultDialogVisible" title="您的得分结果" width="700" :close-on-click-modal="false" class="space-result-dialog" style="text-align: start;">
                         <div class="game-result">
-                            <div class="result-left"><img :src="'./up/2024/0505/'+animalIndex+'.png'" /></div>
+                            <div class="result-left">
+                                <img :src="'./up/2024/0505/'+animalIndex+'.png'" alt="手速段位评级" />
+                            </div>
                             <div class="result-right">
                                 <div class="result1" v-html="rankDesc"></div>
                                 <div class="rate">
-                                    <span class="solid" v-for="n in rate">⭐</span>
-                                    <span class="hollow" v-for="n in 5-rate">☆</span>
+                                    <span class="solid" v-for="n in rate" :key="'solid-'+n">⭐</span>
+                                    <span class="hollow" v-for="n in (5-rate)" :key="'hollow-'+n">☆</span>
                                 </div>
                                 <div class="result2" v-html="cpsDesc"></div>
                                 <div class="result3" v-html="scoreDesc"></div>
@@ -172,65 +1192,79 @@
                         </div>
                     </el-dialog>
                 </div>
-                <div class="game-bottom">
-                    <el-button round v-on:click="$refs.phbDialog.showPhb(levelGroupArr.indexOf(gameDuration + '秒'))"><i class="my-icon my-icon-phb"></i><span>排行榜</span></el-button>
-                    <el-button round v-on:click="$refs.historyDialog.showHistory(levelGroupArr.indexOf(gameDuration + '秒'))"><i class="my-icon my-icon-history"></i><span>历史记录</span></el-button>
-                </div>
+
                 <div class="divider"></div>
                 <div class="content">
-					<h3>介绍</h3><p>这是一款专为测试和提升您空格键敲击速度而设计的脑力反应训练游戏。作为键盘上使用频率最高的按键之一，空格键的操作速度直接影响您的游戏表现和工作效率。通过这款精准的计数器工具，您可以测量自己在限定时间内能完成多少次空格键敲击，挑战自我极限，甚至与朋友一较高下。</p><p>游戏不仅适合个人消磨时间、缓解无聊，更是团队竞技的绝佳选择。您可以组织团队挑战赛，轻松找出团队中的“手速王者”。</p><p><span style="color: rgb(225, 60, 57);">请注意，本游戏需要使用配备空格键的设备进行。</span></p><h3>为什么需要进行空格键速度测试？</h3><ul><li>游戏玩家必备训练：在众多动作、跑酷和平台跳跃类游戏中，空格键通常控制角色的跳跃、闪避等关键动作。提升空格键点击速度意味着更快的反应和更流畅的操作，助您在游戏中抢占先机。</li><li>工作效率辅助：对于需要频繁使用空格键进行翻页、暂停或确认的用户而言，提升敲击速度也能优化操作流。</li></ul><h3>如何有效提高空格键点击速度？</h3><p>提升没有捷径，唯有科学的刻意练习：</p><ol><li>每日坚持训练：使用本游戏的计时器模式（推荐5秒或更长）进行规律练习，追踪进步曲线。</li><li>尝试进阶技巧（也称为“技巧模式”）：想要冲击纪录？可以尝试“双指交替法”——用一根手指将空格键轻按至触发临界点，另一根手指快速连续敲击，可显著提升瞬时点击频率。</li></ol><h3>数据参考</h3><ul><li>当前世界纪录：5秒内敲击58次空格键</li><li>全球平均速度：约每秒6.11次（约合5秒30.5次）</li></ul><p>您的速度能达到多少？是超越平均，还是剑指纪录？现在就开始测试，解锁您手指的潜在爆发力！</p>
+                    <h3>介绍</h3>
+                    <p>这是一款专为测试和提升您空格键敲击速度而设计的脑力反应训练游戏。作为键盘上使用频率最高的按键之一，空格键的操作速度直接影响您的游戏表现和工作效率。通过这款精准的计数器工具，您可以测量自己在限定时间内能完成多少次空格键敲击，挑战自我极限，甚至与朋友一较高下。</p>
+                    <p>游戏不仅适合个人消磨时间、缓解无聊，更是团队竞技的绝佳选择。您可以组织团队挑战赛，轻松找出团队中的“手速王者”。</p>
+                    <p><span style="color: #ef4444; font-weight: 600;">请注意，本游戏需要使用配备空格键的设备进行。</span></p>
+                    
+                    <h3>为什么需要进行空格键速度测试？</h3>
+                    <ul>
+                        <li><strong>游戏玩家必备训练：</strong>在众多动作、跑酷和平台跳跃类游戏中，空格键通常控制角色的跳跃、闪避等关键动作。提升空格键点击速度意味着更快的反应和更流畅的操作，助您在游戏中抢占先机。</li>
+                        <li><strong>工作效率辅助：</strong>对于需要频繁使用空格键进行翻页、暂停或确认的用户而言，提升敲击速度也能优化日常操作流。</li>
+                    </ul>
+
+                    <h3>如何有效提高空格键点击速度？</h3>
+                    <p>提升没有捷径，唯有科学的刻意练习：</p>
+                    <ol>
+                        <li><strong>每日坚持训练：</strong>使用本游戏的计时器模式（推荐5秒或更长）进行规律练习，追踪进步曲线。</li>
+                        <li><strong>尝试进阶技巧（双指交替法）：</strong>想要冲击纪录？可以尝试“双指交替法”——用一根手指将空格键轻按至触发临界点，另一根手指快速连续敲击，可显著提升瞬时点击频率。</li>
+                    </ol>
+
+                    <h3>数据参考</h3>
+                    <ul>
+                        <li><strong>当前世界纪录：</strong>5秒内敲击58次空格键（约合 11.6 CPS）</li>
+                        <li><strong>全球平均速度：</strong>约每秒 6.11 次（约合5秒30.5次）</li>
+                    </ul>
+                    <p>您的速度能达到多少？是超越平均，还是剑指纪录？现在就开始测试，解锁您手指的潜在爆发力！</p>
                 </div>
             </div>
         </div>
         <div class="relate-tool-box"></div>
         <comment :relate-id="158" :comment-class="2"></comment>
     </div>
-</div>
 
-<phb-dialog ref="phbDialog" :program-name="programName" :level-group-desc-arr="levelGroupArr" :level-group-code-arr="levelGroupArr" :time-show="false"></phb-dialog>
-<history-dialog ref="historyDialog" :program-name="programName" :level-group-desc-arr="levelGroupArr" :level-group-code-arr="levelGroupArr" :time-show="false" tooltip-template="得分: {0}\n{1}"></history-dialog>
+    <phb-dialog ref="phbDialog" :program-name="programName" :level-group-desc-arr="levelGroupArr" :level-group-code-arr="levelGroupArr" :time-show="false"></phb-dialog>
+    <history-dialog ref="historyDialog" :program-name="programName" :level-group-desc-arr="levelGroupArr" :level-group-code-arr="levelGroupArr" :time-show="false" tooltip-template="得分: {0}\n{1}"></history-dialog>
+</main>
 
+<script>
+    var languageCode = 'zh';
+    var websiteRoot = "";
+    var mainWebSiteHost = "";
+    var webApiSiteHost = "/api";
+    var staticSiteHost = "";
+    var staticFileVersion="260728100716";
+    var toolData = [{"key":"brain","desc":"脑力训练","children":[{"key":"记忆力","desc":"记忆力","toolList":[{"toolName":"数字顺序记忆训练","toolCode":"number-sequence-memory","icon":"./img/brain/game-logo/szsxjy.png"},{"toolName":"顺序记忆训练","toolCode":"sequence-memory","icon":"./img/brain/game-logo/sxjy.png"},{"toolName":"N-Back 记忆力训练游戏","toolCode":"n-back","icon":"./img/brain/game-logo/nback.png"},{"toolName":"色块印记","toolCode":"color-block-imprint","icon":"./img/brain/game-logo/skyj.png"}]},{"key":"注意力","desc":"注意力","toolList":[{"toolName":"舒尔特方格训练","toolCode":"shult-grid","icon":"./img/brain/game-logo/setfg.png"},{"toolName":"找不同的字","toolCode":"find-different-word","icon":"./img/brain/game-logo/zbtdz.png"},{"toolName":"斯特鲁普效应","toolCode":"stroop-effect","icon":"./img/brain/game-logo/stlpxy.png"},{"toolName":"坐标迷航","toolCode":"coordinate-drift","icon":"./img/brain/game-logo/zbmh.png"},{"toolName":"视觉追踪训练","toolCode":"visual-tracking-training","icon":"./img/brain/game-logo/sjzzxl.png"}]},{"key":"推演","desc":"推演","toolList":[{"toolName":"复古推箱子 50 关益智挑战","toolCode":"sokoban","icon":"./img/icons/sokoban.svg"},{"toolName":"经典扫雷游戏","toolCode":"minesweeper","icon":"./img/icons/minesweeper.svg"},{"toolName":"在线数独游戏","toolCode":"sudoku","icon":"./img/icons/sudoku.svg"},{"toolName":"熄灯解谜游戏","toolCode":"lights-out","icon":"./img/icons/lights-out.svg"},{"toolName":"数字华容道","toolCode":"digital-huarong-road","icon":"./img/brain/game-logo/szhrd.png"},{"toolName":"上下瓶色匹配","toolCode":"bottle-color-matching","icon":"./img/brain/game-logo/sxpspp.png"},{"toolName":"2048","toolCode":"2048","icon":"./img/brain/game-logo/elsb.png"}]},{"key":"反应","desc":"反应","toolList":[{"toolName":"反应速度测试","toolCode":"react-speed-test","icon":"./img/brain/game-logo/fysdcs.png"},{"toolName":"点击速度测试","toolCode":"click-speed-test","icon":"./img/brain/game-logo/sscs.png"},{"toolName":"右键点击速度测试","toolCode":"right-click-test","icon":"./img/brain/game-logo/yjdjsdcs.png"},{"toolName":"空格键计数器","toolCode":"spacebar-counter","icon":"./img/brain/game-logo/kgjjsq.png"},{"toolName":"动态视力测试","toolCode":"dynamic-visual-acuity-test","icon":"./img/brain/game-logo/dtslcs.png"}]},{"key":"感知","desc":"感知","toolList":[{"toolName":"静态色差感知","toolCode":"jing-tai-se-cha","icon":"./img/brain/game-logo/jtsc.png"},{"toolName":"动态色差感知","toolCode":"dong-tai-se-cha","icon":"./img/brain/game-logo/dtsc.png"},{"toolName":"时间感知训练","toolCode":"time-perception-training","icon":"./img/brain/game-logo/sjgzxl.png"}]},{"key":"空间","desc":"空间","toolList":[{"toolName":"对称方块","toolCode":"symmetry-blocks","icon":"./img/brain/game-logo/dcfk.png"}]}]},{"key":"office","desc":"办公助手","toolList":[{"toolName":"文本去重与多维排序器","toolCode":"text-dedup-sort","icon":"./img/icons/text-dedup-sort.svg"},{"toolName":"中英文排版规范美化器","toolCode":"text-autospace","icon":"./img/icons/text-autospace.svg"},{"toolName":"在线表格转换器","toolCode":"table-converter","icon":"./img/icons/table-converter.svg"},{"toolName":"人民币大写金额转换器","toolCode":"rmb-capital-converter","icon":"./img/icons/rmb-capital-converter.svg"},{"toolName":"综合字数与阅读时长统计","toolCode":"word-counter","icon":"./img/icons/word-counter.svg"},{"toolName":"现代简历制作与排版器","toolCode":"resume-maker","icon":"./img/icons/resume-maker.svg"},{"toolName":"简历模板中心","toolCode":"resume-template","icon":"./img/icons/resume-template.svg"},{"toolName":"A4纸张尺寸，各种纸张尺寸查询","toolCode":"paper-size","icon":"./img/icons/paper-size.svg"},{"toolName":"转换大小写","toolCode":"convert-case","icon":"./img/icons/convert-case.svg"},{"toolName":"标题大小写转换器","toolCode":"title-case-converter","icon":"./img/icons/title-case-converter.svg"},{"toolName":"句子大小写转换器","toolCode":"sentence-case-converter","icon":"./img/icons/sentence-case-converter.svg"},{"toolName":"粗体文本生成器","toolCode":"bold-text-generator","icon":"./img/icons/bold-text-generator.svg"},{"toolName":"斜体文本生成器","toolCode":"italic-text-generator","icon":"./img/icons/italic-text-generator.svg"},{"toolName":"删除线文本生成器","toolCode":"strikethrough-text-generator","icon":"./img/icons/strikethrough-text-generator.svg"},{"toolName":"下划线文本生成器","toolCode":"underline-text","icon":"./img/icons/underline-text.svg"},{"toolName":"颠倒文本生成器","toolCode":"upside-down-text-generator","icon":"./img/icons/upside-down-text-generator.svg"},{"toolName":"镜像文本生成器","toolCode":"mirror-text-generator","icon":"./img/icons/mirror-text-generator.svg"},{"toolName":"反向文本生成器","toolCode":"reverse-text-generator","icon":"./img/icons/reverse-text-generator.svg"},{"toolName":"文本替换工具","toolCode":"replace-text","icon":"./img/icons/replace-text.svg"},{"toolName":"符号大全","toolCode":"symbols","icon":"./img/icons/symbols.svg"},{"toolName":"emoji表情大全","toolCode":"emoji","icon":"./img/icons/emoji.svg"},{"toolName":"颜文字表情大全","toolCode":"emoticon","icon":"./img/icons/emoticon.svg"}]},{"key":"image","desc":"图像","toolList":[{"toolName":"图片调色板提取器","toolCode":"color-palette-extractor","icon":"./img/icons/color-palette-extractor.svg"},{"toolName":"多图无损拼接与长图生成器","toolCode":"image-stitcher","icon":"./img/icons/image-stitcher.svg"},{"toolName":"图片马赛克与局部隐私遮挡","toolCode":"image-mosaic-blur","icon":"./img/icons/image-mosaic-blur.svg"},{"toolName":"图像格式转换器","toolCode":"convert-image","icon":"./img/icons/convert-image.svg"},{"toolName":"压缩图像","toolCode":"compress-image","icon":"./img/icons/compress-image.svg"},{"toolName":"调整图像大小","toolCode":"resize-image","icon":"./img/icons/resize-image.svg"},{"toolName":"调整图像宽高比例","toolCode":"adjust-image-aspect-ratio","icon":"./img/icons/adjust-image-aspect-ratio.svg"},{"toolName":"批量给图片加水印","toolCode":"watermark-image","icon":"./img/icons/watermark-image.svg"},{"toolName":"批量旋转图像","toolCode":"rotate-image","icon":"./img/icons/rotate-image.svg"},{"toolName":"在线生成透明ICO图标","toolCode":"ico-generator","icon":"./img/icons/ico-generator.svg"},{"toolName":"在线生成透明圆角图片","toolCode":"round-image","icon":"./img/icons/round-image.svg"},{"toolName":"制作gif图片，编辑gif图片","toolCode":"create-gif","icon":"./img/icons/create-gif.svg"},{"toolName":"视频转gif图片，视频转动图","toolCode":"video-to-gif","icon":"./img/icons/video-to-gif.svg"},{"toolName":"分解gif图片","toolCode":"decompose-gif","icon":"./img/icons/decompose-gif.svg"},{"toolName":"裁剪、编辑图像","toolCode":"crop-image","icon":"./img/icons/crop-image.svg"},{"toolName":"生成宫格图像，分割图片","toolCode":"generate-grid-image","icon":"./img/icons/generate-grid-image.svg"},{"toolName":"图像处理助手桌面应用程序","toolCode":"image-processing-assistant-app","icon":"./up/2023/1028/image-processing-assistant-icon.png"},{"toolName":"图像压缩器桌面应用程序","toolCode":"image-compressor-app","icon":"./up/2023/1028/image-compress-logo.png"}]},{"key":"audio-and-video","desc":"音视频","toolList":[{"toolName":"白噪音与专注助眠多轨混音器","toolCode":"white-noise-player","icon":"./img/icons/white-noise-player.svg"},{"toolName":"免插件屏幕与窗口录制工具","toolCode":"screen-recorder","icon":"./img/icons/screen-recorder.svg"},{"toolName":"在线波形录音机与音频剪辑","toolCode":"voice-recorder","icon":"./img/icons/voice-recorder.svg"},{"toolName":"极简电子节拍器与乐器调音器","toolCode":"metronome-tuner","icon":"./img/icons/metronome-tuner.svg"},{"toolName":"视频处理助手桌面应用程序","toolCode":"video-processing-assistant-app","icon":"./up/2023/1028/video-processing-assistant-icon.png"},{"toolName":"视频剪切合并桌面应用程序","toolCode":"video-cut-merge-app","icon":"./up/2023/1028/video-cut-merge-icon.png"},{"toolName":"视频压缩器桌面应用程序","toolCode":"video-compressor-app","icon":"./up/2023/1028/video-compress-icon.png"},{"toolName":"视频格式转换器桌面应用程序","toolCode":"video-format-converter-app","icon":"./up/2023/1028/video-format-conversion-icon.png"},{"toolName":"音频处理助手桌面应用程序","toolCode":"audio-processing-assistant-app","icon":"./up/2023/1028/audio-processing-assistant-icon.png"},{"toolName":"音频剪切合并桌面应用程序","toolCode":"audio-cut-merge-app","icon":"./up/2023/1028/audio-cut-merge-icon.png"},{"toolName":"音频压缩器桌面应用程序","toolCode":"audio-compressor-app","icon":"./up/2023/1028/audio-compress-icon.png"},{"toolName":"音频格式转换器桌面应用程序","toolCode":"audio-format-convertor-app","icon":"./up/2023/1028/audio-format-conversion-icon.png"}]},{"key":"generate","desc":"生成","toolList":[{"toolName":"测试模拟数据 (Mock Data) 批量生成器","toolCode":"mock-data-generator","icon":"./img/icons/mock-data-generator.svg"},{"toolName":"WiFi 扫码直连二维码生成器","toolCode":"wifi-qrcode","icon":"./img/icons/wifi-qrcode.svg"},{"toolName":"无障碍色彩对比度检测器 (WCAG)","toolCode":"contrast-checker","icon":"./img/icons/contrast-checker.svg"},{"toolName":"CSS 玻璃拟态与毛玻璃生成器","toolCode":"css-glassmorphism","icon":"./img/icons/css-glassmorphism.svg"},{"toolName":"ASCII 艺术字与字符 Logo 生成器","toolCode":"ascii-art-generator","icon":"./img/icons/ascii-art-generator.svg"},{"toolName":"UUID / ULID / NanoID 批量生成器","toolCode":"uuid-generator","icon":"./img/icons/uuid-generator.svg"},{"toolName":"CSS 渐变色生成器","toolCode":"css-gradient-generator","icon":"./img/icons/css-gradient-generator.svg"},{"toolName":"CSS 盒子阴影生成器","toolCode":"css-shadow-generator","icon":"./img/icons/css-shadow-generator.svg"},{"toolName":"条形码生成器","toolCode":"bar-code","icon":"./img/icons/bar-code.svg"},{"toolName":"二维码生成器","toolCode":"qrcode","icon":"./img/icons/qrcode.svg"},{"toolName":"序列号生成器","toolCode":"serial-number","icon":"./img/icons/serial-number.svg"},{"toolName":"随机数生成器","toolCode":"random-number","icon":"./img/icons/random-number.svg"},{"toolName":"在线随机密码生成器","toolCode":"random-password","icon":"./img/icons/random-password.svg"}]},{"key":"code","desc":"程序员","toolList":[{"toolName":"IP 子网掩码与 CIDR 计算器","toolCode":"subnet-calculator","icon":"./img/icons/subnet-calculator.svg"},{"toolName":"多格式配置文件双向转换器","toolCode":"data-format-converter","icon":"./img/icons/data-format-converter.svg"},{"toolName":"HTTP 状态码速查与排错全书","toolCode":"http-status-codes","icon":"./img/icons/http-status-codes.svg"},{"toolName":"WebSocket / SSE 在线调试客户端","toolCode":"websocket-tester","icon":"./img/icons/websocket-tester.svg"},{"toolName":"cURL 转换多语言代码工具","toolCode":"curl-converter","icon":"./img/icons/curl-converter.svg"},{"toolName":"SQL 格式化与美化器","toolCode":"sql-formatter","icon":"./img/icons/sql-formatter.svg"},{"toolName":"JSON 格式化与高能工具箱","toolCode":"json-formatter","icon":"./img/icons/json-formatter.svg"},{"toolName":"JWT 解码与调试器","toolCode":"jwt-debugger","icon":"./img/icons/jwt-debugger.svg"},{"toolName":"正则表达式测试器","toolCode":"regex-tester","icon":"./img/icons/regex-tester.svg"},{"toolName":"Cron 表达式生成与预测器","toolCode":"cron-generator","icon":"./img/icons/cron-generator.svg"},{"toolName":"端口扫描","toolCode":"port-scan","icon":"./img/icons/port-scan.svg"},{"toolName":"JavaScript混淆加密","toolCode":"js-obfuscator","icon":"./img/icons/js-obfuscator.svg"},{"toolName":"Markdown在线编辑器，Markdown转Word/Html/Pdf","toolCode":"markdown","icon":"./img/icons/markdown.svg"},{"toolName":"时间戳转换","toolCode":"timestamp","icon":"./img/icons/timestamp.svg"},{"toolName":"进制转换","toolCode":"base-converter","icon":"./img/icons/base-converter.svg"},{"toolName":"MD5加密","toolCode":"md5-encrypt","icon":"./img/icons/md5-encrypt.svg"},{"toolName":"AES加密/解密","toolCode":"aes-encrypt","icon":"./img/icons/aes-encrypt.svg"},{"toolName":"DES加密/解密","toolCode":"des-encrypt","icon":"./img/icons/des-encrypt.svg"},{"toolName":"SHA加密","toolCode":"sha-encrypt","icon":"./img/icons/sha-encrypt.svg"},{"toolName":"RIPEMD160哈希加密","toolCode":"ripemd160-encrypt","icon":"./img/icons/ripemd160-encrypt.svg"},{"toolName":"HMAC哈希加密","toolCode":"hmac-encrypt","icon":"./img/icons/hmac-encrypt.svg"},{"toolName":"Rabbit加密/解密","toolCode":"rabbit-encrypt","icon":"./img/icons/rabbit-encrypt.svg"},{"toolName":"RC4加密/解密","toolCode":"rc4-encrypt","icon":"./img/icons/rc4-encrypt.svg"},{"toolName":"图片转base64","toolCode":"image-to-base64","icon":"./img/icons/image-to-base64.svg"},{"toolName":"base64编码解码","toolCode":"base64-encoder-decoder","icon":"./img/icons/base64-encoder-decoder.svg"},{"toolName":"URL编码解码","toolCode":"url-encoder-decoder","icon":"./img/icons/url-encoder-decoder.svg"},{"toolName":"文本与ASCLL转换器","toolCode":"text-to-ascll-converter","icon":"./img/icons/text-to-ascll-converter.svg"},{"toolName":"Unicode编码器/解码器","toolCode":"unicode-encoder-decoder","icon":"./img/icons/unicode-encoder-decoder.svg"},{"toolName":"文本（代码）对比工具","toolCode":"compare-text","icon":"./img/icons/compare-text.svg"},{"toolName":"html格式化、压缩","toolCode":"format-html","icon":"./img/icons/format-html.svg"},{"toolName":"css格式化、压缩","toolCode":"format-css","icon":"./img/icons/format-css.svg"},{"toolName":"js格式化、压缩","toolCode":"format-js","icon":"./img/icons/format-js.svg"}]},{"key":"study","desc":"学习","toolList":[{"toolName":"2D 数学函数图像绘制器","toolCode":"function-grapher","icon":"./img/icons/function-grapher.svg"},{"toolName":"计算机位运算与逻辑门实验室","toolCode":"bitwise-visualizer","icon":"./img/icons/bitwise-visualizer.svg"},{"toolName":"汉字转标准拼音与多音字排版","toolCode":"pinyin-converter","icon":"./img/icons/pinyin-converter.svg"},{"toolName":"化学元素周期表交互系统","toolCode":"periodic-table","icon":"./img/icons/periodic-table.svg"},{"toolName":"数据存储单位与进阶换算器","toolCode":"data-unit-converter","icon":"./img/icons/data-unit-converter.svg"},{"toolName":"科学高级计算器","toolCode":"scientific-calculator","icon":"./img/icons/scientific-calculator.svg"},{"toolName":"长度单位转换器","toolCode":"length-converter","icon":"./img/icons/length-converter.svg"},{"toolName":"面积单位转换器","toolCode":"area-converter","icon":"./img/icons/area-converter.svg"},{"toolName":"体积单位转换器","toolCode":"volume-converter","icon":"./img/icons/volume-converter.svg"},{"toolName":"重量转换器","toolCode":"weight-converter","icon":"./img/icons/weight-converter.svg"},{"toolName":"温度转换器","toolCode":"temperature-converter","icon":"./img/icons/temperature-converter.svg"},{"toolName":"比例计算器","toolCode":"proportion-calculator","icon":"./img/icons/proportion-calculator.svg"},{"toolName":"周长计算器","toolCode":"perimeter-calculator","icon":"./img/icons/perimeter-calculator.svg"},{"toolName":"面积计算器","toolCode":"area-calculator","icon":"./img/icons/area-calculator.svg"},{"toolName":"表面积计算器","toolCode":"surface-area-calculator","icon":"./img/icons/surface-area-calculator.svg"},{"toolName":"体积计算器","toolCode":"volume-calculator","icon":"./img/icons/volume-calculator.svg"},{"toolName":"圆周率查询","toolCode":"pi-query","icon":"./img/icons/pi-query.svg"}]},{"key":"life","desc":"生活","toolList":[{"toolName":"复利定投与理财收益计算器","toolCode":"compound-interest-calculator","icon":"./img/icons/compound-interest-calculator.svg"},{"toolName":"全款与车贷落地费用精算器","toolCode":"car-loan-calculator","icon":"./img/icons/car-loan-calculator.svg"},{"toolName":"世界时钟与跨时区会议规划器","toolCode":"world-clock-planner","icon":"./img/icons/world-clock-planner.svg"},{"toolName":"生活垃圾分类离线速查字典","toolCode":"garbage-classification","icon":"./img/icons/garbage-classification.svg"},{"toolName":"中国亲戚关系称谓换算器","toolCode":"kinship-calculator","icon":"./img/icons/kinship-calculator.svg"},{"toolName":"2026最新个税与五险一金计算器","toolCode":"salary-tax-calculator","icon":"./img/icons/salary-tax-calculator.svg"},{"toolName":"房贷提前还款与省息对比器","toolCode":"mortgage-advanced-calculator","icon":"./img/icons/mortgage-advanced-calculator.svg"},{"toolName":"日期间隔与重要日子倒计时","toolCode":"date-calculator","icon":"./img/icons/date-calculator.svg"},{"toolName":"年龄计算器","toolCode":"age","icon":"./img/icons/age.svg"},{"toolName":"退休年龄查询","toolCode":"retirement-time-query","icon":"./img/icons/retirement-time-query.svg"},{"toolName":"世界各国首都","toolCode":"capital","icon":"./img/icons/capital.svg"},{"toolName":"世界各国国旗和区旗图案","toolCode":"flag","icon":"./img/icons/flag.svg"},{"toolName":"贷款计算器","toolCode":"loan-calculator","icon":"./img/icons/loan-calculator.svg"},{"toolName":"文胸尺码查询","toolCode":"bra-size","icon":"./img/icons/bra-size.svg"},{"toolName":"内裤尺码查询","toolCode":"underwear-size","icon":"./img/icons/underwear-size.svg"},{"toolName":"女装尺码查询","toolCode":"woman-clothing-size","icon":"./img/icons/woman-clothing-size.svg"},{"toolName":"女士衬衫尺码查询","toolCode":"woman-shirt-size","icon":"./img/icons/woman-shirt-size.svg"},{"toolName":"连衣裙尺码查询","toolCode":"dress-size","icon":"./img/icons/dress-size.svg"},{"toolName":"小孩服装尺码查询","toolCode":"child-clothe-size","icon":"./img/icons/child-clothe-size.svg"},{"toolName":"男士服装尺码查询","toolCode":"man-clothing-size","icon":"./img/icons/man-clothing-size.svg"},{"toolName":"男士裤子尺码查询","toolCode":"man-pant-size","icon":"./img/icons/man-pant-size.svg"}]},{"key":"ent","desc":"娱乐","toolList":[{"toolName":"像素画 / 8-bit 图标在线编辑器","toolCode":"pixel-art-maker","icon":"./img/icons/pixel-art-maker.svg"},{"toolName":"今天吃什么 / 帮我做决定","toolCode":"decision-maker","icon":"./img/icons/decision-maker.svg"},{"toolName":"手持全屏弹幕 / LED 滚动屏幕","toolCode":"led-banner","icon":"./img/icons/led-banner.svg"},{"toolName":"摩斯密码翻译器，摩斯密码音频播放器","toolCode":"morse-code-translator","icon":"./img/icons/morse-code-translator.svg"},{"toolName":"幸运大转盘抽奖","toolCode":"lucky-wheel","icon":"./img/icons/lucky-wheel.svg"},{"toolName":"在线抽奖工具","toolCode":"lottery","icon":"./img/icons/lottery.svg"},{"toolName":"身价计算器","toolCode":"worth","icon":"./img/icons/worth.svg"},{"toolName":"死亡时间计算器","toolCode":"death-time","icon":"./img/icons/death-time.svg"},{"toolName":"幸运数字计算器","toolCode":"lucky-number","icon":"./img/icons/lucky-number.svg"},{"toolName":"星座幸运色","toolCode":"lucky-color","icon":"./img/icons/lucky-color.svg"},{"toolName":"哈希头像生成器","toolCode":"hash-avatar","icon":"./img/icons/hash-avatar.svg"}]},{"key":"health","desc":"健康","toolList":[{"toolName":"科学每日饮水量计算器","toolCode":"water-intake-calculator","icon":"./img/icons/water-intake-calculator.svg"},{"toolName":"90分钟睡眠周期与起床时间计算器","toolCode":"sleep-cycle-calculator","icon":"./img/icons/sleep-cycle-calculator.svg"},{"toolName":"常用食物热量与营养成分速查表","toolCode":"food-calories-lookup","icon":"./img/icons/food-calories-lookup.svg"},{"toolName":"BMI指数计算","toolCode":"bmi","icon":"./img/icons/bmi.svg"},{"toolName":"基础代谢率(BMR)计算器","toolCode":"bmr","icon":"./img/icons/bmr.svg"},{"toolName":"体脂率（BFR）计算器","toolCode":"bfr","icon":"./img/icons/bfr.svg"},{"toolName":"标准体重计算器","toolCode":"weight","icon":"./img/icons/weight.svg"},{"toolName":"燃脂心率计算器","toolCode":"burn-fat-heart-rate","icon":"./img/icons/burn-fat-heart-rate.svg"},{"toolName":"体质综合测试","toolCode":"physical-fitness-test","icon":"./img/icons/physical-fitness-test.svg"},{"toolName":"蛋白质摄入量计算器","toolCode":"protein-intake","icon":"./img/icons/protein-intake.svg"},{"toolName":"焦耳卡路里换算器","toolCode":"energy-convert","icon":"./img/icons/energy-convert.svg"},{"toolName":"跑步卡路里消耗计算器","toolCode":"running-calorie","icon":"./img/icons/running-calorie.svg"},{"toolName":"女性最佳身材计算器","toolCode":"best-figure","icon":"./img/icons/best-figure.svg"},{"toolName":"女性安全期计算器","toolCode":"female-safe-period","icon":"./img/icons/female-safe-period.svg"},{"toolName":"孩子身高预测","toolCode":"child-height","icon":"./img/icons/child-height.svg"},{"toolName":"血型遗传规律和血型性格","toolCode":"bood-type","icon":"./img/icons/bood-type.svg"},{"toolName":"色盲色弱检测","toolCode":"color-blindness-test","icon":"./img/icons/color-blindness-test.svg"},{"toolName":"植物油脂肪含量查询","toolCode":"vegetable-oil","icon":"./img/icons/vegetable-oil.svg"}]}];
+    var phoneSmsEnable = 0;
+    var wp='zp';
+    var ap='qx';
+</script>
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+<script src="./lib/element-plus/locale/en.js"></script>
+<script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./js/components/SlideCaptcha.js?v=260728100716"></script>
+<script src="./js/common.js?260728100716"></script>
+<script src="./js/search.js?260728100716"></script>
 
-    </main>
-</div>
+<script>
+    var locales = {
+        rankDesc: "你的等级是X！",
+        animal: ["树懒 "," 乌龟 "," 熊猫 "," 老鼠 "," 野牛 "," 兔子 "," 狐狸 "," 老虎 "," 猎豹"],
+        cpsDesc: "每秒点击速度 10 次",
+        scoreDesc: "10 秒内点击 1000 次",
+        comment1: "不要气馁，继续加油。",
+        comment2: "是时候全力以赴了，你离成为最好的已经不远了。",
+        comment3: "你的手指以极快的速度打响，就像飞猫奔跑一样， 向点击之王致敬。"
+    };
+</script>
+<script src="./js/components/PhbDialog.js?260728100716"></script>
+<script src="./js/components/HistoryDialog.js?260728100716"></script>
+<script src="./js/components/Comment.js?260728100716"></script>
+<script src="./js/tools/brain/spacebar-counter.js?260728100716"></script>
 
-    <script>
-        var languageCode = 'zh';
-        var websiteRoot = "";
-        var mainWebSiteHost = "";
-        var webApiSiteHost = "/api";
-        var staticSiteHost = "";
-        var staticFileVersion="260728100716";
-        var toolData = [{"key":"brain","desc":"脑力训练","children":[{"key":"记忆力","desc":"记忆力","toolList":[{"toolName":"数字顺序记忆训练","toolCode":"number-sequence-memory","icon":"./img/brain/game-logo/szsxjy.png"},{"toolName":"顺序记忆训练","toolCode":"sequence-memory","icon":"./img/brain/game-logo/sxjy.png"},{"toolName":"N-Back 记忆力训练游戏","toolCode":"n-back","icon":"./img/brain/game-logo/nback.png"},{"toolName":"色块印记","toolCode":"color-block-imprint","icon":"./img/brain/game-logo/skyj.png"}]},{"key":"注意力","desc":"注意力","toolList":[{"toolName":"舒尔特方格训练","toolCode":"shult-grid","icon":"./img/brain/game-logo/setfg.png"},{"toolName":"找不同的字","toolCode":"find-different-word","icon":"./img/brain/game-logo/zbtdz.png"},{"toolName":"斯特鲁普效应","toolCode":"stroop-effect","icon":"./img/brain/game-logo/stlpxy.png"},{"toolName":"坐标迷航","toolCode":"coordinate-drift","icon":"./img/brain/game-logo/zbmh.png"},{"toolName":"视觉追踪训练","toolCode":"visual-tracking-training","icon":"./img/brain/game-logo/sjzzxl.png"}]},{"key":"推演","desc":"推演","toolList":[{"toolName":"复古推箱子 50 关益智挑战","toolCode":"sokoban","icon":"./img/icons/sokoban.svg"},{"toolName":"经典扫雷游戏","toolCode":"minesweeper","icon":"./img/icons/minesweeper.svg"},{"toolName":"在线数独游戏","toolCode":"sudoku","icon":"./img/icons/sudoku.svg"},{"toolName":"熄灯解谜游戏","toolCode":"lights-out","icon":"./img/icons/lights-out.svg"},{"toolName":"数字华容道","toolCode":"digital-huarong-road","icon":"./img/brain/game-logo/szhrd.png"},{"toolName":"上下瓶色匹配","toolCode":"bottle-color-matching","icon":"./img/brain/game-logo/sxpspp.png"},{"toolName":"2048","toolCode":"2048","icon":"./img/brain/game-logo/elsb.png"}]},{"key":"反应","desc":"反应","toolList":[{"toolName":"反应速度测试","toolCode":"react-speed-test","icon":"./img/brain/game-logo/fysdcs.png"},{"toolName":"点击速度测试","toolCode":"click-speed-test","icon":"./img/brain/game-logo/sscs.png"},{"toolName":"右键点击速度测试","toolCode":"right-click-test","icon":"./img/brain/game-logo/yjdjsdcs.png"},{"toolName":"空格键计数器","toolCode":"spacebar-counter","icon":"./img/brain/game-logo/kgjjsq.png"},{"toolName":"动态视力测试","toolCode":"dynamic-visual-acuity-test","icon":"./img/brain/game-logo/dtslcs.png"}]},{"key":"感知","desc":"感知","toolList":[{"toolName":"静态色差感知","toolCode":"jing-tai-se-cha","icon":"./img/brain/game-logo/jtsc.png"},{"toolName":"动态色差感知","toolCode":"dong-tai-se-cha","icon":"./img/brain/game-logo/dtsc.png"},{"toolName":"时间感知训练","toolCode":"time-perception-training","icon":"./img/brain/game-logo/sjgzxl.png"}]},{"key":"空间","desc":"空间","toolList":[{"toolName":"对称方块","toolCode":"symmetry-blocks","icon":"./img/brain/game-logo/dcfk.png"}]}]},{"key":"office","desc":"办公助手","toolList":[{"toolName":"文本去重与多维排序器","toolCode":"text-dedup-sort","icon":"./img/icons/text-dedup-sort.svg"},{"toolName":"中英文排版规范美化器","toolCode":"text-autospace","icon":"./img/icons/text-autospace.svg"},{"toolName":"在线表格转换器","toolCode":"table-converter","icon":"./img/icons/table-converter.svg"},{"toolName":"人民币大写金额转换器","toolCode":"rmb-capital-converter","icon":"./img/icons/rmb-capital-converter.svg"},{"toolName":"综合字数与阅读时长统计","toolCode":"word-counter","icon":"./img/icons/word-counter.svg"},{"toolName":"现代简历制作与排版器","toolCode":"resume-maker","icon":"./img/icons/resume-maker.svg"},{"toolName":"简历模板中心","toolCode":"resume-template","icon":"./img/icons/resume-template.svg"},{"toolName":"A4纸张尺寸，各种纸张尺寸查询","toolCode":"paper-size","icon":"./img/icons/paper-size.svg"},{"toolName":"转换大小写","toolCode":"convert-case","icon":"./img/icons/convert-case.svg"},{"toolName":"标题大小写转换器","toolCode":"title-case-converter","icon":"./img/icons/title-case-converter.svg"},{"toolName":"句子大小写转换器","toolCode":"sentence-case-converter","icon":"./img/icons/sentence-case-converter.svg"},{"toolName":"粗体文本生成器","toolCode":"bold-text-generator","icon":"./img/icons/bold-text-generator.svg"},{"toolName":"斜体文本生成器","toolCode":"italic-text-generator","icon":"./img/icons/italic-text-generator.svg"},{"toolName":"删除线文本生成器","toolCode":"strikethrough-text-generator","icon":"./img/icons/strikethrough-text-generator.svg"},{"toolName":"下划线文本生成器","toolCode":"underline-text","icon":"./img/icons/underline-text.svg"},{"toolName":"颠倒文本生成器","toolCode":"upside-down-text-generator","icon":"./img/icons/upside-down-text-generator.svg"},{"toolName":"镜像文本生成器","toolCode":"mirror-text-generator","icon":"./img/icons/mirror-text-generator.svg"},{"toolName":"反向文本生成器","toolCode":"reverse-text-generator","icon":"./img/icons/reverse-text-generator.svg"},{"toolName":"文本替换工具","toolCode":"replace-text","icon":"./img/icons/replace-text.svg"},{"toolName":"符号大全","toolCode":"symbols","icon":"./img/icons/symbols.svg"},{"toolName":"emoji表情大全","toolCode":"emoji","icon":"./img/icons/emoji.svg"},{"toolName":"颜文字表情大全","toolCode":"emoticon","icon":"./img/icons/emoticon.svg"}]},{"key":"image","desc":"图像","toolList":[{"toolName":"图片调色板提取器","toolCode":"color-palette-extractor","icon":"./img/icons/color-palette-extractor.svg"},{"toolName":"多图无损拼接与长图生成器","toolCode":"image-stitcher","icon":"./img/icons/image-stitcher.svg"},{"toolName":"图片马赛克与局部隐私遮挡","toolCode":"image-mosaic-blur","icon":"./img/icons/image-mosaic-blur.svg"},{"toolName":"图像格式转换器","toolCode":"convert-image","icon":"./img/icons/convert-image.svg"},{"toolName":"压缩图像","toolCode":"compress-image","icon":"./img/icons/compress-image.svg"},{"toolName":"调整图像大小","toolCode":"resize-image","icon":"./img/icons/resize-image.svg"},{"toolName":"调整图像宽高比例","toolCode":"adjust-image-aspect-ratio","icon":"./img/icons/adjust-image-aspect-ratio.svg"},{"toolName":"批量给图片加水印","toolCode":"watermark-image","icon":"./img/icons/watermark-image.svg"},{"toolName":"批量旋转图像","toolCode":"rotate-image","icon":"./img/icons/rotate-image.svg"},{"toolName":"在线生成透明ICO图标","toolCode":"ico-generator","icon":"./img/icons/ico-generator.svg"},{"toolName":"在线生成透明圆角图片","toolCode":"round-image","icon":"./img/icons/round-image.svg"},{"toolName":"制作gif图片，编辑gif图片","toolCode":"create-gif","icon":"./img/icons/create-gif.svg"},{"toolName":"视频转gif图片，视频转动图","toolCode":"video-to-gif","icon":"./img/icons/video-to-gif.svg"},{"toolName":"分解gif图片","toolCode":"decompose-gif","icon":"./img/icons/decompose-gif.svg"},{"toolName":"裁剪、编辑图像","toolCode":"crop-image","icon":"./img/icons/crop-image.svg"},{"toolName":"生成宫格图像，分割图片","toolCode":"generate-grid-image","icon":"./img/icons/generate-grid-image.svg"},{"toolName":"图像处理助手桌面应用程序","toolCode":"image-processing-assistant-app","icon":"./up/2023/1028/image-processing-assistant-icon.png"},{"toolName":"图像压缩器桌面应用程序","toolCode":"image-compressor-app","icon":"./up/2023/1028/image-compress-logo.png"}]},{"key":"audio-and-video","desc":"音视频","toolList":[{"toolName":"白噪音与专注助眠多轨混音器","toolCode":"white-noise-player","icon":"./img/icons/white-noise-player.svg"},{"toolName":"免插件屏幕与窗口录制工具","toolCode":"screen-recorder","icon":"./img/icons/screen-recorder.svg"},{"toolName":"在线波形录音机与音频剪辑","toolCode":"voice-recorder","icon":"./img/icons/voice-recorder.svg"},{"toolName":"极简电子节拍器与乐器调音器","toolCode":"metronome-tuner","icon":"./img/icons/metronome-tuner.svg"},{"toolName":"视频处理助手桌面应用程序","toolCode":"video-processing-assistant-app","icon":"./up/2023/1028/video-processing-assistant-icon.png"},{"toolName":"视频剪切合并桌面应用程序","toolCode":"video-cut-merge-app","icon":"./up/2023/1028/video-cut-merge-icon.png"},{"toolName":"视频压缩器桌面应用程序","toolCode":"video-compressor-app","icon":"./up/2023/1028/video-compress-icon.png"},{"toolName":"视频格式转换器桌面应用程序","toolCode":"video-format-converter-app","icon":"./up/2023/1028/video-format-conversion-icon.png"},{"toolName":"音频处理助手桌面应用程序","toolCode":"audio-processing-assistant-app","icon":"./up/2023/1028/audio-processing-assistant-icon.png"},{"toolName":"音频剪切合并桌面应用程序","toolCode":"audio-cut-merge-app","icon":"./up/2023/1028/audio-cut-merge-icon.png"},{"toolName":"音频压缩器桌面应用程序","toolCode":"audio-compressor-app","icon":"./up/2023/1028/audio-compress-icon.png"},{"toolName":"音频格式转换器桌面应用程序","toolCode":"audio-format-convertor-app","icon":"./up/2023/1028/audio-format-conversion-icon.png"}]},{"key":"generate","desc":"生成","toolList":[{"toolName":"测试模拟数据 (Mock Data) 批量生成器","toolCode":"mock-data-generator","icon":"./img/icons/mock-data-generator.svg"},{"toolName":"WiFi 扫码直连二维码生成器","toolCode":"wifi-qrcode","icon":"./img/icons/wifi-qrcode.svg"},{"toolName":"无障碍色彩对比度检测器 (WCAG)","toolCode":"contrast-checker","icon":"./img/icons/contrast-checker.svg"},{"toolName":"CSS 玻璃拟态与毛玻璃生成器","toolCode":"css-glassmorphism","icon":"./img/icons/css-glassmorphism.svg"},{"toolName":"ASCII 艺术字与字符 Logo 生成器","toolCode":"ascii-art-generator","icon":"./img/icons/ascii-art-generator.svg"},{"toolName":"UUID / ULID / NanoID 批量生成器","toolCode":"uuid-generator","icon":"./img/icons/uuid-generator.svg"},{"toolName":"CSS 渐变色生成器","toolCode":"css-gradient-generator","icon":"./img/icons/css-gradient-generator.svg"},{"toolName":"CSS 盒子阴影生成器","toolCode":"css-shadow-generator","icon":"./img/icons/css-shadow-generator.svg"},{"toolName":"条形码生成器","toolCode":"bar-code","icon":"./img/icons/bar-code.svg"},{"toolName":"二维码生成器","toolCode":"qrcode","icon":"./img/icons/qrcode.svg"},{"toolName":"序列号生成器","toolCode":"serial-number","icon":"./img/icons/serial-number.svg"},{"toolName":"随机数生成器","toolCode":"random-number","icon":"./img/icons/random-number.svg"},{"toolName":"在线随机密码生成器","toolCode":"random-password","icon":"./img/icons/random-password.svg"}]},{"key":"code","desc":"程序员","toolList":[{"toolName":"IP 子网掩码与 CIDR 计算器","toolCode":"subnet-calculator","icon":"./img/icons/subnet-calculator.svg"},{"toolName":"多格式配置文件双向转换器","toolCode":"data-format-converter","icon":"./img/icons/data-format-converter.svg"},{"toolName":"HTTP 状态码速查与排错全书","toolCode":"http-status-codes","icon":"./img/icons/http-status-codes.svg"},{"toolName":"WebSocket / SSE 在线调试客户端","toolCode":"websocket-tester","icon":"./img/icons/websocket-tester.svg"},{"toolName":"cURL 转换多语言代码工具","toolCode":"curl-converter","icon":"./img/icons/curl-converter.svg"},{"toolName":"SQL 格式化与美化器","toolCode":"sql-formatter","icon":"./img/icons/sql-formatter.svg"},{"toolName":"JSON 格式化与高能工具箱","toolCode":"json-formatter","icon":"./img/icons/json-formatter.svg"},{"toolName":"JWT 解码与调试器","toolCode":"jwt-debugger","icon":"./img/icons/jwt-debugger.svg"},{"toolName":"正则表达式测试器","toolCode":"regex-tester","icon":"./img/icons/regex-tester.svg"},{"toolName":"Cron 表达式生成与预测器","toolCode":"cron-generator","icon":"./img/icons/cron-generator.svg"},{"toolName":"端口扫描","toolCode":"port-scan","icon":"./img/icons/port-scan.svg"},{"toolName":"JavaScript混淆加密","toolCode":"js-obfuscator","icon":"./img/icons/js-obfuscator.svg"},{"toolName":"Markdown在线编辑器，Markdown转Word/Html/Pdf","toolCode":"markdown","icon":"./img/icons/markdown.svg"},{"toolName":"时间戳转换","toolCode":"timestamp","icon":"./img/icons/timestamp.svg"},{"toolName":"进制转换","toolCode":"base-converter","icon":"./img/icons/base-converter.svg"},{"toolName":"MD5加密","toolCode":"md5-encrypt","icon":"./img/icons/md5-encrypt.svg"},{"toolName":"AES加密/解密","toolCode":"aes-encrypt","icon":"./img/icons/aes-encrypt.svg"},{"toolName":"DES加密/解密","toolCode":"des-encrypt","icon":"./img/icons/des-encrypt.svg"},{"toolName":"SHA加密","toolCode":"sha-encrypt","icon":"./img/icons/sha-encrypt.svg"},{"toolName":"RIPEMD160哈希加密","toolCode":"ripemd160-encrypt","icon":"./img/icons/ripemd160-encrypt.svg"},{"toolName":"HMAC哈希加密","toolCode":"hmac-encrypt","icon":"./img/icons/hmac-encrypt.svg"},{"toolName":"Rabbit加密/解密","toolCode":"rabbit-encrypt","icon":"./img/icons/rabbit-encrypt.svg"},{"toolName":"RC4加密/解密","toolCode":"rc4-encrypt","icon":"./img/icons/rc4-encrypt.svg"},{"toolName":"图片转base64","toolCode":"image-to-base64","icon":"./img/icons/image-to-base64.svg"},{"toolName":"base64编码解码","toolCode":"base64-encoder-decoder","icon":"./img/icons/base64-encoder-decoder.svg"},{"toolName":"URL编码解码","toolCode":"url-encoder-decoder","icon":"./img/icons/url-encoder-decoder.svg"},{"toolName":"文本与ASCLL转换器","toolCode":"text-to-ascll-converter","icon":"./img/icons/text-to-ascll-converter.svg"},{"toolName":"Unicode编码器/解码器","toolCode":"unicode-encoder-decoder","icon":"./img/icons/unicode-encoder-decoder.svg"},{"toolName":"文本（代码）对比工具","toolCode":"compare-text","icon":"./img/icons/compare-text.svg"},{"toolName":"html格式化、压缩","toolCode":"format-html","icon":"./img/icons/format-html.svg"},{"toolName":"css格式化、压缩","toolCode":"format-css","icon":"./img/icons/format-css.svg"},{"toolName":"js格式化、压缩","toolCode":"format-js","icon":"./img/icons/format-js.svg"}]},{"key":"study","desc":"学习","toolList":[{"toolName":"2D 数学函数图像绘制器","toolCode":"function-grapher","icon":"./img/icons/function-grapher.svg"},{"toolName":"计算机位运算与逻辑门实验室","toolCode":"bitwise-visualizer","icon":"./img/icons/bitwise-visualizer.svg"},{"toolName":"汉字转标准拼音与多音字排版","toolCode":"pinyin-converter","icon":"./img/icons/pinyin-converter.svg"},{"toolName":"化学元素周期表交互系统","toolCode":"periodic-table","icon":"./img/icons/periodic-table.svg"},{"toolName":"数据存储单位与进阶换算器","toolCode":"data-unit-converter","icon":"./img/icons/data-unit-converter.svg"},{"toolName":"科学高级计算器","toolCode":"scientific-calculator","icon":"./img/icons/scientific-calculator.svg"},{"toolName":"长度单位转换器","toolCode":"length-converter","icon":"./img/icons/length-converter.svg"},{"toolName":"面积单位转换器","toolCode":"area-converter","icon":"./img/icons/area-converter.svg"},{"toolName":"体积单位转换器","toolCode":"volume-converter","icon":"./img/icons/volume-converter.svg"},{"toolName":"重量转换器","toolCode":"weight-converter","icon":"./img/icons/weight-converter.svg"},{"toolName":"温度转换器","toolCode":"temperature-converter","icon":"./img/icons/temperature-converter.svg"},{"toolName":"比例计算器","toolCode":"proportion-calculator","icon":"./img/icons/proportion-calculator.svg"},{"toolName":"周长计算器","toolCode":"perimeter-calculator","icon":"./img/icons/perimeter-calculator.svg"},{"toolName":"面积计算器","toolCode":"area-calculator","icon":"./img/icons/area-calculator.svg"},{"toolName":"表面积计算器","toolCode":"surface-area-calculator","icon":"./img/icons/surface-area-calculator.svg"},{"toolName":"体积计算器","toolCode":"volume-calculator","icon":"./img/icons/volume-calculator.svg"},{"toolName":"圆周率查询","toolCode":"pi-query","icon":"./img/icons/pi-query.svg"}]},{"key":"life","desc":"生活","toolList":[{"toolName":"复利定投与理财收益计算器","toolCode":"compound-interest-calculator","icon":"./img/icons/compound-interest-calculator.svg"},{"toolName":"全款与车贷落地费用精算器","toolCode":"car-loan-calculator","icon":"./img/icons/car-loan-calculator.svg"},{"toolName":"世界时钟与跨时区会议规划器","toolCode":"world-clock-planner","icon":"./img/icons/world-clock-planner.svg"},{"toolName":"生活垃圾分类离线速查字典","toolCode":"garbage-classification","icon":"./img/icons/garbage-classification.svg"},{"toolName":"中国亲戚关系称谓换算器","toolCode":"kinship-calculator","icon":"./img/icons/kinship-calculator.svg"},{"toolName":"2026最新个税与五险一金计算器","toolCode":"salary-tax-calculator","icon":"./img/icons/salary-tax-calculator.svg"},{"toolName":"房贷提前还款与省息对比器","toolCode":"mortgage-advanced-calculator","icon":"./img/icons/mortgage-advanced-calculator.svg"},{"toolName":"日期间隔与重要日子倒计时","toolCode":"date-calculator","icon":"./img/icons/date-calculator.svg"},{"toolName":"年龄计算器","toolCode":"age","icon":"./img/icons/age.svg"},{"toolName":"退休年龄查询","toolCode":"retirement-time-query","icon":"./img/icons/retirement-time-query.svg"},{"toolName":"世界各国首都","toolCode":"capital","icon":"./img/icons/capital.svg"},{"toolName":"世界各国国旗和区旗图案","toolCode":"flag","icon":"./img/icons/flag.svg"},{"toolName":"贷款计算器","toolCode":"loan-calculator","icon":"./img/icons/loan-calculator.svg"},{"toolName":"文胸尺码查询","toolCode":"bra-size","icon":"./img/icons/bra-size.svg"},{"toolName":"内裤尺码查询","toolCode":"underwear-size","icon":"./img/icons/underwear-size.svg"},{"toolName":"女装尺码查询","toolCode":"woman-clothing-size","icon":"./img/icons/woman-clothing-size.svg"},{"toolName":"女士衬衫尺码查询","toolCode":"woman-shirt-size","icon":"./img/icons/woman-shirt-size.svg"},{"toolName":"连衣裙尺码查询","toolCode":"dress-size","icon":"./img/icons/dress-size.svg"},{"toolName":"小孩服装尺码查询","toolCode":"child-clothe-size","icon":"./img/icons/child-clothe-size.svg"},{"toolName":"男士服装尺码查询","toolCode":"man-clothing-size","icon":"./img/icons/man-clothing-size.svg"},{"toolName":"男士裤子尺码查询","toolCode":"man-pant-size","icon":"./img/icons/man-pant-size.svg"}]},{"key":"ent","desc":"娱乐","toolList":[{"toolName":"像素画 / 8-bit 图标在线编辑器","toolCode":"pixel-art-maker","icon":"./img/icons/pixel-art-maker.svg"},{"toolName":"今天吃什么 / 帮我做决定","toolCode":"decision-maker","icon":"./img/icons/decision-maker.svg"},{"toolName":"手持全屏弹幕 / LED 滚动屏幕","toolCode":"led-banner","icon":"./img/icons/led-banner.svg"},{"toolName":"摩斯密码翻译器，摩斯密码音频播放器","toolCode":"morse-code-translator","icon":"./img/icons/morse-code-translator.svg"},{"toolName":"幸运大转盘抽奖","toolCode":"lucky-wheel","icon":"./img/icons/lucky-wheel.svg"},{"toolName":"在线抽奖工具","toolCode":"lottery","icon":"./img/icons/lottery.svg"},{"toolName":"身价计算器","toolCode":"worth","icon":"./img/icons/worth.svg"},{"toolName":"死亡时间计算器","toolCode":"death-time","icon":"./img/icons/death-time.svg"},{"toolName":"幸运数字计算器","toolCode":"lucky-number","icon":"./img/icons/lucky-number.svg"},{"toolName":"星座幸运色","toolCode":"lucky-color","icon":"./img/icons/lucky-color.svg"},{"toolName":"哈希头像生成器","toolCode":"hash-avatar","icon":"./img/icons/hash-avatar.svg"}]},{"key":"health","desc":"健康","toolList":[{"toolName":"科学每日饮水量计算器","toolCode":"water-intake-calculator","icon":"./img/icons/water-intake-calculator.svg"},{"toolName":"90分钟睡眠周期与起床时间计算器","toolCode":"sleep-cycle-calculator","icon":"./img/icons/sleep-cycle-calculator.svg"},{"toolName":"常用食物热量与营养成分速查表","toolCode":"food-calories-lookup","icon":"./img/icons/food-calories-lookup.svg"},{"toolName":"BMI指数计算","toolCode":"bmi","icon":"./img/icons/bmi.svg"},{"toolName":"基础代谢率(BMR)计算器","toolCode":"bmr","icon":"./img/icons/bmr.svg"},{"toolName":"体脂率（BFR）计算器","toolCode":"bfr","icon":"./img/icons/bfr.svg"},{"toolName":"标准体重计算器","toolCode":"weight","icon":"./img/icons/weight.svg"},{"toolName":"燃脂心率计算器","toolCode":"burn-fat-heart-rate","icon":"./img/icons/burn-fat-heart-rate.svg"},{"toolName":"体质综合测试","toolCode":"physical-fitness-test","icon":"./img/icons/physical-fitness-test.svg"},{"toolName":"蛋白质摄入量计算器","toolCode":"protein-intake","icon":"./img/icons/protein-intake.svg"},{"toolName":"焦耳卡路里换算器","toolCode":"energy-convert","icon":"./img/icons/energy-convert.svg"},{"toolName":"跑步卡路里消耗计算器","toolCode":"running-calorie","icon":"./img/icons/running-calorie.svg"},{"toolName":"女性最佳身材计算器","toolCode":"best-figure","icon":"./img/icons/best-figure.svg"},{"toolName":"女性安全期计算器","toolCode":"female-safe-period","icon":"./img/icons/female-safe-period.svg"},{"toolName":"孩子身高预测","toolCode":"child-height","icon":"./img/icons/child-height.svg"},{"toolName":"血型遗传规律和血型性格","toolCode":"bood-type","icon":"./img/icons/bood-type.svg"},{"toolName":"色盲色弱检测","toolCode":"color-blindness-test","icon":"./img/icons/color-blindness-test.svg"},{"toolName":"植物油脂肪含量查询","toolCode":"vegetable-oil","icon":"./img/icons/vegetable-oil.svg"}]}];
-        var phoneSmsEnable = 0;
-        var wp='zp';
-        var ap='qx';
-    </script>
-        <script src="./lib/vue/vue.global.prod.js"></script>
-        <script src="./lib/element-plus/index.js"></script>
-    <script src="./lib/element-plus/locale/en.js"></script>
-    <script src="./lib/element-plus/locale/zh-tw.js"></script>
-    <script src="./js/components/SlideCaptcha.js?v=260728100716"></script>
-    <script src="./js/common.js?260728100716"></script>
-    <script src="./js/search.js?260728100716"></script>
-    
-    <script>
-        var locales = {
-            rankDesc: "你的等级是X！",
-            animal: ["树懒 "," 乌龟 "," 熊猫 "," 老鼠 "," 野牛 "," 兔子 "," 狐狸 "," 老虎 "," 猎豹"],
-            cpsDesc: "每秒点击速度 10 次",
-            scoreDesc: "10 秒内点击 1000 次",
-            comment1: "不要气馁，继续加油。",
-            comment2: "是时候全力以赴了，你离成为最好的已经不远了。",
-            comment3: "你的手指以极快的速度打响，就像飞猫奔跑一样， 向点击之王致敬。"
-        };
-    </script>
-    <script src="./js/components/PhbDialog.js?260728100716"></script>
-    <script src="./js/components/HistoryDialog.js?260728100716"></script>
-    <script src="./js/components/Comment.js?260728100716"></script>
-    <script src="./js/tools/brain/spacebar-counter.js?260728100716"></script>
-
-
-        
 </body>
 </html>
