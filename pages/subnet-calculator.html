@@ -18,40 +18,162 @@
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
 
     <style>
+        /* =================================================================
+           SUBNET CALCULATOR MODERNIZED DUAL-MODE STYLES
+           Designed by Luna: Elite UI/UX & Accessibility Architecture
+           ================================================================= */
 
-        .page-header {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
+        /* CSS Custom Properties for Seamless Dual Mode */
+        :root {
+            --sc-primary: #0284c7;
+            --sc-primary-hover: #0369a1;
+            --sc-primary-light: #e0f2fe;
+            --sc-accent-cyan: #0369a1;
+            --sc-accent-green: #047857;
+            --sc-accent-amber: #92400e;
+            --sc-accent-rose: #b91c1c;
+            --sc-accent-purple: #6d28d9;
         }
-        .page-title {
-            font-size: 1.5rem;
+
+        html.dark {
+            --sc-bg-page: #060913;
+            --sc-card-bg: #0d1527;
+            --sc-card-header: #101c34;
+            --sc-panel-bg: #080e1d;
+            --sc-panel-header: #0e1830;
+            --sc-box-bg: #050a16;
+            --sc-border: #1e2d4d;
+            --sc-border-subtle: rgba(255, 255, 255, 0.08);
+            --sc-text-main: #f8fafc;
+            --sc-text-muted: #94a3b8;
+            --sc-text-sub: #64748b;
+            --sc-code-bg: #030712;
+            --sc-metric-bg: #091224;
+            --sc-metric-hover: #0c1833;
+            --sc-table-th: #0f1c36;
+            --sc-table-tr-hover: #12203d;
+            --sc-table-border: #1e2c4a;
+            --sc-accent-cyan: #38bdf8;
+            --sc-accent-green: #34d399;
+            --sc-accent-amber: #fbbf24;
+            --sc-accent-rose: #fb7185;
+            --sc-accent-purple: #c084fc;
+        }
+
+        html:not(.dark) {
+            --sc-bg-page: #f8fafc;
+            --sc-card-bg: #ffffff;
+            --sc-card-header: #f1f5f9;
+            --sc-panel-bg: #ffffff;
+            --sc-panel-header: #f8fafc;
+            --sc-box-bg: #f8fafc;
+            --sc-border: #cbd5e1;
+            --sc-border-subtle: rgba(0, 0, 0, 0.08);
+            --sc-text-main: #0f172a;
+            --sc-text-muted: #334155;
+            --sc-text-sub: #475569;
+            --sc-code-bg: #f1f5f9;
+            --sc-metric-bg: #ffffff;
+            --sc-metric-hover: #f8fafc;
+            --sc-table-th: #f1f5f9;
+            --sc-table-tr-hover: #f8fafc;
+            --sc-table-border: #e2e8f0;
+            --sc-accent-cyan: #0369a1;
+            --sc-accent-green: #047857;
+            --sc-accent-amber: #92400e;
+            --sc-accent-rose: #b91c1c;
+            --sc-accent-purple: #6d28d9;
+        }
+
+        /* Strong Highlights in Description */
+        .sc-strong-cyan {
+            color: var(--sc-accent-cyan);
             font-weight: 700;
-            letter-spacing: -0.02em;
-            color: #ffffff;
+        }
+        .sc-strong-green {
+            color: var(--sc-accent-green);
+            font-weight: 700;
+        }
+
+        /* Overall Tool Layout & Dashboard */
+        .tool-dashboard {
+            border-radius: 14px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 18px;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
         }
-        .engine-badge {
-            font-size: 0.75rem;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-            padding: 2px 8px;
-            border-radius: 9999px;
-            background: rgba(6, 182, 212, 0.1);
-            color: #22d3ee;
-            border: 1px solid rgba(6, 182, 212, 0.25);
-            font-weight: 500;
+        html.dark .tool-dashboard {
+            background: #091122;
+            border: 1px solid var(--sc-border);
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.5);
+        }
+        html:not(.dark) .tool-dashboard {
+            background: #f8fafc;
+            border: 1px solid var(--sc-border);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
         }
 
+        .dashboard-group {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .dashboard-label {
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--sc-text-muted);
+            letter-spacing: 0.01em;
+        }
+
+        /* Buttons & Actions */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 38px;
+            padding: 7px 15px;
+            border-radius: 8px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            border: 1px solid transparent;
+        }
+        .btn-action-primary {
+            background: var(--sc-primary);
+            color: #ffffff;
+            border-color: var(--sc-primary);
+        }
+        .btn-action-primary:hover {
+            background: var(--sc-primary-hover);
+            transform: translateY(-1px);
+        }
+        html.dark .btn-action-primary {
+            background: rgba(14, 116, 144, 0.35);
+            border-color: #38bdf8;
+            color: #e0f2fe;
+        }
+        html.dark .btn-action-primary:hover {
+            background: #0284c7;
+            color: #ffffff;
+        }
+
+        /* Main Subnet Grid */
         .subnet-grid {
             display: grid;
             grid-template-columns: 1fr 1.35fr;
-            gap: 16px;
-            margin-top: 16px;
+            gap: 20px;
+            margin-top: 10px;
         }
         @media (max-width: 1024px) {
             .subnet-grid {
@@ -59,78 +181,597 @@
             }
         }
 
-        .glass-panel {
-            background: rgba(11, 17, 32, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        /* Glass Panel / Card Modernization */
+        .sc-panel {
+            background: var(--sc-panel-bg);
+            border: 1px solid var(--sc-border);
             border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        html.dark .sc-panel {
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5);
         }
 
-        .glass-header {
-            padding: 12px 18px;
-            background: rgba(8, 13, 25, 0.7);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        .sc-panel-header {
+            padding: 14px 20px;
+            background: var(--sc-panel-header);
+            border-bottom: 1px solid var(--sc-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .sc-panel-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--sc-text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+        .sc-panel-content {
+            padding: 20px;
+            background: var(--sc-panel-bg);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Quick CIDR / Prefix Pill Buttons */
+        .quick-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .quick-btn {
+            min-height: 36px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, monospace;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        html.dark .quick-btn {
+            background: #101c34;
+            border: 1px solid #1e2e4f;
+            color: #94a3b8;
+        }
+        html.dark .quick-btn:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            background: #142442;
+        }
+        html.dark .quick-btn.active {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+        }
+        html:not(.dark) .quick-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+        }
+        html:not(.dark) .quick-btn:hover {
+            border-color: #0284c7;
+            color: #0369a1;
+            background: #e0f2fe;
+        }
+        html:not(.dark) .quick-btn.active {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+        }
+
+        /* Diagnosis Box */
+        .diagnosis-box {
+            border-radius: 10px;
+            padding: 14px 16px;
+            transition: all 0.2s ease;
+        }
+        html.dark .diagnosis-box {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid var(--sc-border);
+        }
+        html:not(.dark) .diagnosis-box {
+            background: #f8fafc;
+            border: 1px solid var(--sc-border);
+        }
+
+        /* Type Badges - High Contrast Dual Mode */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 11px;
+            border-radius: 9999px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            line-height: 1.4;
+            font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, monospace;
+        }
+        html.dark .badge-public {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+        html.dark .badge-private {
+            background: rgba(52, 211, 153, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.35);
+        }
+        html.dark .badge-special {
+            background: rgba(192, 132, 252, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(192, 132, 252, 0.35);
+        }
+        html.dark .badge-linklocal {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.35);
+        }
+        html.dark .badge-reserved {
+            background: rgba(148, 163, 184, 0.15);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+        }
+
+        html:not(.dark) .badge-public {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+        html:not(.dark) .badge-private {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+        }
+        html:not(.dark) .badge-special {
+            background: #f3e8ff;
+            color: #6b21a8;
+            border: 1px solid #d8b4fe;
+        }
+        html:not(.dark) .badge-linklocal {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+        html:not(.dark) .badge-reserved {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* Result Metrics Grid */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
-            gap: 10px;
-            padding: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 12px;
+            padding: 18px;
         }
+        @media (max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .metric-card {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            padding: 10px 14px;
-            transition: all 0.15s ease;
+            border-radius: 10px;
+            padding: 12px 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            min-height: 74px;
+            transition: all 0.15s ease;
+            position: relative;
         }
-        .metric-card:hover {
-            border-color: rgba(6, 182, 212, 0.4);
-            background: rgba(6, 182, 212, 0.04);
+        html.dark .metric-card {
+            background: var(--sc-metric-bg);
+            border: 1px solid var(--sc-border);
         }
+        html.dark .metric-card:hover {
+            background: var(--sc-metric-hover);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+        }
+        html:not(.dark) .metric-card {
+            background: var(--sc-metric-bg);
+            border: 1px solid var(--sc-border);
+        }
+        html:not(.dark) .metric-card:hover {
+            background: #ffffff;
+            border-color: #0284c7;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
+        }
+
         .metric-label {
-            font-size: 0.73rem;
-            color: #94a3b8;
-            margin-bottom: 5px;
+            font-size: 0.76rem;
+            color: var(--sc-text-muted);
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-family: ui-monospace, monospace;
+            font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, monospace;
+            font-weight: 600;
         }
         .metric-value {
             font-family: "JetBrains Mono", ui-monospace, monospace;
-            font-size: 0.95rem;
+            font-size: 0.98rem;
             font-weight: 600;
-            color: #f1f5f9;
+            color: var(--sc-text-main);
             word-break: break-all;
+            letter-spacing: -0.01em;
         }
-        .metric-value.cyan { color: #22d3ee; }
-        .metric-value.emerald { color: #34d399; }
-        .metric-value.amber { color: #fbbf24; }
 
-        .binary-byte-box {
+        /* Dual-Mode Metric Value Color Accents */
+        html.dark .metric-val-cyan { color: #38bdf8 !important; }
+        html.dark .metric-val-green { color: #34d399 !important; }
+        html.dark .metric-val-amber { color: #fbbf24 !important; }
+        html.dark .metric-val-rose { color: #fb7185 !important; }
+        html.dark .metric-val-purple { color: #c084fc !important; }
+
+        html:not(.dark) .metric-val-cyan { color: #0369a1 !important; }
+        html:not(.dark) .metric-val-green { color: #047857 !important; }
+        html:not(.dark) .metric-val-amber { color: #92400e !important; }
+        html:not(.dark) .metric-val-rose { color: #b91c1c !important; }
+        html:not(.dark) .metric-val-purple { color: #6d28d9 !important; }
+
+        /* Copy Button in Metric Card */
+        .metric-copy-btn {
+            padding: 3px 8px;
+            min-height: 26px;
+            border-radius: 5px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            line-height: 1.2;
+        }
+        html.dark .metric-copy-btn {
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+        }
+        html.dark .metric-copy-btn:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #38bdf8;
+        }
+        html:not(.dark) .metric-copy-btn {
+            color: #0369a1;
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+        }
+        html:not(.dark) .metric-copy-btn:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+        }
+
+        /* Binary Breakdown Visualization */
+        .bit-container {
+            margin: 0 18px 18px 18px;
+            padding: 16px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+        html.dark .bit-container {
+            background: #050a16;
+            border: 1px solid var(--sc-border);
+        }
+        html:not(.dark) .bit-container {
+            background: #f8fafc;
+            border: 1px solid var(--sc-border);
+        }
+
+        .bit-row {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
-            background: #030712;
-            padding: 10px 14px;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 0;
+            font-family: "JetBrains Mono", ui-monospace, monospace;
+            border-bottom: 1px dashed var(--sc-border-subtle);
+        }
+        .bit-row:last-child {
+            border-bottom: none;
+        }
+        .bit-row-label {
+            width: 80px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--sc-text-muted);
+            flex-shrink: 0;
+        }
+        .bit-groups {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 2px;
+            max-width: 100%;
+        }
+        .bit-byte {
+            display: flex;
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 3px 5px;
+            border-radius: 6px;
+            border: 1px solid var(--sc-border-subtle);
+        }
+        html:not(.dark) .bit-byte {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+        }
+        .bit-cell {
+            width: 15px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 3px;
+            transition: background 0.1s ease;
+        }
+
+        /* Bit Colors Dual Mode */
+        html.dark .bit-net {
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.18);
+        }
+        html.dark .bit-host {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.15);
+        }
+        html.dark .bit-mask-1 {
+            color: #34d399;
+            background: rgba(52, 211, 153, 0.18);
+        }
+        html.dark .bit-mask-0 {
+            color: #94a3b8;
+            background: rgba(148, 163, 184, 0.12);
+        }
+
+        html:not(.dark) .bit-net {
+            color: #0369a1;
+            background: #e0f2fe;
+        }
+        html:not(.dark) .bit-host {
+            color: #92400e;
+            background: #fef3c7;
+        }
+        html:not(.dark) .bit-mask-1 {
+            color: #047857;
+            background: #d1fae5;
+        }
+        html:not(.dark) .bit-mask-0 {
+            color: #334155;
+            background: #f1f5f9;
+        }
+
+        /* IPv6 Hextet Grid Visualization */
+        .v6-hextet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        @media (max-width: 480px) {
+            .v6-hextet-grid {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            }
+        }
+        .v6-hextet-card {
+            padding: 10px;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+            transition: all 0.15s ease;
             font-family: "JetBrains Mono", ui-monospace, monospace;
         }
-        .bit-net { color: #22d3ee; font-weight: 700; }
-        .bit-host { color: #6b7280; }
+        html.dark .v6-hextet-card {
+            background: #091224;
+            border: 1px solid var(--sc-border);
+        }
+        html:not(.dark) .v6-hextet-card {
+            background: #ffffff;
+            border: 1px solid var(--sc-border);
+        }
+
+        html.dark .v6-hextet-card.is-net {
+            border-color: rgba(56, 189, 248, 0.5) !important;
+            background: rgba(56, 189, 248, 0.1) !important;
+        }
+        html.dark .v6-hextet-card.is-mixed {
+            border-color: rgba(251, 191, 36, 0.5) !important;
+            background: rgba(251, 191, 36, 0.1) !important;
+        }
+        html:not(.dark) .v6-hextet-card.is-net {
+            border-color: #0284c7 !important;
+            background: #e0f2fe !important;
+        }
+        html:not(.dark) .v6-hextet-card.is-mixed {
+            border-color: #d97706 !important;
+            background: #fef3c7 !important;
+        }
+        .v6-hextet-card.is-host {
+            opacity: 0.85;
+        }
+
+        /* Tables Dual Mode */
+        .custom-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+            border: 1px solid var(--sc-table-border);
+            max-width: 100%;
+        }
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            text-align: left;
+            font-family: "JetBrains Mono", ui-monospace, monospace;
+        }
+        .custom-table th {
+            padding: 12px 14px;
+            font-weight: 600;
+            background: var(--sc-table-th);
+            color: var(--sc-text-muted);
+            border-bottom: 1px solid var(--sc-table-border);
+            white-space: nowrap;
+        }
+        .custom-table td {
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--sc-table-border);
+            color: var(--sc-text-main);
+            white-space: nowrap;
+            transition: background 0.1s ease;
+        }
+        .custom-table tr:hover td {
+            background: var(--sc-table-tr-hover);
+        }
+        .custom-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Active highlight in cheatsheet table */
+        html.dark .custom-table tr.row-active td {
+            background: rgba(56, 189, 248, 0.15) !important;
+            font-weight: 600;
+        }
+        html:not(.dark) .custom-table tr.row-active td {
+            background: #e0f2fe !important;
+            font-weight: 600;
+        }
+
+        /* Input Controls Integration for Dual Mode */
+        html.dark .el-input__inner,
+        html.dark .el-textarea__inner {
+            background-color: #060c18 !important;
+            border-color: #1e2e4f !important;
+            color: #f1f5f9 !important;
+        }
+        html.dark .el-input-group__prepend {
+            background-color: #101c34 !important;
+            border-color: #1e2e4f !important;
+            color: #38bdf8 !important;
+            font-weight: 700;
+        }
+
+        /* Summary Info Banner */
+        .info-banner {
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 0.86rem;
+            line-height: 1.6;
+            transition: all 0.2s ease;
+        }
+        html.dark .info-banner {
+            background: #081122;
+            border: 1px solid var(--sc-border);
+            color: #cbd5e1;
+        }
+        html:not(.dark) .info-banner {
+            background: #f1f5f9;
+            border: 1px solid var(--sc-border);
+            color: #1e293b;
+        }
+
+        /* Result Check Card */
+        .check-result-box {
+            border-radius: 10px;
+            padding: 16px;
+            font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, monospace;
+            transition: all 0.2s ease;
+        }
+        html.dark .check-result-box.inside {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+        }
+        html.dark .check-result-box.outside {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(251, 113, 133, 0.4);
+        }
+        html:not(.dark) .check-result-box.inside {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+        }
+        html:not(.dark) .check-result-box.outside {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+        html.dark .check-result-title {
+            color: #f8fafc;
+        }
+        html:not(.dark) .check-result-title {
+            color: #0f172a;
+        }
+
+        /* Engine Badge */
+        .engine-badge {
+            font-size: 0.74rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        html.dark .engine-badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+        html:not(.dark) .engine-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 768px) {
+            .tool-dashboard {
+                padding: 12px 14px;
+                gap: 12px;
+            }
+            .dashboard-group {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .metrics-grid {
+                padding: 12px;
+                gap: 8px;
+            }
+            .bit-container {
+                margin: 0 12px 12px 12px;
+                padding: 12px;
+            }
+            .sc-panel-content {
+                padding: 14px;
+            }
+            .sc-panel-header {
+                padding: 12px 14px;
+            }
+        }
     </style>
 
     <meta property="og:type" content="website" />
@@ -158,59 +799,59 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-<main class="main-body tool-page-body">
+<main class="main-body tool-page-body" id="app">
     <div class="tool-body">
         <div class="card-model">
             <div class="card-body">
                 <div class="tool-head">
-                    <h1 class="title">IP 子网掩码与 CIDR 计算器 (Subnet Calculator)</h1>
+                    <h1 class="title">IP 子网掩码与 CIDR 计算器 (IPv4 / IPv6 Subnet Calculator)</h1>
                 </div>
                 <div class="description">
-                    专为网络工程师、云计算运维与网络开发者打造的专业 IP 计算器，深度集成 <strong style="color: #38bdf8;">ipaddr.js</strong> 权威 IP 解析库。全面支持 <strong style="color: #38bdf8;">IPv4</strong> 与 <strong style="color: #34d399;">IPv6</strong> 网段自动推导、网络/广播地址、首末可用主机、通配符反掩码、32位与128位二进制比特展开高亮、多级子网划分规划器与 IP 归属检测。
+                    专为网络工程师、云计算运维与网络开发者打造的专业 IP 计算器，深度集成 <strong class="sc-strong-cyan">ipaddr.js</strong> 权威 IP 解析库。全面支持 <strong class="sc-strong-cyan">IPv4</strong> 与 <strong class="sc-strong-green">IPv6</strong> 网段自动推导、网络/广播地址、首末可用主机、通配符反掩码、32位与128位二进制比特展开高亮、多级子网划分规划器与 IP 归属检测。
                 </div>
 
-                <!-- 顶层预设与快捷操作栏 -->
-                <div class="toolbar-strip">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 0.78rem; color: #94a3b8; font-weight: 600;">协议版本:</span>
+                <!-- 顶层控制面板与功能导航栏 -->
+                <div class="tool-dashboard">
+                    <div class="dashboard-group">
+                        <span class="dashboard-label">协议版本:</span>
                         <el-radio-group v-model="ipVersion" size="small" @change="handleVersionSwitch">
                             <el-radio-button label="ipv4">IPv4 (32-bit)</el-radio-button>
                             <el-radio-button label="ipv6">IPv6 (128-bit)</el-radio-button>
                         </el-radio-group>
+
+                        <el-dropdown @command="loadPreset" trigger="click">
+                            <el-button size="small" type="primary" plain>
+                                常用网络预设 <i class="el-icon--right">▼</i>
+                            </el-button>
+                            <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_homeC">Class C 典型局域网 (192.168.1.0/24)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_corpB">Class B 企业办公网 (172.16.0.0/16)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_cloudA">Class A 大型云专网 (10.0.0.0/8)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_k8s">K8s/Docker 容器集群网段 (172.20.0.0/20)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_p2p">点对点路由互联链路 (192.168.10.1/30)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_rfc3021">RFC 3021 31位链路 (10.0.0.0/31)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_cgnat">运营商级 CGNAT 网段 (100.64.0.1/10)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_publicDns">Google DNS 单主机 (8.8.8.8/32)</el-dropdown-item>
+
+                                    <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_gua64">全球单播 GUA 标准子网 (2001:db8:1::1/64)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_corp48">企业总部分配前缀 (2001:db8:acad::/48)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_isp56">宽带运营商分配 (240e:380:1234::/56)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_ula">RFC 4193 唯一私有 ULA (fd00:abcd:1234::1/64)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_linkLocal">链路本地 Link-Local (fe80::1/64)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_cfDns">Cloudflare DNS (2606:4700:4700::1111/128)</el-dropdown-item>
+                                    <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_loopback">IPv6 回环地址 (::1/128)</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </template>
+                        </el-dropdown>
+
+                        <el-button size="small" type="success" plain @click="copyAllSummary">复制全部参数</el-button>
+                        <el-button size="small" type="info" plain @click="exportMarkdown">导出 Markdown</el-button>
+                        <el-button size="small" type="danger" plain @click="resetForm">重置</el-button>
                     </div>
 
-                    <el-dropdown @command="loadPreset" trigger="click">
-                        <el-button size="small" type="primary">
-                            常用网络预设 <i class="el-icon--right">▼</i>
-                        </el-button>
-                        <template #dropdown>
-                            <el-dropdown-menu>
-                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_homeC">Class C 典型局域网 (192.168.1.0/24)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_corpB">Class B 企业办公网 (172.16.0.0/16)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_cloudA">Class A 大型云专网 (10.0.0.0/8)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_k8s">K8s/Docker 容器集群网段 (172.20.0.0/20)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_p2p">点对点路由互联链路 (192.168.10.1/30)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_rfc3021">RFC 3021 31位链路 (10.0.0.0/31)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_cgnat">运营商级 CGNAT 网段 (100.64.0.1/10)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv4'" command="v4_publicDns">Google DNS 单主机 (8.8.8.8/32)</el-dropdown-item>
-
-                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_gua64">全球单播 GUA 标准子网 (2001:db8:1::1/64)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_corp48">企业总部分配前缀 (2001:db8:acad::/48)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_isp56">宽带运营商分配 (240e:380:1234::/56)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_ula">RFC 4193 唯一私有 ULA (fd00:abcd:1234::1/64)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_linkLocal">链路本地 Link-Local (fe80::1/64)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_cfDns">Cloudflare DNS (2606:4700:4700::1111/128)</el-dropdown-item>
-                                <el-dropdown-item v-if="ipVersion === 'ipv6'" command="v6_loopback">IPv6 回环地址 (::1/128)</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </template>
-                    </el-dropdown>
-
-                    <el-button size="small" type="success" plain @click="copyAllSummary">复制全部计算参数</el-button>
-                    <el-button size="small" type="info" plain @click="exportMarkdown">导出 Markdown 报告</el-button>
-                    <el-button size="small" type="danger" plain @click="resetForm">重置</el-button>
-
-                    <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 0.75rem; color: #94a3b8;">功能视图:</span>
+                    <div class="dashboard-group" style="margin-left: auto;">
+                        <span class="dashboard-label">功能视图:</span>
                         <el-radio-group v-model="activeTab" size="small">
                             <el-radio-button label="calc">子网推导计算</el-radio-button>
                             <el-radio-button label="subnetting">子网划分规划</el-radio-button>
@@ -223,18 +864,18 @@
                 <!-- 视图一：主计算器与二进制展开 -->
                 <div v-show="activeTab === 'calc'" class="subnet-grid">
                     <!-- 左侧：输入与控制面板 -->
-                    <div class="glass-panel">
-                        <div class="glass-header">
-                            
-                            <span style="font-size: 0.72rem; color: #38bdf8; font-family: ui-monospace, monospace;">
-                                Powered by ipaddr.js
-                            </span>
+                    <div class="sc-panel">
+                        <div class="sc-panel-header">
+                            <div class="sc-panel-title">
+                                <span>⚙️ 网络参数与属性诊断</span>
+                            </div>
+                            <span class="engine-badge">Powered by ipaddr.js</span>
                         </div>
 
                         <!-- IPv4 输入界面 -->
-                        <div v-if="ipVersion === 'ipv4'" style="padding: 16px; background: #090f1d; display: flex; flex-direction: column; gap: 14px;">
+                        <div v-if="ipVersion === 'ipv4'" class="sc-panel-content">
                             <div>
-                                <label style="display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace;">
+                                <label style="display: block; font-size: 0.82rem; color: var(--sc-text-muted); margin-bottom: 6px; font-family: ui-monospace, monospace; font-weight: 600;">
                                     IPv4 地址 (支持带 /CIDR 如 192.168.1.1/24)
                                 </label>
                                 <el-input
@@ -249,10 +890,10 @@
 
                             <div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                    <label style="font-size: 0.78rem; color: #94a3b8; font-family: ui-monospace, monospace;">
-                                        CIDR 掩码位: <span style="color: #38bdf8; font-weight: 700; font-size: 0.92rem;">/{{ v4Cidr }}</span>
+                                    <label style="font-size: 0.82rem; color: var(--sc-text-muted); font-family: ui-monospace, monospace; font-weight: 600;">
+                                        CIDR 掩码位: <span style="color: var(--sc-accent-cyan); font-weight: 700; font-size: 0.95rem;">/{{ v4Cidr }}</span>
                                     </label>
-                                    <span style="font-size: 0.75rem; color: #34d399; font-family: 'JetBrains Mono', monospace;">{{ v4MaskDec }}</span>
+                                    <span style="font-size: 0.82rem; color: var(--sc-accent-green); font-family: 'JetBrains Mono', monospace; font-weight: 600;">{{ v4MaskDec }}</span>
                                 </div>
                                 <el-slider
                                     v-model="v4Cidr"
@@ -273,8 +914,8 @@
                             </div>
 
                             <div>
-                                <label style="display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace;">
-                                    或者选择/输入点分十进制子网掩码 (Subnet Mask)
+                                <label style="display: block; font-size: 0.82rem; color: var(--sc-text-muted); margin-bottom: 6px; font-family: ui-monospace, monospace; font-weight: 600;">
+                                    或选择点分十进制掩码 (Subnet Mask)
                                 </label>
                                 <el-select v-model="v4Cidr" @change="handleCidrChange" style="width: 100%;">
                                     <el-option
@@ -286,27 +927,27 @@
                                 </el-select>
                             </div>
 
-                            <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px; padding: 12px;">
-                                <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; font-weight: 600;">IPv4 属性诊断与分类:</div>
-                                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+                            <div class="diagnosis-box">
+                                <div style="font-size: 0.78rem; color: var(--sc-text-muted); margin-bottom: 8px; font-weight: 600;">IPv4 属性诊断与分类:</div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
                                     <span :class="['type-badge', v4IpAnalysis.badgeClass]">{{ v4IpAnalysis.type }}</span>
                                     <span class="type-badge badge-special" v-if="v4IpAnalysis.isPrivate">RFC 1918 私网</span>
                                     <span class="type-badge badge-public" v-else-if="v4IpAnalysis.isPublic">公网可路由</span>
-                                    <span style="font-size: 0.75rem; color: #cbd5e1; font-family: 'JetBrains Mono', monospace; margin-left: auto;">
+                                    <span style="font-size: 0.78rem; color: var(--sc-text-muted); font-family: 'JetBrains Mono', monospace; margin-left: auto; font-weight: 600;">
                                         16进制: 0x{{ v4HexIp }}
                                     </span>
                                 </div>
                             </div>
 
-                            <div v-if="parseError" style="color: #f87171; font-size: 0.76rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; padding: 8px;">
+                            <div v-if="parseError" style="color: var(--sc-accent-rose); font-size: 0.82rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px; padding: 10px;">
                                 ⚠️ {{ parseError }}
                             </div>
                         </div>
 
                         <!-- IPv6 输入界面 -->
-                        <div v-else style="padding: 16px; background: #090f1d; display: flex; flex-direction: column; gap: 14px;">
+                        <div v-else class="sc-panel-content">
                             <div>
-                                <label style="display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace;">
+                                <label style="display: block; font-size: 0.82rem; color: var(--sc-text-muted); margin-bottom: 6px; font-family: ui-monospace, monospace; font-weight: 600;">
                                     IPv6 地址 (支持带 /Prefix 如 2001:db8::1/64)
                                 </label>
                                 <el-input
@@ -321,10 +962,10 @@
 
                             <div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                    <label style="font-size: 0.78rem; color: #94a3b8; font-family: ui-monospace, monospace;">
-                                        CIDR 前缀长度: <span style="color: #38bdf8; font-weight: 700; font-size: 0.92rem;">/{{ v6Prefix }}</span>
+                                    <label style="font-size: 0.82rem; color: var(--sc-text-muted); font-family: ui-monospace, monospace; font-weight: 600;">
+                                        CIDR 前缀长度: <span style="color: var(--sc-accent-cyan); font-weight: 700; font-size: 0.95rem;">/{{ v6Prefix }}</span>
                                     </label>
-                                    <span style="font-size: 0.75rem; color: #34d399; font-family: 'JetBrains Mono', monospace;">
+                                    <span style="font-size: 0.82rem; color: var(--sc-accent-green); font-family: 'JetBrains Mono', monospace; font-weight: 600;">
                                         主机位数: {{ 128 - v6Prefix }} bits
                                     </span>
                                 </div>
@@ -345,28 +986,30 @@
                                 </div>
                             </div>
 
-                            <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px; padding: 12px;">
-                                <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; font-weight: 600;">IPv6 属性诊断与作用域:</div>
-                                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+                            <div class="diagnosis-box">
+                                <div style="font-size: 0.78rem; color: var(--sc-text-muted); margin-bottom: 8px; font-weight: 600;">IPv6 属性诊断与作用域:</div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
                                     <span :class="['type-badge', v6IpAnalysis.badgeClass]">{{ v6IpAnalysis.type }}</span>
                                     <span class="type-badge badge-special" v-if="v6IpAnalysis.scope">{{ v6IpAnalysis.scope }}</span>
-                                    <span style="font-size: 0.75rem; color: #cbd5e1; font-family: 'JetBrains Mono', monospace; margin-left: auto;">
-                                        RFC 规范: {{ v6IpAnalysis.rfc }}
+                                    <span style="font-size: 0.78rem; color: var(--sc-text-muted); font-family: 'JetBrains Mono', monospace; margin-left: auto; font-weight: 600;">
+                                        RFC: {{ v6IpAnalysis.rfc }}
                                     </span>
                                 </div>
                             </div>
 
-                            <div v-if="parseError" style="color: #f87171; font-size: 0.76rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; padding: 8px;">
+                            <div v-if="parseError" style="color: var(--sc-accent-rose); font-size: 0.82rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px; padding: 10px;">
                                 ⚠️ {{ parseError }}
                             </div>
                         </div>
                     </div>
 
                     <!-- 右侧：核心推导指标与二进制展开看板 -->
-                    <div class="glass-panel">
-                        <div class="glass-header">
-                            
-                            <span style="font-size: 0.72rem; color: #34d399; font-family: 'JetBrains Mono', monospace;">
+                    <div class="sc-panel">
+                        <div class="sc-panel-header">
+                            <div class="sc-panel-title">
+                                <span>📊 推导结果与二进制结构</span>
+                            </div>
+                            <span class="type-badge badge-public" style="font-size: 0.82rem; font-weight: 700;">
                                 {{ ipVersion === 'ipv4' ? calcResultV4.cidrNotation : calcResultV6.cidrNotation }}
                             </span>
                         </div>
@@ -374,105 +1017,141 @@
                         <!-- IPv4 结果卡片网格 -->
                         <div v-if="ipVersion === 'ipv4'" class="metrics-grid">
                             <div class="metric-card">
-                                <div class="metric-label">网络地址 (Network ID) <el-button type="text" size="small" @click="copyText(calcResultV4.networkIp)">复制</el-button></div>
+                                <div class="metric-label">
+                                    <span>网络地址 (Network ID)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV4.networkIp)">复制</button>
+                                </div>
                                 <div class="metric-value">{{ calcResultV4.networkIp || '—' }}</div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">广播地址 (Broadcast) <el-button type="text" size="small" @click="copyText(calcResultV4.broadcastIp)">复制</el-button></div>
+                                <div class="metric-label">
+                                    <span>广播地址 (Broadcast)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV4.broadcastIp)">复制</button>
+                                </div>
                                 <div class="metric-value metric-val-rose">{{ calcResultV4.broadcastIp || '—' }}</div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">首个可用主机 (First Host) <el-button type="text" size="small" @click="copyText(calcResultV4.firstHost)">复制</el-button></div>
+                                <div class="metric-label">
+                                    <span>首个可用主机 (First Host)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV4.firstHost)">复制</button>
+                                </div>
                                 <div class="metric-value metric-val-green">{{ calcResultV4.firstHost || '—' }}</div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">末尾可用主机 (Last Host) <el-button type="text" size="small" @click="copyText(calcResultV4.lastHost)">复制</el-button></div>
+                                <div class="metric-label">
+                                    <span>末尾可用主机 (Last Host)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV4.lastHost)">复制</button>
+                                </div>
                                 <div class="metric-value metric-val-green">{{ calcResultV4.lastHost || '—' }}</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">可用主机总数 (Usable Hosts)</div>
-                                <div class="metric-value metric-val-amber">{{ calcResultV4.usableHostsFormatted }} <span style="font-size: 0.7rem; color: #94a3b8; font-weight: normal;">台</span></div>
+                                <div class="metric-value metric-val-amber">{{ calcResultV4.usableHostsFormatted }} <span style="font-size: 0.74rem; color: var(--sc-text-muted); font-weight: normal;">台</span></div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">掩码总 IP 数 (Total IPs)</div>
-                                <div class="metric-value">{{ calcResultV4.totalIpsFormatted }} <span style="font-size: 0.7rem; color: #94a3b8; font-weight: normal;">个</span></div>
+                                <div class="metric-value">{{ calcResultV4.totalIpsFormatted }} <span style="font-size: 0.74rem; color: var(--sc-text-muted); font-weight: normal;">个</span></div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">十进制子网掩码 (Subnet Mask) <el-button type="text" size="small" @click="copyText(calcResultV4.subnetMask)">复制</el-button></div>
+                                <div class="metric-label">
+                                    <span>十进制掩码 (Subnet Mask)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV4.subnetMask)">复制</button>
+                                </div>
                                 <div class="metric-value">{{ calcResultV4.subnetMask || '—' }}</div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">通配符反掩码 (Wildcard Mask) <el-button type="text" size="small" @click="copyText(calcResultV4.wildcardMask)">复制</el-button></div>
+                                <div class="metric-label">
+                                    <span>通配符反掩码 (Wildcard)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV4.wildcardMask)">复制</button>
+                                </div>
                                 <div class="metric-value metric-val-purple">{{ calcResultV4.wildcardMask || '—' }}</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">十六进制掩码 (Hex Mask)</div>
-                                <div class="metric-value" style="font-size: 0.85rem;">0x{{ calcResultV4.hexMask || '—' }}</div>
+                                <div class="metric-value" style="font-size: 0.9rem;">0x{{ calcResultV4.hexMask || '—' }}</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">反向 DNS 指针 (in-addr.arpa)</div>
-                                <div class="metric-value" style="font-size: 0.73rem; color: #cbd5e1;">{{ calcResultV4.inAddrArpa || '—' }}</div>
+                                <div class="metric-value" style="font-size: 0.76rem; color: var(--sc-text-muted);">{{ calcResultV4.inAddrArpa || '—' }}</div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">IPv4 映射 IPv6 (IPv4-Mapped) <el-button type="text" size="small" @click="copyText(calcResultV4.ipv4Mapped)">复制</el-button></div>
-                                <div class="metric-value metric-val-cyan" style="font-size: 0.82rem;">{{ calcResultV4.ipv4Mapped || '—' }}</div>
+                                <div class="metric-label">
+                                    <span>IPv4-Mapped IPv6</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV4.ipv4Mapped)">复制</button>
+                                </div>
+                                <div class="metric-value metric-val-cyan" style="font-size: 0.85rem;">{{ calcResultV4.ipv4Mapped || '—' }}</div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">整数形式 (32-bit Integer)</div>
-                                <div class="metric-value" style="font-size: 0.82rem; color: #94a3b8;">{{ calcResultV4.ipInt !== undefined ? calcResultV4.ipInt : '—' }}</div>
+                                <div class="metric-label">32位整数形式 (Integer)</div>
+                                <div class="metric-value" style="font-size: 0.85rem; color: var(--sc-text-muted);">{{ calcResultV4.ipInt !== undefined ? calcResultV4.ipInt : '—' }}</div>
                             </div>
                         </div>
 
                         <!-- IPv6 结果卡片网格 -->
                         <div v-else class="metrics-grid">
                             <div class="metric-card" style="grid-column: span 2;">
-                                <div class="metric-label">标准压缩格式 (Compressed RFC 5952) <el-button type="text" size="small" @click="copyText(calcResultV6.compressed)">复制</el-button></div>
+                                <div class="metric-label">
+                                    <span>标准压缩格式 (Compressed RFC 5952)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV6.compressed)">复制</button>
+                                </div>
                                 <div class="metric-value metric-val-cyan">{{ calcResultV6.compressed || '—' }}</div>
                             </div>
                             <div class="metric-card" style="grid-column: span 2;">
-                                <div class="metric-label">完整展开格式 (Expanded 32-Hex) <el-button type="text" size="small" @click="copyText(calcResultV6.expanded)">复制</el-button></div>
-                                <div class="metric-value" style="font-size: 0.78rem;">{{ calcResultV6.expanded || '—' }}</div>
+                                <div class="metric-label">
+                                    <span>完整展开格式 (Expanded 32-Hex)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV6.expanded)">复制</button>
+                                </div>
+                                <div class="metric-value" style="font-size: 0.82rem;">{{ calcResultV6.expanded || '—' }}</div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">网络前缀起始 (Prefix Start) <el-button type="text" size="small" @click="copyText(calcResultV6.network)">复制</el-button></div>
-                                <div class="metric-value metric-val-green" style="font-size: 0.82rem;">{{ calcResultV6.network || '—' }}</div>
+                                <div class="metric-label">
+                                    <span>网络前缀起始 (Prefix Start)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV6.network)">复制</button>
+                                </div>
+                                <div class="metric-value metric-val-green" style="font-size: 0.86rem;">{{ calcResultV6.network || '—' }}</div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">网段末尾边界 (Range End) <el-button type="text" size="small" @click="copyText(calcResultV6.lastAddress)">复制</el-button></div>
-                                <div class="metric-value metric-val-rose" style="font-size: 0.82rem;">{{ calcResultV6.lastAddress || '—' }}</div>
+                                <div class="metric-label">
+                                    <span>网段末尾边界 (Range End)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV6.lastAddress)">复制</button>
+                                </div>
+                                <div class="metric-value metric-val-rose" style="font-size: 0.86rem;">{{ calcResultV6.lastAddress || '—' }}</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">前缀 / 掩码十六进制</div>
-                                <div class="metric-value" style="font-size: 0.76rem;">/{{ v6Prefix }} ({{ calcResultV6.maskShort }})</div>
+                                <div class="metric-value" style="font-size: 0.82rem;">/{{ v6Prefix }} ({{ calcResultV6.maskShort }})</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">可划分 /64 子网数</div>
-                                <div class="metric-value metric-val-amber" style="font-size: 0.85rem;">{{ calcResultV6.subnets64Count }}</div>
+                                <div class="metric-value metric-val-amber" style="font-size: 0.86rem;">{{ calcResultV6.subnets64Count }}</div>
                             </div>
                             <div class="metric-card" style="grid-column: span 2;">
                                 <div class="metric-label">地址总容量 (Total Address Space: 2^{{ 128 - v6Prefix }})</div>
-                                <div class="metric-value metric-val-purple" style="font-size: 0.8rem;">
+                                <div class="metric-value metric-val-purple" style="font-size: 0.82rem;">
                                     {{ calcResultV6.totalIpsText }}
                                 </div>
                             </div>
                             <div class="metric-card" style="grid-column: span 2;">
-                                <div class="metric-label">反向 DNS 指针记录 (ip6.arpa PTR) <el-button type="text" size="small" @click="copyText(calcResultV6.ip6Arpa)">复制</el-button></div>
-                                <div class="metric-value" style="font-size: 0.7rem; color: #cbd5e1;">{{ calcResultV6.ip6Arpa || '—' }}</div>
+                                <div class="metric-label">
+                                    <span>反向 DNS PTR (ip6.arpa)</span>
+                                    <button class="metric-copy-btn" @click="copyText(calcResultV6.ip6Arpa)">复制</button>
+                                </div>
+                                <div class="metric-value" style="font-size: 0.74rem; color: var(--sc-text-muted);">{{ calcResultV6.ip6Arpa || '—' }}</div>
                             </div>
                         </div>
 
                         <!-- IPv4 32位 二进制展开对比图 -->
                         <div v-if="ipVersion === 'ipv4'" class="bit-container">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                                <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 700; font-family: ui-monospace, monospace;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                                <span style="font-size: 0.82rem; color: var(--sc-text-main); font-weight: 700; font-family: ui-monospace, monospace;">
                                     32 位二进制比特展开结构 (32-Bit Binary Breakdown)
                                 </span>
-                                <div style="display: flex; gap: 12px; font-size: 0.72rem; font-family: ui-monospace, monospace;">
-                                    <span style="color: #38bdf8; display: flex; align-items: center; gap: 4px;">
-                                        <span style="width: 8px; height: 8px; background: #38bdf8; border-radius: 2px; display: inline-block;"></span> 网络位 (Network: {{ v4Cidr }} bits)
+                                <div style="display: flex; gap: 14px; font-size: 0.76rem; font-family: ui-monospace, monospace;">
+                                    <span style="color: var(--sc-accent-cyan); display: flex; align-items: center; gap: 5px; font-weight: 600;">
+                                        <span style="width: 10px; height: 10px; background: var(--sc-accent-cyan); border-radius: 2px; display: inline-block;"></span> 网络位 (Network: {{ v4Cidr }}b)
                                     </span>
-                                    <span style="color: #fbbf24; display: flex; align-items: center; gap: 4px;">
-                                        <span style="width: 8px; height: 8px; background: #fbbf24; border-radius: 2px; display: inline-block;"></span> 主机位 (Host: {{ 32 - v4Cidr }} bits)
+                                    <span style="color: var(--sc-accent-amber); display: flex; align-items: center; gap: 5px; font-weight: 600;">
+                                        <span style="width: 10px; height: 10px; background: var(--sc-accent-amber); border-radius: 2px; display: inline-block;"></span> 主机位 (Host: {{ 32 - v4Cidr }}b)
                                     </span>
                                 </div>
                             </div>
@@ -550,16 +1229,16 @@
 
                         <!-- IPv6 128位 8-Hextet 比特可视化看板 -->
                         <div v-else class="bit-container">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                                <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 700; font-family: ui-monospace, monospace;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                                <span style="font-size: 0.82rem; color: var(--sc-text-main); font-weight: 700; font-family: ui-monospace, monospace;">
                                     128 位 IPv6 字段结构 (8 Hextets / 128-Bit Structure)
                                 </span>
-                                <div style="display: flex; gap: 12px; font-size: 0.72rem; font-family: ui-monospace, monospace;">
-                                    <span style="color: #38bdf8; display: flex; align-items: center; gap: 4px;">
-                                        <span style="width: 8px; height: 8px; background: #38bdf8; border-radius: 2px; display: inline-block;"></span> 网络前缀 (Prefix: {{ v6Prefix }} bits)
+                                <div style="display: flex; gap: 14px; font-size: 0.76rem; font-family: ui-monospace, monospace;">
+                                    <span style="color: var(--sc-accent-cyan); display: flex; align-items: center; gap: 5px; font-weight: 600;">
+                                        <span style="width: 10px; height: 10px; background: var(--sc-accent-cyan); border-radius: 2px; display: inline-block;"></span> 网络前缀 (Prefix: {{ v6Prefix }}b)
                                     </span>
-                                    <span style="color: #fbbf24; display: flex; align-items: center; gap: 4px;">
-                                        <span style="width: 8px; height: 8px; background: #fbbf24; border-radius: 2px; display: inline-block;"></span> 接口标识/主机位 (Interface ID: {{ 128 - v6Prefix }} bits)
+                                    <span style="color: var(--sc-accent-amber); display: flex; align-items: center; gap: 5px; font-weight: 600;">
+                                        <span style="width: 10px; height: 10px; background: var(--sc-accent-amber); border-radius: 2px; display: inline-block;"></span> 接口标识/主机 (Interface ID: {{ 128 - v6Prefix }}b)
                                     </span>
                                 </div>
                             </div>
@@ -571,14 +1250,14 @@
                                     :key="'hextet-'+hIdx"
                                     :class="['v6-hextet-card', hexItem.typeClass]"
                                 >
-                                    <div style="font-size: 0.68rem; color: #94a3b8; margin-bottom: 2px;">
+                                    <div style="font-size: 0.72rem; color: var(--sc-text-muted); margin-bottom: 4px;">
                                         段 {{ hIdx + 1 }} ({{ hIdx * 16 }}~{{ (hIdx + 1) * 16 - 1 }})
                                     </div>
-                                    <div style="font-size: 0.95rem; font-weight: 700; color: #cbd5e1;">
+                                    <div style="font-size: 1rem; font-weight: 700; color: var(--sc-text-main);">
                                         {{ hexItem.hex }}
                                     </div>
-                                    <div style="font-size: 0.65rem; color: #64748b; margin-top: 2px; letter-spacing: 0.5px;">
-                                        <span style="color: #38bdf8;">{{ hexItem.prefixBits }}b</span> / <span style="color: #fbbf24;">{{ hexItem.hostBits }}b</span>
+                                    <div style="font-size: 0.72rem; margin-top: 4px; letter-spacing: 0.5px;">
+                                        <span style="color: var(--sc-accent-cyan); font-weight: 600;">{{ hexItem.prefixBits }}b</span> / <span style="color: var(--sc-accent-amber); font-weight: 600;">{{ hexItem.hostBits }}b</span>
                                     </div>
                                 </div>
                             </div>
@@ -587,41 +1266,43 @@
                 </div>
 
                 <!-- 视图二：子网划分规划器 (Subnetting Planner) -->
-                <div v-show="activeTab === 'subnetting'" class="glass-panel" style="margin-top: 16px;">
-                    <div class="glass-header">
-                        
-                        <span style="font-size: 0.72rem; color: #fbbf24; font-family: 'JetBrains Mono', monospace;">
+                <div v-show="activeTab === 'subnetting'" class="sc-panel" style="margin-top: 10px;">
+                    <div class="sc-panel-header">
+                        <div class="sc-panel-title">
+                            <span>📐 多级子网划分与容量规划器</span>
+                        </div>
+                        <span class="type-badge badge-linklocal" style="font-size: 0.82rem; font-weight: 700;">
                             基准网段: {{ ipVersion === 'ipv4' ? calcResultV4.networkIp + '/' + v4Cidr : calcResultV6.network + '/' + v6Prefix }}
                         </span>
                     </div>
 
-                    <div style="padding: 16px; background: #090f1d;">
+                    <div class="sc-panel-content">
                         <!-- IPv4 规划器控制 -->
-                        <div v-if="ipVersion === 'ipv4'" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 16px;">
+                        <div v-if="ipVersion === 'ipv4'" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center;">
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 0.78rem; color: #94a3b8;">规划划分方式:</span>
+                                <span class="dashboard-label">划分方式:</span>
                                 <el-radio-group v-model="v4SubnettingMode" size="small" @change="recomputeV4Subnets">
-                                    <el-radio-button label="byCount">按所需子网数量划分</el-radio-button>
-                                    <el-radio-button label="byHosts">按每个子网所需主机数划分</el-radio-button>
+                                    <el-radio-button label="byCount">按所需子网数</el-radio-button>
+                                    <el-radio-button label="byHosts">按每子网主机数</el-radio-button>
                                     <el-radio-button label="byCidr">指定新子网 CIDR</el-radio-button>
                                 </el-radio-group>
                             </div>
 
                             <div v-if="v4SubnettingMode === 'byCount'" style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 0.78rem; color: #94a3b8;">需要划分的子网数:</span>
+                                <span class="dashboard-label">划分数量:</span>
                                 <el-select v-model="v4TargetSubnetCount" size="small" style="width: 130px;" @change="recomputeV4Subnets">
                                     <el-option v-for="n in v4AvailableSubnetCounts" :key="n" :label="n + ' 个子网'" :value="n"></el-option>
                                 </el-select>
                             </div>
 
                             <div v-if="v4SubnettingMode === 'byHosts'" style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 0.78rem; color: #94a3b8;">每个子网所需主机数:</span>
+                                <span class="dashboard-label">单子网主机数:</span>
                                 <el-input-number v-model="v4TargetHostsPerSubnet" :min="1" :max="Math.max(1, calcResultV4.usableHosts)" size="small" @change="recomputeV4Subnets"></el-input-number>
                             </div>
 
                             <div v-if="v4SubnettingMode === 'byCidr'" style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 0.78rem; color: #94a3b8;">目标子网掩码:</span>
-                                <el-select v-model="v4PlannedCidr" size="small" style="width: 140px;" @change="recomputeV4Subnets">
+                                <span class="dashboard-label">目标掩码:</span>
+                                <el-select v-model="v4PlannedCidr" size="small" style="width: 150px;" @change="recomputeV4Subnets">
                                     <el-option
                                         v-for="c in v4SelectablePlannedCidrs"
                                         :key="'pc-'+c"
@@ -638,10 +1319,10 @@
                         </div>
 
                         <!-- IPv6 规划器控制 -->
-                        <div v-else style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 16px;">
+                        <div v-else style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center;">
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 0.78rem; color: #94a3b8;">划分目标子网前缀:</span>
-                                <el-select v-model="v6PlannedPrefix" size="small" style="width: 160px;" @change="recomputeV6Subnets">
+                                <span class="dashboard-label">目标子网前缀:</span>
+                                <el-select v-model="v6PlannedPrefix" size="small" style="width: 180px;" @change="recomputeV6Subnets">
                                     <el-option
                                         v-for="p in v6SelectablePrefixes"
                                         :key="'v6p-'+p"
@@ -658,20 +1339,20 @@
                         </div>
 
                         <!-- 规划总结说明 -->
-                        <div v-if="ipVersion === 'ipv4'" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.8rem; color: #cbd5e1;">
-                            IPv4 规划结果：将 <span style="color: #38bdf8; font-weight: 600;">{{ calcResultV4.networkIp }}/{{ v4Cidr }}</span> 划分为
-                            <span style="color: #fbbf24; font-weight: 600;">{{ v4GeneratedSubnets.length }}</span> 个子网，
-                            新子网掩码为 <span style="color: #34d399; font-weight: 600;">/{{ v4PlannedCidr }} ({{ v4PlannedMaskDec }})</span>，
-                            每个子网拥有 <span style="color: #c084fc; font-weight: 600;">{{ v4PlannedUsableHosts }}</span> 台可用主机。
+                        <div v-if="ipVersion === 'ipv4'" class="info-banner">
+                            IPv4 规划结果：将 <strong style="color: var(--sc-accent-cyan);">{{ calcResultV4.networkIp }}/{{ v4Cidr }}</strong> 划分为
+                            <strong style="color: var(--sc-accent-amber);">{{ v4GeneratedSubnets.length }}</strong> 个子网，
+                            新子网掩码为 <strong style="color: var(--sc-accent-green);">/{{ v4PlannedCidr }} ({{ v4PlannedMaskDec }})</strong>，
+                            每个子网拥有 <strong style="color: var(--sc-accent-purple);">{{ v4PlannedUsableHosts }}</strong> 台可用主机。
                         </div>
-                        <div v-else style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.8rem; color: #cbd5e1;">
-                            IPv6 规划结果：将 <span style="color: #38bdf8; font-weight: 600;">{{ calcResultV6.network }}/{{ v6Prefix }}</span> 划分为
-                            <span style="color: #fbbf24; font-weight: 600;">{{ v6PlannedTotalSubnetsText }}</span> 个 <span style="color: #34d399; font-weight: 600;">/{{ v6PlannedPrefix }}</span> 子网，
-                            每个子网拥有 <span style="color: #c084fc; font-weight: 600;">2^{{ 128 - v6PlannedPrefix }}</span> 个 IPv6 地址（下方展示前 128 个分配明细）。
+                        <div v-else class="info-banner">
+                            IPv6 规划结果：将 <strong style="color: var(--sc-accent-cyan);">{{ calcResultV6.network }}/{{ v6Prefix }}</strong> 划分为
+                            <strong style="color: var(--sc-accent-amber);">{{ v6PlannedTotalSubnetsText }}</strong> 个 <strong style="color: var(--sc-accent-green);">/{{ v6PlannedPrefix }}</strong> 子网，
+                            每个子网拥有 <strong style="color: var(--sc-accent-purple);">2^{{ 128 - v6PlannedPrefix }}</strong> 个 IPv6 地址（下方展示前 128 个分配明细）。
                         </div>
 
                         <!-- IPv4 子网明细表格 -->
-                        <div v-if="ipVersion === 'ipv4'" style="overflow-x: auto; max-height: 440px; border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px;">
+                        <div v-if="ipVersion === 'ipv4'" class="custom-table-wrapper" style="max-height: 460px; overflow-y: auto;">
                             <table class="custom-table">
                                 <thead>
                                     <tr>
@@ -686,23 +1367,23 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(sub, sIdx) in v4GeneratedSubnets" :key="'v4sub-'+sIdx">
-                                        <td style="color: #94a3b8;">{{ sIdx + 1 }}</td>
-                                        <td style="color: #38bdf8; font-weight: 600;">{{ sub.cidrStr }}</td>
+                                        <td style="color: var(--sc-text-muted);">{{ sIdx + 1 }}</td>
+                                        <td style="color: var(--sc-accent-cyan); font-weight: 600;">{{ sub.cidrStr }}</td>
                                         <td>{{ sub.network }}</td>
-                                        <td style="color: #34d399;">{{ sub.firstHost }}</td>
-                                        <td style="color: #34d399;">{{ sub.lastHost }}</td>
-                                        <td style="color: #fb7185;">{{ sub.broadcast }}</td>
-                                        <td style="color: #fbbf24;">{{ sub.usableHosts }}</td>
+                                        <td style="color: var(--sc-accent-green);">{{ sub.firstHost }}</td>
+                                        <td style="color: var(--sc-accent-green);">{{ sub.lastHost }}</td>
+                                        <td style="color: var(--sc-accent-rose);">{{ sub.broadcast }}</td>
+                                        <td style="color: var(--sc-accent-amber); font-weight: 600;">{{ sub.usableHosts }}</td>
                                     </tr>
                                     <tr v-if="v4GeneratedSubnets.length === 0">
-                                        <td colspan="7" style="text-align: center; color: #64748b; padding: 20px;">当前网段掩码过大（如 /31, /32），无法再继续细分子网</td>
+                                        <td colspan="7" style="text-align: center; color: var(--sc-text-sub); padding: 24px;">当前网段掩码过大（如 /31, /32），无法再继续细分子网</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- IPv6 子网明细表格 -->
-                        <div v-else style="overflow-x: auto; max-height: 440px; border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 6px;">
+                        <div v-else class="custom-table-wrapper" style="max-height: 460px; overflow-y: auto;">
                             <table class="custom-table">
                                 <thead>
                                     <tr>
@@ -716,15 +1397,15 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(sub, sIdx) in v6GeneratedSubnets" :key="'v6sub-'+sIdx">
-                                        <td style="color: #94a3b8;">{{ sIdx + 1 }}</td>
-                                        <td style="color: #38bdf8; font-weight: 600;">{{ sub.cidrStr }}</td>
-                                        <td style="color: #34d399;">{{ sub.network }}</td>
-                                        <td style="color: #fb7185;">{{ sub.lastAddr }}</td>
-                                        <td style="color: #c084fc;">{{ sub.capacityText }}</td>
-                                        <td style="color: #94a3b8; font-size: 0.75rem;">{{ sub.usageNote }}</td>
+                                        <td style="color: var(--sc-text-muted);">{{ sIdx + 1 }}</td>
+                                        <td style="color: var(--sc-accent-cyan); font-weight: 600;">{{ sub.cidrStr }}</td>
+                                        <td style="color: var(--sc-accent-green);">{{ sub.network }}</td>
+                                        <td style="color: var(--sc-accent-rose);">{{ sub.lastAddr }}</td>
+                                        <td style="color: var(--sc-accent-purple);">{{ sub.capacityText }}</td>
+                                        <td style="color: var(--sc-text-muted); font-size: 0.8rem;">{{ sub.usageNote }}</td>
                                     </tr>
                                     <tr v-if="v6GeneratedSubnets.length === 0">
-                                        <td colspan="6" style="text-align: center; color: #64748b; padding: 20px;">目标前缀必须大于当前前缀 /{{ v6Prefix }}</td>
+                                        <td colspan="6" style="text-align: center; color: var(--sc-text-sub); padding: 24px;">目标前缀必须大于当前前缀 /{{ v6Prefix }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -733,48 +1414,44 @@
                 </div>
 
                 <!-- 视图三：IP 归属与包含性检测 -->
-                <div v-show="activeTab === 'checker'" class="glass-panel" style="margin-top: 16px;">
-                    <div class="glass-header">
-                        
-                        <span style="font-size: 0.72rem; color: #34d399; font-family: 'JetBrains Mono', monospace;">
+                <div v-show="activeTab === 'checker'" class="sc-panel" style="margin-top: 10px;">
+                    <div class="sc-panel-header">
+                        <div class="sc-panel-title">
+                            <span>🔍 IP 归属与包含关系实时检测</span>
+                        </div>
+                        <span class="type-badge badge-public" style="font-size: 0.82rem; font-weight: 700;">
                             当前基准网段: {{ ipVersion === 'ipv4' ? calcResultV4.networkIp + '/' + v4Cidr : calcResultV6.network + '/' + v6Prefix }}
                         </span>
                     </div>
 
-                    <div style="padding: 16px; background: #090f1d;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="sc-panel-content">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
                             <!-- 单 IP 实时快速检测 -->
                             <div>
-                                <label style="display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace;">
+                                <label style="display: block; font-size: 0.82rem; color: var(--sc-text-muted); margin-bottom: 8px; font-family: ui-monospace, monospace; font-weight: 600;">
                                     单目标 IP 归属检测 (输入 IPv4 或 IPv6):
                                 </label>
-                                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                                <div style="display: flex; gap: 8px; margin-bottom: 14px;">
                                     <el-input v-model="targetCheckIp" placeholder="例如 192.168.1.55 或 2001:db8::55" clearable @keyup.enter="checkIpBelongs"></el-input>
                                     <el-button type="primary" @click="checkIpBelongs">立即检测</el-button>
                                 </div>
 
-                                <div v-if="checkResultStatus" :style="{
-                                    padding: '14px',
-                                    borderRadius: '6px',
-                                    background: checkResultStatus.isInside ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                                    border: '1px solid ' + (checkResultStatus.isInside ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'),
-                                    fontFamily: 'ui-monospace, monospace'
-                                }">
-                                    <div style="font-size: 0.95rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">
+                                <div v-if="checkResultStatus" :class="['check-result-box', checkResultStatus.isInside ? 'inside' : 'outside']">
+                                    <div class="check-result-title" style="font-size: 0.95rem; font-weight: 700; margin-bottom: 8px;">
                                         {{ checkResultStatus.isInside ? '✅ 目标 IP 属于当前基准网段！' : '❌ 目标 IP 不在当前基准网段内！' }}
                                     </div>
-                                    <div style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.6;">
-                                        测试 IP: <span style="font-weight: 600; color: #38bdf8;">{{ checkResultStatus.testedIp }}</span><br/>
-                                        基准网段: <span style="color: #34d399;">{{ checkResultStatus.baseCidr }}</span><br/>
-                                        网段地址范围: <span style="color: #fbbf24;">{{ checkResultStatus.rangeText }}</span><br/>
-                                        IP 角色判定: <span style="color: #c084fc;">{{ checkResultStatus.role }}</span>
+                                    <div style="font-size: 0.82rem; color: var(--sc-text-muted); line-height: 1.7;">
+                                        测试 IP: <strong style="color: var(--sc-accent-cyan);">{{ checkResultStatus.testedIp }}</strong><br/>
+                                        基准网段: <strong style="color: var(--sc-accent-green);">{{ checkResultStatus.baseCidr }}</strong><br/>
+                                        网段地址范围: <span style="color: var(--sc-accent-amber);">{{ checkResultStatus.rangeText }}</span><br/>
+                                        IP 角色判定: <strong style="color: var(--sc-accent-purple);">{{ checkResultStatus.role }}</strong>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- 批量 IP 快速诊断 -->
                             <div>
-                                <label style="display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace;">
+                                <label style="display: block; font-size: 0.82rem; color: var(--sc-text-muted); margin-bottom: 8px; font-family: ui-monospace, monospace; font-weight: 600;">
                                     批量 IP 归属快速诊断 (每行一个 IP):
                                 </label>
                                 <el-input
@@ -782,12 +1459,12 @@
                                     :rows="3"
                                     v-model="batchCheckIpText"
                                     placeholder="每行输入一个待检测的 IP 地址"
-                                    style="margin-bottom: 8px;"
+                                    style="margin-bottom: 10px;"
                                 ></el-input>
                                 <el-button size="small" type="primary" @click="runBatchCheck">执行批量检测</el-button>
 
-                                <div v-if="batchCheckResults.length > 0" style="margin-top: 10px; max-height: 180px; overflow-y: auto; border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 4px;">
-                                    <table class="custom-table" style="font-size: 0.75rem;">
+                                <div v-if="batchCheckResults.length > 0" class="custom-table-wrapper" style="margin-top: 12px; max-height: 200px; overflow-y: auto;">
+                                    <table class="custom-table" style="font-size: 0.8rem;">
                                         <thead>
                                             <tr>
                                                 <th>IP 地址</th>
@@ -797,13 +1474,13 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="(b, bIdx) in batchCheckResults" :key="'b-'+bIdx">
-                                                <td style="color: #38bdf8;">{{ b.ip }}</td>
+                                                <td style="color: var(--sc-accent-cyan); font-weight: 600;">{{ b.ip }}</td>
                                                 <td>
                                                     <span :class="['type-badge', b.isInside ? 'badge-private' : 'badge-reserved']">
                                                         {{ b.isInside ? '✅ 包含' : '❌ 未包含' }}
                                                     </span>
                                                 </td>
-                                                <td style="color: #cbd5e1;">{{ b.role }}</td>
+                                                <td style="color: var(--sc-text-muted);">{{ b.role }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -814,78 +1491,84 @@
                 </div>
 
                 <!-- 视图四：CIDR 掩码速查全量表 -->
-                <div v-show="activeTab === 'reference'" class="glass-panel" style="margin-top: 16px;">
-                    <div class="glass-header">
-                        
-                        <span style="font-size: 0.72rem; color: #94a3b8;">点击任意行可快速载入该掩码</span>
+                <div v-show="activeTab === 'reference'" class="sc-panel" style="margin-top: 10px;">
+                    <div class="sc-panel-header">
+                        <div class="sc-panel-title">
+                            <span>📖 CIDR 子网掩码全量对照速查表</span>
+                        </div>
+                        <span style="font-size: 0.8rem; color: var(--sc-text-muted);">点击任意行可快速载入该掩码至计算器</span>
                     </div>
 
                     <!-- IPv4 速查表 -->
-                    <div v-if="ipVersion === 'ipv4'" style="padding: 14px; background: #090f1d; overflow-x: auto; max-height: 520px;">
-                        <table class="custom-table">
-                            <thead>
-                                <tr>
-                                    <th>CIDR</th>
-                                    <th>子网掩码 (Subnet Mask)</th>
-                                    <th>通配符反掩码 (Wildcard)</th>
-                                    <th>总 IP 数</th>
-                                    <th>可用主机数</th>
-                                    <th>二进制掩码展开</th>
-                                    <th>常见用途 / 行业标准</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="item in v4MaskReferenceList"
-                                    :key="'ref-'+item.cidr"
-                                    :style="item.cidr === v4Cidr ? 'background: rgba(56, 189, 248, 0.15);' : ''"
-                                >
-                                    <td style="color: #38bdf8; font-weight: 700;">/{{ item.cidr }}</td>
-                                    <td>{{ item.mask }}</td>
-                                    <td style="color: #c084fc;">{{ item.wildcard }}</td>
-                                    <td>{{ item.totalIps }}</td>
-                                    <td style="color: #34d399; font-weight: 600;">{{ item.usableHosts }}</td>
-                                    <td style="font-size: 0.72rem; color: #64748b;">{{ item.binary }}</td>
-                                    <td style="color: #cbd5e1; font-size: 0.75rem;">{{ item.note }}</td>
-                                    <td>
-                                        <el-button type="text" size="small" @click="applyReferenceCidr(item.cidr)">应用</el-button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div v-if="ipVersion === 'ipv4'" class="sc-panel-content" style="padding: 14px;">
+                        <div class="custom-table-wrapper" style="max-height: 520px; overflow-y: auto;">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>CIDR</th>
+                                        <th>子网掩码 (Subnet Mask)</th>
+                                        <th>通配符反掩码 (Wildcard)</th>
+                                        <th>总 IP 数</th>
+                                        <th>可用主机数</th>
+                                        <th>二进制掩码展开</th>
+                                        <th>常见用途 / 行业标准</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="item in v4MaskReferenceList"
+                                        :key="'ref-'+item.cidr"
+                                        :class="{'row-active': item.cidr === v4Cidr}"
+                                    >
+                                        <td style="color: var(--sc-accent-cyan); font-weight: 700;">/{{ item.cidr }}</td>
+                                        <td>{{ item.mask }}</td>
+                                        <td style="color: var(--sc-accent-purple);">{{ item.wildcard }}</td>
+                                        <td>{{ item.totalIps }}</td>
+                                        <td style="color: var(--sc-accent-green); font-weight: 600;">{{ item.usableHosts }}</td>
+                                        <td style="font-size: 0.76rem; color: var(--sc-text-sub);">{{ item.binary }}</td>
+                                        <td style="color: var(--sc-text-muted); font-size: 0.8rem;">{{ item.note }}</td>
+                                        <td>
+                                            <button class="metric-copy-btn" @click="applyReferenceCidr(item.cidr)">应用</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- IPv6 速查表 -->
-                    <div v-else style="padding: 14px; background: #090f1d; overflow-x: auto; max-height: 520px;">
-                        <table class="custom-table">
-                            <thead>
-                                <tr>
-                                    <th>前缀 (Prefix)</th>
-                                    <th>前缀长度说明</th>
-                                    <th>子网总地址数</th>
-                                    <th>可划分 /64 子网数</th>
-                                    <th>标准分配场景 / 规划说明</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="item in v6PrefixReferenceList"
-                                    :key="'v6ref-'+item.prefix"
-                                    :style="item.prefix === v6Prefix ? 'background: rgba(56, 189, 248, 0.15);' : ''"
-                                >
-                                    <td style="color: #38bdf8; font-weight: 700;">/{{ item.prefix }}</td>
-                                    <td style="color: #34d399;">{{ item.name }}</td>
-                                    <td style="color: #c084fc;">{{ item.capacity }}</td>
-                                    <td style="color: #fbbf24;">{{ item.subnets64 }}</td>
-                                    <td style="color: #cbd5e1; font-size: 0.75rem;">{{ item.description }}</td>
-                                    <td>
-                                        <el-button type="text" size="small" @click="applyReferenceV6Prefix(item.prefix)">应用</el-button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div v-else class="sc-panel-content" style="padding: 14px;">
+                        <div class="custom-table-wrapper" style="max-height: 520px; overflow-y: auto;">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>前缀 (Prefix)</th>
+                                        <th>前缀长度说明</th>
+                                        <th>子网总地址数</th>
+                                        <th>可划分 /64 子网数</th>
+                                        <th>标准分配场景 / 规划说明</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="item in v6PrefixReferenceList"
+                                        :key="'v6ref-'+item.prefix"
+                                        :class="{'row-active': item.prefix === v6Prefix}"
+                                    >
+                                        <td style="color: var(--sc-accent-cyan); font-weight: 700;">/{{ item.prefix }}</td>
+                                        <td style="color: var(--sc-accent-green);">{{ item.name }}</td>
+                                        <td style="color: var(--sc-accent-purple);">{{ item.capacity }}</td>
+                                        <td style="color: var(--sc-accent-amber);">{{ item.subnets64 }}</td>
+                                        <td style="color: var(--sc-text-muted); font-size: 0.8rem;">{{ item.description }}</td>
+                                        <td>
+                                            <button class="metric-copy-btn" @click="applyReferenceV6Prefix(item.prefix)">应用</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -896,8 +1579,8 @@
 
 <script src="./lib/vue/vue.global.prod.js"></script>
 <script src="./lib/element-plus/index.js"></script>
-    <script src="./lib/element-plus/locale/en.js"></script>
-    <script src="./lib/element-plus/locale/zh-tw.js"></script>
+<script src="./lib/element-plus/locale/en.js"></script>
+<script src="./lib/element-plus/locale/zh-tw.js"></script>
 <script src="./lib/ipaddr/ipaddr.min.js"></script>
 <script src="./js/common.js"></script>
 
@@ -1362,7 +2045,7 @@
                 parseError.value = '';
                 const raw = val.trim();
                 if (raw.includes(':')) {
-                    // Auto switch to IPv6 mode!
+                    // Auto switch to IPv6 mode
                     ipVersion.value = 'ipv6';
                     inputV6Str.value = raw;
                     handleV6Change(raw);
@@ -1710,7 +2393,6 @@
                 const count = Number(totalSubnets < BigInt(limit) ? totalSubnets : BigInt(limit));
 
                 const list = [];
-                // Convert 8 parts to BigInt
                 let baseVal = 0n;
                 for (let p = 0; p < 8; p++) {
                     baseVal = (baseVal << 16n) | BigInt(parts[p]);
