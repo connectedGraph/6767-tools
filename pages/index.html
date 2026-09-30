@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./css/6767-site.css?v=20260905">
     <script src="./js/theme.js?v=20260905"></script>
     <script src="./js/i18n.js?v=20260905"></script>
+    <script src="./js/tools-api.js?v=20260905"></script>
     <style>
         :root {
             --home-primary: #0284c7;
@@ -1051,7 +1052,7 @@
                     </div>
                     <div class="dashboard-stats">
                         <div class="dashboard-stat-item" title="精选实用工具总量">
-                            <span class="stat-number stat-cyan" id="totalToolsCount">48</span>
+                            <span class="stat-number stat-cyan" id="totalToolsCount">0</span>
                             <span class="stat-label">款工具</span>
                         </div>
                         <div class="dashboard-stat-divider" aria-hidden="true"></div>
@@ -1106,18 +1107,7 @@
 </main>
 <script>
 var languageCode='zh', websiteRoot='', mainWebSiteHost='', webApiSiteHost='/api', staticSiteHost='', staticFileVersion='260728100716', phoneSmsEnable=0, wp='zp', ap='qx';
-var toolData=[
- {key:'brain',desc:'脑力训练',toolList:[['数字顺序记忆训练','number-sequence-memory','./img/brain/game-logo/szsxjy.png'],['舒尔特方格训练','shult-grid','./img/brain/game-logo/setfg.png'],['找不同的字','find-different-word','./img/brain/game-logo/zbtdz.png'],['复古推箱子 50 关益智挑战','sokoban','./img/icons/sokoban.svg'],['经典扫雷游戏','minesweeper','./img/icons/minesweeper.svg'],['在线数独游戏','sudoku','./img/icons/sudoku.svg'],['数字华容道','digital-huarong-road','./img/brain/game-logo/szhrd.png'],['2048','2048','./img/brain/game-logo/elsb.png']]},
- {key:'office',desc:'办公助手',toolList:[['文本去重与多维排序器','text-dedup-sort','./img/icons/text-dedup-sort.svg'],['文本分割、去重与序号清理器','text-cleaner','./img/icons/text-dedup-sort.svg'],['在线表格转换器','table-converter','./img/icons/table-converter.svg'],['人民币大写金额转换器','rmb-capital-converter','./img/icons/rmb-capital-converter.svg'],['综合字数与阅读时长统计','word-counter','./img/icons/word-counter.svg'],['现代简历制作与排版器','resume-maker','./img/icons/resume-maker.svg'],['转换大小写','convert-case','./img/icons/convert-case.svg'],['emoji表情大全','emoji','./img/icons/emoji.svg']]},
- {key:'image',desc:'图像',toolList:[['图片调色板提取器','color-palette-extractor','./img/icons/color-palette-extractor.svg'],['图像格式转换器','convert-image','./img/icons/convert-image.svg'],['压缩图像','compress-image','./img/icons/compress-image.svg'],['调整图像大小','resize-image','./img/icons/resize-image.svg'],['裁剪、编辑图像','crop-image','./img/icons/crop-image.svg']]},
- {key:'audio-and-video',desc:'音视频',toolList:[['白噪音与专注助眠多轨混音器','white-noise-player','./img/icons/white-noise-player.svg'],['免插件屏幕与窗口录制工具','screen-recorder','./img/icons/screen-recorder.svg'],['在线波形录音机与音频剪辑','voice-recorder','./img/icons/voice-recorder.svg']]},
- {key:'generate',desc:'生成',toolList:[['WiFi 扫码直连二维码生成器','wifi-qrcode','./img/icons/wifi-qrcode.svg'],['无障碍色彩对比度检测器 (WCAG)','contrast-checker','./img/icons/contrast-checker.svg'],['UUID / ULID / NanoID 批量生成器','uuid-generator','./img/icons/uuid-generator.svg'],['二维码生成器','qrcode','./img/icons/qrcode.svg'],['随机密码生成器','random-password','./img/icons/random-password.svg']]},
- {key:'code',desc:'程序员',toolList:[['IP 子网掩码与 CIDR 计算器','subnet-calculator','./img/icons/subnet-calculator.svg'],['JSON 格式化与高能工具箱','json-formatter','./img/icons/json-formatter.svg'],['JSON 文件合并器','json-merge','./img/icons/json-formatter.svg'],['源码批量替换器','source-replacer','./img/icons/replace-text.svg'],['localStorage 监听 Bookmarklet','localstorage-watcher','./img/icons/replace-text.svg'],['JWT 解码与调试器','jwt-debugger','./img/icons/jwt-debugger.svg'],['正则表达式测试器','regex-tester','./img/icons/regex-tester.svg'],['MD5加密','md5-encrypt','./img/icons/md5-encrypt.svg'],['base64编码解码','base64-encoder-decoder','./img/icons/base64-encoder-decoder.svg'],['时间戳转换','timestamp','./img/icons/timestamp.svg']]},
- {key:'study',desc:'学习',toolList:[['科学高级计算器','scientific-calculator','./img/icons/scientific-calculator.svg'],['长度单位转换器','length-converter','./img/icons/length-converter.svg'],['面积计算器','area-calculator','./img/icons/area-calculator.svg'],['圆周率查询','pi-query','./img/icons/pi-query.svg']]},
- {key:'life',desc:'生活',toolList:[['世界时钟与跨时区会议规划器','world-clock-planner','./img/icons/world-clock-planner.svg'],['中国亲戚关系称谓换算器','kinship-calculator','./img/icons/kinship-calculator.svg'],['日期间隔与重要日子倒计时','date-calculator','./img/icons/date-calculator.svg'],['年龄计算器','age','./img/icons/age.svg'],['贷款计算器','loan-calculator','./img/icons/loan-calculator.svg']]},
- {key:'ent',desc:'娱乐',toolList:[['像素画 / 8-bit 图标在线编辑器','pixel-art-maker','./img/icons/pixel-art-maker.svg'],['今天吃什么 / 帮我做决定','decision-maker','./img/icons/decision-maker.svg'],['幸运大转盘抽奖','lucky-wheel','./img/icons/lucky-wheel.svg'],['摩斯密码翻译器','morse-code-translator','./img/icons/morse-code-translator.svg']]},
- {key:'health',desc:'健康',toolList:[['科学每日饮水量计算器','water-intake-calculator','./img/icons/water-intake-calculator.svg'],['BMI指数计算','bmi','./img/icons/bmi.svg'],['基础代谢率(BMR)计算器','bmr','./img/icons/bmr.svg'],['标准体重计算器','weight','./img/icons/weight.svg'],['跑步卡路里消耗计算器','running-calorie','./img/icons/running-calorie.svg']]}
-];
+var toolData = [];
 
 var catIcons = {
     'brain': '🧠',
@@ -1142,8 +1132,18 @@ var catIcons = {
     var searchBtn = document.getElementById('homeSearchBtn');
     if (!container) return;
 
-    var totalTools = toolData.reduce(function(sum, cat) { return sum + cat.toolList.length; }, 0);
-    if (totalCountEl) totalCountEl.textContent = totalTools;
+    var totalTools = 0;
+
+    function updateTotalTools() {
+        totalTools = toolData.reduce(function(sum, cat) {
+            return sum + (Array.isArray(cat.toolList) ? cat.toolList.length : 0);
+        }, 0);
+        if (totalCountEl) totalCountEl.textContent = totalTools;
+    }
+
+    function toolName(tool) { return tool.toolName || tool[0] || ''; }
+    function toolCode(tool) { return tool.toolCode || tool[1] || ''; }
+    function toolIcon(tool) { return tool.icon || tool[2] || ''; }
 
     function renderNavPills(activeKey) {
         if (!navPillsBox) return;
@@ -1164,8 +1164,8 @@ var catIcons = {
         var filteredCats = toolData.map(function(cat) {
             if (!query) return cat;
             var list = cat.toolList.filter(function(t) {
-                return t[0].toLowerCase().indexOf(query) !== -1 ||
-                       t[1].toLowerCase().indexOf(query) !== -1 ||
+                return toolName(t).toLowerCase().indexOf(query) !== -1 ||
+                       toolCode(t).toLowerCase().indexOf(query) !== -1 ||
                        cat.desc.toLowerCase().indexOf(query) !== -1;
             });
             matchingTotal += list.length;
@@ -1218,13 +1218,13 @@ var catIcons = {
             var icon = catIcons[cat.key] || '📦';
             var indexStr = (i + 1) < 10 ? '0' + (i + 1) : '' + (i + 1);
             var toolsHtml = cat.toolList.map(function(t) {
-                return '<a class="tool-chip" href="./' + t[1] + '" title="' + t[0] + '">' +
+                return '<a class="tool-chip" href="./' + toolCode(t) + '" title="' + toolName(t) + '">' +
                        '<div class="tool-icon-wrap">' +
-                       '<img class="tool-icon" src="' + t[2] + '" alt="" loading="lazy" onerror="this.style.opacity=\'0.2\'">' +
+                       '<img class="tool-icon" src="' + toolIcon(t) + '" alt="" loading="lazy" onerror="this.style.opacity=\'0.2\'">' +
                        '</div>' +
                        '<div class="tool-chip-info">' +
-                       '<span class="tool-chip-name">' + t[0] + '</span>' +
-                       '<span class="tool-chip-slug">' + t[1] + '</span>' +
+                       '<span class="tool-chip-name">' + toolName(t) + '</span>' +
+                       '<span class="tool-chip-slug">' + toolCode(t) + '</span>' +
                        '</div>' +
                        '<svg class="tool-chip-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>' +
                        '</a>';
@@ -1246,8 +1246,23 @@ var catIcons = {
         }).join('');
     }
 
-    renderNavPills('all');
-    render('');
+    function showCatalogError() {
+        if (totalCountEl) totalCountEl.textContent = '0';
+        container.innerHTML = '<div class="empty-state"><div class="empty-title">工具目录暂时不可用</div><p class="empty-desc">请稍后刷新页面重试。</p></div>';
+    }
+
+    async function initToolCatalog() {
+        try {
+            var catalog = await window.ToolsApi.loadCatalog();
+            toolData = catalog.categories || [];
+            updateTotalTools();
+            renderNavPills('all');
+            render(searchInput ? searchInput.value : '');
+        } catch (error) {
+            console.error('[tools] catalog load failed', error);
+            showCatalogError();
+        }
+    }
 
     window.addEventListener('langchange', function() {
         renderNavPills();
@@ -1313,6 +1328,8 @@ var catIcons = {
             if (e.key === 'Enter') go();
         });
     }
+
+    initToolCatalog();
 
     /* ── 访问统计 (/api/visits + heartbeat) ── */
     (function initVisits() {

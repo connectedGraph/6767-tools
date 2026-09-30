@@ -73,6 +73,10 @@ node server.js 9000
 - 站点主页：`http://localhost:8093/`
 - 工具详情页（支持 Clean-URL 免 `.html` 后缀）：`http://localhost:8093/age`、`http://localhost:8093/md5-encrypt` 等。
 
+工具目录由 API 统一提供，页面通过同一份目录渲染：
+- `GET /api/tools`：返回分类、工具总数与工具列表。
+- `GET /api/tools/:toolCode`：返回单个工具及其分类信息。
+
 #### 2. 启动备用纯静态服务器
 
 适用于无需本地 API 接口、仅浏览与使用纯静态纯前端工具的场景：

@@ -1,0 +1,1121 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "key": "brain",
+      "desc": "脑力训练",
+      "toolList": [
+        {
+          "toolName": "数字顺序记忆训练",
+          "toolCode": "number-sequence-memory",
+          "icon": "./img/brain/game-logo/szsxjy.png",
+          "subCategory": "记忆力"
+        },
+        {
+          "toolName": "顺序记忆训练",
+          "toolCode": "sequence-memory",
+          "icon": "./img/brain/game-logo/sxjy.png",
+          "subCategory": "记忆力"
+        },
+        {
+          "toolName": "N-Back 记忆力训练游戏",
+          "toolCode": "n-back",
+          "icon": "./img/brain/game-logo/nback.png",
+          "subCategory": "记忆力"
+        },
+        {
+          "toolName": "色块印记",
+          "toolCode": "color-block-imprint",
+          "icon": "./img/brain/game-logo/skyj.png",
+          "subCategory": "记忆力"
+        },
+        {
+          "toolName": "舒尔特方格训练",
+          "toolCode": "shult-grid",
+          "icon": "./img/brain/game-logo/setfg.png",
+          "subCategory": "注意力"
+        },
+        {
+          "toolName": "找不同的字",
+          "toolCode": "find-different-word",
+          "icon": "./img/brain/game-logo/zbtdz.png",
+          "subCategory": "注意力"
+        },
+        {
+          "toolName": "斯特鲁普效应",
+          "toolCode": "stroop-effect",
+          "icon": "./img/brain/game-logo/stlpxy.png",
+          "subCategory": "注意力"
+        },
+        {
+          "toolName": "坐标迷航",
+          "toolCode": "coordinate-drift",
+          "icon": "./img/brain/game-logo/zbmh.png",
+          "subCategory": "注意力"
+        },
+        {
+          "toolName": "视觉追踪训练",
+          "toolCode": "visual-tracking-training",
+          "icon": "./img/brain/game-logo/sjzzxl.png",
+          "subCategory": "注意力"
+        },
+        {
+          "toolName": "复古推箱子 50 关益智挑战",
+          "toolCode": "sokoban",
+          "icon": "./img/icons/sokoban.svg",
+          "subCategory": "推演"
+        },
+        {
+          "toolName": "经典扫雷游戏",
+          "toolCode": "minesweeper",
+          "icon": "./img/icons/minesweeper.svg",
+          "subCategory": "推演"
+        },
+        {
+          "toolName": "在线数独游戏",
+          "toolCode": "sudoku",
+          "icon": "./img/icons/sudoku.svg",
+          "subCategory": "推演"
+        },
+        {
+          "toolName": "熄灯解谜游戏",
+          "toolCode": "lights-out",
+          "icon": "./img/icons/lights-out.svg",
+          "subCategory": "推演"
+        },
+        {
+          "toolName": "数字华容道",
+          "toolCode": "digital-huarong-road",
+          "icon": "./img/brain/game-logo/szhrd.png",
+          "subCategory": "推演"
+        },
+        {
+          "toolName": "上下瓶色匹配",
+          "toolCode": "bottle-color-matching",
+          "icon": "./img/brain/game-logo/sxpspp.png",
+          "subCategory": "推演"
+        },
+        {
+          "toolName": "2048",
+          "toolCode": "2048",
+          "icon": "./img/brain/game-logo/elsb.png",
+          "subCategory": "推演"
+        },
+        {
+          "toolName": "反应速度测试",
+          "toolCode": "react-speed-test",
+          "icon": "./img/brain/game-logo/fysdcs.png",
+          "subCategory": "反应"
+        },
+        {
+          "toolName": "点击速度测试",
+          "toolCode": "click-speed-test",
+          "icon": "./img/brain/game-logo/sscs.png",
+          "subCategory": "反应"
+        },
+        {
+          "toolName": "右键点击速度测试",
+          "toolCode": "right-click-test",
+          "icon": "./img/brain/game-logo/yjdjsdcs.png",
+          "subCategory": "反应"
+        },
+        {
+          "toolName": "空格键计数器",
+          "toolCode": "spacebar-counter",
+          "icon": "./img/brain/game-logo/kgjjsq.png",
+          "subCategory": "反应"
+        },
+        {
+          "toolName": "动态视力测试",
+          "toolCode": "dynamic-visual-acuity-test",
+          "icon": "./img/brain/game-logo/dtslcs.png",
+          "subCategory": "反应"
+        },
+        {
+          "toolName": "静态色差感知",
+          "toolCode": "jing-tai-se-cha",
+          "icon": "./img/brain/game-logo/jtsc.png",
+          "subCategory": "感知"
+        },
+        {
+          "toolName": "动态色差感知",
+          "toolCode": "dong-tai-se-cha",
+          "icon": "./img/brain/game-logo/dtsc.png",
+          "subCategory": "感知"
+        },
+        {
+          "toolName": "时间感知训练",
+          "toolCode": "time-perception-training",
+          "icon": "./img/brain/game-logo/sjgzxl.png",
+          "subCategory": "感知"
+        },
+        {
+          "toolName": "对称方块",
+          "toolCode": "symmetry-blocks",
+          "icon": "./img/brain/game-logo/dcfk.png",
+          "subCategory": "空间"
+        }
+      ]
+    },
+    {
+      "key": "office",
+      "desc": "办公助手",
+      "toolList": [
+        {
+          "toolName": "文本去重与多维排序器",
+          "toolCode": "text-dedup-sort",
+          "icon": "./img/icons/text-dedup-sort.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "中英文排版规范美化器",
+          "toolCode": "text-autospace",
+          "icon": "./img/icons/text-autospace.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "在线表格转换器",
+          "toolCode": "table-converter",
+          "icon": "./img/icons/table-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "人民币大写金额转换器",
+          "toolCode": "rmb-capital-converter",
+          "icon": "./img/icons/rmb-capital-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "综合字数与阅读时长统计",
+          "toolCode": "word-counter",
+          "icon": "./img/icons/word-counter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "现代简历制作与排版器",
+          "toolCode": "resume-maker",
+          "icon": "./img/icons/resume-maker.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "简历模板中心",
+          "toolCode": "resume-template",
+          "icon": "./img/icons/resume-template.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "A4纸张尺寸，各种纸张尺寸查询",
+          "toolCode": "paper-size",
+          "icon": "./img/icons/paper-size.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "转换大小写",
+          "toolCode": "convert-case",
+          "icon": "./img/icons/convert-case.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "标题大小写转换器",
+          "toolCode": "title-case-converter",
+          "icon": "./img/icons/title-case-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "句子大小写转换器",
+          "toolCode": "sentence-case-converter",
+          "icon": "./img/icons/sentence-case-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "文本替换工具",
+          "toolCode": "replace-text",
+          "icon": "./img/icons/replace-text.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "符号大全",
+          "toolCode": "symbols",
+          "icon": "./img/icons/symbols.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "emoji表情大全",
+          "toolCode": "emoji",
+          "icon": "./img/icons/emoji.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "颜文字表情大全",
+          "toolCode": "emoticon",
+          "icon": "./img/icons/emoticon.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "文本分割、去重与序号清理器",
+          "toolCode": "text-cleaner",
+          "icon": "./img/icons/text-dedup-sort.svg",
+          "subCategory": null
+        }
+      ]
+    },
+    {
+      "key": "image",
+      "desc": "图像",
+      "toolList": [
+        {
+          "toolName": "图片调色板提取器",
+          "toolCode": "color-palette-extractor",
+          "icon": "./img/icons/color-palette-extractor.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "多图无损拼接与长图生成器",
+          "toolCode": "image-stitcher",
+          "icon": "./img/icons/image-stitcher.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "图片马赛克与局部隐私遮挡",
+          "toolCode": "image-mosaic-blur",
+          "icon": "./img/icons/image-mosaic-blur.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "图像格式转换器",
+          "toolCode": "convert-image",
+          "icon": "./img/icons/convert-image.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "压缩图像",
+          "toolCode": "compress-image",
+          "icon": "./img/icons/compress-image.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "调整图像大小",
+          "toolCode": "resize-image",
+          "icon": "./img/icons/resize-image.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "调整图像宽高比例",
+          "toolCode": "adjust-image-aspect-ratio",
+          "icon": "./img/icons/adjust-image-aspect-ratio.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "批量给图片加水印",
+          "toolCode": "watermark-image",
+          "icon": "./img/icons/watermark-image.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "批量旋转图像",
+          "toolCode": "rotate-image",
+          "icon": "./img/icons/rotate-image.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "在线生成透明ICO图标",
+          "toolCode": "ico-generator",
+          "icon": "./img/icons/ico-generator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "在线生成透明圆角图片",
+          "toolCode": "round-image",
+          "icon": "./img/icons/round-image.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "制作gif图片，编辑gif图片",
+          "toolCode": "create-gif",
+          "icon": "./img/icons/create-gif.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "视频转gif图片，视频转动图",
+          "toolCode": "video-to-gif",
+          "icon": "./img/icons/video-to-gif.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "分解gif图片",
+          "toolCode": "decompose-gif",
+          "icon": "./img/icons/decompose-gif.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "裁剪、编辑图像",
+          "toolCode": "crop-image",
+          "icon": "./img/icons/crop-image.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "生成宫格图像，分割图片",
+          "toolCode": "generate-grid-image",
+          "icon": "./img/icons/generate-grid-image.svg",
+          "subCategory": null
+        }
+      ]
+    },
+    {
+      "key": "audio-and-video",
+      "desc": "音视频",
+      "toolList": [
+        {
+          "toolName": "白噪音与专注助眠多轨混音器",
+          "toolCode": "white-noise-player",
+          "icon": "./img/icons/white-noise-player.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "免插件屏幕与窗口录制工具",
+          "toolCode": "screen-recorder",
+          "icon": "./img/icons/screen-recorder.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "在线波形录音机与音频剪辑",
+          "toolCode": "voice-recorder",
+          "icon": "./img/icons/voice-recorder.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "极简电子节拍器与乐器调音器",
+          "toolCode": "metronome-tuner",
+          "icon": "./img/icons/metronome-tuner.svg",
+          "subCategory": null
+        }
+      ]
+    },
+    {
+      "key": "generate",
+      "desc": "生成",
+      "toolList": [
+        {
+          "toolName": "测试模拟数据 (Mock Data) 批量生成器",
+          "toolCode": "mock-data-generator",
+          "icon": "./img/icons/mock-data-generator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "WiFi 扫码直连二维码生成器",
+          "toolCode": "wifi-qrcode",
+          "icon": "./img/icons/wifi-qrcode.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "无障碍色彩对比度检测器 (WCAG)",
+          "toolCode": "contrast-checker",
+          "icon": "./img/icons/contrast-checker.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "CSS 玻璃拟态与毛玻璃生成器",
+          "toolCode": "css-glassmorphism",
+          "icon": "./img/icons/css-glassmorphism.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "ASCII 艺术字与字符 Logo 生成器",
+          "toolCode": "ascii-art-generator",
+          "icon": "./img/icons/ascii-art-generator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "UUID / ULID / NanoID 批量生成器",
+          "toolCode": "uuid-generator",
+          "icon": "./img/icons/uuid-generator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "CSS 渐变色生成器",
+          "toolCode": "css-gradient-generator",
+          "icon": "./img/icons/css-gradient-generator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "CSS 盒子阴影生成器",
+          "toolCode": "css-shadow-generator",
+          "icon": "./img/icons/css-shadow-generator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "条形码生成器",
+          "toolCode": "bar-code",
+          "icon": "./img/icons/bar-code.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "二维码生成器",
+          "toolCode": "qrcode",
+          "icon": "./img/icons/qrcode.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "序列号生成器",
+          "toolCode": "serial-number",
+          "icon": "./img/icons/serial-number.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "随机数生成器",
+          "toolCode": "random-number",
+          "icon": "./img/icons/random-number.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "在线随机密码生成器",
+          "toolCode": "random-password",
+          "icon": "./img/icons/random-password.svg",
+          "subCategory": null
+        }
+      ]
+    },
+    {
+      "key": "code",
+      "desc": "程序员",
+      "toolList": [
+        {
+          "toolName": "IP 子网掩码与 CIDR 计算器",
+          "toolCode": "subnet-calculator",
+          "icon": "./img/icons/subnet-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "多格式配置文件双向转换器",
+          "toolCode": "data-format-converter",
+          "icon": "./img/icons/data-format-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "HTTP 状态码速查与排错全书",
+          "toolCode": "http-status-codes",
+          "icon": "./img/icons/http-status-codes.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "WebSocket / SSE 在线调试客户端",
+          "toolCode": "websocket-tester",
+          "icon": "./img/icons/websocket-tester.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "cURL 转换多语言代码工具",
+          "toolCode": "curl-converter",
+          "icon": "./img/icons/curl-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "SQL 格式化与美化器",
+          "toolCode": "sql-formatter",
+          "icon": "./img/icons/sql-formatter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "JSON 格式化与高能工具箱",
+          "toolCode": "json-formatter",
+          "icon": "./img/icons/json-formatter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "JWT 解码与调试器",
+          "toolCode": "jwt-debugger",
+          "icon": "./img/icons/jwt-debugger.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "正则表达式测试器",
+          "toolCode": "regex-tester",
+          "icon": "./img/icons/regex-tester.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "Cron 表达式生成与预测器",
+          "toolCode": "cron-generator",
+          "icon": "./img/icons/cron-generator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "端口扫描",
+          "toolCode": "port-scan",
+          "icon": "./img/icons/port-scan.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "JavaScript混淆加密",
+          "toolCode": "js-obfuscator",
+          "icon": "./img/icons/js-obfuscator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "Markdown在线编辑器，Markdown转Word/Html/Pdf",
+          "toolCode": "markdown",
+          "icon": "./img/icons/markdown.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "时间戳转换",
+          "toolCode": "timestamp",
+          "icon": "./img/icons/timestamp.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "进制转换",
+          "toolCode": "base-converter",
+          "icon": "./img/icons/base-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "MD5加密",
+          "toolCode": "md5-encrypt",
+          "icon": "./img/icons/md5-encrypt.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "AES加密/解密",
+          "toolCode": "aes-encrypt",
+          "icon": "./img/icons/aes-encrypt.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "DES加密/解密",
+          "toolCode": "des-encrypt",
+          "icon": "./img/icons/des-encrypt.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "SHA加密",
+          "toolCode": "sha-encrypt",
+          "icon": "./img/icons/sha-encrypt.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "RIPEMD160哈希加密",
+          "toolCode": "ripemd160-encrypt",
+          "icon": "./img/icons/ripemd160-encrypt.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "HMAC哈希加密",
+          "toolCode": "hmac-encrypt",
+          "icon": "./img/icons/hmac-encrypt.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "Rabbit加密/解密",
+          "toolCode": "rabbit-encrypt",
+          "icon": "./img/icons/rabbit-encrypt.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "RC4加密/解密",
+          "toolCode": "rc4-encrypt",
+          "icon": "./img/icons/rc4-encrypt.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "图片转base64",
+          "toolCode": "image-to-base64",
+          "icon": "./img/icons/image-to-base64.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "base64编码解码",
+          "toolCode": "base64-encoder-decoder",
+          "icon": "./img/icons/base64-encoder-decoder.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "URL编码解码",
+          "toolCode": "url-encoder-decoder",
+          "icon": "./img/icons/url-encoder-decoder.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "文本与ASCLL转换器",
+          "toolCode": "text-to-ascll-converter",
+          "icon": "./img/icons/text-to-ascll-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "Unicode编码器/解码器",
+          "toolCode": "unicode-encoder-decoder",
+          "icon": "./img/icons/unicode-encoder-decoder.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "文本（代码）对比工具",
+          "toolCode": "compare-text",
+          "icon": "./img/icons/compare-text.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "html格式化、压缩",
+          "toolCode": "format-html",
+          "icon": "./img/icons/format-html.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "css格式化、压缩",
+          "toolCode": "format-css",
+          "icon": "./img/icons/format-css.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "js格式化、压缩",
+          "toolCode": "format-js",
+          "icon": "./img/icons/format-js.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "JSON 文件合并器",
+          "toolCode": "json-merge",
+          "icon": "./img/icons/json-formatter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "源码批量替换器",
+          "toolCode": "source-replacer",
+          "icon": "./img/icons/replace-text.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "localStorage 监听 Bookmarklet",
+          "toolCode": "localstorage-watcher",
+          "icon": "./img/icons/replace-text.svg",
+          "subCategory": null
+        }
+      ]
+    },
+    {
+      "key": "study",
+      "desc": "学习",
+      "toolList": [
+        {
+          "toolName": "2D 数学函数图像绘制器",
+          "toolCode": "function-grapher",
+          "icon": "./img/icons/function-grapher.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "计算机位运算与逻辑门实验室",
+          "toolCode": "bitwise-visualizer",
+          "icon": "./img/icons/bitwise-visualizer.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "汉字转标准拼音与多音字排版",
+          "toolCode": "pinyin-converter",
+          "icon": "./img/icons/pinyin-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "化学元素周期表交互系统",
+          "toolCode": "periodic-table",
+          "icon": "./img/icons/periodic-table.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "数据存储单位与进阶换算器",
+          "toolCode": "data-unit-converter",
+          "icon": "./img/icons/data-unit-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "科学高级计算器",
+          "toolCode": "scientific-calculator",
+          "icon": "./img/icons/scientific-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "长度单位转换器",
+          "toolCode": "length-converter",
+          "icon": "./img/icons/length-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "面积单位转换器",
+          "toolCode": "area-converter",
+          "icon": "./img/icons/area-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "体积单位转换器",
+          "toolCode": "volume-converter",
+          "icon": "./img/icons/volume-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "重量转换器",
+          "toolCode": "weight-converter",
+          "icon": "./img/icons/weight-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "温度转换器",
+          "toolCode": "temperature-converter",
+          "icon": "./img/icons/temperature-converter.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "比例计算器",
+          "toolCode": "proportion-calculator",
+          "icon": "./img/icons/proportion-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "周长计算器",
+          "toolCode": "perimeter-calculator",
+          "icon": "./img/icons/perimeter-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "面积计算器",
+          "toolCode": "area-calculator",
+          "icon": "./img/icons/area-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "表面积计算器",
+          "toolCode": "surface-area-calculator",
+          "icon": "./img/icons/surface-area-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "体积计算器",
+          "toolCode": "volume-calculator",
+          "icon": "./img/icons/volume-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "圆周率查询",
+          "toolCode": "pi-query",
+          "icon": "./img/icons/pi-query.svg",
+          "subCategory": null
+        }
+      ]
+    },
+    {
+      "key": "life",
+      "desc": "生活",
+      "toolList": [
+        {
+          "toolName": "复利定投与理财收益计算器",
+          "toolCode": "compound-interest-calculator",
+          "icon": "./img/icons/compound-interest-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "全款与车贷落地费用精算器",
+          "toolCode": "car-loan-calculator",
+          "icon": "./img/icons/car-loan-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "世界时钟与跨时区会议规划器",
+          "toolCode": "world-clock-planner",
+          "icon": "./img/icons/world-clock-planner.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "生活垃圾分类离线速查字典",
+          "toolCode": "garbage-classification",
+          "icon": "./img/icons/garbage-classification.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "中国亲戚关系称谓换算器",
+          "toolCode": "kinship-calculator",
+          "icon": "./img/icons/kinship-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "2026最新个税与五险一金计算器",
+          "toolCode": "salary-tax-calculator",
+          "icon": "./img/icons/salary-tax-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "房贷提前还款与省息对比器",
+          "toolCode": "mortgage-advanced-calculator",
+          "icon": "./img/icons/mortgage-advanced-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "日期间隔与重要日子倒计时",
+          "toolCode": "date-calculator",
+          "icon": "./img/icons/date-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "年龄计算器",
+          "toolCode": "age",
+          "icon": "./img/icons/age.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "退休年龄查询",
+          "toolCode": "retirement-time-query",
+          "icon": "./img/icons/retirement-time-query.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "世界各国首都",
+          "toolCode": "capital",
+          "icon": "./img/icons/capital.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "世界各国国旗和区旗图案",
+          "toolCode": "flag",
+          "icon": "./img/icons/flag.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "贷款计算器",
+          "toolCode": "loan-calculator",
+          "icon": "./img/icons/loan-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "文胸尺码查询",
+          "toolCode": "bra-size",
+          "icon": "./img/icons/bra-size.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "内裤尺码查询",
+          "toolCode": "underwear-size",
+          "icon": "./img/icons/underwear-size.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "女装尺码查询",
+          "toolCode": "woman-clothing-size",
+          "icon": "./img/icons/woman-clothing-size.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "女士衬衫尺码查询",
+          "toolCode": "woman-shirt-size",
+          "icon": "./img/icons/woman-shirt-size.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "连衣裙尺码查询",
+          "toolCode": "dress-size",
+          "icon": "./img/icons/dress-size.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "小孩服装尺码查询",
+          "toolCode": "child-clothe-size",
+          "icon": "./img/icons/child-clothe-size.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "男士服装尺码查询",
+          "toolCode": "man-clothing-size",
+          "icon": "./img/icons/man-clothing-size.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "男士裤子尺码查询",
+          "toolCode": "man-pant-size",
+          "icon": "./img/icons/man-pant-size.svg",
+          "subCategory": null
+        }
+      ]
+    },
+    {
+      "key": "ent",
+      "desc": "娱乐",
+      "toolList": [
+        {
+          "toolName": "像素画 / 8-bit 图标在线编辑器",
+          "toolCode": "pixel-art-maker",
+          "icon": "./img/icons/pixel-art-maker.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "今天吃什么 / 帮我做决定",
+          "toolCode": "decision-maker",
+          "icon": "./img/icons/decision-maker.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "手持全屏弹幕 / LED 滚动屏幕",
+          "toolCode": "led-banner",
+          "icon": "./img/icons/led-banner.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "摩斯密码翻译器，摩斯密码音频播放器",
+          "toolCode": "morse-code-translator",
+          "icon": "./img/icons/morse-code-translator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "幸运大转盘抽奖",
+          "toolCode": "lucky-wheel",
+          "icon": "./img/icons/lucky-wheel.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "在线抽奖工具",
+          "toolCode": "lottery",
+          "icon": "./img/icons/lottery.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "身价计算器",
+          "toolCode": "worth",
+          "icon": "./img/icons/worth.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "死亡时间计算器",
+          "toolCode": "death-time",
+          "icon": "./img/icons/death-time.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "幸运数字计算器",
+          "toolCode": "lucky-number",
+          "icon": "./img/icons/lucky-number.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "星座幸运色",
+          "toolCode": "lucky-color",
+          "icon": "./img/icons/lucky-color.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "哈希头像生成器",
+          "toolCode": "hash-avatar",
+          "icon": "./img/icons/hash-avatar.svg",
+          "subCategory": null
+        }
+      ]
+    },
+    {
+      "key": "health",
+      "desc": "健康",
+      "toolList": [
+        {
+          "toolName": "科学每日饮水量计算器",
+          "toolCode": "water-intake-calculator",
+          "icon": "./img/icons/water-intake-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "90分钟睡眠周期与起床时间计算器",
+          "toolCode": "sleep-cycle-calculator",
+          "icon": "./img/icons/sleep-cycle-calculator.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "常用食物热量与营养成分速查表",
+          "toolCode": "food-calories-lookup",
+          "icon": "./img/icons/food-calories-lookup.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "BMI指数计算",
+          "toolCode": "bmi",
+          "icon": "./img/icons/bmi.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "基础代谢率(BMR)计算器",
+          "toolCode": "bmr",
+          "icon": "./img/icons/bmr.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "体脂率（BFR）计算器",
+          "toolCode": "bfr",
+          "icon": "./img/icons/bfr.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "标准体重计算器",
+          "toolCode": "weight",
+          "icon": "./img/icons/weight.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "燃脂心率计算器",
+          "toolCode": "burn-fat-heart-rate",
+          "icon": "./img/icons/burn-fat-heart-rate.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "体质综合测试",
+          "toolCode": "physical-fitness-test",
+          "icon": "./img/icons/physical-fitness-test.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "蛋白质摄入量计算器",
+          "toolCode": "protein-intake",
+          "icon": "./img/icons/protein-intake.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "焦耳卡路里换算器",
+          "toolCode": "energy-convert",
+          "icon": "./img/icons/energy-convert.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "跑步卡路里消耗计算器",
+          "toolCode": "running-calorie",
+          "icon": "./img/icons/running-calorie.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "女性最佳身材计算器",
+          "toolCode": "best-figure",
+          "icon": "./img/icons/best-figure.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "女性安全期计算器",
+          "toolCode": "female-safe-period",
+          "icon": "./img/icons/female-safe-period.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "孩子身高预测",
+          "toolCode": "child-height",
+          "icon": "./img/icons/child-height.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "血型遗传规律和血型性格",
+          "toolCode": "bood-type",
+          "icon": "./img/icons/bood-type.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "色盲色弱检测",
+          "toolCode": "color-blindness-test",
+          "icon": "./img/icons/color-blindness-test.svg",
+          "subCategory": null
+        },
+        {
+          "toolName": "植物油脂肪含量查询",
+          "toolCode": "vegetable-oil",
+          "icon": "./img/icons/vegetable-oil.svg",
+          "subCategory": null
+        }
+      ]
+    }
+  ]
+}

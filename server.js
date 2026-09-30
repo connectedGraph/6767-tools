@@ -20,6 +20,51 @@ const MIME = {
   '.wasm': 'application/wasm', '.mp3': 'audio/mpeg', '.wav': 'audio/wav', '.ogg': 'audio/ogg',
 };
 
+// ---------- tool catalog (single source for API + page router) ----------
+const TOOL_CATALOG_FILE = path.join(ROOT, 'data', 'tools.json');
+function loadToolCatalog() {
+  try {
+    const raw = JSON.parse(fs.readFileSync(TOOL_CATALOG_FILE, 'utf8'));
+    const seen = new Set();
+    const categories = (Array.isArray(raw.categories) ? raw.categories : [])
+      .map(category => {
+        const toolList = (Array.isArray(category.toolList) ? category.toolList : [])
+          .filter(tool => {
+            const code = String(tool && tool.toolCode || '');
+            return /^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(code) &&
+              fs.existsSync(path.join(ROOT, 'pages', code + '.html'));
+          })
+          .filter(tool => {
+            const code = String(tool.toolCode);
+            if (seen.has(code)) return false;
+            seen.add(code);
+            return true;
+          })
+          .map(tool => ({
+            toolName: String(tool.toolName || tool.toolCode),
+            toolCode: String(tool.toolCode),
+            icon: String(tool.icon || ''),
+            subCategory: tool.subCategory ? String(tool.subCategory) : null,
+          }));
+        return {
+          key: String(category.key || ''),
+          desc: String(category.desc || category.key || ''),
+          toolList,
+        };
+      })
+      .filter(category => category.key && category.toolList.length > 0);
+    return {
+      version: Number(raw.version) || 1,
+      total: categories.reduce((sum, category) => sum + category.toolList.length, 0),
+      categories,
+    };
+  } catch (error) {
+    console.warn('[tools] catalog load failed:', error.message);
+    return { version: 1, total: 0, categories: [] };
+  }
+}
+const TOOL_CATALOG = loadToolCatalog();
+
 // ---------- persistent store ----------
 function defaultStore() { return { users: {}, tokens: {}, comments: [], rankings: [], records: [] }; }
 let store = defaultStore();
@@ -280,6 +325,24 @@ async function handleApi(req, res, pathname, query) {
   const method = req.method.toUpperCase();
   const seg = pathname.replace(/^\/api\//, '').split('/').filter(Boolean); // e.g. ['User','SignIn']
   const ctrl = seg[0] || '', act = seg[1] || '';
+
+  // ---- Tool catalog ----
+  if (ctrl.toLowerCase() === 'tools') {
+    if (method !== 'GET') return err(405, '仅支持 GET 请求', lang);
+    if (!act) return ok(TOOL_CATALOG, null, lang);
+    const code = decodeURIComponent(act);
+    for (const category of TOOL_CATALOG.categories) {
+      const tool = category.toolList.find(item => item.toolCode === code);
+      if (tool) {
+        return ok({
+          ...tool,
+          categoryKey: category.key,
+          categoryName: category.desc,
+        }, null, lang);
+      }
+    }
+    return err(404, null, lang);
+  }
 
   // ---- User ----
   if (ctrl === 'User') {
