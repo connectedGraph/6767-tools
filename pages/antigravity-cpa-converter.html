@@ -1,0 +1,1631 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Antigravity 凭证转换器 · Manager ⇋ CPA</title>
+
+  <script>
+    (function () {
+      const saved = localStorage.getItem('agy_theme');
+      const isDark = saved ? (saved === 'dark') : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    })();
+  </script>
+
+  <style>
+    :root {
+      --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 8px;
+    }
+
+    /* =========================================
+       日间模式 (Light Theme)
+       ========================================= */
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg-gradient: radial-gradient(ellipse at 50% -10%, rgba(66, 133, 244, 0.16), rgba(255, 255, 255, 0) 75%), linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --card-border: rgba(255, 255, 255, 0.95);
+      --card-shadow: 0 20px 60px -12px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(226, 232, 240, 0.85);
+
+      --panel-bg: rgba(248, 250, 252, 0.78);
+      --panel-border: rgba(226, 232, 240, 0.9);
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-sub: #64748b;
+
+      --input-bg: rgba(255, 255, 255, 0.96);
+      --input-border: #cbd5e1;
+      --input-text: #0f172a;
+      --input-placeholder: #94a3b8;
+      --input-focus-border: #1a73e8;
+      --input-focus-ring: rgba(26, 115, 232, 0.15);
+
+      --btn-primary-bg: #1a73e8;
+      --btn-primary-hover: #1557b0;
+      --btn-primary-text: #ffffff;
+      --btn-primary-shadow: 0 4px 14px rgba(26, 115, 232, 0.25);
+
+      --btn-secondary-bg: rgba(255, 255, 255, 0.9);
+      --btn-secondary-border: #cbd5e1;
+      --btn-secondary-text: #334155;
+      --btn-secondary-hover: #f1f5f9;
+
+      --btn-danger-bg: #fee2e2;
+      --btn-danger-border: #fca5a5;
+      --btn-danger-text: #b91c1c;
+      --btn-danger-hover: #fecaca;
+
+      --btn-success-bg: #10b981;
+      --btn-success-hover: #059669;
+      --btn-success-text: #ffffff;
+      --btn-success-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+
+      --badge-bg: #e0f2fe;
+      --badge-text: #0284c7;
+      --badge-border: #bae6fd;
+
+      --table-header-bg: rgba(241, 245, 249, 0.85);
+      --table-row-hover: rgba(241, 245, 249, 0.65);
+      --table-border: #e2e8f0;
+
+      --code-bg: #f8fafc;
+      --code-border: #cbd5e1;
+      --code-text: #1e3a8a;
+
+      --icon-btn-bg: rgba(255, 255, 255, 0.85);
+      --icon-btn-border: #cbd5e1;
+      --icon-btn-text: #475569;
+      --icon-btn-hover: #f1f5f9;
+
+      --toast-bg: rgba(15, 23, 42, 0.92);
+      --toast-text: #ffffff;
+    }
+
+    /* =========================================
+       夜间模式 (Dark Theme - 护眼深岩蓝，不纯黑)
+       ========================================= */
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg-gradient: radial-gradient(ellipse at 50% -10%, rgba(56, 189, 248, 0.15), rgba(15, 23, 42, 0) 75%), linear-gradient(180deg, #131b2e 0%, #0f172a 100%);
+      --card-bg: rgba(24, 34, 53, 0.82);
+      --card-border: rgba(255, 255, 255, 0.10);
+      --card-shadow: 0 28px 75px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+      --panel-bg: rgba(19, 27, 43, 0.72);
+      --panel-border: rgba(255, 255, 255, 0.08);
+
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+      --text-sub: #94a3b8;
+
+      --input-bg: rgba(15, 23, 42, 0.78);
+      --input-border: rgba(255, 255, 255, 0.14);
+      --input-text: #f8fafc;
+      --input-placeholder: #64748b;
+      --input-focus-border: #38bdf8;
+      --input-focus-ring: rgba(56, 189, 248, 0.18);
+
+      --btn-primary-bg: #2563eb;
+      --btn-primary-hover: #1d4ed8;
+      --btn-primary-text: #ffffff;
+      --btn-primary-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+
+      --btn-secondary-bg: rgba(255, 255, 255, 0.08);
+      --btn-secondary-border: rgba(255, 255, 255, 0.12);
+      --btn-secondary-text: #e2e8f0;
+      --btn-secondary-hover: rgba(255, 255, 255, 0.14);
+
+      --btn-danger-bg: rgba(239, 68, 68, 0.18);
+      --btn-danger-border: rgba(239, 68, 68, 0.35);
+      --btn-danger-text: #fca5a5;
+      --btn-danger-hover: rgba(239, 68, 68, 0.28);
+
+      --btn-success-bg: #059669;
+      --btn-success-hover: #047857;
+      --btn-success-text: #ffffff;
+      --btn-success-shadow: 0 4px 16px rgba(5, 150, 105, 0.35);
+
+      --badge-bg: rgba(56, 189, 248, 0.15);
+      --badge-text: #38bdf8;
+      --badge-border: rgba(56, 189, 248, 0.3);
+
+      --table-header-bg: rgba(15, 23, 42, 0.85);
+      --table-row-hover: rgba(30, 41, 59, 0.65);
+      --table-border: rgba(255, 255, 255, 0.08);
+
+      --code-bg: rgba(15, 23, 42, 0.85);
+      --code-border: rgba(56, 189, 248, 0.22);
+      --code-text: #38bdf8;
+
+      --icon-btn-bg: rgba(255, 255, 255, 0.08);
+      --icon-btn-border: rgba(255, 255, 255, 0.14);
+      --icon-btn-text: #e2e8f0;
+      --icon-btn-hover: rgba(255, 255, 255, 0.14);
+
+      --toast-bg: rgba(30, 41, 59, 0.95);
+      --toast-text: #f8fafc;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--text-main);
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      padding: 30px 16px 50px;
+      transition: color 0.25s ease;
+    }
+
+    .container {
+      width: min(1140px, 100%);
+      margin: 0 auto;
+    }
+
+    .card {
+      border-radius: var(--radius-xl);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      overflow: hidden;
+      margin-bottom: 22px;
+      transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    /* Google 风格顶栏四色彩条 */
+    .topStripe {
+      height: 4px;
+      background: linear-gradient(90deg, #4285F4 0% 25%, #EA4335 25% 50%, #FBBC05 50% 75%, #34A853 75% 100%);
+    }
+
+    header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-main h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-main p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 4px 0 0;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* 模式切换胶囊 */
+    .mode-switch {
+      display: flex;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      padding: 3px;
+      border-radius: var(--radius-md);
+      gap: 4px;
+    }
+
+    .mode-btn {
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mode-btn:hover {
+      color: var(--text-main);
+    }
+
+    .mode-btn.active {
+      background: var(--btn-primary-bg);
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 日夜主题切换图标按钮 */
+    .theme-toggle-btn {
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      background: var(--icon-btn-bg);
+      border: 1px solid var(--icon-btn-border);
+      color: var(--icon-btn-text);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--icon-btn-hover);
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    html[data-theme="dark"] .icon-sun { display: block; }
+    html[data-theme="dark"] .icon-moon { display: none; }
+    html[data-theme="light"] .icon-sun { display: none; }
+    html[data-theme="light"] .icon-moon { display: block; }
+
+    /* 左右分栏 */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 20px;
+      padding: 22px 24px;
+    }
+
+    @media (max-width: 960px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-box {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      border: 1px solid var(--badge-border);
+    }
+
+    /* 拖拽上传区 */
+    .dropzone {
+      border: 2px dashed var(--input-border);
+      border-radius: var(--radius-md);
+      padding: 20px 14px;
+      text-align: center;
+      background: var(--input-bg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 12px;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--input-focus-border);
+      background: rgba(26, 115, 232, 0.08);
+      transform: scale(1.01);
+    }
+
+    .dropzone-icon {
+      margin-bottom: 6px;
+      color: var(--btn-primary-bg);
+    }
+
+    .dropzone-text {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .dropzone-text strong {
+      color: var(--text-main);
+    }
+
+    .dropzone-hint {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    /* 按钮规范 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+      box-shadow: var(--btn-primary-shadow);
+    }
+
+    .btn-primary:hover {
+      background: var(--btn-primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--btn-secondary-bg);
+      border-color: var(--btn-secondary-border);
+      color: var(--btn-secondary-text);
+    }
+
+    .btn-secondary:hover {
+      background: var(--btn-secondary-hover);
+    }
+
+    .btn-danger {
+      background: var(--btn-danger-bg);
+      border-color: var(--btn-danger-border);
+      color: var(--btn-danger-text);
+    }
+
+    .btn-danger:hover {
+      background: var(--btn-danger-hover);
+    }
+
+    .btn-success {
+      background: var(--btn-success-bg);
+      color: var(--btn-success-text);
+      box-shadow: var(--btn-success-shadow);
+    }
+
+    .btn-success:hover {
+      background: var(--btn-success-hover);
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 11px;
+    }
+
+    /* 文本输入框 */
+    textarea.code-textarea {
+      width: 100%;
+      height: 130px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--input-text);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    textarea.code-textarea:focus {
+      border-color: var(--input-focus-border);
+      box-shadow: 0 0 0 3px var(--input-focus-ring);
+    }
+
+    .options-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 10px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .options-bar input[type="text"] {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--input-text);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-family: var(--font-mono);
+      outline: none;
+    }
+
+    .options-bar select {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--input-text);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      outline: none;
+    }
+
+    /* 导出操作栏 */
+    .export-actions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--panel-bg);
+      border-radius: var(--radius-md);
+      margin-top: 14px;
+      border: 1px solid var(--panel-border);
+    }
+
+    .export-stats {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .export-stats strong {
+      color: var(--text-main);
+      font-size: 14px;
+    }
+
+    /* 表格区域 */
+    .table-section {
+      padding: 20px 24px 24px;
+    }
+
+    .table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .table-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .table-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-input {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--input-text);
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      width: 190px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--input-focus-border);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--table-border);
+      border-radius: var(--radius-md);
+      background: var(--input-bg);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    th {
+      background: var(--table-header-bg);
+      color: var(--text-muted);
+      padding: 10px 12px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--table-border);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--table-border);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: var(--table-row-hover);
+    }
+
+    tr.selected td {
+      background: rgba(26, 115, 232, 0.05);
+    }
+
+    .token-preview {
+      font-family: var(--font-mono);
+      color: var(--btn-primary-bg);
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+
+    .token-preview:hover {
+      background: rgba(26, 115, 232, 0.12);
+    }
+
+    .status-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+      transition: opacity 0.15s ease;
+    }
+
+    .status-toggle:hover {
+      opacity: 0.85;
+    }
+
+    .status-active {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-disabled {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* 底部安全提示 */
+    footer {
+      padding: 16px 24px;
+      background: var(--panel-bg);
+      border-top: 1px solid var(--panel-border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .security-note {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #10b981;
+      font-weight: 500;
+    }
+
+    /* Toast 浮层 */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 10px 18px;
+      background: var(--toast-bg);
+      color: var(--toast-text);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.35);
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.22s ease;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+      <div class="topStripe"></div>
+
+      <header>
+        <div class="header-main">
+          <h1>
+            Antigravity 凭证转换器
+            <span class="badge">Manager ⇋ CPA</span>
+          </h1>
+          <p>纯前端离线运行 · 双向格式转换 · ZIP 压缩包下载 · 支持 File System Access 目录直存</p>
+        </div>
+
+        <div class="header-controls">
+          <div class="mode-switch">
+            <button class="mode-btn active" id="tabAm2Cpa" onclick="setMode('am2cpa')">
+              Manager ➔ CPA
+            </button>
+            <button class="mode-btn" id="tabCpa2Am" onclick="setMode('cpa2am')">
+              CPA ➔ Manager
+            </button>
+          </div>
+
+          <button class="theme-toggle-btn" id="themeBtn" title="切换浅色/深色主题" onclick="toggleTheme()">
+            <!-- Sun Icon -->
+            <svg class="icon-sun" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <!-- Moon Icon -->
+            <svg class="icon-moon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="grid-layout">
+        <!-- 左侧输入面板 -->
+        <div class="panel-box">
+          <div class="panel-title">
+            <span id="inputPanelTitle">数据导入</span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-secondary btn-sm" onclick="loadSampleData()">填入示例</button>
+              <button class="btn btn-secondary btn-sm" onclick="clearInput()">清空</button>
+            </div>
+          </div>
+
+          <div class="dropzone" id="dropzone" onclick="triggerFileInput()">
+            <div class="dropzone-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+            </div>
+            <div class="dropzone-text">
+              <strong>点击选择文件</strong> 或拖放文件到此处
+              <div class="dropzone-hint">支持单个/多个 .json、.txt、.csv 或 CPA 导出的 ZIP 压缩包</div>
+            </div>
+          </div>
+
+          <input type="file" id="fileInput" multiple accept=".json,.txt,.csv,.zip" style="display:none;" onchange="handleFileSelect(event)">
+          <input type="file" id="folderInput" webkitdirectory directory style="display:none;" onchange="handleFolderSelect(event)">
+
+          <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="document.getElementById('fileInput').click()">多选独立文件</button>
+            <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="document.getElementById('folderInput').click()">选择本地 auth 目录</button>
+          </div>
+
+          <textarea class="code-textarea" id="rawInput" placeholder="在此粘贴 JSON 数组、JSON 对象，或 邮箱----RefreshToken 行文本..." oninput="onTextInput()"></textarea>
+
+          <div class="options-bar" id="cpaOptionsBar">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <label>Project ID:</label>
+              <input type="text" id="optProjectId" value="aicode-consumers" style="width: 140px;" onchange="reparseCurrent()">
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <label>初始状态:</label>
+              <select id="optDisabled" onchange="reparseCurrent()">
+                <option value="false">正常启用 (false)</option>
+                <option value="true">禁用 (true)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧预览与输出面板 -->
+        <div class="panel-box">
+          <div class="panel-title">
+            <span id="outputPanelTitle">转换预览 (单文件格式)</span>
+            <span class="badge" id="accountCountBadge">0 个账号</span>
+          </div>
+
+          <textarea class="code-textarea" id="outputPreview" readonly style="height: 250px; background:var(--code-bg); color:var(--code-text); border-color:var(--code-border);" placeholder="等待解析账号数据..."></textarea>
+
+          <div class="export-actions-bar">
+            <div class="export-stats">
+              选中待导出: <strong id="selectedCountText">0</strong> / <span id="totalCountText">0</span> 个
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="actionButtonsContainer">
+              <!-- 动态按钮 -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 下方表格 -->
+      <div class="table-section">
+        <div class="table-toolbar">
+          <div class="table-toolbar-left">
+            <input type="checkbox" id="checkAll" onchange="toggleCheckAll(this.checked)" style="cursor:pointer; width:15px; height:15px;">
+            <label for="checkAll" style="font-size:13px; font-weight:600; cursor:pointer; user-select:none;">全选 / 全不选</label>
+            
+            <!-- 批量删除按钮（核心需求改进） -->
+            <button class="btn btn-danger btn-sm" id="btnBatchDelete" style="display:none;" onclick="batchDeleteSelected()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              批量删除选中 (<span id="deleteCount">0</span>)
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="clearAllAccounts()">清空列表</button>
+          </div>
+
+          <div class="table-toolbar-right">
+            <input type="text" class="search-input" id="searchFilter" placeholder="搜索邮箱或 Token..." oninput="renderTable()">
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th width="38" style="text-align:center;">选</th>
+                <th width="50" style="text-align:center;">#</th>
+                <th>账号邮箱 (Email)</th>
+                <th>Refresh Token (点击复制 / 显隐)</th>
+                <th width="150">CPA 文件名</th>
+                <th width="100">状态 (点击切换)</th>
+                <th width="110" style="text-align:right;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="accountTableBody">
+              <tr>
+                <td colspan="7" style="text-align:center; padding:32px; color:var(--text-sub);">
+                  暂无解析数据，请在上方输入、粘贴或拖拽文件导入
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer>
+        <div class="security-note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>端侧离线运行：所有凭证解析与 ZIP 生成均在本地浏览器内存完成，不经过任何外部网络。</span>
+        </div>
+        <div>
+          提示：使用 Chrome / Edge 可点击【保存到指定 auth 目录】一键免解压直写入本地 CPA
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">已复制</div>
+
+  <script>
+    /* =========================================
+       ZIP 生成引擎 (纯前端 PKZIP 规范实现)
+       ========================================= */
+    function makeCrcTable() {
+      const cTable = new Uint32Array(256);
+      for (let n = 0; n < 256; n++) {
+        let c = n;
+        for (let k = 0; k < 8; k++) c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+        cTable[n] = c;
+      }
+      return cTable;
+    }
+    const crcTable = makeCrcTable();
+    function crc32(buf) {
+      let crc = 0 ^ (-1);
+      for (let i = 0; i < buf.length; i++) crc = (crc >>> 8) ^ crcTable[(crc ^ buf[i]) & 0xFF];
+      return (crc ^ (-1)) >>> 0;
+    }
+
+    function createZip(files) {
+      const encoder = new TextEncoder();
+      const localHeaders = [];
+      const centralDirs = [];
+      let offset = 0;
+
+      for (const f of files) {
+        const nameBytes = encoder.encode(f.name);
+        const dataBytes = encoder.encode(f.content);
+        const crc = crc32(dataBytes);
+        const size = dataBytes.length;
+
+        const lh = new Uint8Array(30 + nameBytes.length + size);
+        const dv = new DataView(lh.buffer);
+        dv.setUint32(0, 0x04034b50, true);
+        dv.setUint16(4, 20, true);
+        dv.setUint16(6, 0, true);
+        dv.setUint16(8, 0, true);
+        dv.setUint16(10, 0, true);
+        dv.setUint16(12, 0, true);
+        dv.setUint32(14, crc, true);
+        dv.setUint32(18, size, true);
+        dv.setUint32(22, size, true);
+        dv.setUint16(26, nameBytes.length, true);
+        dv.setUint16(28, 0, true);
+        lh.set(nameBytes, 30);
+        lh.set(dataBytes, 30 + nameBytes.length);
+        localHeaders.push(lh);
+
+        const cd = new Uint8Array(46 + nameBytes.length);
+        const cdv = new DataView(cd.buffer);
+        cdv.setUint32(0, 0x02014b50, true);
+        cdv.setUint16(4, 20, true);
+        cdv.setUint16(6, 20, true);
+        cdv.setUint16(8, 0, true);
+        cdv.setUint16(10, 0, true);
+        cdv.setUint16(12, 0, true);
+        cdv.setUint16(14, 0, true);
+        cdv.setUint32(16, crc, true);
+        cdv.setUint32(20, size, true);
+        cdv.setUint32(24, size, true);
+        cdv.setUint16(28, nameBytes.length, true);
+        cdv.setUint16(30, 0, true);
+        cdv.setUint16(32, 0, true);
+        cdv.setUint16(34, 0, true);
+        cdv.setUint16(36, 0, true);
+        cdv.setUint32(38, 0, true);
+        cdv.setUint32(42, offset, true);
+        cd.set(nameBytes, 46);
+        centralDirs.push(cd);
+
+        offset += lh.length;
+      }
+
+      const cdOffset = offset;
+      let cdSize = 0;
+      for (const cd of centralDirs) cdSize += cd.length;
+
+      const eocd = new Uint8Array(22);
+      const edv = new DataView(eocd.buffer);
+      edv.setUint32(0, 0x06054b50, true);
+      edv.setUint16(4, 0, true);
+      edv.setUint16(6, 0, true);
+      edv.setUint16(8, files.length, true);
+      edv.setUint16(10, files.length, true);
+      edv.setUint32(12, cdSize, true);
+      edv.setUint32(16, cdOffset, true);
+      edv.setUint16(20, 0, true);
+
+      const totalLen = offset + cdSize + 22;
+      const result = new Uint8Array(totalLen);
+      let p = 0;
+      for (const lh of localHeaders) {
+        result.set(lh, p);
+        p += lh.length;
+      }
+      for (const cd of centralDirs) {
+        result.set(cd, p);
+        p += cd.length;
+      }
+      result.set(eocd, p);
+      return result;
+    }
+
+    function parseZip(arrayBuffer) {
+      const dv = new DataView(arrayBuffer);
+      const u8 = new Uint8Array(arrayBuffer);
+      const decoder = new TextDecoder();
+      const files = [];
+
+      let eocdOffset = -1;
+      for (let i = u8.length - 22; i >= 0; i--) {
+        if (dv.getUint32(i, true) === 0x06054b50) {
+          eocdOffset = i;
+          break;
+        }
+      }
+      if (eocdOffset === -1) throw new Error("无效的 ZIP 压缩包");
+
+      const cdCount = dv.getUint16(eocdOffset + 10, true);
+      let cdOffset = dv.getUint32(eocdOffset + 16, true);
+
+      for (let i = 0; i < cdCount; i++) {
+        if (dv.getUint32(cdOffset, true) !== 0x02014b50) break;
+        const method = dv.getUint16(cdOffset + 10, true);
+        const compSize = dv.getUint32(cdOffset + 20, true);
+        const nameLen = dv.getUint16(cdOffset + 28, true);
+        const extraLen = dv.getUint16(cdOffset + 30, true);
+        const commentLen = dv.getUint16(cdOffset + 32, true);
+        const localHeaderOffset = dv.getUint32(cdOffset + 42, true);
+
+        const nameBytes = u8.subarray(cdOffset + 46, cdOffset + 46 + nameLen);
+        const fileName = decoder.decode(nameBytes);
+
+        const localNameLen = dv.getUint16(localHeaderOffset + 26, true);
+        const localExtraLen = dv.getUint16(localHeaderOffset + 28, true);
+        const dataStart = localHeaderOffset + 30 + localNameLen + localExtraLen;
+
+        const contentBytes = u8.subarray(dataStart, dataStart + compSize);
+        if (method === 0) {
+          files.push({ name: fileName, content: decoder.decode(contentBytes) });
+        }
+        cdOffset += 46 + nameLen + extraLen + commentLen;
+      }
+      return files;
+    }
+
+    /* =========================================
+       应用状态管理
+       ========================================= */
+    let currentMode = 'am2cpa'; // 'am2cpa' | 'cpa2am'
+    let parsedAccounts = []; // [{ id, email, refresh_token, project_id, disabled, access_token, expired, expires_in, timestamp, selected, visible }]
+    let lastCheckedIndex = -1;
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('agy_theme', next);
+      showToast(next === 'dark' ? "已切换至夜间模式" : "已切换至日间模式");
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('tabAm2Cpa').classList.toggle('active', mode === 'am2cpa');
+      document.getElementById('tabCpa2Am').classList.toggle('active', mode === 'cpa2am');
+
+      if (mode === 'am2cpa') {
+        document.getElementById('inputPanelTitle').innerText = '输入 Antigravity Manager 数据';
+        document.getElementById('outputPanelTitle').innerText = '生成 CPA 单文件认证规范';
+        document.getElementById('cpaOptionsBar').style.display = 'flex';
+      } else {
+        document.getElementById('inputPanelTitle').innerText = '输入 CLI Proxy API (CPA) 凭证文件';
+        document.getElementById('outputPanelTitle').innerText = '生成 Antigravity Manager 数组格式';
+        document.getElementById('cpaOptionsBar').style.display = 'none';
+      }
+      updateActionButtons();
+      updatePreview();
+    }
+
+    function triggerFileInput() {
+      document.getElementById('fileInput').click();
+    }
+
+    // 拖拽绑定
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('dragover');
+    });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        processFiles(Array.from(e.dataTransfer.files));
+      }
+    });
+
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        processFiles(Array.from(e.target.files));
+      }
+    }
+
+    function handleFolderSelect(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        processFiles(Array.from(e.target.files));
+      }
+    }
+
+    async function processFiles(files) {
+      const jsonFiles = [];
+      for (const file of files) {
+        if (file.name.endsWith('.zip')) {
+          try {
+            const buf = await file.arrayBuffer();
+            const extracted = parseZip(buf);
+            for (const ef of extracted) {
+              if (ef.name.endsWith('.json')) jsonFiles.push({ name: ef.name, text: ef.content });
+            }
+          } catch (err) {
+            alert('解析 ZIP 失败: ' + err.message);
+          }
+        } else if (file.name.endsWith('.json') || file.name.endsWith('.txt') || file.name.endsWith('.csv')) {
+          const text = await file.text();
+          jsonFiles.push({ name: file.name, text });
+        }
+      }
+
+      if (jsonFiles.length === 0) {
+        showToast('未找到有效文件');
+        return;
+      }
+
+      if (jsonFiles.length > 1 || (jsonFiles[0].name.startsWith('antigravity-') && !jsonFiles[0].text.trim().startsWith('['))) {
+        let combined = [];
+        for (const jf of jsonFiles) {
+          try {
+            const p = JSON.parse(jf.text);
+            if (Array.isArray(p)) combined.push(...p);
+            else combined.push(p);
+          } catch(e) {}
+        }
+        if (combined.length > 0) {
+          if (currentMode === 'am2cpa' && jsonFiles[0].name.startsWith('antigravity-')) {
+            setMode('cpa2am');
+          }
+          document.getElementById('rawInput').value = JSON.stringify(combined, null, 2);
+          parseAccounts(combined);
+          showToast(`已成功载入 ${jsonFiles.length} 个文件`);
+          return;
+        }
+      }
+
+      document.getElementById('rawInput').value = jsonFiles[0].text;
+      onTextInput();
+      showToast(`已读取文件: ${jsonFiles[0].name}`);
+    }
+
+    function onTextInput() {
+      const text = document.getElementById('rawInput').value.trim();
+      if (!text) {
+        parsedAccounts = [];
+        renderTable();
+        updatePreview();
+        return;
+      }
+
+      let parsed = null;
+      try {
+        parsed = JSON.parse(text);
+      } catch (e) {
+        parsed = parsePlainTextLines(text);
+      }
+
+      if (parsed) parseAccounts(parsed);
+    }
+
+    function parsePlainTextLines(text) {
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const list = [];
+      for (const line of lines) {
+        let parts = line.split(/----+/);
+        if (parts.length < 2) parts = line.split(',');
+        if (parts.length < 2) parts = line.split('\t');
+        if (parts.length < 2) parts = line.split(/\s+/);
+        
+        if (parts.length >= 2) {
+          const email = parts[0].trim();
+          const token = parts[1].trim();
+          if (email.includes('@') && token.length > 10) {
+            list.push({ email, refresh_token: token });
+          }
+        }
+      }
+      return list;
+    }
+
+    function parseAccounts(data) {
+      const items = Array.isArray(data) ? data : [data];
+      const defaultProj = document.getElementById('optProjectId').value.trim() || 'aicode-consumers';
+      const defaultDisabled = document.getElementById('optDisabled').value === 'true';
+
+      parsedAccounts = [];
+      const nowTs = Date.now();
+      const expiredStr = new Date(nowTs + 3599 * 1000).toISOString().replace(/\.\d+Z$/, '+08:00');
+
+      items.forEach((item, i) => {
+        if (!item || typeof item !== 'object') return;
+        const email = item.email || item.name || item.account || '';
+        const rf = item.refresh_token || item.token || '';
+        if (!email && !rf) return;
+
+        parsedAccounts.push({
+          id: 'acc_' + Date.now() + '_' + i,
+          email: email,
+          refresh_token: rf,
+          project_id: item.project_id || defaultProj,
+          disabled: item.disabled !== undefined ? item.disabled : defaultDisabled,
+          access_token: item.access_token || '',
+          expired: item.expired || expiredStr,
+          expires_in: item.expires_in || 3599,
+          timestamp: item.timestamp || nowTs,
+          type: item.type || 'antigravity',
+          selected: true,
+          visible: false
+        });
+      });
+
+      renderTable();
+      updatePreview();
+    }
+
+    function reparseCurrent() {
+      onTextInput();
+    }
+
+    /* =========================================
+       表格渲染与批量操作
+       ========================================= */
+    function renderTable() {
+      const tbody = document.getElementById('accountTableBody');
+      const filter = document.getElementById('searchFilter').value.toLowerCase().trim();
+
+      const filtered = parsedAccounts.filter(acc => {
+        if (!filter) return true;
+        return acc.email.toLowerCase().includes(filter) || acc.refresh_token.toLowerCase().includes(filter);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-sub);">未找到匹配的账号记录</td></tr>`;
+        updateCounts();
+        return;
+      }
+
+      let html = '';
+      filtered.forEach((acc, idx) => {
+        const fullIndex = parsedAccounts.indexOf(acc);
+        const fileName = `antigravity-${acc.email || 'unknown'}.json`;
+        const tokenDisplay = acc.visible ? acc.refresh_token : (acc.refresh_token.substring(0, 10) + '••••••••••••••••••••••••••••' + acc.refresh_token.slice(-6));
+
+        html += `
+          <tr class="${acc.selected ? 'selected' : ''}">
+            <td style="text-align:center;">
+              <input type="checkbox" ${acc.selected ? 'checked' : ''} onchange="toggleSelect(${fullIndex}, this.checked, event)">
+            </td>
+            <td style="text-align:center; color:var(--text-sub);">${idx + 1}</td>
+            <td><strong style="color:var(--text-main);">${escapeHtml(acc.email)}</strong></td>
+            <td>
+              <span class="token-preview" onclick="toggleTokenVisible(${fullIndex})" title="点击显隐 / 复制">
+                ${escapeHtml(tokenDisplay)}
+              </span>
+            </td>
+            <td style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">
+              ${escapeHtml(fileName)}
+            </td>
+            <td>
+              <span class="status-toggle ${acc.disabled ? 'status-disabled' : 'status-active'}" onclick="toggleStatus(${fullIndex})" title="点击切换启用/禁用">
+                ${acc.disabled ? '● 已停用' : '● 启用中'}
+              </span>
+            </td>
+            <td style="text-align:right; white-space:nowrap;">
+              <button class="btn btn-secondary btn-sm" onclick="copyToken('${escapeAttr(acc.refresh_token)}')">复制</button>
+              <button class="btn btn-danger btn-sm" onclick="removeSingleAccount(${fullIndex})">删除</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+      updateCounts();
+    }
+
+    function toggleSelect(index, val, event) {
+      if (!parsedAccounts[index]) return;
+
+      // 支持 Shift 范围勾选
+      if (event && event.shiftKey && lastCheckedIndex !== -1 && lastCheckedIndex !== index) {
+        const start = Math.min(lastCheckedIndex, index);
+        const end = Math.max(lastCheckedIndex, index);
+        for (let i = start; i <= end; i++) {
+          parsedAccounts[i].selected = val;
+        }
+      } else {
+        parsedAccounts[index].selected = val;
+      }
+      lastCheckedIndex = index;
+      renderTable();
+      updatePreview();
+    }
+
+    function toggleCheckAll(checked) {
+      parsedAccounts.forEach(a => a.selected = checked);
+      renderTable();
+      updatePreview();
+    }
+
+    function toggleStatus(index) {
+      if (parsedAccounts[index]) {
+        parsedAccounts[index].disabled = !parsedAccounts[index].disabled;
+        renderTable();
+        updatePreview();
+        showToast(`已切换账号状态为：${parsedAccounts[index].disabled ? '禁用' : '启用'}`);
+      }
+    }
+
+    function toggleTokenVisible(index) {
+      if (parsedAccounts[index]) {
+        parsedAccounts[index].visible = !parsedAccounts[index].visible;
+        renderTable();
+      }
+    }
+
+    function copyToken(token) {
+      navigator.clipboard.writeText(token);
+      showToast('Refresh Token 已复制到剪贴板');
+    }
+
+    function removeSingleAccount(index) {
+      parsedAccounts.splice(index, 1);
+      renderTable();
+      updatePreview();
+      showToast('已删除 1 个账号');
+    }
+
+    // 核心需求：批量删除选中
+    function batchDeleteSelected() {
+      const selectedIndices = [];
+      parsedAccounts.forEach((acc, i) => {
+        if (acc.selected) selectedIndices.push(i);
+      });
+
+      if (selectedIndices.length === 0) {
+        showToast('未选择任何账号');
+        return;
+      }
+
+      if (confirm(`确定要从列表中批量删除选中的 ${selectedIndices.length} 个账号吗？`)) {
+        parsedAccounts = parsedAccounts.filter(acc => !acc.selected);
+        document.getElementById('checkAll').checked = false;
+        renderTable();
+        updatePreview();
+        showToast(`成功删除 ${selectedIndices.length} 个账号`);
+      }
+    }
+
+    function clearAllAccounts() {
+      if (parsedAccounts.length === 0) return;
+      if (confirm('确定要清空全部账号列表吗？')) {
+        parsedAccounts = [];
+        document.getElementById('rawInput').value = '';
+        renderTable();
+        updatePreview();
+        showToast('已清空全部列表');
+      }
+    }
+
+    function updateCounts() {
+      const total = parsedAccounts.length;
+      const selected = parsedAccounts.filter(a => a.selected).length;
+      document.getElementById('accountCountBadge').innerText = `${total} 个账号`;
+      document.getElementById('selectedCountText').innerText = selected;
+      document.getElementById('totalCountText').innerText = total;
+
+      // 联动批量删除按钮
+      const batchBtn = document.getElementById('btnBatchDelete');
+      const deleteCount = document.getElementById('deleteCount');
+      if (selected > 0) {
+        batchBtn.style.display = 'inline-flex';
+        deleteCount.innerText = selected;
+      } else {
+        batchBtn.style.display = 'none';
+      }
+
+      const checkAll = document.getElementById('checkAll');
+      checkAll.checked = (total > 0 && selected === total);
+      checkAll.indeterminate = (selected > 0 && selected < total);
+    }
+
+    function updatePreview() {
+      const selected = parsedAccounts.filter(a => a.selected);
+      const previewEl = document.getElementById('outputPreview');
+
+      if (selected.length === 0) {
+        previewEl.value = '暂无选中的账号数据';
+        return;
+      }
+
+      if (currentMode === 'am2cpa') {
+        const first = selected[0];
+        const sampleCpa = {
+          access_token: first.access_token || "",
+          disabled: first.disabled,
+          email: first.email,
+          expired: first.expired,
+          expires_in: first.expires_in,
+          project_id: first.project_id,
+          refresh_token: first.refresh_token,
+          timestamp: first.timestamp,
+          type: "antigravity"
+        };
+        previewEl.value = `// 单文件规范：antigravity-${first.email}.json (共 ${selected.length} 个独立文件)\n` + JSON.stringify(sampleCpa, null, 2);
+      } else {
+        const amList = selected.map(a => ({
+          email: a.email,
+          refresh_token: a.refresh_token
+        }));
+        previewEl.value = JSON.stringify(amList, null, 2);
+      }
+    }
+
+    function updateActionButtons() {
+      const container = document.getElementById('actionButtonsContainer');
+      if (currentMode === 'am2cpa') {
+        container.innerHTML = `
+          <button class="btn btn-primary" onclick="exportCpaZip()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载 CPA ZIP 压缩包
+          </button>
+          <button class="btn btn-success" onclick="saveToDirectory()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            保存到指定 auth 目录 (API)
+          </button>
+          <button class="btn btn-secondary" onclick="exportCombinedJson()">下载汇总 JSON</button>
+          <button class="btn btn-secondary" onclick="copyCombinedJson()">复制汇总</button>
+        `;
+      } else {
+        container.innerHTML = `
+          <button class="btn btn-primary" onclick="exportAmJson()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载 Manager JSON
+          </button>
+          <button class="btn btn-secondary" onclick="exportAmPlainText()">下载 TXT (邮箱----Token)</button>
+          <button class="btn btn-secondary" onclick="copyAmJson()">复制 JSON</button>
+        `;
+      }
+    }
+
+    /* =========================================
+       导出及文件系统交互
+       ========================================= */
+    function getSelectedCpaFiles() {
+      const selected = parsedAccounts.filter(a => a.selected);
+      return selected.map(acc => {
+        const obj = {
+          access_token: acc.access_token || "",
+          disabled: acc.disabled,
+          email: acc.email,
+          expired: acc.expired,
+          expires_in: acc.expires_in,
+          project_id: acc.project_id,
+          refresh_token: acc.refresh_token,
+          timestamp: acc.timestamp,
+          type: "antigravity"
+        };
+        return {
+          name: `antigravity-${acc.email}.json`,
+          content: JSON.stringify(obj, null, 2)
+        };
+      });
+    }
+
+    function exportCpaZip() {
+      const files = getSelectedCpaFiles();
+      if (files.length === 0) {
+        showToast('请先勾选要导出的账号');
+        return;
+      }
+
+      const zipBytes = createZip(files);
+      const blob = new Blob([zipBytes], { type: 'application/zip' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cpa_antigravity_auth_files_${new Date().toISOString().slice(0, 10)}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`已打包下载 ${files.length} 个独立认证文件`);
+    }
+
+    async function saveToDirectory() {
+      const files = getSelectedCpaFiles();
+      if (files.length === 0) {
+        showToast('请先勾选要导出的账号');
+        return;
+      }
+
+      if (!('showDirectoryPicker' in window)) {
+        alert('当前浏览器环境不支持 showDirectoryPicker API，请点击【下载 CPA ZIP 压缩包】解压到 auth 目录即可。');
+        return;
+      }
+
+      try {
+        const dirHandle = await window.showDirectoryPicker({
+          id: 'cpa-auth-dir',
+          mode: 'readwrite',
+          startIn: 'documents'
+        });
+
+        let savedCount = 0;
+        for (const file of files) {
+          const fileHandle = await dirHandle.getFileHandle(file.name, { create: true });
+          const writable = await fileHandle.createWritable();
+          await writable.write(file.content);
+          await writable.close();
+          savedCount++;
+        }
+        showToast(`成功将 ${savedCount} 个认证文件直写入目标文件夹！`);
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          alert('写入目录失败: ' + err.message);
+        }
+      }
+    }
+
+    function exportCombinedJson() {
+      const selected = parsedAccounts.filter(a => a.selected);
+      if (selected.length === 0) { showToast('请先勾选账号'); return; }
+      const data = selected.map(acc => ({
+        access_token: acc.access_token || "",
+        disabled: acc.disabled,
+        email: acc.email,
+        expired: acc.expired,
+        expires_in: acc.expires_in,
+        project_id: acc.project_id,
+        refresh_token: acc.refresh_token,
+        timestamp: acc.timestamp,
+        type: "antigravity"
+      }));
+      downloadBlob(JSON.stringify(data, null, 2), `antigravity_cpa_accounts_${new Date().toISOString().slice(0, 10)}.json`, 'application/json');
+    }
+
+    function copyCombinedJson() {
+      const selected = parsedAccounts.filter(a => a.selected);
+      const data = selected.map(acc => ({
+        access_token: acc.access_token || "",
+        disabled: acc.disabled,
+        email: acc.email,
+        expired: acc.expired,
+        expires_in: acc.expires_in,
+        project_id: acc.project_id,
+        refresh_token: acc.refresh_token,
+        timestamp: acc.timestamp,
+        type: "antigravity"
+      }));
+      navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+      showToast('CPA 汇总 JSON 已复制');
+    }
+
+    function exportAmJson() {
+      const selected = parsedAccounts.filter(a => a.selected);
+      if (selected.length === 0) { showToast('请先勾选账号'); return; }
+      const data = selected.map(a => ({
+        email: a.email,
+        refresh_token: a.refresh_token
+      }));
+      downloadBlob(JSON.stringify(data, null, 2), `antigravity_accounts_${new Date().toISOString().slice(0, 10)}.json`, 'application/json');
+    }
+
+    function exportAmPlainText() {
+      const selected = parsedAccounts.filter(a => a.selected);
+      if (selected.length === 0) { showToast('请先勾选账号'); return; }
+      const lines = selected.map(a => `${a.email}----${a.refresh_token}`).join('\n');
+      downloadBlob(lines, `antigravity_accounts_${new Date().toISOString().slice(0, 10)}.txt`, 'text/plain');
+    }
+
+    function copyAmJson() {
+      const selected = parsedAccounts.filter(a => a.selected);
+      const data = selected.map(a => ({
+        email: a.email,
+        refresh_token: a.refresh_token
+      }));
+      navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+      showToast('Manager 格式 JSON 已复制');
+    }
+
+    function downloadBlob(content, fileName, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`已下载: ${fileName}`);
+    }
+
+    function loadSampleData() {
+      // Deliberately fake placeholders; never embed live OAuth credentials in examples.
+      const sample = [
+        {
+          "email": "demo-one@example.invalid",
+          "refresh_token": "REPLACE_WITH_REFRESH_TOKEN_A"
+        },
+        {
+          "email": "demo-two@example.invalid",
+          "refresh_token": "REPLACE_WITH_REFRESH_TOKEN_B"
+        }
+      ];
+      document.getElementById('rawInput').value = JSON.stringify(sample, null, 2);
+      onTextInput();
+      showToast('已填入示例数据');
+    }
+
+    function clearInput() {
+      document.getElementById('rawInput').value = '';
+      parsedAccounts = [];
+      renderTable();
+      updatePreview();
+      showToast('已清空');
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function escapeAttr(str) {
+      return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    // 监听系统偏好改变
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('agy_theme')) {
+        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+      }
+    });
+
+    // 初始化按钮
+    updateActionButtons();
+  </script>
+</body>
+</html>

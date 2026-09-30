@@ -5,3 +5,10 @@ _server_data
 full_audit_screenshots/
 screenshots/
 *_report.json
+out_ko78.txt
+scripts/audit/__pycache__/
+scripts/audit/pipeline_state.json
+scripts/audit/proc_cmd.txt
+.env
+.env.*
+!.env.example

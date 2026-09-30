@@ -23,6 +23,7 @@ import asyncio
 import subprocess
 import urllib.request
 import ssl
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 if sys.platform == "win32":
@@ -34,14 +35,14 @@ if sys.platform == "win32":
 
 from playwright.async_api import async_playwright
 
-BASE_DIR = r"C:\Users\18086\.workspace\git-workspace\6767-tools"
+BASE_DIR = os.environ.get("TOOLS_BASE_DIR", str(Path(__file__).resolve().parent))
 SCREENSHOT_DIR = os.path.join(BASE_DIR, "audit_screenshots")
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
-API_ENDPOINT = "https://api.example.invalid/v1/chat/completions"
-API_KEY = "[REDACTED_API_KEY]"
-MODEL_NAME = "gpt-5.6-luna"
-PROXY_URL = "http://127.0.0.1:7890"
+API_ENDPOINT = os.environ.get("LUNA_API_ENDPOINT", "")
+API_KEY = os.environ.get("LUNA_API_KEY", "")
+MODEL_NAME = os.environ.get("LUNA_MODEL", "gpt-5.6-luna")
+PROXY_URL = os.environ.get("PI_PROXY_URL", "http://127.0.0.1:7890")
 
 MAX_TURNS_PER_FILE = 60
 CONCURRENCY = 3
@@ -216,6 +217,9 @@ def execute_bash(command: str) -> str:
 
 # ---------- 网络请求封装 (走 7890 代理并带 Tool Call) ----------
 def call_model_api(messages: List[Dict[str, Any]]) -> Dict[str, Any]:
+    if not API_ENDPOINT or not API_KEY:
+        raise RuntimeError("Set LUNA_API_ENDPOINT and LUNA_API_KEY before running the refactor engine.")
+
     proxy_handler = urllib.request.ProxyHandler({'http': PROXY_URL, 'https': PROXY_URL})
     ctx = ssl.create_default_context()
     ctx.check_hostname = False

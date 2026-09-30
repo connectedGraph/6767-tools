@@ -2,41 +2,866 @@
 <html lang="zh" class="dark">
 <head>
     <script src="./js/theme.js"></script>
-    <script src="./js/i18n.js"></script><script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
+    <script src="./js/i18n.js"></script>
+    <script>try{Object.defineProperty(Document.prototype,"domain",{get:function(){return location.hostname},configurable:true});}catch(e){}</script>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no" />
-    <title>登录 - 在线工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>统一身份认证 - 在线工具</title>
 
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="dns-prefetch" href="" />
-        <link href="./lib/element-plus/index.css" rel="stylesheet" />
+    <link href="./lib/element-plus/index.css" rel="stylesheet" />
     <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet" />
     <link href="./css/6767-site.css?v=20260905" rel="stylesheet" />
     <link href="./css/tool-dark.css?v=20260905" rel="stylesheet" />
-    
-    <style>
-        .sign-box { max-width: 450px; margin: 50px auto 0 auto; background: #fff; padding: 15px; border-radius: 4px; }
-        .sign-box .sign-title { font-size: 24px; width: 100%; text-align: center; margin-bottom: 25px; }
 
-        @media (max-width:768px) {
-            .sign-box { margin-top:20px; }
+    <style>
+        /* ══════════════════════════════════════════════════════════════════
+           统一身份认证中心 (Modernized Authentication Center)
+           双模自适应高对比度系统 + 响应式布局规范
+        ══════════════════════════════════════════════════════════════════ */
+
+        [v-cloak] {
+            display: none !important;
+        }
+
+        /* ── 1. 顶部控制栏 / 仪表盘 ── */
+        .auth-dashboard {
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 22px;
+            transition: all 0.2s ease;
+        }
+        html.dark .auth-dashboard {
+            background: #090e1f;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        html:not(.dark) .auth-dashboard {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .auth-dash-left {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .auth-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        html.dark .auth-status-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        html:not(.dark) .auth-status-badge {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+        .auth-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: currentColor;
+            box-shadow: 0 0 6px currentColor;
+            animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        .auth-mode-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+        html.dark .auth-mode-indicator {
+            color: #94a3b8;
+        }
+        html:not(.dark) .auth-mode-indicator {
+            color: #64748b;
+        }
+        .auth-mode-val {
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+        html.dark .auth-mode-val {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        html:not(.dark) .auth-mode-val {
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+        }
+
+        .auth-security-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+        html.dark .auth-security-chip {
+            background: rgba(30, 41, 59, 0.6);
+            color: #94a3b8;
+            border: 1px solid rgba(51, 65, 85, 0.7);
+        }
+        html:not(.dark) .auth-security-chip {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+        .auth-chip-icon {
+            width: 14px;
+            height: 14px;
+            color: #0284c7;
+        }
+        html.dark .auth-chip-icon {
+            color: #38bdf8;
+        }
+
+        /* ── 2. 主卡片布局与左右栅格 ── */
+        .auth-grid-container {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+            gap: 28px;
+            align-items: stretch;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 860px) {
+            .auth-grid-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* ── 3. 登录框核心容器 (.sign-box) ── */
+        .sign-box {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            border-radius: 14px;
+            padding: 26px 24px;
+            box-sizing: border-box;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+        html.dark .sign-box {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(10, 16, 31, 0.95) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        html:not(.dark) .sign-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+        }
+
+        /* 标题区 */
+        .sign-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sign-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            margin-bottom: 10px;
+        }
+        html.dark .sign-badge-pill {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+        html:not(.dark) .sign-badge-pill {
+            background: #f0f9ff;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+        }
+        .sign-badge-icon {
+            width: 13px;
+            height: 13px;
+        }
+
+        .sign-box .sign-title {
+            font-size: 1.55rem;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+            margin: 0 0 6px 0;
+            text-align: center;
+            transition: color 0.2s ease;
+        }
+        html.dark .sign-box .sign-title {
+            color: #f8fafc;
+        }
+        html:not(.dark) .sign-box .sign-title {
+            color: #0f172a;
+        }
+
+        .sign-desc {
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.5;
+        }
+        html.dark .sign-desc {
+            color: #94a3b8;
+        }
+        html:not(.dark) .sign-desc {
+            color: #64748b;
+        }
+
+        /* ── 4. 表单内部控件全面精修 (.account-form) ── */
+        .account-form {
+            width: 100%;
+            margin-top: 14px;
+        }
+
+        /* Tabs 选项卡 */
+        .account-form .el-tabs {
+            margin-bottom: 16px;
+        }
+        .account-form .el-tabs__header {
+            margin: 0 0 18px 0;
+        }
+        .account-form .el-tabs__nav-wrap::after {
+            height: 1px;
+        }
+        html.dark .account-form .el-tabs__nav-wrap::after {
+            background-color: rgba(51, 65, 85, 0.7);
+        }
+        html:not(.dark) .account-form .el-tabs__nav-wrap::after {
+            background-color: #e2e8f0;
+        }
+        .account-form .el-tabs__item {
+            font-size: 14px;
+            font-weight: 500;
+            height: 38px;
+            line-height: 38px;
+            padding: 0 16px;
+            transition: color 0.18s ease;
+        }
+        html.dark .account-form .el-tabs__item {
+            color: #94a3b8;
+        }
+        html.dark .account-form .el-tabs__item:hover {
+            color: #38bdf8;
+        }
+        html.dark .account-form .el-tabs__item.is-active {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+        html:not(.dark) .account-form .el-tabs__item {
+            color: #475569;
+        }
+        html:not(.dark) .account-form .el-tabs__item:hover {
+            color: #0284c7;
+        }
+        html:not(.dark) .account-form .el-tabs__item.is-active {
+            color: #0284c7;
+            font-weight: 700;
+        }
+        .account-form .el-tabs__active-bar {
+            height: 2.5px;
+            border-radius: 2px;
+        }
+        html.dark .account-form .el-tabs__active-bar {
+            background-color: #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+        }
+        html:not(.dark) .account-form .el-tabs__active-bar {
+            background-color: #0284c7;
+        }
+
+        /* Form item */
+        .account-form .el-form-item {
+            margin-bottom: 20px;
+        }
+        .account-form .el-form-item__error {
+            padding-top: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        html.dark .account-form .el-form-item__error {
+            color: #f87171;
+        }
+
+        /* Input 输入框 (触控 >= 42px) */
+        .account-form .el-input__wrapper {
+            min-height: 42px;
+            border-radius: 8px;
+            padding: 1px 12px;
+            box-sizing: border-box;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        html.dark .account-form .el-input__wrapper {
+            background: rgba(15, 23, 42, 0.85);
+            box-shadow: 0 0 0 1px rgba(51, 65, 85, 0.85) inset;
+        }
+        html.dark .account-form .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6) inset;
+        }
+        html.dark .account-form .el-input__wrapper.is-focus {
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.8) inset !important;
+            background: rgba(15, 23, 42, 0.95);
+        }
+        html:not(.dark) .account-form .el-input__wrapper {
+            background: #ffffff;
+            box-shadow: 0 0 0 1px #cbd5e1 inset;
+        }
+        html:not(.dark) .account-form .el-input__wrapper:hover {
+            box-shadow: 0 0 0 1px #0284c7 inset;
+        }
+        html:not(.dark) .account-form .el-input__wrapper.is-focus {
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.5) inset !important;
+        }
+
+        .account-form .el-input__inner {
+            font-size: 14px;
+            height: 40px;
+        }
+        html.dark .account-form .el-input__inner {
+            color: #f8fafc;
+        }
+        html.dark .account-form .el-input__inner::placeholder {
+            color: #64748b;
+        }
+        html:not(.dark) .account-form .el-input__inner {
+            color: #0f172a;
+        }
+        html:not(.dark) .account-form .el-input__inner::placeholder {
+            color: #94a3b8;
+        }
+
+        /* 验证码组合行 (.get-code) */
+        .account-form .get-code {
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+            width: 100%;
+        }
+        .account-form .get-code .get-code-input {
+            flex: 1;
+            min-width: 0;
+        }
+        .account-form .get-code .get-code-msg {
+            flex-shrink: 0;
+            min-width: 110px;
+            height: 42px;
+            padding: 0 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        html.dark .account-form .get-code .get-code-msg {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            color: #38bdf8;
+        }
+        html.dark .account-form .get-code .get-code-msg:hover:not(:disabled) {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: #38bdf8;
+            color: #e0f2fe;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+        }
+        html:not(.dark) .account-form .get-code .get-code-msg {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #0284c7;
+        }
+        html:not(.dark) .account-form .get-code .get-code-msg:hover:not(:disabled) {
+            background: #e0f2fe;
+            border-color: #0284c7;
+            color: #0369a1;
+        }
+        .account-form .get-code .get-code-msg:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        /* 提交主按钮 (.submit-btn, 触控 >= 44px) */
+        .account-form .submit-btn {
+            width: 100%;
+            height: 44px;
+            min-height: 44px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+        html.dark .account-form .submit-btn {
+            background: linear-gradient(135deg, #0284c7 0%, #22d3ee 100%);
+            color: #031322;
+            box-shadow: 0 2px 14px rgba(34, 211, 238, 0.35);
+        }
+        html.dark .account-form .submit-btn:hover {
+            background: linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%);
+            box-shadow: 0 4px 22px rgba(34, 211, 238, 0.55);
+            transform: translateY(-1px);
+        }
+        html.dark .account-form .submit-btn:active {
+            transform: translateY(1px);
+        }
+        html:not(.dark) .account-form .submit-btn {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+        }
+        html:not(.dark) .account-form .submit-btn:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+            transform: translateY(-1px);
+        }
+        html:not(.dark) .account-form .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* 登录底部功能区 (.sign-in-bottom1 / .sign-in-bottom2) */
+        .account-form .sign-in-bottom1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+        .account-form .sign-in-bottom1 a {
+            font-weight: 500;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+        }
+        html.dark .account-form .sign-in-bottom1 a {
+            color: #38bdf8;
+        }
+        html.dark .account-form .sign-in-bottom1 a:hover {
+            background: rgba(56, 189, 248, 0.12);
+            color: #7dd3fc;
+            text-decoration: underline;
+        }
+        html:not(.dark) .account-form .sign-in-bottom1 a {
+            color: #0284c7;
+        }
+        html:not(.dark) .account-form .sign-in-bottom1 a:hover {
+            background: rgba(2, 132, 199, 0.08);
+            color: #0369a1;
+            text-decoration: underline;
+        }
+
+        .account-form .sign-in-bottom2 {
+            margin-top: 14px;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.5;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        html.dark .account-form .sign-in-bottom2 {
+            background: rgba(15, 23, 42, 0.55);
+            color: #94a3b8;
+            border: 1px dashed rgba(51, 65, 85, 0.7);
+        }
+        html:not(.dark) .account-form .sign-in-bottom2 {
+            background: #f8fafc;
+            color: #64748b;
+            border: 1px dashed #cbd5e1;
+        }
+
+        /* 注册底部功能区 (.sign-up-bottom1 / .sign-up-bottom2) */
+        .account-form .sign-up-bottom1 {
+            margin-top: 12px;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.5;
+        }
+        html.dark .account-form .sign-up-bottom1 {
+            color: #94a3b8;
+        }
+        html:not(.dark) .account-form .sign-up-bottom1 {
+            color: #64748b;
+        }
+
+        .account-form .sign-up-bottom2,
+        .account-form .find-pwd-bottom {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .account-form .sign-up-bottom2 a,
+        .account-form .find-pwd-bottom a {
+            text-decoration: none;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.18s ease;
+        }
+        html.dark .account-form .sign-up-bottom2 a,
+        html.dark .account-form .find-pwd-bottom a {
+            background: rgba(30, 41, 59, 0.7);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        html.dark .account-form .sign-up-bottom2 a:hover,
+        html.dark .account-form .find-pwd-bottom a:hover {
+            background: rgba(56, 189, 248, 0.18);
+            border-color: #38bdf8;
+            color: #7dd3fc;
+        }
+        html:not(.dark) .account-form .sign-up-bottom2 a,
+        html:not(.dark) .account-form .find-pwd-bottom a {
+            background: #f1f5f9;
+            color: #0284c7;
+            border: 1px solid #cbd5e1;
+        }
+        html:not(.dark) .account-form .sign-up-bottom2 a:hover,
+        html:not(.dark) .account-form .find-pwd-bottom a:hover {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #0284c7;
+        }
+
+        /* 找回密码 步骤条 (.el-steps) */
+        .account-form .el-steps {
+            margin-bottom: 24px;
+        }
+        .account-form .el-step__title {
+            font-size: 13px !important;
+            font-weight: 500;
+        }
+        html.dark .account-form .el-step__title {
+            color: #64748b;
+        }
+        html.dark .account-form .el-step__title.is-process,
+        html.dark .account-form .el-step__title.is-finish {
+            color: #38bdf8 !important;
+            font-weight: 700;
+        }
+        html.dark .account-form .el-step__head.is-process,
+        html.dark .account-form .el-step__head.is-finish {
+            color: #38bdf8;
+            border-color: #38bdf8;
+        }
+        html.dark .account-form .el-step__icon {
+            background: #0f172a;
+        }
+        html.dark .account-form .el-step__line {
+            background-color: rgba(51, 65, 85, 0.6);
+        }
+        html:not(.dark) .account-form .el-step__title {
+            color: #64748b;
+        }
+        html:not(.dark) .account-form .el-step__title.is-process,
+        html:not(.dark) .account-form .el-step__title.is-finish {
+            color: #0284c7 !important;
+            font-weight: 700;
+        }
+        html:not(.dark) .account-form .el-step__head.is-process,
+        html:not(.dark) .account-form .el-step__head.is-finish {
+            color: #0284c7;
+            border-color: #0284c7;
+        }
+
+        /* 验证方式选项单选框 (.auth-type) */
+        .account-form .auth-type {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 9px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        html.dark .account-form .auth-type {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #e2e8f0;
+        }
+        html.dark .account-form .auth-type:hover {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+        }
+        html:not(.dark) .account-form .auth-type {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+        }
+        html:not(.dark) .account-form .auth-type:hover {
+            border-color: #0284c7;
+            background: #f0f9ff;
+        }
+
+        .account-form .my-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .account-form .my-icon-unselected {
+            border: 2px solid #94a3b8;
+            background: transparent;
+        }
+        .account-form .my-icon-selected {
+            border: 2px solid #0284c7;
+            background: #0284c7;
+        }
+        .account-form .my-icon-selected::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        html.dark .account-form .my-icon-selected {
+            border-color: #38bdf8;
+            background: #38bdf8;
+        }
+        html.dark .account-form .my-icon-selected::after {
+            background: #090e1f;
+        }
+
+        /* ── 5. 右侧功能说明与安全背书面板 (.auth-side-panel) ── */
+        .auth-side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            justify-content: space-between;
+        }
+        .side-panel-card {
+            border-radius: 14px;
+            padding: 24px 22px;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+            transition: all 0.25s ease;
+        }
+        html.dark .side-panel-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        html:not(.dark) .side-panel-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .side-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .side-panel-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .side-panel-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+        html.dark .side-panel-icon {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        html:not(.dark) .side-panel-icon {
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+        }
+
+        .side-panel-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.3;
+        }
+        html.dark .side-panel-title {
+            color: #f1f5f9;
+        }
+        html:not(.dark) .side-panel-title {
+            color: #0f172a;
+        }
+        .side-panel-subtitle {
+            font-size: 12px;
+            margin: 2px 0 0 0;
+        }
+        html.dark .side-panel-subtitle {
+            color: #94a3b8;
+        }
+        html:not(.dark) .side-panel-subtitle {
+            color: #64748b;
+        }
+
+        .side-features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .side-feat-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .side-feat-bullet {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .side-feat-bullet svg {
+            width: 14px;
+            height: 14px;
+        }
+        html.dark .side-feat-bullet {
+            background: rgba(34, 211, 238, 0.15);
+            color: #22d3ee;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+        html:not(.dark) .side-feat-bullet {
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+        }
+
+        .side-feat-body {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .side-feat-name {
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+        html.dark .side-feat-name {
+            color: #e2e8f0;
+        }
+        html:not(.dark) .side-feat-name {
+            color: #1e293b;
+        }
+        .side-feat-info {
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+        html.dark .side-feat-info {
+            color: #94a3b8;
+        }
+        html:not(.dark) .side-feat-info {
+            color: #64748b;
+        }
+
+        .side-security-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 9px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        html.dark .side-security-notice {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            color: #cbd5e1;
+        }
+        html:not(.dark) .side-security-notice {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+        }
+        .notice-icon {
+            font-size: 15px;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* ── 6. 移动端自适应优化 ── */
+        @media (max-width: 640px) {
+            .sign-box {
+                padding: 20px 16px;
+            }
+            .side-panel-card {
+                padding: 18px 16px;
+            }
+            .sign-box .sign-title {
+                font-size: 1.35rem;
+            }
+            .auth-dashboard {
+                padding: 10px 12px;
+            }
         }
     </style>
-
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="在线工具集" />
-    <meta property="og:title" content="登录 - 在线工具" />
-    <meta property="og:description" content="在线工具集：150+ 实用工具，脑力训练、图像处理、程序员工具、健康生活计算，全部本地运行零上传。" />
-    <meta property="og:url" content="https://tool.6767.chat/signin" />
-    <meta property="og:image" content="https://tool.6767.chat/img/og-cover.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="登录 - 在线工具" />
-    <meta name="twitter:description" content="在线工具集：150+ 实用工具，脑力训练、图像处理、程序员工具、健康生活计算，全部本地运行零上传。" />
-    <meta name="twitter:image" content="https://tool.6767.chat/img/og-cover.png" />
-    <link rel="canonical" href="https://tool.6767.chat/signin" />
 </head>
 <body>
 <div class="grid-bg"></div>
+
 <header class="tool-topbar">
   <a href="./" class="tool-topbar-logo" aria-label="首页">
     <span>在线工具集</span>
@@ -46,61 +871,169 @@
   <a href="./" class="tool-topbar-home">&#8592; 首页</a>
 </header>
 
-    <main class="main-body tool-page-body">
-        
+<main class="main-body tool-page-body" id="app">
+    <div class="tool-body">
+        <div class="card-model">
+            <div class="card-body">
+                <div class="tool-head">
+                    <h1 class="title">统一身份认证中心</h1>
+                </div>
+                <div class="description">
+                    快捷安全的统一账户认证服务。支持手机号短信免密极速登录、账号密码登录、新用户快速注册以及安全密码重置，一键畅享全站生产力工具。
+                </div>
 
-<div class="sign-box" v-cloak>
-    <div class="sign-title">{{signInModuleTitle}}</div>
-    <sign-in ref="signIn" v-on:set-sign-in-module-title="setSignInModuleTitle"></sign-in>
-</div>
+                <!-- 顶部状态仪表盘 -->
+                <div class="auth-dashboard">
+                    <div class="auth-dash-left">
+                        <div class="auth-status-badge">
+                            <span class="auth-status-dot"></span>
+                            <span>认证网关服务就绪</span>
+                        </div>
+                        <div class="auth-mode-indicator">
+                            <span>当前页面:</span>
+                            <span class="auth-mode-val">{{ signInModuleTitle || '登录' }}</span>
+                        </div>
+                    </div>
+                    <div class="auth-dash-right">
+                        <div class="auth-security-chip" title="端到端传输加密保护">
+                            <svg class="auth-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                <path d="M9 12l2 2 4-4"/>
+                            </svg>
+                            <span>TLS 256-bit 加密安全通道</span>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- 核心认证区域栅格 -->
+                <div class="auth-grid-container">
+                    <!-- 左侧: 认证表单主卡片 -->
+                    <div class="sign-box" v-cloak>
+                        <div class="sign-header">
+                            <div class="sign-badge-pill">
+                                <svg class="sign-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <span>6767 ID 账户中心</span>
+                            </div>
+                            <h2 class="sign-title">{{ signInModuleTitle || '用户登录' }}</h2>
+                            <p class="sign-desc">
+                                {{ signInModuleTitle === '注册' ? '立即开通通行账号，跨端同步个性化工具偏好' : (signInModuleTitle === '找回密码' ? '验证身份后即可重设密码，保护您的账户资产' : '登录后尊享全站数十款高效生产力工具高级特性') }}
+                            </p>
+                        </div>
 
-    </main>
-</div>
+                        <!-- Vue 统一登录核心子组件 -->
+                        <sign-in ref="signIn" v-on:set-sign-in-module-title="setSignInModuleTitle"></sign-in>
+                    </div>
 
-    <script>
-        var languageCode = 'zh';
-        var websiteRoot = "";
-        var mainWebSiteHost = "";
-        var webApiSiteHost = "/api";
-        var staticSiteHost = "";
-        var staticFileVersion="260728100716";
-        var toolData = [{"key":"brain","desc":"脑力训练","children":[{"key":"记忆力","desc":"记忆力","toolList":[{"toolName":"数字顺序记忆训练","toolCode":"number-sequence-memory","icon":"./img/brain/game-logo/szsxjy.png"},{"toolName":"顺序记忆训练","toolCode":"sequence-memory","icon":"./img/brain/game-logo/sxjy.png"},{"toolName":"N-Back 记忆力训练游戏","toolCode":"n-back","icon":"./img/brain/game-logo/nback.png"},{"toolName":"色块印记","toolCode":"color-block-imprint","icon":"./img/brain/game-logo/skyj.png"}]},{"key":"注意力","desc":"注意力","toolList":[{"toolName":"舒尔特方格训练","toolCode":"shult-grid","icon":"./img/brain/game-logo/setfg.png"},{"toolName":"找不同的字","toolCode":"find-different-word","icon":"./img/brain/game-logo/zbtdz.png"},{"toolName":"斯特鲁普效应","toolCode":"stroop-effect","icon":"./img/brain/game-logo/stlpxy.png"},{"toolName":"坐标迷航","toolCode":"coordinate-drift","icon":"./img/brain/game-logo/zbmh.png"},{"toolName":"视觉追踪训练","toolCode":"visual-tracking-training","icon":"./img/brain/game-logo/sjzzxl.png"}]},{"key":"推演","desc":"推演","toolList":[{"toolName":"复古推箱子 50 关益智挑战","toolCode":"sokoban","icon":"./img/icons/sokoban.svg"},{"toolName":"经典扫雷游戏","toolCode":"minesweeper","icon":"./img/icons/minesweeper.svg"},{"toolName":"在线数独游戏","toolCode":"sudoku","icon":"./img/icons/sudoku.svg"},{"toolName":"熄灯解谜游戏","toolCode":"lights-out","icon":"./img/icons/lights-out.svg"},{"toolName":"数字华容道","toolCode":"digital-huarong-road","icon":"./img/brain/game-logo/szhrd.png"},{"toolName":"上下瓶色匹配","toolCode":"bottle-color-matching","icon":"./img/brain/game-logo/sxpspp.png"},{"toolName":"2048","toolCode":"2048","icon":"./img/brain/game-logo/elsb.png"}]},{"key":"反应","desc":"反应","toolList":[{"toolName":"反应速度测试","toolCode":"react-speed-test","icon":"./img/brain/game-logo/fysdcs.png"},{"toolName":"点击速度测试","toolCode":"click-speed-test","icon":"./img/brain/game-logo/sscs.png"},{"toolName":"右键点击速度测试","toolCode":"right-click-test","icon":"./img/brain/game-logo/yjdjsdcs.png"},{"toolName":"空格键计数器","toolCode":"spacebar-counter","icon":"./img/brain/game-logo/kgjjsq.png"},{"toolName":"动态视力测试","toolCode":"dynamic-visual-acuity-test","icon":"./img/brain/game-logo/dtslcs.png"}]},{"key":"感知","desc":"感知","toolList":[{"toolName":"静态色差感知","toolCode":"jing-tai-se-cha","icon":"./img/brain/game-logo/jtsc.png"},{"toolName":"动态色差感知","toolCode":"dong-tai-se-cha","icon":"./img/brain/game-logo/dtsc.png"},{"toolName":"时间感知训练","toolCode":"time-perception-training","icon":"./img/brain/game-logo/sjgzxl.png"}]},{"key":"空间","desc":"空间","toolList":[{"toolName":"对称方块","toolCode":"symmetry-blocks","icon":"./img/brain/game-logo/dcfk.png"}]}]},{"key":"office","desc":"办公助手","toolList":[{"toolName":"文本去重与多维排序器","toolCode":"text-dedup-sort","icon":"./img/icons/text-dedup-sort.svg"},{"toolName":"中英文排版规范美化器","toolCode":"text-autospace","icon":"./img/icons/text-autospace.svg"},{"toolName":"在线表格转换器","toolCode":"table-converter","icon":"./img/icons/table-converter.svg"},{"toolName":"人民币大写金额转换器","toolCode":"rmb-capital-converter","icon":"./img/icons/rmb-capital-converter.svg"},{"toolName":"综合字数与阅读时长统计","toolCode":"word-counter","icon":"./img/icons/word-counter.svg"},{"toolName":"现代简历制作与排版器","toolCode":"resume-maker","icon":"./img/icons/resume-maker.svg"},{"toolName":"简历模板中心","toolCode":"resume-template","icon":"./img/icons/resume-template.svg"},{"toolName":"A4纸张尺寸，各种纸张尺寸查询","toolCode":"paper-size","icon":"./img/icons/paper-size.svg"},{"toolName":"转换大小写","toolCode":"convert-case","icon":"./img/icons/convert-case.svg"},{"toolName":"标题大小写转换器","toolCode":"title-case-converter","icon":"./img/icons/title-case-converter.svg"},{"toolName":"句子大小写转换器","toolCode":"sentence-case-converter","icon":"./img/icons/sentence-case-converter.svg"},{"toolName":"粗体文本生成器","toolCode":"bold-text-generator","icon":"./img/icons/bold-text-generator.svg"},{"toolName":"斜体文本生成器","toolCode":"italic-text-generator","icon":"./img/icons/italic-text-generator.svg"},{"toolName":"删除线文本生成器","toolCode":"strikethrough-text-generator","icon":"./img/icons/strikethrough-text-generator.svg"},{"toolName":"下划线文本生成器","toolCode":"underline-text","icon":"./img/icons/underline-text.svg"},{"toolName":"颠倒文本生成器","toolCode":"upside-down-text-generator","icon":"./img/icons/upside-down-text-generator.svg"},{"toolName":"镜像文本生成器","toolCode":"mirror-text-generator","icon":"./img/icons/mirror-text-generator.svg"},{"toolName":"反向文本生成器","toolCode":"reverse-text-generator","icon":"./img/icons/reverse-text-generator.svg"},{"toolName":"文本替换工具","toolCode":"replace-text","icon":"./img/icons/replace-text.svg"},{"toolName":"符号大全","toolCode":"symbols","icon":"./img/icons/symbols.svg"},{"toolName":"emoji表情大全","toolCode":"emoji","icon":"./img/icons/emoji.svg"},{"toolName":"颜文字表情大全","toolCode":"emoticon","icon":"./img/icons/emoticon.svg"}]},{"key":"image","desc":"图像","toolList":[{"toolName":"图片调色板提取器","toolCode":"color-palette-extractor","icon":"./img/icons/color-palette-extractor.svg"},{"toolName":"多图无损拼接与长图生成器","toolCode":"image-stitcher","icon":"./img/icons/image-stitcher.svg"},{"toolName":"图片马赛克与局部隐私遮挡","toolCode":"image-mosaic-blur","icon":"./img/icons/image-mosaic-blur.svg"},{"toolName":"图像格式转换器","toolCode":"convert-image","icon":"./img/icons/convert-image.svg"},{"toolName":"压缩图像","toolCode":"compress-image","icon":"./img/icons/compress-image.svg"},{"toolName":"调整图像大小","toolCode":"resize-image","icon":"./img/icons/resize-image.svg"},{"toolName":"调整图像宽高比例","toolCode":"adjust-image-aspect-ratio","icon":"./img/icons/adjust-image-aspect-ratio.svg"},{"toolName":"批量给图片加水印","toolCode":"watermark-image","icon":"./img/icons/watermark-image.svg"},{"toolName":"批量旋转图像","toolCode":"rotate-image","icon":"./img/icons/rotate-image.svg"},{"toolName":"在线生成透明ICO图标","toolCode":"ico-generator","icon":"./img/icons/ico-generator.svg"},{"toolName":"在线生成透明圆角图片","toolCode":"round-image","icon":"./img/icons/round-image.svg"},{"toolName":"制作gif图片，编辑gif图片","toolCode":"create-gif","icon":"./img/icons/create-gif.svg"},{"toolName":"视频转gif图片，视频转动图","toolCode":"video-to-gif","icon":"./img/icons/video-to-gif.svg"},{"toolName":"分解gif图片","toolCode":"decompose-gif","icon":"./img/icons/decompose-gif.svg"},{"toolName":"裁剪、编辑图像","toolCode":"crop-image","icon":"./img/icons/crop-image.svg"},{"toolName":"生成宫格图像，分割图片","toolCode":"generate-grid-image","icon":"./img/icons/generate-grid-image.svg"},{"toolName":"图像处理助手桌面应用程序","toolCode":"image-processing-assistant-app","icon":"./up/2023/1028/image-processing-assistant-icon.png"},{"toolName":"图像压缩器桌面应用程序","toolCode":"image-compressor-app","icon":"./up/2023/1028/image-compress-logo.png"}]},{"key":"audio-and-video","desc":"音视频","toolList":[{"toolName":"白噪音与专注助眠多轨混音器","toolCode":"white-noise-player","icon":"./img/icons/white-noise-player.svg"},{"toolName":"免插件屏幕与窗口录制工具","toolCode":"screen-recorder","icon":"./img/icons/screen-recorder.svg"},{"toolName":"在线波形录音机与音频剪辑","toolCode":"voice-recorder","icon":"./img/icons/voice-recorder.svg"},{"toolName":"极简电子节拍器与乐器调音器","toolCode":"metronome-tuner","icon":"./img/icons/metronome-tuner.svg"},{"toolName":"视频处理助手桌面应用程序","toolCode":"video-processing-assistant-app","icon":"./up/2023/1028/video-processing-assistant-icon.png"},{"toolName":"视频剪切合并桌面应用程序","toolCode":"video-cut-merge-app","icon":"./up/2023/1028/video-cut-merge-icon.png"},{"toolName":"视频压缩器桌面应用程序","toolCode":"video-compressor-app","icon":"./up/2023/1028/video-compress-icon.png"},{"toolName":"视频格式转换器桌面应用程序","toolCode":"video-format-converter-app","icon":"./up/2023/1028/video-format-conversion-icon.png"},{"toolName":"音频处理助手桌面应用程序","toolCode":"audio-processing-assistant-app","icon":"./up/2023/1028/audio-processing-assistant-icon.png"},{"toolName":"音频剪切合并桌面应用程序","toolCode":"audio-cut-merge-app","icon":"./up/2023/1028/audio-cut-merge-icon.png"},{"toolName":"音频压缩器桌面应用程序","toolCode":"audio-compressor-app","icon":"./up/2023/1028/audio-compress-icon.png"},{"toolName":"音频格式转换器桌面应用程序","toolCode":"audio-format-convertor-app","icon":"./up/2023/1028/audio-format-conversion-icon.png"}]},{"key":"generate","desc":"生成","toolList":[{"toolName":"测试模拟数据 (Mock Data) 批量生成器","toolCode":"mock-data-generator","icon":"./img/icons/mock-data-generator.svg"},{"toolName":"WiFi 扫码直连二维码生成器","toolCode":"wifi-qrcode","icon":"./img/icons/wifi-qrcode.svg"},{"toolName":"无障碍色彩对比度检测器 (WCAG)","toolCode":"contrast-checker","icon":"./img/icons/contrast-checker.svg"},{"toolName":"CSS 玻璃拟态与毛玻璃生成器","toolCode":"css-glassmorphism","icon":"./img/icons/css-glassmorphism.svg"},{"toolName":"ASCII 艺术字与字符 Logo 生成器","toolCode":"ascii-art-generator","icon":"./img/icons/ascii-art-generator.svg"},{"toolName":"UUID / ULID / NanoID 批量生成器","toolCode":"uuid-generator","icon":"./img/icons/uuid-generator.svg"},{"toolName":"CSS 渐变色生成器","toolCode":"css-gradient-generator","icon":"./img/icons/css-gradient-generator.svg"},{"toolName":"CSS 盒子阴影生成器","toolCode":"css-shadow-generator","icon":"./img/icons/css-shadow-generator.svg"},{"toolName":"条形码生成器","toolCode":"bar-code","icon":"./img/icons/bar-code.svg"},{"toolName":"二维码生成器","toolCode":"qrcode","icon":"./img/icons/qrcode.svg"},{"toolName":"序列号生成器","toolCode":"serial-number","icon":"./img/icons/serial-number.svg"},{"toolName":"随机数生成器","toolCode":"random-number","icon":"./img/icons/random-number.svg"},{"toolName":"在线随机密码生成器","toolCode":"random-password","icon":"./img/icons/random-password.svg"}]},{"key":"code","desc":"程序员","toolList":[{"toolName":"IP 子网掩码与 CIDR 计算器","toolCode":"subnet-calculator","icon":"./img/icons/subnet-calculator.svg"},{"toolName":"多格式配置文件双向转换器","toolCode":"data-format-converter","icon":"./img/icons/data-format-converter.svg"},{"toolName":"HTTP 状态码速查与排错全书","toolCode":"http-status-codes","icon":"./img/icons/http-status-codes.svg"},{"toolName":"WebSocket / SSE 在线调试客户端","toolCode":"websocket-tester","icon":"./img/icons/websocket-tester.svg"},{"toolName":"cURL 转换多语言代码工具","toolCode":"curl-converter","icon":"./img/icons/curl-converter.svg"},{"toolName":"SQL 格式化与美化器","toolCode":"sql-formatter","icon":"./img/icons/sql-formatter.svg"},{"toolName":"JSON 格式化与高能工具箱","toolCode":"json-formatter","icon":"./img/icons/json-formatter.svg"},{"toolName":"JWT 解码与调试器","toolCode":"jwt-debugger","icon":"./img/icons/jwt-debugger.svg"},{"toolName":"正则表达式测试器","toolCode":"regex-tester","icon":"./img/icons/regex-tester.svg"},{"toolName":"Cron 表达式生成与预测器","toolCode":"cron-generator","icon":"./img/icons/cron-generator.svg"},{"toolName":"端口扫描","toolCode":"port-scan","icon":"./img/icons/port-scan.svg"},{"toolName":"JavaScript混淆加密","toolCode":"js-obfuscator","icon":"./img/icons/js-obfuscator.svg"},{"toolName":"Markdown在线编辑器，Markdown转Word/Html/Pdf","toolCode":"markdown","icon":"./img/icons/markdown.svg"},{"toolName":"时间戳转换","toolCode":"timestamp","icon":"./img/icons/timestamp.svg"},{"toolName":"进制转换","toolCode":"base-converter","icon":"./img/icons/base-converter.svg"},{"toolName":"MD5加密","toolCode":"md5-encrypt","icon":"./img/icons/md5-encrypt.svg"},{"toolName":"AES加密/解密","toolCode":"aes-encrypt","icon":"./img/icons/aes-encrypt.svg"},{"toolName":"DES加密/解密","toolCode":"des-encrypt","icon":"./img/icons/des-encrypt.svg"},{"toolName":"SHA加密","toolCode":"sha-encrypt","icon":"./img/icons/sha-encrypt.svg"},{"toolName":"RIPEMD160哈希加密","toolCode":"ripemd160-encrypt","icon":"./img/icons/ripemd160-encrypt.svg"},{"toolName":"HMAC哈希加密","toolCode":"hmac-encrypt","icon":"./img/icons/hmac-encrypt.svg"},{"toolName":"Rabbit加密/解密","toolCode":"rabbit-encrypt","icon":"./img/icons/rabbit-encrypt.svg"},{"toolName":"RC4加密/解密","toolCode":"rc4-encrypt","icon":"./img/icons/rc4-encrypt.svg"},{"toolName":"图片转base64","toolCode":"image-to-base64","icon":"./img/icons/image-to-base64.svg"},{"toolName":"base64编码解码","toolCode":"base64-encoder-decoder","icon":"./img/icons/base64-encoder-decoder.svg"},{"toolName":"URL编码解码","toolCode":"url-encoder-decoder","icon":"./img/icons/url-encoder-decoder.svg"},{"toolName":"文本与ASCLL转换器","toolCode":"text-to-ascll-converter","icon":"./img/icons/text-to-ascll-converter.svg"},{"toolName":"Unicode编码器/解码器","toolCode":"unicode-encoder-decoder","icon":"./img/icons/unicode-encoder-decoder.svg"},{"toolName":"文本（代码）对比工具","toolCode":"compare-text","icon":"./img/icons/compare-text.svg"},{"toolName":"html格式化、压缩","toolCode":"format-html","icon":"./img/icons/format-html.svg"},{"toolName":"css格式化、压缩","toolCode":"format-css","icon":"./img/icons/format-css.svg"},{"toolName":"js格式化、压缩","toolCode":"format-js","icon":"./img/icons/format-js.svg"}]},{"key":"study","desc":"学习","toolList":[{"toolName":"2D 数学函数图像绘制器","toolCode":"function-grapher","icon":"./img/icons/function-grapher.svg"},{"toolName":"计算机位运算与逻辑门实验室","toolCode":"bitwise-visualizer","icon":"./img/icons/bitwise-visualizer.svg"},{"toolName":"汉字转标准拼音与多音字排版","toolCode":"pinyin-converter","icon":"./img/icons/pinyin-converter.svg"},{"toolName":"化学元素周期表交互系统","toolCode":"periodic-table","icon":"./img/icons/periodic-table.svg"},{"toolName":"数据存储单位与进阶换算器","toolCode":"data-unit-converter","icon":"./img/icons/data-unit-converter.svg"},{"toolName":"科学高级计算器","toolCode":"scientific-calculator","icon":"./img/icons/scientific-calculator.svg"},{"toolName":"长度单位转换器","toolCode":"length-converter","icon":"./img/icons/length-converter.svg"},{"toolName":"面积单位转换器","toolCode":"area-converter","icon":"./img/icons/area-converter.svg"},{"toolName":"体积单位转换器","toolCode":"volume-converter","icon":"./img/icons/volume-converter.svg"},{"toolName":"重量转换器","toolCode":"weight-converter","icon":"./img/icons/weight-converter.svg"},{"toolName":"温度转换器","toolCode":"temperature-converter","icon":"./img/icons/temperature-converter.svg"},{"toolName":"比例计算器","toolCode":"proportion-calculator","icon":"./img/icons/proportion-calculator.svg"},{"toolName":"周长计算器","toolCode":"perimeter-calculator","icon":"./img/icons/perimeter-calculator.svg"},{"toolName":"面积计算器","toolCode":"area-calculator","icon":"./img/icons/area-calculator.svg"},{"toolName":"表面积计算器","toolCode":"surface-area-calculator","icon":"./img/icons/surface-area-calculator.svg"},{"toolName":"体积计算器","toolCode":"volume-calculator","icon":"./img/icons/volume-calculator.svg"},{"toolName":"圆周率查询","toolCode":"pi-query","icon":"./img/icons/pi-query.svg"}]},{"key":"life","desc":"生活","toolList":[{"toolName":"复利定投与理财收益计算器","toolCode":"compound-interest-calculator","icon":"./img/icons/compound-interest-calculator.svg"},{"toolName":"全款与车贷落地费用精算器","toolCode":"car-loan-calculator","icon":"./img/icons/car-loan-calculator.svg"},{"toolName":"世界时钟与跨时区会议规划器","toolCode":"world-clock-planner","icon":"./img/icons/world-clock-planner.svg"},{"toolName":"生活垃圾分类离线速查字典","toolCode":"garbage-classification","icon":"./img/icons/garbage-classification.svg"},{"toolName":"中国亲戚关系称谓换算器","toolCode":"kinship-calculator","icon":"./img/icons/kinship-calculator.svg"},{"toolName":"2026最新个税与五险一金计算器","toolCode":"salary-tax-calculator","icon":"./img/icons/salary-tax-calculator.svg"},{"toolName":"房贷提前还款与省息对比器","toolCode":"mortgage-advanced-calculator","icon":"./img/icons/mortgage-advanced-calculator.svg"},{"toolName":"日期间隔与重要日子倒计时","toolCode":"date-calculator","icon":"./img/icons/date-calculator.svg"},{"toolName":"年龄计算器","toolCode":"age","icon":"./img/icons/age.svg"},{"toolName":"退休年龄查询","toolCode":"retirement-time-query","icon":"./img/icons/retirement-time-query.svg"},{"toolName":"世界各国首都","toolCode":"capital","icon":"./img/icons/capital.svg"},{"toolName":"世界各国国旗和区旗图案","toolCode":"flag","icon":"./img/icons/flag.svg"},{"toolName":"贷款计算器","toolCode":"loan-calculator","icon":"./img/icons/loan-calculator.svg"},{"toolName":"文胸尺码查询","toolCode":"bra-size","icon":"./img/icons/bra-size.svg"},{"toolName":"内裤尺码查询","toolCode":"underwear-size","icon":"./img/icons/underwear-size.svg"},{"toolName":"女装尺码查询","toolCode":"woman-clothing-size","icon":"./img/icons/woman-clothing-size.svg"},{"toolName":"女士衬衫尺码查询","toolCode":"woman-shirt-size","icon":"./img/icons/woman-shirt-size.svg"},{"toolName":"连衣裙尺码查询","toolCode":"dress-size","icon":"./img/icons/dress-size.svg"},{"toolName":"小孩服装尺码查询","toolCode":"child-clothe-size","icon":"./img/icons/child-clothe-size.svg"},{"toolName":"男士服装尺码查询","toolCode":"man-clothing-size","icon":"./img/icons/man-clothing-size.svg"},{"toolName":"男士裤子尺码查询","toolCode":"man-pant-size","icon":"./img/icons/man-pant-size.svg"}]},{"key":"ent","desc":"娱乐","toolList":[{"toolName":"像素画 / 8-bit 图标在线编辑器","toolCode":"pixel-art-maker","icon":"./img/icons/pixel-art-maker.svg"},{"toolName":"今天吃什么 / 帮我做决定","toolCode":"decision-maker","icon":"./img/icons/decision-maker.svg"},{"toolName":"手持全屏弹幕 / LED 滚动屏幕","toolCode":"led-banner","icon":"./img/icons/led-banner.svg"},{"toolName":"摩斯密码翻译器，摩斯密码音频播放器","toolCode":"morse-code-translator","icon":"./img/icons/morse-code-translator.svg"},{"toolName":"幸运大转盘抽奖","toolCode":"lucky-wheel","icon":"./img/icons/lucky-wheel.svg"},{"toolName":"在线抽奖工具","toolCode":"lottery","icon":"./img/icons/lottery.svg"},{"toolName":"身价计算器","toolCode":"worth","icon":"./img/icons/worth.svg"},{"toolName":"死亡时间计算器","toolCode":"death-time","icon":"./img/icons/death-time.svg"},{"toolName":"幸运数字计算器","toolCode":"lucky-number","icon":"./img/icons/lucky-number.svg"},{"toolName":"星座幸运色","toolCode":"lucky-color","icon":"./img/icons/lucky-color.svg"},{"toolName":"哈希头像生成器","toolCode":"hash-avatar","icon":"./img/icons/hash-avatar.svg"}]},{"key":"health","desc":"健康","toolList":[{"toolName":"科学每日饮水量计算器","toolCode":"water-intake-calculator","icon":"./img/icons/water-intake-calculator.svg"},{"toolName":"90分钟睡眠周期与起床时间计算器","toolCode":"sleep-cycle-calculator","icon":"./img/icons/sleep-cycle-calculator.svg"},{"toolName":"常用食物热量与营养成分速查表","toolCode":"food-calories-lookup","icon":"./img/icons/food-calories-lookup.svg"},{"toolName":"BMI指数计算","toolCode":"bmi","icon":"./img/icons/bmi.svg"},{"toolName":"基础代谢率(BMR)计算器","toolCode":"bmr","icon":"./img/icons/bmr.svg"},{"toolName":"体脂率（BFR）计算器","toolCode":"bfr","icon":"./img/icons/bfr.svg"},{"toolName":"标准体重计算器","toolCode":"weight","icon":"./img/icons/weight.svg"},{"toolName":"燃脂心率计算器","toolCode":"burn-fat-heart-rate","icon":"./img/icons/burn-fat-heart-rate.svg"},{"toolName":"体质综合测试","toolCode":"physical-fitness-test","icon":"./img/icons/physical-fitness-test.svg"},{"toolName":"蛋白质摄入量计算器","toolCode":"protein-intake","icon":"./img/icons/protein-intake.svg"},{"toolName":"焦耳卡路里换算器","toolCode":"energy-convert","icon":"./img/icons/energy-convert.svg"},{"toolName":"跑步卡路里消耗计算器","toolCode":"running-calorie","icon":"./img/icons/running-calorie.svg"},{"toolName":"女性最佳身材计算器","toolCode":"best-figure","icon":"./img/icons/best-figure.svg"},{"toolName":"女性安全期计算器","toolCode":"female-safe-period","icon":"./img/icons/female-safe-period.svg"},{"toolName":"孩子身高预测","toolCode":"child-height","icon":"./img/icons/child-height.svg"},{"toolName":"血型遗传规律和血型性格","toolCode":"bood-type","icon":"./img/icons/bood-type.svg"},{"toolName":"色盲色弱检测","toolCode":"color-blindness-test","icon":"./img/icons/color-blindness-test.svg"},{"toolName":"植物油脂肪含量查询","toolCode":"vegetable-oil","icon":"./img/icons/vegetable-oil.svg"}]}];
-        var phoneSmsEnable = 1;
-        var wp='zp';
-        var ap='qx';
-    </script>
-        <script src="./lib/vue/vue.global.prod.js"></script>
-        <script src="./lib/element-plus/index.js"></script>
-    <script src="./lib/element-plus/locale/en.js"></script>
-    <script src="./lib/element-plus/locale/zh-tw.js"></script>
-    <script src="./js/components/SlideCaptcha.js?v=260728100716"></script>
-    <script src="./js/common.js?260728100716"></script>
-    <script src="./js/search.js?260728100716"></script>
-    
-    <script>
-        Vue.createApp({
-            components: {
-                'sign-in': signIn
-            },
-            data() {
-                return {
-                    signInModuleTitle: ''
-                }
-            },
-            mounted() {
-                this.$refs.signIn.signInModuleType = 'signIn';
-            },
-            methods: {
-                setSignInModuleTitle(val) {
-                    this.signInModuleTitle = val;
-                }
+                    <!-- 右侧: 特性背书与安全提示面板 -->
+                    <div class="auth-side-panel">
+                        <div class="side-panel-card">
+                            <div class="side-panel-header">
+                                <div class="side-panel-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="side-panel-title">安全可靠的账户生态</h3>
+                                    <p class="side-panel-subtitle">全方位护航您的凭据与使用隐私</p>
+                                </div>
+                            </div>
 
+                            <div class="side-features-list">
+                                <div class="side-feat-item">
+                                    <div class="side-feat-bullet">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <div class="side-feat-body">
+                                        <strong class="side-feat-name">免密闪电登录</strong>
+                                        <span class="side-feat-info">支持短信验证码免密直达，告别复杂密码记忆，未注册手机号首次登录自动创建。</span>
+                                    </div>
+                                </div>
+
+                                <div class="side-feat-item">
+                                    <div class="side-feat-bullet">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <div class="side-feat-body">
+                                        <strong class="side-feat-name">全站工具互通</strong>
+                                        <span class="side-feat-info">一个账号通行全站数十款开发者工具、格式转换器与益智游戏，随时保持同步。</span>
+                                    </div>
+                                </div>
+
+                                <div class="side-feat-item">
+                                    <div class="side-feat-bullet">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <div class="side-feat-body">
+                                        <strong class="side-feat-name">多因子安全找回</strong>
+                                        <span class="side-feat-info">3 步清晰重置向导，支持手机与邮箱多通道核验，杜绝未授权篡改与撞库风险。</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="side-security-notice">
+                                <span class="notice-icon">💡</span>
+                                <div>
+                                    <strong>安全建议：</strong>官方绝不会索取您的短信验证码或登录密码。在公共网吧或公共终端使用完毕后，请务必登出账号。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Runtime configuration consumed by js/common.js and the sign-in component.
+    // Keep this page self-contained so the local static build works without server-side injection.
+    var languageCode = 'zh';
+    var websiteRoot = '';
+    var mainWebSiteHost = '';
+    var webApiSiteHost = '/api';
+    var staticSiteHost = '';
+    var staticFileVersion = '20260905';
+    var phoneSmsEnable = 1;
+</script>
+<script src="./lib/vue/vue.global.prod.js"></script>
+<script src="./lib/element-plus/index.js"></script>
+<script src="./js/components/SlideCaptcha.js?v=260728100716"></script>
+<script src="./js/common.js?260728100716"></script>
+
+<script>
+    Vue.createApp({
+        components: {
+            'sign-in': signIn
+        },
+        data() {
+            return {
+                signInModuleTitle: ''
             }
-        }).use(ElementPlus).mount('.main-body');
-    </script>
+        },
+        mounted() {
+            if (this.$refs.signIn) {
+                this.$refs.signIn.signInModuleType = 'signIn';
+            }
+        },
+        methods: {
+            setSignInModuleTitle(val) {
+                this.signInModuleTitle = val;
+            }
+        }
+    }).use(ElementPlus).mount('.main-body');
+</script>
 
-
-        
 </body>
 </html>
