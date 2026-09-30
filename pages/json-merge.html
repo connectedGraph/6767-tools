@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+  <script src="./js/theme.js"></script>
+  <script src="./js/i18n.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JSON 文件合并器 - 在线工具</title>
+  <meta name="description" content="在浏览器本地选择多个 JSON 文件，递归提取对象并合并为一个 JSON 数组。">
+  <meta name="keywords" content="JSON合并,JSON文件合并,JSON数组,开发者工具">
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+  <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet">
+  <link href="./css/6767-site.css?v=20260905" rel="stylesheet">
+  <link href="./css/tool-dark.css?v=20260905" rel="stylesheet">
+  <link href="./css/long-tail-tools.css?v=20260930" rel="stylesheet">
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <header class="tool-topbar">
+    <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+    <span class="tool-topbar-sep">/</span>
+    <span class="tool-topbar-title">JSON 文件合并器</span>
+    <a href="./" class="tool-topbar-home">← 首页</a>
+  </header>
+
+  <main class="main-body tool-page-body">
+    <div class="long-tool-shell">
+      <section class="long-tool-hero">
+        <div>
+          <p class="long-tool-kicker">Developer / JSON</p>
+          <h1>JSON 文件合并器</h1>
+          <p class="long-tool-lede">批量选择本地 JSON 文件，递归提取其中的对象并合并为一个数组。适合合并接口导出、分页数据和本地测试样本。</p>
+        </div>
+        <div class="long-tool-badges">
+          <span class="long-tool-badge"><strong>本地处理</strong></span>
+          <span class="long-tool-badge">不会上传文件</span>
+        </div>
+      </section>
+
+      <section class="long-tool-card">
+        <div class="long-tool-card-header">
+          <h2>选择 JSON 文件</h2>
+          <span class="long-tool-label">同名文件会被跳过</span>
+        </div>
+        <div class="long-tool-card-body">
+          <input id="fileInput" type="file" accept=".json,application/json" multiple hidden>
+          <div id="dropZone" class="long-tool-drop" tabindex="0" role="button" aria-label="选择或拖入 JSON 文件">
+            <div><strong>点击选择文件，或将多个 JSON 文件拖到这里</strong><br><span class="long-tool-hint">支持嵌套数组；处理过程只发生在当前浏览器内存中。</span></div>
+          </div>
+          <div id="fileList" class="long-tool-file-list"><div class="long-tool-file"><span>暂未选择文件</span></div></div>
+          <div id="message" class="long-tool-message" role="status" aria-live="polite"></div>
+          <div class="long-tool-actions">
+            <button id="mergeBtn" class="long-tool-btn primary" type="button" disabled>合并 JSON</button>
+            <button id="downloadBtn" class="long-tool-btn" type="button" disabled>下载结果</button>
+            <button id="clearBtn" class="long-tool-btn danger" type="button">清空</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="long-tool-card">
+        <div class="long-tool-card-header">
+          <h2>合并结果</h2>
+          <span id="resultCount" class="long-tool-label">0 个对象</span>
+        </div>
+        <div class="long-tool-card-body">
+          <textarea id="result" class="long-tool-output" readonly spellcheck="false" placeholder="合并后的 JSON 数组会显示在这里"></textarea>
+          <div class="long-tool-actions">
+            <button id="copyBtn" class="long-tool-btn" type="button">复制结果</button>
+          </div>
+        </div>
+      </section>
+
+      <p class="long-tool-footer-note">合并规则：数组中的对象会直接加入结果；对象内部的数组和嵌套对象会继续递归查找。根对象本身没有嵌套容器时，也会作为一条记录保留。</p>
+    </div>
+  </main>
+  <script src="./js/tools/code/json-merge.js?v=20260930"></script>
+</body>
+</html>

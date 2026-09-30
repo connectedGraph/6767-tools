@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+  <script src="./js/theme.js"></script>
+  <script src="./js/i18n.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>源码批量替换器 - 在线工具</title>
+  <meta name="description" content="按行规则或 JSON 映射批量替换源码和文本，纯前端处理，不执行输入代码。">
+  <meta name="keywords" content="源码替换,批量替换,JavaScript,JSON映射,文本处理">
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+  <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet">
+  <link href="./css/6767-site.css?v=20260905" rel="stylesheet">
+  <link href="./css/tool-dark.css?v=20260905" rel="stylesheet">
+  <link href="./css/long-tail-tools.css?v=20260930" rel="stylesheet">
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <header class="tool-topbar">
+    <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+    <span class="tool-topbar-sep">/</span>
+    <span class="tool-topbar-title">源码批量替换器</span>
+    <a href="./" class="tool-topbar-home">← 首页</a>
+  </header>
+
+  <main class="main-body tool-page-body">
+    <div class="long-tool-shell">
+      <section class="long-tool-hero">
+        <div>
+          <p class="long-tool-kicker">Developer / Source Editing</p>
+          <h1>源码批量替换器</h1>
+          <p class="long-tool-lede">把重复的变量名、域名、接口路径或文本片段按规则批量替换。它只处理字符串，不会解析、运行或上传你的 JavaScript。</p>
+        </div>
+        <div class="long-tool-badges">
+          <span class="long-tool-badge"><strong>纯文本处理</strong></span>
+          <span class="long-tool-badge">不执行源码</span>
+        </div>
+      </section>
+
+      <section class="long-tool-card">
+        <div class="long-tool-card-header">
+          <h2>输入与替换规则</h2>
+          <span id="fileName" class="long-tool-label">未加载文件</span>
+        </div>
+        <div class="long-tool-card-body">
+          <div class="long-tool-grid">
+            <div class="long-tool-field">
+              <label for="sourceText">原文本 / 源码</label>
+              <textarea id="sourceText" class="long-tool-textarea" spellcheck="false" placeholder="粘贴需要处理的源码或文本"></textarea>
+              <input id="fileInput" type="file" accept=".txt,.js,.html,.css,.json,.md" hidden>
+              <button id="loadFileBtn" class="long-tool-btn" type="button">从文件载入</button>
+            </div>
+            <div class="long-tool-field">
+              <label for="ruleMode">规则格式</label>
+              <select id="ruleMode" class="long-tool-select">
+                <option value="line">逐行规则：旧值 → 新值</option>
+                <option value="json">JSON 对象：旧值为 key，新值为 value</option>
+              </select>
+              <textarea id="ruleText" class="long-tool-textarea" spellcheck="false" placeholder="例如：&#10;old.example.com → new.example.com&#10;旧名称 = 新名称"></textarea>
+              <div class="long-tool-actions">
+                <button id="formatRuleBtn" class="long-tool-btn" type="button">格式化 JSON 规则</button>
+                <button id="applyBtn" class="long-tool-btn primary" type="button">执行替换</button>
+              </div>
+            </div>
+          </div>
+          <div id="message" class="long-tool-message" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="long-tool-card">
+        <div class="long-tool-card-header">
+          <h2>替换结果</h2>
+          <div class="long-tool-label"><span id="ruleCount">0</span> 条规则 · <span id="replaceCount">0</span> 次替换 · <span id="charCount">0</span> 字符</div>
+        </div>
+        <div class="long-tool-card-body">
+          <textarea id="resultText" class="long-tool-output" readonly spellcheck="false" placeholder="替换结果会显示在这里"></textarea>
+          <div class="long-tool-actions">
+            <button id="copyBtn" class="long-tool-btn" type="button">复制结果</button>
+            <button id="downloadBtn" class="long-tool-btn" type="button">下载结果</button>
+            <button id="clearBtn" class="long-tool-btn danger" type="button">清空</button>
+          </div>
+        </div>
+      </section>
+
+      <p class="long-tool-footer-note">规则按输入顺序依次执行。如果前一条规则会改变后一条规则的匹配文本，请相应调整规则顺序。对于真正的 JavaScript 反混淆，请使用专门的格式化和 AST 工具。</p>
+    </div>
+  </main>
+  <script src="./js/tools/code/source-replacer.js?v=20260930.1"></script>
+</body>
+</html>

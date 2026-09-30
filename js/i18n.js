@@ -1,7 +1,7 @@
 /**
  * 在线工具集 - 全局全栈国际化 (i18n) 核心库
  * 支持：简体中文 (zh)、English (en)、繁體中文 (zh-TW)
- * 具备：Element-Plus 多语言联动、DOM 智能自动翻译、全站 189 款工具字典内嵌、顶栏与首页独立多语言切换组件
+ * 具备：Element-Plus 多语言联动、DOM 智能自动翻译、全站 193 款工具字典内嵌、顶栏与首页独立多语言切换组件
  */
 (function (global) {
   'use strict';
@@ -2361,6 +2361,54 @@
         "zh-TW": "橄欖油、花生油、菜籽油等食用油脂肪酸與發煙點資料速查。"
       }
     },
+    "text-cleaner": {
+      "name": {
+        "zh": "文本分割、去重与序号清理器",
+        "en": "Text Splitter, Deduplicator & Number Cleaner",
+        "zh-TW": "文字分割、去重與序號清理器"
+      },
+      "desc": {
+        "zh": "本地完成文本智能分割、重复项清理和行首序号删除。",
+        "en": "Split, deduplicate, and remove leading list numbers from text locally.",
+        "zh-TW": "在本機完成文字智慧分割、重複項清理與行首序號刪除。"
+      }
+    },
+    "json-merge": {
+      "name": {
+        "zh": "JSON 文件合并器",
+        "en": "JSON File Merger",
+        "zh-TW": "JSON 檔案合併器"
+      },
+      "desc": {
+        "zh": "批量选择 JSON 文件，递归提取对象并合并为一个数组。",
+        "en": "Merge local JSON files by recursively extracting objects into one array.",
+        "zh-TW": "批量選擇 JSON 檔案，遞迴提取物件並合併為一個陣列。"
+      }
+    },
+    "source-replacer": {
+      "name": {
+        "zh": "源码批量替换器",
+        "en": "Source Text Replacer",
+        "zh-TW": "原始碼批量取代器"
+      },
+      "desc": {
+        "zh": "按行规则或 JSON 映射批量替换源码和文本，不执行输入代码。",
+        "en": "Apply line-based or JSON mapping replacements without executing source code.",
+        "zh-TW": "依逐行規則或 JSON 對映批量取代原始碼與文字，不執行輸入程式碼。"
+      }
+    },
+    "localstorage-watcher": {
+      "name": {
+        "zh": "localStorage 监听 Bookmarklet",
+        "en": "localStorage Watcher Bookmarklet",
+        "zh-TW": "localStorage 監聽 Bookmarklet"
+      },
+      "desc": {
+        "zh": "生成可临时注入网页的 localStorage 变化监听器，用于前端调试。",
+        "en": "Generate a temporary localStorage watcher bookmarklet for frontend debugging.",
+        "zh-TW": "產生可暫時注入網頁的 localStorage 變化監聽器，用於前端除錯。"
+      }
+    },
     "Account": {
       "name": {
         "zh": "登录",
@@ -2558,7 +2606,7 @@
     profile: { zh: '个人中心', en: 'Profile', 'zh-TW': '個人中心' },
     notice: { zh: '公告', en: 'Notice', 'zh-TW': '公告' },
     heroTitle: { zh: '在线工具集', en: 'Online Tools Hub', 'zh-TW': '線上工具集' },
-    heroSubtitle: { zh: '汇聚 189+ 款高效纯前端本地与极客实用工具', en: 'Curated 189+ high-performance client-side & geek utility tools', 'zh-TW': '匯聚 189+ 款高效純前端本機與極客實用工具' },
+    heroSubtitle: { zh: '汇聚 193+ 款高效纯前端本地与极客实用工具', en: 'Curated 193+ high-performance client-side & geek utility tools', 'zh-TW': '匯聚 193+ 款高效純前端本機與極客實用工具' },
     noticeMarquee: { zh: '本站为本地自托管副本 · 全部工具本地运行，零外部请求', en: 'Self-hosted toolkit · All tools run client-side with zero external requests', 'zh-TW': '本站為本機自託管副本 · 全部工具本機運作，零外部請求' },
     noticeCta: { zh: '浏览工具', en: 'Explore Tools', 'zh-TW': '瀏覽工具' },
     

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+  <script src="./js/theme.js"></script>
+  <script src="./js/i18n.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>文本分割、去重与序号清理器 - 在线工具</title>
+  <meta name="description" content="在浏览器本地完成文本智能分割、重复项清理和行首序号删除。">
+  <meta name="keywords" content="文本分割,文本清洗,去重,删除序号,文本工具">
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+  <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet">
+  <link href="./css/6767-site.css?v=20260905" rel="stylesheet">
+  <link href="./css/tool-dark.css?v=20260905" rel="stylesheet">
+  <link href="./css/long-tail-tools.css?v=20260930" rel="stylesheet">
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <header class="tool-topbar">
+    <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+    <span class="tool-topbar-sep">/</span>
+    <span class="tool-topbar-title">文本分割、去重与序号清理器</span>
+    <a href="./" class="tool-topbar-home">← 首页</a>
+  </header>
+
+  <main class="main-body tool-page-body">
+    <div class="long-tool-shell">
+      <section class="long-tool-hero">
+        <div>
+          <p class="long-tool-kicker">Office / Text Cleaning</p>
+          <h1>文本分割、去重与序号清理器</h1>
+          <p class="long-tool-lede">把临时复制来的名单、关键词、目录或编号文本快速整理成干净的逐行结果。所有处理都在浏览器本地完成，不上传原文。</p>
+        </div>
+        <div class="long-tool-badges">
+          <span class="long-tool-badge"><strong>本地运行</strong></span>
+          <span class="long-tool-badge">零上传</span>
+        </div>
+      </section>
+
+      <section class="long-tool-card">
+        <div class="long-tool-card-header">
+          <h2>输入与处理方式</h2>
+          <span class="long-tool-label">支持换行、空格、顿号、中英文逗号</span>
+        </div>
+        <div class="long-tool-card-body">
+          <div class="long-tool-stats" aria-live="polite">
+            <div class="long-tool-stat"><span>原始项数</span><strong id="inputCount">0</strong></div>
+            <div class="long-tool-stat"><span>结果项数</span><strong id="outputCount">0</strong></div>
+            <div class="long-tool-stat"><span>移除重复</span><strong id="duplicateCount">0</strong></div>
+            <div class="long-tool-stat"><span>结果字符</span><strong id="charCount">0</strong></div>
+          </div>
+
+          <div class="long-tool-grid">
+            <div class="long-tool-field long-tool-grid-wide">
+              <label for="inputText">原始文本</label>
+              <textarea id="inputText" class="long-tool-textarea" spellcheck="false" placeholder="例如：1. 苹果, 香蕉, 橙子&#10;2. 苹果&#10;3. 草莓"></textarea>
+            </div>
+            <div class="long-tool-field">
+              <label for="mode">处理方式</label>
+              <select id="mode" class="long-tool-select">
+                <option value="smart">智能分割并去重</option>
+                <option value="universal">强制按常见分隔符分割并去重</option>
+                <option value="number">仅删除每行开头的序号</option>
+              </select>
+              <p class="long-tool-hint">智能模式会尽量保留包含空格的完整行；强制模式会把空白也视为分隔符。</p>
+            </div>
+            <div class="long-tool-field">
+              <label for="outputText">处理结果</label>
+              <textarea id="outputText" class="long-tool-output" readonly spellcheck="false" placeholder="处理结果会显示在这里"></textarea>
+            </div>
+          </div>
+
+          <div class="long-tool-actions">
+            <button class="long-tool-btn primary" id="processBtn" type="button">处理文本</button>
+            <button class="long-tool-btn" id="sampleBtn" type="button">载入示例</button>
+            <button class="long-tool-btn" id="copyBtn" type="button">复制结果</button>
+            <button class="long-tool-btn" id="downloadBtn" type="button">下载 TXT</button>
+            <button class="long-tool-btn" id="swapBtn" type="button">结果回填</button>
+            <button class="long-tool-btn danger" id="clearBtn" type="button">清空</button>
+          </div>
+          <div id="message" class="long-tool-message" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <p class="long-tool-footer-note">序号清理支持阿拉伯数字、英文字母和常见中文数字序号。去重会保留第一次出现的顺序，不会改变原始内容的大小写。</p>
+    </div>
+  </main>
+  <script src="./js/tools/office/text-cleaner.js?v=20260930.3"></script>
+</body>
+</html>

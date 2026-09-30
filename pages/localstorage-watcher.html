@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+  <script src="./js/theme.js"></script>
+  <script src="./js/i18n.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>localStorage 监听 Bookmarklet - 在线工具</title>
+  <meta name="description" content="生成一个可注入任意网页的 localStorage 监听 Bookmarklet，查看同页和跨标签页的存储变化。">
+  <meta name="keywords" content="localStorage监听,Bookmarklet,浏览器调试,前端开发工具">
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+  <link href="./css/6767-tailwind.css?v=20260905" rel="stylesheet">
+  <link href="./css/6767-site.css?v=20260905" rel="stylesheet">
+  <link href="./css/tool-dark.css?v=20260905" rel="stylesheet">
+  <link href="./css/long-tail-tools.css?v=20260930" rel="stylesheet">
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <header class="tool-topbar">
+    <a href="./" class="tool-topbar-logo" aria-label="首页"><span>在线工具集</span></a>
+    <span class="tool-topbar-sep">/</span>
+    <span class="tool-topbar-title">localStorage 监听 Bookmarklet</span>
+    <a href="./" class="tool-topbar-home">← 首页</a>
+  </header>
+
+  <main class="main-body tool-page-body">
+    <div class="long-tool-shell">
+      <section class="long-tool-hero">
+        <div>
+          <p class="long-tool-kicker">Developer / Browser Debugging</p>
+          <h1>localStorage 监听 Bookmarklet</h1>
+          <p class="long-tool-lede">生成一段可以临时注入当前网页的调试脚本，记录 setItem、removeItem、clear 和跨标签页 storage 事件。</p>
+        </div>
+        <div class="long-tool-badges">
+          <span class="long-tool-badge"><strong>本地生成</strong></span>
+          <span class="long-tool-badge">不读取远程数据</span>
+        </div>
+      </section>
+
+      <section class="long-tool-card">
+        <div class="long-tool-card-header">
+          <h2>使用方式</h2>
+          <span class="long-tool-label">适合临时调试，不建议长期注入生产页面</span>
+        </div>
+        <div class="long-tool-card-body">
+          <ol class="long-tool-hint" style="margin:0; padding-left:20px; line-height:2;">
+            <li>点击“复制 Bookmarklet”。</li>
+            <li>新建浏览器书签，把复制的内容粘贴到书签网址栏。</li>
+            <li>打开需要调试的网页，点击该书签即可显示监听面板。</li>
+            <li>再次点击书签会移除监听器和面板。</li>
+          </ol>
+          <div class="long-tool-actions">
+            <button id="copyBookmarkletBtn" class="long-tool-btn primary" type="button">复制 Bookmarklet</button>
+            <button id="refreshBtn" class="long-tool-btn" type="button">重新生成</button>
+          </div>
+          <div id="message" class="long-tool-message" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="long-tool-card">
+        <div class="long-tool-card-header">
+          <h2>书签网址</h2>
+          <span class="long-tool-label">以 javascript: 开头</span>
+        </div>
+        <div class="long-tool-card-body">
+          <textarea id="bookmarklet" class="long-tool-code" readonly spellcheck="false"></textarea>
+          <p class="long-tool-hint">部分浏览器会在粘贴到书签栏时移除 javascript: 前缀。如果点击书签无反应，请手动补回此前缀。</p>
+        </div>
+      </section>
+
+      <section class="long-tool-card">
+        <div class="long-tool-card-header">
+          <h2>可读源码</h2>
+          <span class="long-tool-label">仅用于审阅行为</span>
+        </div>
+        <div class="long-tool-card-body">
+          <textarea id="sourceCode" class="long-tool-code long-tool-source" readonly spellcheck="false"></textarea>
+        </div>
+      </section>
+
+      <p class="long-tool-footer-note">Bookmarklet 会改写当前页面的 Storage 原型方法，只影响当前页面上下文；刷新页面即可恢复。请只在自己有权调试的页面使用。</p>
+    </div>
+  </main>
+  <script src="./js/tools/code/localstorage-watcher.js?v=20260930"></script>
+</body>
+</html>

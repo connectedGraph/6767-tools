@@ -8,8 +8,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
     <title>在线表格转换器 (Excel / CSV / Markdown / HTML / JSON / ASCII / SQL) - 在线工具</title>
-    <meta name="description" content="在线多功能表格转换器，支持粘贴 Excel、CSV、TSV 数据，一键相互转换为 Markdown 表格、HTML 表格、JSON 数组对象、ASCII 纯文本表格及 SQL 插入语句，支持列选择、重命名、对齐设置与实时表格预览。" />
-    <meta name="keywords" content="表格转换器,Excel转Markdown,CSV转JSON,Markdown表格生成器,HTML表格转换,ASCII表格生成,TSV转换,SQL插入生成器" />
+    <meta name="description" content="在线多功能表格转换器，支持粘贴 Excel、CSV、TSV 数据，一键相互转换为 Markdown 表格、HTML 表格、JSON 数组对象、ASCII 纯文本表格、XLSX 文件及 SQL 插入语句，支持列选择、重命名、对齐设置与实时表格预览。" />
+    <meta name="keywords" content="表格转换器,Excel转Markdown,Markdown转Excel,CSV转JSON,Markdown表格生成器,HTML表格转换,ASCII表格生成,TSV转换,SQL插入生成器" />
 
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link href="./lib/element-plus/index.css" rel="stylesheet" />
@@ -768,7 +768,7 @@
                     <h1 class="title">在线表格转换器 (Table Converter)</h1>
                 </div>
                 <div class="description">
-                    专为开发者与办公人员打造的高性能表格处理利器。支持从 Excel / Google Sheets 复制单元格直接粘贴、CSV / TSV 格式数据解析，毫秒级实时双向转换为 Markdown、HTML Table、JSON 结构体、ASCII 纯文本终端表格与 SQL Insert 语句，支持列重命名、显示筛选与对齐微调。
+                    专为开发者与办公人员打造的高性能表格处理利器。支持从 Excel / Google Sheets 复制单元格直接粘贴、CSV / TSV 格式数据解析，毫秒级实时双向转换为 Markdown、HTML Table、JSON 结构体、ASCII 纯文本终端表格、XLSX 文件与 SQL Insert 语句，支持列重命名、显示筛选与对齐微调。
                 </div>
 
                 <!-- 顶部现代仪表盘：快捷示例、文件上传、统计徽章 -->
@@ -1127,6 +1127,9 @@
                                 <button type="button" class="action-btn action-btn-secondary" @click="handleDownload">
                                     <span>💾 下载文件 ({{ downloadExt }})</span>
                                 </button>
+                                <button type="button" class="action-btn action-btn-secondary" @click="handleDownloadXlsx">
+                                    <span>📊 下载 XLSX</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1151,9 +1154,9 @@
                         <div class="feature-item">
                             <div class="feature-item-icon">🔄</div>
                             <div>
-                                <strong style="color: inherit;">7 大主流目标格式互转</strong>
+                                <strong style="color: inherit;">8 大主流目标格式互转</strong>
                                 <div style="opacity: 0.8; font-size: 12.5px; margin-top: 3px;">
-                                    Markdown 表格、HTML thead/tbody、JSON（对象数组/2D数组/列字典）、MySQL/Unicode 终端 ASCII、CSV/TSV 及 SQL Insert。
+                                    Markdown 表格、HTML thead/tbody、JSON（对象数组/2D数组/列字典）、MySQL/Unicode 终端 ASCII、CSV/TSV、XLSX 及 SQL Insert。
                                 </div>
                             </div>
                         </div>
@@ -1177,7 +1180,7 @@
                         </div>
                     </div>
                     <div style="margin-top: 14px; font-size: 12px; opacity: 0.6;">
-                        版本: 2.1.0 (Luna UI/UX Modernized) | 离线纯前端架构
+                        版本: 2.2.0 (Luna UI/UX Modernized) | 离线纯前端架构
                     </div>
                 </div>
 
@@ -1191,6 +1194,7 @@
 <script src="./lib/element-plus/locale/en.js"></script>
 <script src="./lib/element-plus/locale/zh-tw.js"></script>
 <script src="./js/common.js"></script>
+<script src="./lib/jszip/jszip.min.js"></script>
 
 <script>
 const { createApp, ref, reactive, computed, watch, onMounted } = Vue;
@@ -1743,6 +1747,98 @@ const app = createApp({
             }
         };
 
+        const escapeXml = (value) => String(value === null || value === undefined ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+
+        const columnName = (index) => {
+            let name = '';
+            let current = index + 1;
+            while (current > 0) {
+                const remainder = (current - 1) % 26;
+                name = String.fromCharCode(65 + remainder) + name;
+                current = Math.floor((current - 1) / 26);
+            }
+            return name;
+        };
+
+        const handleDownloadXlsx = async () => {
+            const cols = activeColumns.value;
+            const rows = parsedData.rows;
+            if (!cols.length || !rows.length) {
+                ElementPlus.ElMessage.warning('当前没有可导出的表格数据');
+                return;
+            }
+            if (typeof JSZip === 'undefined') {
+                ElementPlus.ElMessage.error('XLSX 组件未加载，请检查本地依赖');
+                return;
+            }
+
+            const matrix = [
+                cols.map(c => c.alias),
+                ...rows.map(row => cols.map(c => row[c.originalIndex] === undefined ? '' : row[c.originalIndex]))
+            ];
+            const lastCell = columnName(cols.length - 1) + matrix.length;
+            const sheetRows = matrix.map((row, rowIndex) => {
+                const cells = row.map((value, colIndex) => {
+                    const ref = columnName(colIndex) + (rowIndex + 1);
+                    return '<c r="' + ref + '" t="inlineStr"><is><t xml:space="preserve">' +
+                        escapeXml(value) + '</t></is></c>';
+                }).join('');
+                return '<row r="' + (rowIndex + 1) + '">' + cells + '</row>';
+            }).join('');
+
+            const zip = new JSZip();
+            zip.file('[Content_Types].xml', [
+                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+                '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">',
+                '  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>',
+                '  <Default Extension="xml" ContentType="application/xml"/>',
+                '  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>',
+                '  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>',
+                '</Types>'
+            ].join('\n'));
+            zip.file('_rels/.rels', [
+                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">',
+                '  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>',
+                '</Relationships>'
+            ].join('\n'));
+            zip.file('xl/workbook.xml', [
+                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+                '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">',
+                '  <sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets>',
+                '</workbook>'
+            ].join('\n'));
+            zip.file('xl/_rels/workbook.xml.rels', [
+                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">',
+                '  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>',
+                '</Relationships>'
+            ].join('\n'));
+            zip.file('xl/worksheets/sheet1.xml', [
+                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+                '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">',
+                '  <dimension ref="A1:' + lastCell + '"/>',
+                '  <sheetData>' + sheetRows + '</sheetData>',
+                '</worksheet>'
+            ].join('\n'));
+
+            const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'table-export-' + Date.now() + '.xlsx';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+            ElementPlus.ElMessage.success('XLSX 文件已开始下载');
+        };
+
         const downloadExt = computed(() => {
             switch (currentTab.value) {
                 case 'markdown': return '.md';
@@ -1822,7 +1918,8 @@ const app = createApp({
             triggerUpload,
             handleFileUpload,
             handleCopyOutput,
-            handleDownload
+            handleDownload,
+            handleDownloadXlsx
         };
     }
 });
